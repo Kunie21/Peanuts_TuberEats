@@ -242,10 +242,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitInput(hInstance, hWnd);
 	InitSound(hWnd);
 	InitTexture2D();
-
-	SetLightEnable(TRUE);
-	SetCullingMode(CULL_MODE_BACK);
-
 	InitFade();
 
 	SetMode(g_Mode);	// 最初のモードをセット
@@ -314,9 +310,8 @@ void Update(void)
 //=============================================================================
 void Draw(void)
 {
-	Clear();	// バックバッファクリア
+	Clear();
 	SetCamera();
-	SetViewPort(TYPE_FULL_SCREEN);
 
 	switch (g_Mode)
 	{

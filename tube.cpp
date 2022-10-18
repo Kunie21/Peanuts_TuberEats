@@ -92,7 +92,8 @@ HRESULT InitTube(void)
 {
 	for (int i = 0; i < 8; i++)
 	{
-		testTubeArr[i] = (TUBE_TYPE)(i % 2);
+		//testTubeArr[i] = (TUBE_TYPE)(i % 2);
+		testTubeArr[i] = TUBE_TYPE_STRAIGHT;
 	}
 
 	// テクスチャ生成
@@ -426,7 +427,6 @@ void UpdateTube(void)
 //=============================================================================
 void DrawTube(void)
 {
-	SetLightEnable(FALSE);
 	for (int i = 0; i < TUBE_BUFFER_MAX; i++)
 	{
 		// 頂点バッファ設定
@@ -441,7 +441,7 @@ void DrawTube(void)
 		GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 		// マテリアル設定
-		SetMaterial(g_MeshTube[g_Tube[i].type].material);
+		SetMaterialBuffer(&g_MeshTube[g_Tube[i].type].material);
 
 		// テクスチャ設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_NOMAL]);
@@ -465,12 +465,11 @@ void DrawTube(void)
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 		// ワールドマトリックスの設定
-		SetWorldMatrix(&mtxWorld);
+		SetWorldBuffer(&mtxWorld);
 
 		// ポリゴンの描画
 		GetDeviceContext()->DrawIndexed(g_MeshTube[g_Tube[i].type].nVertexIndex, 0, 0);
 	}
-	SetLightEnable(TRUE);
 }
 
 void RotateTube(float rot)

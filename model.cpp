@@ -169,11 +169,11 @@ void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL
 		// マテリアル設定
 		if (pMaterial)
 		{
-			SetMaterial(*pMaterial);
+			SetMaterialBuffer(pMaterial);
 		}
 		else
 		{
-			SetMaterial(Model->SubsetArray[i].Material.Material);
+			SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
 		}
 		
 		// テクスチャ設定

@@ -178,7 +178,6 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 	}
 
 	SetDepthEnable(FALSE);
-	SetLightEnable(FALSE);
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
@@ -202,11 +201,12 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 		material.Diffuse.z *= td->sd_col.z;
 		material.Diffuse.w *= td->sd_col.w;
 	}
-	SetMaterial(material);
+	SetMaterialBuffer(&material);
 
 	// 2Dマトリクス設定
-	SetViewMatrix(&XMMatrixIdentity());
-	SetProjectionMatrix(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
+	SetWorldViewProjection2D();
+	//SetViewMatrix(&XMMatrixIdentity());
+	//SetProjectionMatrix(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
 
 	// テクスチャ設定
 	GetDeviceContext()->PSSetShaderResources(0, 1, td->tex);
@@ -236,13 +236,12 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 	));
 
 	// ワールドマトリクスをセット
-	SetWorldMatrix(&mtxWorld);
+	SetWorldBuffer(&mtxWorld);
 
 	// ポリゴンの描画
 	GetDeviceContext()->Draw(4, 0);
 
 	SetDepthEnable(TRUE);
-	SetLightEnable(TRUE);
 
 	// 影が設定されている場合
 	if (bShadow) { DrawTexture2D(td); }	// 本体を描画する

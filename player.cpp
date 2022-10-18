@@ -22,7 +22,6 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static int				g_Time = 0;
 static BOOL				g_Load = FALSE;
 
 // テクスチャ管理
@@ -62,8 +61,6 @@ HRESULT InitPlayer(void)
 
 	// 詳細設定
 	//g_td[TEXTURE_TEAMLOGO].tex = &g_Texture[TEXTURE_TEAMLOGO];
-
-	g_Time = 0;
 
 	g_Load = TRUE;
 	return S_OK;
@@ -109,8 +106,10 @@ void UpdatePlayer(void)
 	g_Rotation *= 0.98f;
 
 	RotateTube(g_Rotation);
-	MoveTube(40.0f);
+	//MoveTube(40.0f);
 	//TestCurveTube(40.0f);
+	static int time = 0;
+	SetFrameTime(time++);
 
 #ifdef _DEBUG	// デバッグ情報を表示する
 	static int dZMove = 0;
@@ -146,7 +145,7 @@ void DrawPlayer(void)
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 	// ワールドマトリックスの設定
-	SetWorldMatrix(&mtxWorld);
+	SetWorldBuffer(&mtxWorld);
 
 	//XMStoreFloat4x4(&g_Player.mtxWorld, mtxWorld);
 

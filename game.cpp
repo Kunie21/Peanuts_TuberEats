@@ -9,6 +9,7 @@
 #include "renderer.h"
 #include "debugproc.h"
 #include "camera.h"
+#include "light.h"
 #include "input.h"
 #include "sound.h"
 #include "fade.h"
@@ -114,12 +115,148 @@ void UpdateGame(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawGame(void)
+void DrawAllObjects(void)
 {
-	SetCamera();
-	SetViewPort(TYPE_FULL_SCREEN);
-
 	DrawTube();
 	DrawGimmick();
 	DrawPlayer();
+}
+void DrawGame(void)
+{
+	SetDrawNoLighting();
+	SetDrawTube();
+	DrawTube();
+	SetDrawGimmick();
+	//DrawGimmick();
+	DrawPlayer();
+
+	// アウトラインを引く
+	//if (g_bOutline)
+	//{
+	//	SetDrawOutline(10.0f, GetRainbowColorNegative());
+	//	//SetDrawOutline(5.0f);
+	//	DrawPolygon(TRUE);
+	//	DrawPolygonSphere(TRUE);
+	//}
+
+	//// 加算合成で明るくしていくために黒で塗りつぶす＋物体の前後関係（深度値）を記録する
+	//SetDrawFillBlack();
+	//DrawAllObjects();
+
+	//// 加算合成モードにする
+	//SetBlendState(BLEND_MODE_ADD);
+
+	//// 平行光源に照らされた部分の描画
+	//for (int i = 0; i < LIGHT_DIRECTIONAL_MAX; i++)
+	//{
+	//	// ライトの使用確認
+	//	if (GetDLUse(i) == FALSE)
+	//		continue;
+
+	//	// ライト番号をセット
+	//	SetLightNo(i);
+
+	//	// 影になる部分のステンシルを作成
+	//	SetStencilWriteDL();
+	//	DrawAllObjects();
+
+	//	// ステンシルテストを使って影以外の部分を加算合成で描画
+	//	SetStencilReadDL();
+	//	DrawAllObjects();
+
+	//	// ステンシルを初期化
+	//	ClearStencil();
+	//}
+
+	//// 点光源に照らされた部分の描画
+	//for (int i = 0; i < LIGHT_POINT_MAX; i++)
+	//{
+	//	// ライトの使用確認
+	//	if (GetPLUse(i) == FALSE)
+	//		continue;
+
+	//	// ライト番号をセット
+	//	SetLightNo(i);
+
+	//	// 影になる部分のステンシルを作成
+	//	SetStencilWritePL();
+	//	DrawAllObjects();
+
+	//	// ステンシルテストを使って影以外の部分を加算合成で描画
+	//	SetStencilReadPL();
+	//	DrawAllObjects();
+
+	//	// ステンシルを初期化
+	//	ClearStencil();
+	//}
+
+	//// スポットライトに照らされた部分の描画
+	//for (int i = 0; i < LIGHT_SPOT_MAX; i++)
+	//{
+	//	// ライトの使用確認
+	//	if (GetSLUse(i) == FALSE)
+	//		continue;
+
+	//	// ライト番号をセット
+	//	SetLightNo(i);
+
+	//	// 影になる部分のステンシルを作成
+	//	SetStencilWriteSL();
+	//	DrawAllObjects();
+
+	//	// ステンシルテストを使って影以外の部分を加算合成で描画
+	//	SetStencilReadSL();
+	//	DrawAllObjects();
+
+	//	// ステンシルを初期化
+	//	ClearStencil();
+	//}
+
+	//// アンビエントライトに照らされた部分の描画
+	//if (GetALUse())
+	//{
+	//	SetStencilNoneAL();
+	//	DrawAllObjects();
+	//}
+
+	//// 加算合成モードを終わる
+	//SetBlendState(BLEND_MODE_ALPHABLEND);
+
+	//// ノーマルマップ作成
+	//if (g_bNormalMap)
+	//{
+	//	SetTargetNormalMap(TRUE);	// ターゲットビューに直接書き込む
+	//	DrawAllObjects();
+	//	//DrawNormalMap();
+	//}
+	//// デプスマップ作成
+	//if (g_bDepthMap)
+	//{
+	//	SetTargetDepthMap(TRUE);	// ターゲットビューに直接書き込む
+	//	DrawAllObjects();
+	//	//DrawDepthMap();
+	//}
+
+	// 特殊なポストエフェクト
+	//if (g_bChromaticAberration)	ApplyChromaticAberration();
+	//if (g_bMonitoring)			ApplyMonitoring();
+	//if (g_bOldGame)				ApplyOldGame();
+
+	// モザイク処理
+	//if (g_mosaicSize > 1)	ApplyMosaic(g_mosaicSize);
+
+	// カーネルを使ったフィルタ処理
+	//if (g_bAveraging)	ApplyFilter(FILTER_MODE_AVERAGING);
+	//if (g_bGaussian)	ApplyFilter(FILTER_MODE_GAUSSIAN);
+	//if (g_bSharpning)	ApplyFilter(FILTER_MODE_SHARPNING);
+	//if (g_bLaplacian)	ApplyFilter(FILTER_MODE_LAPLACIAN);
+	//ApplyFilter(FILTER_MODE_SHARPNING_HIGH);
+	//ApplyFilter(FILTER_MODE_LAPLACIAN_COLOR);
+	//ApplyFilter(FILTER_MODE_PREWITT_X);
+	//ApplyFilter(FILTER_MODE_PREWITT_Y);
+	//ApplyFilter(FILTER_MODE_SOBEL_X);
+	//ApplyFilter(FILTER_MODE_SOBEL_Y);
+
+	// バックバッファをターゲットにして描画
+	//DrawTarget();
 }
