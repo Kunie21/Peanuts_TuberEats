@@ -7,10 +7,27 @@
 #pragma once
 
 //*****************************************************************************
+// マクロ定義
+//*****************************************************************************
+#define	TUBE_RADIUS		(200.0f)	// 断面の半径
+#define	MESH_NUM_X		(8)			// 断面の角数
+#define	MESH_SIZE		(TUBE_RADIUS * 2.0f * XM_PI / MESH_NUM_X)	// マスの1辺の長さ
+#define	MESH_NUM_Z		(100)		// 奥行きのマス目
+#define	TUBE_SIZE		(MESH_SIZE * MESH_NUM_Z)	// 1本の長さ
+#define	CURVE_RADIUS	(TUBE_SIZE * 0.5f)
+#define	CURVE_CENTER	(CURVE_RADIUS * sinf(XM_PIDIV4))
+
+//*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
 HRESULT InitTube(void);
 void UninitTube(void);
 void UpdateTube(void);
 void DrawTube(void);
-void TubeRotation(float rot);
+void RotateTube(float rot);
+void MoveTube(float move);
+float GetTubeRotation(void);
+void SetTubeCurveRight(int tube);
+void TestCurveTube(float move);
+void PresentTube(void);
+void SetNextTube(void);

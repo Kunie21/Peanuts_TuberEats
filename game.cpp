@@ -14,6 +14,7 @@
 #include "fade.h"
 #include "file.h"
 #include "tube.h"
+#include "gimmick.h"
 #include "player.h"
 
 //*****************************************************************************
@@ -38,6 +39,7 @@ HRESULT InitGame(void)
 	//LoadData();
 
 	InitTube();
+	InitGimmick();
 	InitPlayer();
 
 	g_Load = TRUE;
@@ -79,6 +81,7 @@ void UninitGame(void)
 	if (g_Load == FALSE) return;
 
 	UninitPlayer();
+	UninitGimmick();
 	UninitTube();
 
 	g_Load = FALSE;
@@ -103,6 +106,7 @@ void UpdateGame(void)
 #endif
 
 	UpdateTube();
+	UpdateGimmick();
 	UpdatePlayer();
 
 }
@@ -116,5 +120,6 @@ void DrawGame(void)
 	SetViewPort(TYPE_FULL_SCREEN);
 
 	DrawTube();
+	DrawGimmick();
 	DrawPlayer();
 }

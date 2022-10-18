@@ -151,7 +151,7 @@ void UnloadModel( DX11_MODEL *Model )
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** Texture)
+void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
 {
 	// 頂点バッファ設定
 	UINT stride = sizeof( VERTEX_3D );
@@ -167,17 +167,24 @@ void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** Texture)
 	for( unsigned short i = 0; i < Model->SubsetNum; i++ )
 	{
 		// マテリアル設定
-		SetMaterial( Model->SubsetArray[i].Material.Material );
-
+		if (pMaterial)
+		{
+			SetMaterial(*pMaterial);
+		}
+		else
+		{
+			SetMaterial(Model->SubsetArray[i].Material.Material);
+		}
+		
 		// テクスチャ設定
 		if (Model->SubsetArray[i].Material.Material.noTexSampling == 0)
 		{
 			GetDeviceContext()->PSSetShaderResources(0, 1, &Model->SubsetArray[i].Material.Texture);
 		}
 
-		if (Texture)
+		if (pTexture)
 		{
-			GetDeviceContext()->PSSetShaderResources(0, 1, Texture);
+			GetDeviceContext()->PSSetShaderResources(0, 1, pTexture);
 		}
 
 		// ポリゴン描画

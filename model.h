@@ -47,7 +47,7 @@ struct DX11_MODEL
 //*****************************************************************************
 void LoadModel( char *FileName, DX11_MODEL *Model );
 void UnloadModel( DX11_MODEL *Model );
-void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** Texture = NULL);
+void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
 
 // モデルのマテリアルのディフューズを取得する。Max16個分にしてある
 void GetModelDiffuse(DX11_MODEL *Model, XMFLOAT4 *diffuse);

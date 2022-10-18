@@ -174,6 +174,27 @@ void UpdateCamera(void)
 		g_AngleUpDown -= 0.05f;
 	}
 
+	if (GetKeyboardPress(DIK_UP))
+	{// ‹ß‚Ã‚­
+		g_Camera.pos.z += 50.0f;
+		g_Camera.at.z += 50.0f;
+	}
+	if (GetKeyboardPress(DIK_DOWN))
+	{// —£‚ê‚é
+		g_Camera.pos.z -= 50.0f;
+		g_Camera.at.z -= 50.0f;
+	}
+	if (GetKeyboardPress(DIK_RIGHT))
+	{// —£‚ê‚é
+		g_Camera.pos.x += 50.0f;
+		g_Camera.at.x += 50.0f;
+	}
+	if (GetKeyboardPress(DIK_LEFT))
+	{// ‹ß‚Ã‚­
+		g_Camera.pos.x -= 50.0f;
+		g_Camera.at.x -= 50.0f;
+	}
+
 #endif
 
 

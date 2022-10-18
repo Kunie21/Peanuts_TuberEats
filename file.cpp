@@ -160,3 +160,20 @@
 //	remove("savedata.bin");
 //	ResetRecord();
 //}
+//void log(int param)
+//{
+//	FILE *fp = NULL;
+//
+//	fp = fopen("log.txt", "a");
+//
+//	if (fp != NULL)
+//	{
+//		fprintf(fp, "%d\n", param);	// 指定したアドレスから指定したバイト数分ファイルへ書き込む
+//		fclose(fp);					// Openしていたファイルを閉じる
+//		printf("終了！\n");
+//	}
+//	else
+//	{
+//		printf("ファイルエラー！\n");	// ハードがいっぱい、書き込み禁止の時
+//	}
+//}
