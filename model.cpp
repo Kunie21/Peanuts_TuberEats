@@ -154,7 +154,7 @@ void UnloadModel( DX11_MODEL *Model )
 void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
 {
 	// 頂点バッファ設定
-	UINT stride = sizeof( VERTEX_3D );
+	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	GetDeviceContext()->IASetVertexBuffers( 0, 1, &Model->VertexBuffer, &stride, &offset );
 
@@ -191,10 +191,6 @@ void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL
 		GetDeviceContext()->DrawIndexed( Model->SubsetArray[i].IndexNum, Model->SubsetArray[i].StartIndex, 0 );
 	}
 }
-
-
-
-
 
 //モデル読込////////////////////////////////////////////
 void LoadObj( char *FileName, MODEL *Model )

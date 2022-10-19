@@ -18,6 +18,7 @@
 // マクロ定義
 //*****************************************************************************
 #define MODEL_MAX		(1)
+#define DEFAULT_SPEED	(40.0f)
 
 //*****************************************************************************
 // グローバル変数
@@ -40,6 +41,7 @@ static DX11_MODEL	g_Model[MODEL_MAX];	// プレイヤーのモデル管理
 
 
 static float		g_Rotation = 0.0f;
+static float		g_TestAddSpeed = 0.0f;
 
 //=============================================================================
 // 初期化処理
@@ -95,6 +97,7 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	// 回転
 	if (GetKeyboardPress(DIK_A))
 	{
 		if (g_Rotation < 0.05f) g_Rotation += 0.002f;
@@ -104,10 +107,49 @@ void UpdatePlayer(void)
 		if (g_Rotation > -0.05f) g_Rotation -= 0.002f;
 	}
 	g_Rotation *= 0.98f;
-
 	RotateTube(g_Rotation);
+
+	static CURVE curve;
+
+	// スピード
+	if (GetKeyboardTrigger(DIK_SPACE))
+	{
+		g_TestAddSpeed += 5.0f;
+	}
+	if (GetKeyboardTrigger(DIK_BACK))
+	{
+		g_TestAddSpeed -= 5.0f;
+	}
+	curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
+	//g_TestAddSpeed *= 0.98f;
+
+#ifdef _DEBUG
+	PrintDebugProc("g_TestAddSpeed:%f\n", g_TestAddSpeed);
+#endif
+
+	// パイプ曲げ
+	if (GetKeyboardPress(DIK_F))
+	{
+		curve.Angle.y += 0.005f;
+	}
+	if (GetKeyboardPress(DIK_G))
+	{
+		curve.Angle.y -= 0.005f;
+	}
+	if (GetKeyboardPress(DIK_H))
+	{
+		curve.Angle.x += 0.005f;
+	}
+	if (GetKeyboardPress(DIK_J))
+	{
+		curve.Angle.x -= 0.005f;
+	}
+	SetCurveBuffer(&curve);
+
 	//MoveTube(40.0f);
 	//TestCurveTube(40.0f);
+
+	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
 
@@ -141,7 +183,7 @@ void DrawPlayer(void)
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 	// 移動を反映
-	mtxTranslate = XMMatrixTranslation(0.0f, -40.0f, 200.0f);
+	mtxTranslate = XMMatrixTranslation(0.0f, -60.0f, 300.0f);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 	// ワールドマトリックスの設定
@@ -156,4 +198,9 @@ void DrawPlayer(void)
 
 	// モデル描画
 	DrawModel(&g_Model[0], NULL, &material);
+}
+
+float GetPlayerSpeed(void)
+{
+	return DEFAULT_SPEED + g_TestAddSpeed;
 }

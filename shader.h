@@ -14,6 +14,7 @@ cbuffer MatrixBuffer : register(b0)
 	matrix Projection;	// プロジェクション変換
 	matrix WVP;			// WVP変換
 	matrix VP;			// VP変換
+	matrix AfterRot;	// 
 }
 
 // カメラ（位置）
@@ -125,15 +126,26 @@ cbuffer FilterBuffer : register(b9)
 	matrix filter;
 }
 
-// モザイク
-struct MOSAIC
+//// モザイク
+//struct MOSAIC
+//{
+//	int			Size;
+//	float3 		Dummy;
+//};
+//cbuffer MosaicBuffer : register(b10)
+//{
+//	MOSAIC		Mosaic;
+//}
+// パイプ
+struct CURVE
 {
-	int			Size;
-	float3 		Dummy;
+	float2		Angle;
+	float		TexSpd;
+	float 		Dummy;
 };
 cbuffer MosaicBuffer : register(b10)
 {
-	MOSAIC		Mosaic;
+	CURVE		Curve;
 }
 
 // 定数

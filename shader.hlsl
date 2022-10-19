@@ -17,16 +17,17 @@ void VertexShaderPolygon(
 	in  float2 inTexCoord : TEXCOORD0,
 
 	out float4 outPosition : SV_POSITION,
-	out float4 outNormal : NORMAL0,
-	out float2 outTexCoord : TEXCOORD0,
-	out float4 outDiffuse : COLOR0,
-	out float4 outWorldPos : POSITION0)
+	//out float4 outNormal : NORMAL0,
+	out float2 outTexCoord : TEXCOORD0
+	//out float4 outDiffuse : COLOR0,
+	//out float4 outWorldPos : POSITION0
+)
 {
 	outPosition = mul(inPosition, WVP);
-	outWorldPos = mul(inPosition, World);
-	outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
+	//outWorldPos = mul(inPosition, World);
+	//outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
 	outTexCoord = inTexCoord;
-	outDiffuse = inDiffuse * Material.Diffuse;
+	//outDiffuse = inDiffuse * Material.Diffuse;
 }
 
 // パイプ専用頂点シェーダ（テクスチャ移動付き）
@@ -48,14 +49,65 @@ void VertexShaderTube(
 	float angle = WorldPos.z * 0.0001f;
 	if (angle < 1.57f && angle > -1.57f)
 	{
-		float radius = 10000.0f - WorldPos.x;
-		WorldPos.x = 10000.0f - radius * cos(angle);
-		WorldPos.z = radius * sin(angle);
+		//if (Curve.Angle.y > 0.00001f)
+		//{
+		//	angle *= Curve.Angle.y;
+		//	float radius = 10000.0f / Curve.Angle.y - WorldPos.x;
+		//	WorldPos.x = 10000.0f / Curve.Angle.y - radius * cos(angle);
+		//	WorldPos.z = radius * sin(angle);
+		//}
+		//if (Curve.Angle.y < -0.00001f)
+		//{
+		//	angle *= -Curve.Angle.y;
+		//	float radius = -10000.0f / Curve.Angle.y + WorldPos.x;
+		//	WorldPos.x = 10000.0f / Curve.Angle.y + radius * cos(angle);
+		//	WorldPos.z = radius * sin(angle);
+		//}
+		//if (Curve.Angle.x > 0.00001f)
+		//{
+		//	angle *= Curve.Angle.x;
+		//	float radius = 10000.0f / Curve.Angle.x - WorldPos.x;
+		//	WorldPos.y = 10000.0f / Curve.Angle.x - radius * cos(angle);
+		//	WorldPos.z = radius * sin(angle);
+		//}
+		//if (Curve.Angle.x < -0.00001f)
+		//{
+		//	angle *= -Curve.Angle.x;
+		//	float radius = -10000.0f / Curve.Angle.x + WorldPos.x;
+		//	WorldPos.y = 10000.0f / Curve.Angle.x + radius * cos(angle);
+		//	WorldPos.z = radius * sin(angle);
+		//}
+
+		//if (Curve.Angle.y > 0.00001f)
+		{
+			//float radius = 10000.0f / Curve.Angle.y - WorldPos.x;
+			float angleX = angle * Curve.Angle.x;
+			float angleY = angle * Curve.Angle.y;
+			//float4 pos = { radius, 0.0f, 0.0f, 0.0f };
+			float4 pos = WorldPos;
+			float cx = cos(angleX);
+			float cy = cos(angleY);
+			float cz = cos(0.0f);
+			float sx = sin(angleX);
+			float sy = sin(angleY);
+			float sz = sin(0.0f);
+			matrix mtxRotRPY = {	// Roll*Pitch*Yawを先に自分で計算しておく
+				cy*cz, cy*sz, sy, 0.0f,
+				-cx*sz-sx*sy*cz, cx*cz-sx*sy*sz, sx*cy, 0.0f,
+				sx*sz-cx*sy*cz, -sx*cz-cx*sy*sz, cx*cy, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f,
+			};
+			float4 newPos = mul(pos, mtxRotRPY);
+			//newPos.x = -(newPos.x - radius);
+			WorldPos = newPos;
+		}
 	}
 
 	// テクスチャ移動
-	inTexCoord.y -= 0.255f * Constant.Time;
+	inTexCoord.y -= Curve.TexSpd * Constant.Time;
+	//inTexCoord.y -= 0.255f * Constant.Time;
 
+	WorldPos = mul(WorldPos, AfterRot);
 	outPosition = mul(WorldPos, VP);
 	//outWorldPos = WorldPos;
 	//outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
@@ -81,11 +133,29 @@ void VertexShaderGimmick(
 	float angle = WorldPos.z * 0.0001f;
 	if (angle < 1.57f && angle > -1.57f)
 	{
-		float radius = 10000.0f - WorldPos.x;
-		WorldPos.x = 10000.0f - radius * cos(angle);
-		WorldPos.z = radius * sin(angle);
+		//float radius = 10000.0f - WorldPos.x;
+		//WorldPos.x = 10000.0f - radius * cos(angle);
+		//WorldPos.z = radius * sin(angle);
+
+		//float radius = 10000.0f / Curve.Angle.y - WorldPos.x;
+		float angleX = angle * Curve.Angle.x;
+		float angleY = angle * Curve.Angle.y;
+		float cx = cos(angleX);
+		float cy = cos(angleY);
+		float cz = cos(0.0f);
+		float sx = sin(angleX);
+		float sy = sin(angleY);
+		float sz = sin(0.0f);
+		matrix mtxRotRPY = {	// Roll*Pitch*Yawを先に自分で計算しておく
+			cy*cz, cy*sz, sy, 0.0f,
+			-cx * sz - sx * sy*cz, cx*cz - sx * sy*sz, sx*cy, 0.0f,
+			sx*sz - cx * sy*cz, -sx * cz - cx * sy*sz, cx*cy, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f,
+		};
+		WorldPos = mul(WorldPos, mtxRotRPY);
 	}
 
+	WorldPos = mul(WorldPos, AfterRot);
 	outPosition = mul(WorldPos, VP);
 	//outWorldPos = WorldPos;
 	//outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));

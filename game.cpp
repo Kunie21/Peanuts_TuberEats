@@ -124,11 +124,11 @@ void DrawAllObjects(void)
 void DrawGame(void)
 {
 	SetDrawNoLighting();
+	DrawPlayer();
 	SetDrawTube();
 	DrawTube();
 	SetDrawGimmick();
-	//DrawGimmick();
-	DrawPlayer();
+	DrawGimmick();
 
 	// アウトラインを引く
 	//if (g_bOutline)

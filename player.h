@@ -14,4 +14,5 @@ void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);
 
+float GetPlayerSpeed(void);
 

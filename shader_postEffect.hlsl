@@ -61,8 +61,8 @@ void PixelShaderMosaic( in  float4 inPosition		: POSITION0,
 	g_Texture.GetDimensions(width, height);
 	int pos_x = int(inTexCoord.x * width);
 	int pos_y = int(inTexCoord.y * height);
-	pos_x -= pos_x % Mosaic.Size;
-	pos_y -= pos_y % Mosaic.Size;
+	//pos_x -= pos_x % Mosaic.Size;
+	//pos_y -= pos_y % Mosaic.Size;
 	outDiffuse = g_Texture.Load(int3(pos_x, pos_y, 0));
 	
 	// 1行バージョン

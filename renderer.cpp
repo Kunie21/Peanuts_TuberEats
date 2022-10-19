@@ -147,6 +147,7 @@ static ID3D11Buffer*			g_LightBuffer = NULL;
 static ID3D11Buffer*			g_OutlineBuffer = NULL;
 static ID3D11Buffer*			g_FilterBuffer = NULL;
 static ID3D11Buffer*			g_MosaicBuffer = NULL;
+static ID3D11Buffer*			g_CurveBuffer = NULL;
 static ID3D11Buffer*			g_ConstantBuffer = NULL;
 
 // スクリーンの頂点バッファ
@@ -242,6 +243,7 @@ void UninitRenderer(void)
 	if (g_OutlineBuffer)		g_OutlineBuffer->Release();
 	if (g_FilterBuffer)			g_FilterBuffer->Release();
 	if (g_MosaicBuffer)			g_MosaicBuffer->Release();
+	if (g_CurveBuffer)			g_CurveBuffer->Release();
 	if (g_ConstantBuffer)		g_ConstantBuffer->Release();
 
 	// スクリーンの頂点バッファ
@@ -707,7 +709,8 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateBuffer(&hBufferDesc, 7, &g_LightBuffer, sizeof(LIGHT_NO));
 		CreateBuffer(&hBufferDesc, 8, &g_OutlineBuffer, sizeof(OUTLINE));
 		CreateBuffer(&hBufferDesc, 9, &g_FilterBuffer, sizeof(XMMATRIX));
-		CreateBuffer(&hBufferDesc, 10, &g_MosaicBuffer, sizeof(MOSAIC));
+		//CreateBuffer(&hBufferDesc, 10, &g_MosaicBuffer, sizeof(MOSAIC));
+		CreateBuffer(&hBufferDesc, 10, &g_CurveBuffer, sizeof(CURVE));
 		CreateBuffer(&hBufferDesc, 11, &g_ConstantBuffer, sizeof(CONSTANT));
 
 		// インスタンス
@@ -839,11 +842,12 @@ void SetWorldBuffer(XMMATRIX* WorldMatrix) {
 	XMStoreFloat4x4(&matrix.World, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.World)));
 	XMStoreFloat4x4(&matrix.ViewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.ViewProjection)));
 	XMStoreFloat4x4(&matrix.WorldViewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.WorldViewProjection)));
+	XMStoreFloat4x4(&matrix.AfterRotation, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.AfterRotation)));
 	GetDeviceContext()->UpdateSubresource(g_MatrixBuffer, 0, NULL, &matrix, 0, 0);
-
 }
 void SetViewBuffer(XMMATRIX* ViewMatrix) { XMStoreFloat4x4(&g_Matrix.View, *ViewMatrix); }
 void SetProjectionBuffer(XMMATRIX* ProjectionMatrix) { XMStoreFloat4x4(&g_Matrix.Projection, *ProjectionMatrix); }
+void SetAfterRotation(XMMATRIX* AfterRotationMatrix) { XMStoreFloat4x4(&g_Matrix.AfterRotation, *AfterRotationMatrix); }
 
 // 定数バッファのセッター
 void SetCameraBuffer(CAMERA *Camera) {
@@ -861,7 +865,7 @@ void SetDirectionalLight(LIGHT_DIRECTIONAL *pDirectionalLight) {
 void SetPointLight(LIGHT_POINT *pPointLight) {
 	GetDeviceContext()->UpdateSubresource(g_PointLightBuffer, 0, NULL, pPointLight, 0, 0);
 }
-void SetSpotLight(LIGHT_SPOT * pSpotLight) {
+void SetSpotLight(LIGHT_SPOT* pSpotLight) {
 	GetDeviceContext()->UpdateSubresource(g_SpotLightBuffer, 0, NULL, pSpotLight, 0, 0);
 }
 void SetLightNo(int lightNo) {
@@ -871,6 +875,9 @@ void SetLightNo(int lightNo) {
 void SetFrameTime(int time) {
 	CONSTANT constant = { time, 0.0f, 0.0f, 0.0f };
 	GetDeviceContext()->UpdateSubresource(g_ConstantBuffer, 0, NULL, &constant, 0, 0);
+}
+void SetCurveBuffer(CURVE* curve) {
+	GetDeviceContext()->UpdateSubresource(g_CurveBuffer, 0, NULL, curve, 0, 0);
 }
 
 // インスタンシング関連

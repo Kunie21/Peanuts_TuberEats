@@ -462,7 +462,8 @@ void DrawTube(void)
 
 		// 世界の回転を反映
 		mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_worldRot);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
+		SetAfterRotation(&mtxRot);
+		//mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 		// ワールドマトリックスの設定
 		SetWorldBuffer(&mtxWorld);
@@ -543,6 +544,7 @@ void TestCurveTube(float move)
 float GetTubeRotation(void)
 {
 	return g_MeshTube[0].rot.z;
+	//return g_worldRot;
 }
 
 void PresentTube(void)

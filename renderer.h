@@ -88,6 +88,7 @@ struct MATRIX {		// マトリクスバッファ用構造体
 	XMFLOAT4X4	Projection;
 	XMFLOAT4X4	WorldViewProjection;
 	XMFLOAT4X4	ViewProjection;
+	XMFLOAT4X4	AfterRotation;
 };
 struct CAMERA {			// カメラバッファ用構造体
 	XMFLOAT4	Position;
@@ -154,6 +155,11 @@ struct MOSAIC {			// モザイク処理バッファ用構造体
 	int			Size;
 	float		Dummy[3];
 };
+struct CURVE {			// カーブ処理バッファ用構造体
+	XMFLOAT2	Angle = { 0.0f, 0.0f };
+	float		TexSpd = 0.255f;
+	float		Dummy;
+};
 struct CONSTANT {		// 定数バッファ用構造体
 	int			Time;
 	float		Dummy[3];
@@ -195,6 +201,9 @@ void SetViewBuffer(XMMATRIX* ViewMatrix);
 void SetProjectionBuffer(XMMATRIX* ProjectionMatrix);
 void SetCameraBuffer(CAMERA* Camera);
 void SetMaterialBuffer(MATERIAL* Material);
+void SetCurveBuffer(CURVE* curve);
+void SetAfterRotation(XMMATRIX* AfterRotationMatrix);
+
 
 XMFLOAT4 GetBackGroundColor(void);
 void SetBackGroundColor(XMFLOAT4 color);
