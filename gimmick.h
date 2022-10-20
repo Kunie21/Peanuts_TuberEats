@@ -14,4 +14,4 @@ void UninitGimmick(void);
 void UpdateGimmick(void);
 void DrawGimmick(void);
 
-
+bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot);

@@ -41,7 +41,8 @@ enum
 	TEXTURE_SPEED_GAUGE,
 	TEXTURE_NUMBER,
 	TEXTURE_TIMER_BACK,
-	TEXTURE_SEMICOLON, 
+	TEXTURE_SEMICOLON,
+	TEXTURE_WHITE,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
@@ -60,6 +61,7 @@ static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/game_UI/timer_UI.png",
 	"data/TEXTURE/game_UI/timer_backdrop.png",
 	"data/TEXTURE/game_UI/timer_semicolon.png",
+	"data/TEXTURE/white.png",
 };
 
 //=============================================================================
@@ -112,6 +114,9 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_NUMBER].pos = { TIMER_CENTER_X, MAP_LINE_Y };
 	g_td[TEXTURE_NUMBER].scl = { 0.0f, 0.0f };
 
+	// スクリーンエフェクト用
+	g_td[TEXTURE_WHITE].col = { 0.0f, 0.0f, 0.0f, 0.0f };
+
 	g_Load = TRUE;
 	return S_OK;
 }
@@ -140,6 +145,7 @@ void UninitGameUI(void)
 //=============================================================================
 void UpdateGameUI(void)
 {
+	g_td[TEXTURE_WHITE].col.w *= 0.9f;
 }
 
 //=============================================================================
@@ -149,32 +155,67 @@ void DrawGameUI(void)
 {
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
-		if(i== TEXTURE_FUEL_FULL || i == TEXTURE_SPEED_GAUGE)
+		if (i == TEXTURE_FUEL_FULL || i == TEXTURE_SPEED_GAUGE)
 		{
 			DrawTexture2D(&g_td[i], FALSE, TRUE);
+		}
+		else if (TEXTURE_WHITE)
+		{
+			DrawTexture2D(&g_td[i]);
 		}
 		else
 		{
 			DrawTexture2D(&g_td[i], TRUE);
 		}
 	}
+
+
 }
 
 void SetMapPosition(float rate)
 {
-	g_td[TEXTURE_MAP_ROCKET].pos.x = -MAP_EDGE + MAP_SIZE * rate;
+	static float rateBuffer = 0.0f;
+	if (rate < 0.0f) rate = 0.0f;
+	if (rate > 1.0f) rate = 1.0f;
+	rateBuffer += (rate - rateBuffer) * 0.5f;
+	g_td[TEXTURE_MAP_ROCKET].pos.x = -MAP_EDGE + MAP_SIZE * rateBuffer;
 }
 
 void SetFuelMeter(float rate)
 {
-	g_td[TEXTURE_FUEL_FULL].scl.x = rate;
-	g_td[TEXTURE_FUEL_FULL].uv_pos.uw = rate;
-	g_td[TEXTURE_FUEL_FULL].pos.x = FUEL_CENTER_X + (rate - 1.0f) * g_td[TEXTURE_FUEL_FULL].size.x * 0.5f;
+	static float rateBuffer = 0.0f;
+	if (rate < 0.0f) rate = 0.0f;
+	if (rate > 1.0f) rate = 1.0f;
+	rateBuffer += (rate - rateBuffer) * 0.5f;
+	g_td[TEXTURE_FUEL_FULL].scl.x = rateBuffer;
+	g_td[TEXTURE_FUEL_FULL].uv_pos.uw = rateBuffer;
+	g_td[TEXTURE_FUEL_FULL].pos.x = FUEL_CENTER_X + (rateBuffer - 1.0f) * g_td[TEXTURE_FUEL_FULL].size.x * 0.5f;
+	if (rate < 0.25f)
+	{
+		g_td[TEXTURE_FUEL_EMPTY].col = { 1.0f, 0.7f, 0.7f, 1.0f };
+	}
+	else if (rate < 0.5f)
+	{
+		g_td[TEXTURE_FUEL_EMPTY].col = { 1.0f, 1.0f, 0.7f, 1.0f };
+	}
 }
 void SetSpeedMeter(float rate)
 {
-	g_td[TEXTURE_SPEED_GAUGE].scl.y = rate;
-	g_td[TEXTURE_SPEED_GAUGE].uv_pos.v = 1.0f - rate;
-	g_td[TEXTURE_SPEED_GAUGE].uv_pos.vh = rate;
-	g_td[TEXTURE_SPEED_GAUGE].pos.y = SPEED_CENTER_Y + (1.0f - rate) * g_td[TEXTURE_SPEED_GAUGE].size.y * 0.5f;
+	static float rateBuffer = 0.0f;
+	if (rate < 0.0f) rate = 0.0f;
+	if (rate > 1.0f) rate = 1.0f;
+	rateBuffer += (rate - rateBuffer) * 0.5f;
+	g_td[TEXTURE_SPEED_GAUGE].scl.y = rateBuffer;
+	g_td[TEXTURE_SPEED_GAUGE].uv_pos.v = 1.0f - rateBuffer;
+	g_td[TEXTURE_SPEED_GAUGE].uv_pos.vh = rateBuffer;
+	g_td[TEXTURE_SPEED_GAUGE].pos.y = SPEED_CENTER_Y + (1.0f - rateBuffer) * g_td[TEXTURE_SPEED_GAUGE].size.y * 0.5f;
+}
+
+void SetDamageEffect(void)
+{
+	g_td[TEXTURE_WHITE].col = { 1.0f, 0.0f, 0.0f, 0.5f };
+}
+void SetBoostEffect(void)
+{
+	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 1.0f, 0.5f };
 }

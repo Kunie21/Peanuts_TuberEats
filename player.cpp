@@ -14,12 +14,15 @@
 #include "player.h"
 #include "tube.h"
 #include "ui_game.h"
+#include "gimmick.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define MODEL_MAX		(1)
 #define DEFAULT_SPEED	(40.0f)
+#define DEFAULT_POS		(310.0f)
+#define MAX_SPEED		(70.0f)
 
 //*****************************************************************************
 // グローバル変数
@@ -47,14 +50,35 @@ static float		g_TestAddSpeed = 0.0f;
 class ROCKET
 {
 private:
-	float m_pos = 0.0f;
+	float m_pos = DEFAULT_POS;
 	float m_posSpd = DEFAULT_SPEED;
+	float m_addSpd = 0.0f;
 
 	float m_rot = 0.0f;
 	float m_rotSpd = 0.0f;
 	const float c_rotSpdMax = 0.05f;
 
+	float m_fuel = 5000.0f;
+	const float c_fuelMax = 5000.0f;
+
+	float m_invTime = 0.0f;
+
 public:
+	//ROCKET() {}
+	//ROCKET(const ROCKET& rocket) {
+	//	m_pos = rocket.m_pos;
+	//	m_posSpd = rocket.m_posSpd;
+	//	m_rot = rocket.m_rot;
+	//	m_rotSpd = rocket.m_rotSpd;
+	//}
+
+	ROCKET operator=(const ROCKET& rocket) {
+		m_pos = rocket.m_pos;
+		m_posSpd = rocket.m_posSpd;
+		m_rot = rocket.m_rot;
+		m_rotSpd = rocket.m_rotSpd;
+		return *this;
+	}
 
 	void Rotate(float rotSpd) {
 		m_rotSpd += rotSpd;
@@ -62,16 +86,27 @@ public:
 		if (m_rotSpd < -c_rotSpdMax) m_rotSpd = -c_rotSpdMax;
 	}
 	void Accel(float posSpd) { m_posSpd += posSpd; }
+	void Boost(float addSpd) { m_addSpd += addSpd; }
 	void Brake(float posSpd) { m_posSpd -= posSpd; }
 	void Drive(void) {
-		m_pos += m_posSpd;
+		m_pos += m_posSpd + m_addSpd;
 		m_rot += m_rotSpd;
+		while (m_rot < 0.0f) m_rot += XM_2PI;
+		while (m_rot > XM_2PI) m_rot -= XM_2PI;
 		m_rotSpd *= 0.98f;
+		m_addSpd *= 0.98f;
+		m_invTime *= 0.98f;
+		m_fuel -= m_posSpd / MAX_SPEED;
 	}
+	void LostFuel(float lostFuel) { m_fuel -= lostFuel; }
+	void Collision(void) { m_invTime = 1.5f; }
 
+	bool AbleToCollision(void) const { if (m_invTime < 1.0f) return true; return false; }
 	float GetPos(void) const { return m_pos; }
-	float GetSpeed(void) const { return m_posSpd; }
+	float GetSpeed(void) const { return m_posSpd + m_addSpd; }
 	float GetRotate(void) const { return m_rot; }
+	float GetFuel(void) const { return m_fuel; }
+	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
 };
 
 static ROCKET g_Rocket;
@@ -130,6 +165,9 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	static ROCKET oldRocket;
+	oldRocket = g_Rocket;
+
 	// 回転
 	if (GetKeyboardPress(DIK_A))
 	{
@@ -161,11 +199,20 @@ void UpdatePlayer(void)
 		g_Rocket.Brake(5.0f);
 		//g_TestAddSpeed -= 5.0f;
 	}
-	//curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
-	curve.TexSpd = g_Rocket.GetSpeed() / MESH_SIZE;
-	//g_TestAddSpeed *= 0.98f;
 
 	g_Rocket.Drive();
+
+	//curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
+	//curve.TexSpd = g_Rocket.GetSpeed() / MESH_SIZE;
+	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE;
+	
+	//g_TestAddSpeed *= 0.98f;
+
+	if (g_Rocket.AbleToCollision())
+	{
+		CollisionGimmick(oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
+		//SetDamageEffect();
+	}
 
 #ifdef _DEBUG
 	PrintDebugProc("g_TestAddSpeed:%f\n", g_TestAddSpeed);
@@ -196,9 +243,9 @@ void UpdatePlayer(void)
 	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
-	SetMapPosition((float)time / 6000.0f);
-	SetSpeedMeter((float)time / 6000.0f);
-	SetFuelMeter(1.0f - (float)time / 6000.0f);
+	SetMapPosition(g_Rocket.GetPos() / 250000.0f);
+	SetSpeedMeter(g_Rocket.GetSpeed() / MAX_SPEED);
+	SetFuelMeter(g_Rocket.GetFuelRate());
 
 #ifdef _DEBUG	// デバッグ情報を表示する
 	static int dZMove = 0;
@@ -231,7 +278,7 @@ void DrawPlayer(void)
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 	// 移動を反映
-	mtxTranslate = XMMatrixTranslation(0.0f, -60.0f, 300.0f);
+	mtxTranslate = XMMatrixTranslation(0.0f, -60.0f, DEFAULT_POS);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 	// ワールドマトリックスの設定
@@ -251,5 +298,15 @@ void DrawPlayer(void)
 float GetPlayerSpeed(void)
 {
 	return g_Rocket.GetSpeed();
-	//return DEFAULT_SPEED + g_TestAddSpeed;
+}
+void SetPlayerThroughRing(void)
+{
+	g_Rocket.Boost(30.0f);
+	g_Rocket.Collision();
+}
+void SetPlayerCollisionIce(void)
+{
+	g_Rocket.LostFuel(500.0f);
+	g_Rocket.Boost(-20.0f);
+	g_Rocket.Collision();
 }

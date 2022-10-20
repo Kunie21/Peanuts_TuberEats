@@ -140,7 +140,7 @@ cbuffer FilterBuffer : register(b9)
 struct CURVE
 {
 	float2		Angle;
-	float		TexSpd;
+	float		TexPos;
 	float 		Dummy;
 };
 cbuffer MosaicBuffer : register(b10)

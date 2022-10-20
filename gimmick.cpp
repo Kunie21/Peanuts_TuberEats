@@ -14,6 +14,7 @@
 #include "gimmick.h"
 #include "tube.h"
 #include "player.h"
+#include "ui_game.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -40,6 +41,7 @@ struct GIMMICK
 {
 	int rotPosNo = 0;
 	int zPosNo = 0;
+	float rotSizeHalf = XM_PIDIV4;
 };
 static GIMMICK g_GmIce[ICE_NUM];
 static GIMMICK g_GmRing[RING_NUM];
@@ -59,7 +61,7 @@ HRESULT InitGimmick(void)
 
 	for (int i = 0; i < ICE_NUM; i++)
 	{
-		g_GmIce[i].rotPosNo = (i / 5) % 8;
+		g_GmIce[i].rotPosNo = (i * 5) % 8;
 		g_GmIce[i].zPosNo = i * 20;
 	}
 	for (int i = 0; i < RING_NUM; i++)
@@ -120,7 +122,7 @@ void DrawGimmick(void)
 		mtxScl = XMMatrixScaling(4.0f, 3.0f, 4.0f);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-		float rot = XM_2PI * (float)g_GmIce[i].rotPosNo / 8.0f + GetTubeRotation();
+		float rot = XM_2PI * (float)g_GmIce[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation();
 
 		// âÒì]ÇîΩâfÅFëSëÃÇÃäpìx
 		mtxRot = XMMatrixRotationRollPitchYaw(0.0f, XM_PIDIV2, 0.0f);
@@ -160,7 +162,7 @@ void DrawGimmick(void)
 		mtxScl = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-		float rot = XM_2PI * (float)g_GmRing[i].rotPosNo / 8.0f + GetTubeRotation();
+		float rot = XM_2PI * (float)g_GmRing[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation();
 
 		// âÒì]ÇîΩâfÅFëSëÃÇÃäpìx
 		mtxRot = XMMatrixRotationRollPitchYaw(XM_PIDIV2, 0.0f, 0.0f);
@@ -187,4 +189,54 @@ void DrawGimmick(void)
 		// ÉÇÉfÉãï`âÊ
 		DrawModel(&g_Model[GIMMICK_RING]);
 	}
+}
+
+bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
+{
+	float oldZPosNoFloat = oldZ / MESH_SIZE;
+	float newZPosNoFloat = newZ / MESH_SIZE;
+	int oldZPosNoInt = (int)oldZPosNoFloat;
+	int newZPosNoInt = (int)newZPosNoFloat;
+	if (oldZPosNoInt == (int)newZPosNoInt) return false;
+	float length = newZPosNoFloat - oldZPosNoFloat;
+	while (oldZPosNoInt <= newZPosNoInt)
+	{
+		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
+		int colZPosNo = oldZPosNoInt + 1;
+		float colRot = oldRot + (newRot - oldRot) * rate;
+		for (int i = 0; i < ICE_NUM; i++)
+		{
+			if (g_GmIce[i].zPosNo == colZPosNo)
+			{
+				float rot = colRot + XM_PIDIV2 + XM_2PI * (float)g_GmIce[i].rotPosNo / (float)MESH_NUM_X;
+				while (rot < 0.0f) rot += XM_2PI;
+				while (rot > XM_2PI) rot -= XM_2PI;
+				if (rot < g_GmIce[i].rotSizeHalf ||
+					XM_2PI - g_GmIce[i].rotSizeHalf < rot)
+				{
+					SetDamageEffect();
+					SetPlayerCollisionIce();
+					return true;
+				}
+			}
+		}
+		for (int i = 0; i < RING_NUM; i++)
+		{
+			if (g_GmRing[i].zPosNo == colZPosNo)
+			{
+				float rot = colRot + XM_PIDIV2 + XM_2PI * (float)g_GmRing[i].rotPosNo / (float)MESH_NUM_X;
+				while (rot < 0.0f) rot += XM_2PI;
+				while (rot > XM_2PI) rot -= XM_2PI;
+				if (rot < g_GmRing[i].rotSizeHalf ||
+					XM_2PI - g_GmRing[i].rotSizeHalf < rot)
+				{
+					SetBoostEffect();
+					SetPlayerThroughRing();
+					return true;
+				}
+			}
+		}
+		oldZPosNoInt++;
+	}
+	return false;
 }

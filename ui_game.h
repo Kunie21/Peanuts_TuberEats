@@ -17,3 +17,5 @@ void DrawGameUI(void);
 void SetMapPosition(float rate);
 void SetFuelMeter(float rate);
 void SetSpeedMeter(float rate);
+void SetDamageEffect(void);
+void SetBoostEffect(void);

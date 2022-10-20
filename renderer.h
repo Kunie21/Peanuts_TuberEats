@@ -157,7 +157,7 @@ struct MOSAIC {			// モザイク処理バッファ用構造体
 };
 struct CURVE {			// カーブ処理バッファ用構造体
 	XMFLOAT2	Angle = { 0.0f, 0.0f };
-	float		TexSpd = 0.255f;
+	float		TexPos = 0.0f;
 	float		Dummy;
 };
 struct CONSTANT {		// 定数バッファ用構造体

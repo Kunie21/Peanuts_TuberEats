@@ -104,7 +104,8 @@ void VertexShaderTube(
 	}
 
 	// テクスチャ移動
-	inTexCoord.y -= Curve.TexSpd * Constant.Time;
+	inTexCoord.y -= Curve.TexPos;
+	//inTexCoord.y -= Curve.TexSpd * Constant.Time;
 	//inTexCoord.y -= 0.255f * Constant.Time;
 
 	WorldPos = mul(WorldPos, AfterRot);
