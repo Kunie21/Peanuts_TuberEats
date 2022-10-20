@@ -157,7 +157,7 @@ static ID3D11Buffer*			g_ScreenVertexBuffer = NULL;
 static MATRIX					g_Matrix;
 static XMFLOAT4					g_LightVector;
 static XMFLOAT4					g_CameraPosition;
-static XMFLOAT4					g_BackGroundColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+static XMFLOAT4					g_BackGroundColor = { 0.3f, 0.3f, 0.3f, 1.0f };
 
 // デプスステンシル設定
 static ID3D11DepthStencilState* g_DepthStateEnable;
@@ -1103,6 +1103,14 @@ void SetDrawTube(void)
 void SetDrawGimmick(void)
 {
 	g_ImmediateContext->VSSetShader(g_VertexShaderGimmick, NULL, 0);
+}
+void SetDraw2DTexture(void)
+{
+	g_ImmediateContext->VSSetShader(g_VertexShaderFilter, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 
 void ApplyFilter(FILTER_MODE filter)

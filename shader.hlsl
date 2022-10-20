@@ -18,8 +18,8 @@ void VertexShaderPolygon(
 
 	out float4 outPosition : SV_POSITION,
 	//out float4 outNormal : NORMAL0,
-	out float2 outTexCoord : TEXCOORD0
-	//out float4 outDiffuse : COLOR0,
+	out float2 outTexCoord : TEXCOORD0,
+	out float4 outDiffuse : COLOR0
 	//out float4 outWorldPos : POSITION0
 )
 {
@@ -27,7 +27,7 @@ void VertexShaderPolygon(
 	//outWorldPos = mul(inPosition, World);
 	//outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
 	outTexCoord = inTexCoord;
-	//outDiffuse = inDiffuse * Material.Diffuse;
+	outDiffuse = inDiffuse * Material.Diffuse;
 }
 
 // パイプ専用頂点シェーダ（テクスチャ移動付き）
@@ -39,8 +39,8 @@ void VertexShaderTube(
 
 	out float4 outPosition : SV_POSITION,
 	//out float4 outNormal : NORMAL0,
-	out float2 outTexCoord : TEXCOORD0
-	//out float4 outDiffuse : COLOR0,
+	out float2 outTexCoord : TEXCOORD0,
+	out float4 outDiffuse : COLOR0
 	//out float4 outWorldPos : POSITION0
 	)
 {
@@ -112,7 +112,7 @@ void VertexShaderTube(
 	//outWorldPos = WorldPos;
 	//outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
 	outTexCoord = inTexCoord;
-	//outDiffuse = inDiffuse * Material.Diffuse;
+	outDiffuse = inDiffuse * Material.Diffuse;
 }
 
 // パイプ中のギミック用頂点シェーダ（テクスチャ移動無し）
@@ -124,8 +124,8 @@ void VertexShaderGimmick(
 
 	out float4 outPosition : SV_POSITION,
 	//out float4 outNormal : NORMAL0,
-	out float2 outTexCoord : TEXCOORD0
-	//out float4 outDiffuse : COLOR0,
+	out float2 outTexCoord : TEXCOORD0,
+	out float4 outDiffuse : COLOR0
 	//out float4 outWorldPos : POSITION0
 )
 {
@@ -160,7 +160,7 @@ void VertexShaderGimmick(
 	//outWorldPos = WorldPos;
 	//outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
 	outTexCoord = inTexCoord;
-	//outDiffuse = inDiffuse * Material.Diffuse;
+	outDiffuse = inDiffuse * Material.Diffuse;
 }
 
 // アウトライン用

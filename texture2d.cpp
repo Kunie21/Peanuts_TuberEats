@@ -204,9 +204,8 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 	SetMaterialBuffer(&material);
 
 	// 2Dマトリクス設定
-	SetWorldViewProjection2D();
-	//SetViewMatrix(&XMMatrixIdentity());
-	//SetProjectionMatrix(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
+	SetViewBuffer(&XMMatrixIdentity());
+	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
 
 	// テクスチャ設定
 	GetDeviceContext()->PSSetShaderResources(0, 1, td->tex);

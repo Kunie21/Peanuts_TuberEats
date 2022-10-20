@@ -10,7 +10,7 @@
 // マクロ定義
 //*****************************************************************************
 #define	TUBE_RADIUS		(200.0f)	// 断面の半径
-#define	MESH_NUM_X		(3)			// 断面の角数
+#define	MESH_NUM_X		(7)			// 断面の角数
 #define	MESH_SIZE		(TUBE_RADIUS * 2.0f * XM_PI / MESH_NUM_X)	// マスの1辺の長さ
 #define	MESH_NUM_Z		(100)		// 奥行きのマス目
 #define	TUBE_SIZE		(MESH_SIZE * MESH_NUM_Z)	// 1本の長さ

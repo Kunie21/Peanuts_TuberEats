@@ -117,7 +117,7 @@ void DrawGimmick(void)
 		mtxWorld = XMMatrixIdentity();
 
 		// ƒXƒP[ƒ‹‚ğ”½‰f
-		mtxScl = XMMatrixScaling(3.0f, 2.0f, 3.0f);
+		mtxScl = XMMatrixScaling(4.0f, 3.0f, 4.0f);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
 		float rot = XM_2PI * (float)g_GmIce[i].rotPosNo / 8.0f + GetTubeRotation();
@@ -127,7 +127,7 @@ void DrawGimmick(void)
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 		// ˆÚ“®‚ğ”½‰f
-		mtxTranslate = XMMatrixTranslation(0.0f, 20.0f, 0.0f);
+		mtxTranslate = XMMatrixTranslation(0.0f, 120.0f, 0.0f);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 		// ‰ñ“]‚ğ”½‰fFŒÂX‚ÌŠp“x

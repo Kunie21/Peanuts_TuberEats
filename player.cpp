@@ -13,6 +13,7 @@
 #include "input.h"
 #include "player.h"
 #include "tube.h"
+#include "ui_game.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -42,6 +43,38 @@ static DX11_MODEL	g_Model[MODEL_MAX];	// プレイヤーのモデル管理
 
 static float		g_Rotation = 0.0f;
 static float		g_TestAddSpeed = 0.0f;
+
+class ROCKET
+{
+private:
+	float m_pos = 0.0f;
+	float m_posSpd = DEFAULT_SPEED;
+
+	float m_rot = 0.0f;
+	float m_rotSpd = 0.0f;
+	const float c_rotSpdMax = 0.05f;
+
+public:
+
+	void Rotate(float rotSpd) {
+		m_rotSpd += rotSpd;
+		if (m_rotSpd > c_rotSpdMax) m_rotSpd = c_rotSpdMax;
+		if (m_rotSpd < -c_rotSpdMax) m_rotSpd = -c_rotSpdMax;
+	}
+	void Accel(float posSpd) { m_posSpd += posSpd; }
+	void Brake(float posSpd) { m_posSpd -= posSpd; }
+	void Drive(void) {
+		m_pos += m_posSpd;
+		m_rot += m_rotSpd;
+		m_rotSpd *= 0.98f;
+	}
+
+	float GetPos(void) const { return m_pos; }
+	float GetSpeed(void) const { return m_posSpd; }
+	float GetRotate(void) const { return m_rot; }
+};
+
+static ROCKET g_Rocket;
 
 //=============================================================================
 // 初期化処理
@@ -100,28 +133,39 @@ void UpdatePlayer(void)
 	// 回転
 	if (GetKeyboardPress(DIK_A))
 	{
-		if (g_Rotation < 0.05f) g_Rotation += 0.002f;
+		g_Rocket.Rotate(0.002f);
+		//if (g_Rotation < 0.05f) g_Rotation += 0.002f;
 	}
 	if (GetKeyboardPress(DIK_D))
 	{
-		if (g_Rotation > -0.05f) g_Rotation -= 0.002f;
+		g_Rocket.Rotate(-0.002f);
+		//if (g_Rotation > -0.05f) g_Rotation -= 0.002f;
 	}
-	g_Rotation *= 0.98f;
-	RotateTube(g_Rotation);
+	//g_Rotation *= 0.98f;
+	//RotateTube(g_Rotation);
+
+	// 世界の回転を反映
+	XMMATRIX mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_Rocket.GetRotate());
+	SetAfterRotation(&mtxRot);
 
 	static CURVE curve;
 
 	// スピード
 	if (GetKeyboardTrigger(DIK_SPACE))
 	{
-		g_TestAddSpeed += 5.0f;
+		g_Rocket.Accel(5.0f);
+		//g_TestAddSpeed += 5.0f;
 	}
 	if (GetKeyboardTrigger(DIK_BACK))
 	{
-		g_TestAddSpeed -= 5.0f;
+		g_Rocket.Brake(5.0f);
+		//g_TestAddSpeed -= 5.0f;
 	}
-	curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
+	//curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
+	curve.TexSpd = g_Rocket.GetSpeed() / MESH_SIZE;
 	//g_TestAddSpeed *= 0.98f;
+
+	g_Rocket.Drive();
 
 #ifdef _DEBUG
 	PrintDebugProc("g_TestAddSpeed:%f\n", g_TestAddSpeed);
@@ -152,15 +196,19 @@ void UpdatePlayer(void)
 	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
+	SetMapPosition((float)time / 6000.0f);
+	SetSpeedMeter((float)time / 6000.0f);
+	SetFuelMeter(1.0f - (float)time / 6000.0f);
 
 #ifdef _DEBUG	// デバッグ情報を表示する
 	static int dZMove = 0;
 	static int dTime = 0;
 	dZMove += 40;
 	dTime++;
-	PrintDebugProc("Z_MOVE:%d\n", dZMove / (int)MESH_SIZE);
-	PrintDebugProc("TUBES:%d\n", dZMove / (int)(MESH_SIZE * MESH_NUM_Z));
+	PrintDebugProc("Meshs:%d\n", dZMove / (int)MESH_SIZE);
+	PrintDebugProc("Tubes:%d\n", dZMove / (int)(MESH_SIZE * MESH_NUM_Z));
 	PrintDebugProc("Time:%d\n", dTime / 60);
+	PrintDebugProc("Speed:%f\n", g_Rocket.GetSpeed());
 #endif
 }
 
@@ -202,5 +250,6 @@ void DrawPlayer(void)
 
 float GetPlayerSpeed(void)
 {
-	return DEFAULT_SPEED + g_TestAddSpeed;
+	return g_Rocket.GetSpeed();
+	//return DEFAULT_SPEED + g_TestAddSpeed;
 }

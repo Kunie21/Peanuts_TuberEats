@@ -224,6 +224,7 @@ void SetDrawFillBlack(void);
 void SetDrawNoLighting(void);
 void SetDrawTube(void);
 void SetDrawGimmick(void);
+void SetDraw2DTexture(void);
 //void SetDrawPreOutline(void);
 //void SetDrawPostOutline(void);
 //void DrawExpOutline(void);

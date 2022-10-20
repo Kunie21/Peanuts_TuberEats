@@ -17,6 +17,7 @@
 #include "tube.h"
 #include "gimmick.h"
 #include "player.h"
+#include "ui_game.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -42,6 +43,7 @@ HRESULT InitGame(void)
 	InitTube();
 	InitGimmick();
 	InitPlayer();
+	InitGameUI();
 
 	g_Load = TRUE;
 	return S_OK;
@@ -84,6 +86,7 @@ void UninitGame(void)
 	UninitPlayer();
 	UninitGimmick();
 	UninitTube();
+	UninitGameUI();
 
 	g_Load = FALSE;
 }
@@ -109,6 +112,7 @@ void UpdateGame(void)
 	UpdateTube();
 	UpdateGimmick();
 	UpdatePlayer();
+	UpdateGameUI();
 
 }
 
@@ -125,10 +129,15 @@ void DrawGame(void)
 {
 	SetDrawNoLighting();
 	DrawPlayer();
+
 	SetDrawTube();
 	DrawTube();
+
 	SetDrawGimmick();
 	DrawGimmick();
+
+	SetDraw2DTexture();
+	DrawGameUI();
 
 	// アウトラインを引く
 	//if (g_bOutline)

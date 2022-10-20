@@ -461,8 +461,8 @@ void DrawTube(void)
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 		// 世界の回転を反映
-		mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_worldRot);
-		SetAfterRotation(&mtxRot);
+		//mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_worldRot);
+		//SetAfterRotation(&mtxRot);
 		//mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 		// ワールドマトリックスの設定

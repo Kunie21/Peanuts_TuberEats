@@ -13,13 +13,16 @@ void VertexShaderFilter( in  float4 inPosition		: POSITION0,
 						  in  float2 inTexCoord		: TEXCOORD0,
 
 						  out float4 outPosition	: SV_POSITION,
-						  out float2 outTexCoord	: TEXCOORD0)
+						  out float2 outTexCoord	: TEXCOORD0,
+						  out float4 outDiffuse		: COLOR0)
 {
 	outPosition = mul(inPosition, WVP);
 	outTexCoord = inTexCoord;
+	outDiffuse = inDiffuse * Material.Diffuse;
 }
 void PixelShaderFilter( in  float4 inPosition		: POSITION0,
 						in  float2 inTexCoord		: TEXCOORD0,
+						in  float4 inDiffuse : COLOR0,
 						
 						out float4 outDiffuse		: SV_Target )
 {
@@ -44,11 +47,12 @@ void PixelShaderFilter( in  float4 inPosition		: POSITION0,
 
 // テクスチャを参照するだけ（変換画像を画面に出力するときに使う）
 void PixelShaderOnlyTex( in  float4 inPosition		: POSITION0,
-						in  float2 inTexCoord		: TEXCOORD0,
+						 in  float2 inTexCoord : TEXCOORD0,
+						 in  float4 inDiffuse : COLOR0,
 						
 						out float4 outDiffuse		: SV_Target )
 {
-	outDiffuse = g_Texture.Sample(g_SamplerState, inTexCoord);
+	outDiffuse = inDiffuse * g_Texture.Sample(g_SamplerState, inTexCoord);
 }
 
 // モザイク ///////////////////////////////////////////////////
