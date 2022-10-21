@@ -307,6 +307,6 @@ void SetPlayerThroughRing(void)
 void SetPlayerCollisionIce(void)
 {
 	g_Rocket.LostFuel(500.0f);
-	g_Rocket.Boost(-20.0f);
+	g_Rocket.Boost(-60.0f);
 	g_Rocket.Collision();
 }

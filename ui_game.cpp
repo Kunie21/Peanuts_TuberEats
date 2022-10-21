@@ -39,8 +39,8 @@ enum
 	TEXTURE_SPEED_EMPTY,
 	TEXTURE_SPEED_FONT,
 	TEXTURE_SPEED_GAUGE,
-	TEXTURE_NUMBER,
 	TEXTURE_TIMER_BACK,
+	TEXTURE_NUMBER,
 	TEXTURE_SEMICOLON,
 	TEXTURE_WHITE,
 	TEXTURE_MAX,
@@ -58,11 +58,13 @@ static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/game_UI/speed_empty.png",
 	"data/TEXTURE/game_UI/speed_font.png",
 	"data/TEXTURE/game_UI/speed_gauge.png",
-	"data/TEXTURE/game_UI/timer_UI.png",
 	"data/TEXTURE/game_UI/timer_backdrop.png",
+	"data/TEXTURE/game_UI/timer_UI.png",
 	"data/TEXTURE/game_UI/timer_semicolon.png",
 	"data/TEXTURE/white.png",
 };
+
+static float g_Timer = 0.0f;
 
 //=============================================================================
 // 初期化処理
@@ -103,16 +105,17 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_MAP_ROCKET].size = { 91.0f, 40.0f };
 	g_td[TEXTURE_MAP_ROCKET].pos = { -MAP_EDGE, MAP_LINE_Y };
 	g_td[TEXTURE_GOALPIN].size = { 36.0f, 48.0f };
-	g_td[TEXTURE_GOALPIN].pos = { MAP_EDGE, MAP_LINE_Y - 50.0f };
+	g_td[TEXTURE_GOALPIN].pos = { MAP_EDGE, MAP_LINE_Y - 40.0f };
 
 	// タイマー
 	g_td[TEXTURE_TIMER_BACK].size = { 169.0f, 79.0f };
 	g_td[TEXTURE_TIMER_BACK].pos = { TIMER_CENTER_X, MAP_LINE_Y };
 	g_td[TEXTURE_SEMICOLON].size = { 20.0f, 90.0f };
 	g_td[TEXTURE_SEMICOLON].pos = { TIMER_CENTER_X, MAP_LINE_Y };
-	g_td[TEXTURE_NUMBER].size = { 267.0f, 90.0f };
-	g_td[TEXTURE_NUMBER].pos = { TIMER_CENTER_X, MAP_LINE_Y };
-	g_td[TEXTURE_NUMBER].scl = { 0.0f, 0.0f };
+	g_td[TEXTURE_NUMBER].size = { 255.0f, 90.0f };
+	g_td[TEXTURE_NUMBER].pos = { TIMER_CENTER_X - 25.0f, MAP_LINE_Y };
+	g_td[TEXTURE_NUMBER].scl = { 0.1f, 1.0f };
+	g_td[TEXTURE_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
 
 	// スクリーンエフェクト用
 	g_td[TEXTURE_WHITE].col = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -146,6 +149,7 @@ void UninitGameUI(void)
 void UpdateGameUI(void)
 {
 	g_td[TEXTURE_WHITE].col.w *= 0.9f;
+	OnTimer();
 }
 
 //=============================================================================
@@ -153,23 +157,50 @@ void UpdateGameUI(void)
 //=============================================================================
 void DrawGameUI(void)
 {
+	int time;
+	float digit;
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
-		if (i == TEXTURE_FUEL_FULL || i == TEXTURE_SPEED_GAUGE)
+		switch (i)
 		{
+		case TEXTURE_FUEL_FULL:
+		case TEXTURE_SPEED_GAUGE:
 			DrawTexture2D(&g_td[i], FALSE, TRUE);
-		}
-		else if (TEXTURE_WHITE)
-		{
+			break;
+		case TEXTURE_WHITE:
 			DrawTexture2D(&g_td[i]);
-		}
-		else
-		{
+			break;
+		case TEXTURE_NUMBER:
+			time = (int)(g_Timer * 100.0f);
+			digit = 1.5f;
+			while (time)
+			{
+				g_td[i].uv_pos.u = (float)(time % 10) * 0.1f;
+				if (digit > 0.0f)
+				{
+					g_td[i].pos.x = TIMER_CENTER_X + digit * 25.5f + 10.0f;
+				}
+				else
+				{
+					g_td[i].pos.x = TIMER_CENTER_X + digit * 25.5f - 10.0f;
+				}
+				DrawTexture2D(&g_td[i], FALSE, TRUE);
+				digit -= 1.0f;
+
+				time /= 10;
+			}
+			if (g_Timer < 1.0f)	// 0秒を描画
+			{
+				g_td[i].uv_pos.u = 0.0f;
+				g_td[i].pos.x = TIMER_CENTER_X - 0.5f * 25.5f - 10.0f;
+				DrawTexture2D(&g_td[i], FALSE, TRUE);
+			}
+			break;
+		default:
 			DrawTexture2D(&g_td[i], TRUE);
+			break;
 		}
 	}
-
-
 }
 
 void SetMapPosition(float rate)
@@ -218,4 +249,12 @@ void SetDamageEffect(void)
 void SetBoostEffect(void)
 {
 	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 1.0f, 0.5f };
+}
+void SetTimer(float time)
+{
+	g_Timer = time;
+}
+void OnTimer(void)
+{
+	g_Timer += 0.01666666f;
 }
