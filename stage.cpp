@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ギミック処理 [gimmick.cpp]
+// ステージ処理 [stage.cpp]
 // Author : 國江 翔太
 //
 //=============================================================================
@@ -11,10 +11,11 @@
 #include "model.h"
 #include "fade.h"
 #include "input.h"
-#include "gimmick.h"
 #include "tube.h"
 #include "player.h"
 #include "ui_game.h"
+#include "gimmick.h"
+#include "stage.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -37,6 +38,12 @@ enum GIMMICK_TYPE
 	GIMMICK_MAX
 };
 
+struct GIMMICK
+{
+	int rotPosNo = 0;
+	int zPosNo = 0;
+	float rotSizeHalf = XM_PIDIV4;
+};
 static GIMMICK g_GmIce[ICE_NUM];
 static GIMMICK g_GmRing[RING_NUM];
 
@@ -48,7 +55,7 @@ static float		g_Rotation = 0.0f;
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT InitGimmick(void)
+HRESULT InitStage(void)
 {
 	LoadModel("data/MODEL/ice_1.obj", &g_Model[GIMMICK_ICE]);
 	LoadModel("data/MODEL/ring_1.obj", &g_Model[GIMMICK_RING]);
@@ -71,7 +78,7 @@ HRESULT InitGimmick(void)
 //=============================================================================
 // 終了処理
 //=============================================================================
-void UninitGimmick(void)
+void UninitStage(void)
 {
 	if (g_Load == FALSE) return;
 
@@ -86,7 +93,7 @@ void UninitGimmick(void)
 //=============================================================================
 // 更新処理
 //=============================================================================
-void UpdateGimmick(void)
+void UpdateStage(void)
 {
 
 #ifdef _DEBUG	// デバッグ情報を表示する
@@ -96,7 +103,7 @@ void UpdateGimmick(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawGimmick(void)
+void DrawStage(void)
 {
 	static float d_pos = 0;
 	d_pos -= GetPlayerSpeed();
@@ -138,7 +145,7 @@ void DrawGimmick(void)
 		// ワールドマトリックスの設定
 		SetWorldBuffer(&mtxWorld);
 
-		//XMStoreFloat4x4(&g_Gimmick.mtxWorld, mtxWorld);
+		//XMStoreFloat4x4(&g_Stage.mtxWorld, mtxWorld);
 
 		// モデル描画
 		DrawModel(&g_Model[GIMMICK_ICE]);
@@ -178,59 +185,9 @@ void DrawGimmick(void)
 		// ワールドマトリックスの設定
 		SetWorldBuffer(&mtxWorld);
 
-		//XMStoreFloat4x4(&g_Gimmick.mtxWorld, mtxWorld);
+		//XMStoreFloat4x4(&g_Stage.mtxWorld, mtxWorld);
 
 		// モデル描画
 		DrawModel(&g_Model[GIMMICK_RING]);
 	}
-}
-
-bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
-{
-	float oldZPosNoFloat = oldZ / MESH_SIZE;
-	float newZPosNoFloat = newZ / MESH_SIZE;
-	int oldZPosNoInt = (int)oldZPosNoFloat;
-	int newZPosNoInt = (int)newZPosNoFloat;
-	if (oldZPosNoInt == (int)newZPosNoInt) return false;
-	float length = newZPosNoFloat - oldZPosNoFloat;
-	while (oldZPosNoInt <= newZPosNoInt)
-	{
-		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
-		int colZPosNo = oldZPosNoInt + 1;
-		float colRot = oldRot + (newRot - oldRot) * rate;
-		for (int i = 0; i < ICE_NUM; i++)
-		{
-			if (g_GmIce[i].zPosNo == colZPosNo)
-			{
-				float rot = colRot + XM_PIDIV2 + XM_2PI * (float)g_GmIce[i].rotPosNo / (float)MESH_NUM_X;
-				while (rot < 0.0f) rot += XM_2PI;
-				while (rot > XM_2PI) rot -= XM_2PI;
-				if (rot < g_GmIce[i].rotSizeHalf ||
-					XM_2PI - g_GmIce[i].rotSizeHalf < rot)
-				{
-					SetDamageEffect();
-					SetPlayerCollisionIce();
-					return true;
-				}
-			}
-		}
-		for (int i = 0; i < RING_NUM; i++)
-		{
-			if (g_GmRing[i].zPosNo == colZPosNo)
-			{
-				float rot = colRot + XM_PIDIV2 + XM_2PI * (float)g_GmRing[i].rotPosNo / (float)MESH_NUM_X;
-				while (rot < 0.0f) rot += XM_2PI;
-				while (rot > XM_2PI) rot -= XM_2PI;
-				if (rot < g_GmRing[i].rotSizeHalf ||
-					XM_2PI - g_GmRing[i].rotSizeHalf < rot)
-				{
-					SetBoostEffect();
-					SetPlayerThroughRing();
-					return true;
-				}
-			}
-		}
-		oldZPosNoInt++;
-	}
-	return false;
 }

@@ -15,7 +15,8 @@
 #include "tube.h"
 #include "ui_game.h"
 #include "gimmick.h"
-//ブランチテスト
+
+// ブランチテスト
 #define test
 
 //*****************************************************************************
@@ -32,8 +33,7 @@
 static BOOL				g_Load = FALSE;
 
 // テクスチャ管理
-enum
-{
+enum {
 	TEXTURE_TEAMLOGO = 0,
 	TEXTURE_MAX,
 };

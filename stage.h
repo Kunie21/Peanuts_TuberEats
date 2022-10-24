@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ギミック処理 [gimmick.h]
+// ステージ処理 [stage.h]
 // Author : 國江 翔太
 //
 //=============================================================================
@@ -9,19 +9,23 @@
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
-struct GIMMICK
+struct CURVE
 {
-	int rotPosNo = 0;
-	int zPosNo = 0;
-	float rotSizeHalf = XM_PIDIV4;
+	int startPosNo;	// 曲がり始め
+	int goalPosNo;
+	XMFLOAT2 angle;
+	float rate;
+};
+
+struct STAGE
+{
+	GIMMICK* arrGmk = NULL;
 };
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitGimmick(void);
-void UninitGimmick(void);
-void UpdateGimmick(void);
-void DrawGimmick(void);
-
-bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot);
+HRESULT InitStage(void);
+void UninitStage(void);
+void UpdateStage(void);
+void DrawStage(void);
