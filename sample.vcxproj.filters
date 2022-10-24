@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="collision.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="tube.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="teamlogo.cpp">
+      <Filter>opening</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>title</Filter>
+    </ClCompile>
+    <ClCompile Include="start.cpp">
+      <Filter>start</Filter>
+    </ClCompile>
+    <ClCompile Include="file.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>result</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_select.cpp">
+      <Filter>stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="home.cpp">
+      <Filter>home</Filter>
+    </ClCompile>
+    <ClCompile Include="load.cpp">
+      <Filter>loading</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="gimmick.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="debugproc.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="texture2d.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_game.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="collision.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="tube.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="teamlogo.h">
+      <Filter>opening</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>title</Filter>
+    </ClInclude>
+    <ClInclude Include="start.h">
+      <Filter>start</Filter>
+    </ClInclude>
+    <ClInclude Include="file.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>result</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select.h">
+      <Filter>stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="home.h">
+      <Filter>home</Filter>
+    </ClInclude>
+    <ClInclude Include="load.h">
+      <Filter>loading</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="gimmick.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="debugproc.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="texture2d.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_game.h">
+      <Filter>game</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="system">
+      <UniqueIdentifier>{1b2d702f-0e20-41a2-bca4-763af01f6240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game">
+      <UniqueIdentifier>{ca59c86e-1047-49ee-ae42-2f01cd018430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opening">
+      <UniqueIdentifier>{4b7c9204-4c1d-47d9-a9e2-a42df48ece91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="title">
+      <UniqueIdentifier>{44ccd366-a7b4-405d-b21a-4f8f1ee6d2b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="start">
+      <UniqueIdentifier>{12b5ab31-82ff-44ff-8adf-2b032329e3e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="home">
+      <UniqueIdentifier>{3223f5f2-5f2f-44d6-8c28-395c51e4f0f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stage_select">
+      <UniqueIdentifier>{30c9817a-0668-4361-bfa4-036eb884a8df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="result">
+      <UniqueIdentifier>{8a7602ac-83e1-4970-b186-b25c4dfb51fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="loading">
+      <UniqueIdentifier>{a73de25e-a4cf-46b1-b7ed-6fd395b710f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{d142802b-70e5-49c5-805c-fed2b4edb2c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{4a5786f8-4260-46dd-979b-a4c3338f3c69}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sample.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="frog_game_icon.ico" />
+  </ItemGroup>
+</Project>
