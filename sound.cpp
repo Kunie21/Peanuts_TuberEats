@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // サウンド処理 [sound.cpp]
-// Author : 星 克昌
+// Author : 武藤 颯太
 //
 //=============================================================================
 #include "main.h"
@@ -36,6 +36,10 @@ HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwB
 //*****************************************************************************
 IXAudio2 *g_pXAudio2 = NULL;								// XAudio2オブジェクトへのインターフェイス
 IXAudio2MasteringVoice *g_pMasteringVoice = NULL;			// マスターボイス
+
+
+// サブミックスボイスの作成
+
 IXAudio2SourceVoice *g_apSourceVoice[SOUND_LABEL_MAX] = {};	// ソースボイス
 BYTE *g_apDataAudio[SOUND_LABEL_MAX] = {};					// オーディオデータ
 DWORD g_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
@@ -46,7 +50,10 @@ int g_Label = 0;											// オーディオラベル番号の初期化
 
 static int	g_LoadPoint = 0;
 
+
+//*****************************************************************************
 // 各音素材のパラメータ
+//*****************************************************************************
 SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 {
 	{ (char*)"data/BGM/TITLE.wav", -1 },		// 
@@ -81,6 +88,19 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	{ (char*)"data/SE/SCORE.wav", 0 },			// 
 	{ (char*)"data/SE/CHECKPOINT.wav", 0 },			// 
 };
+
+//*****************************************************************************
+// エフェクト関連
+//*****************************************************************************
+
+//リバーブ
+
+//エコー
+
+//EQ
+
+
+
 
 //=============================================================================
 // 初期化処理
@@ -392,8 +412,6 @@ void UpdateAudioFade(void)
 	PrintDebugProc("音量: %f\n", g_VolumeSound);
 	PrintDebugProc("サウンド番号: %d\n", g_Label);
 }
-
-
 
 //=============================================================================
 // 終了処理
