@@ -1,13 +1,15 @@
 //=============================================================================
 //
 // サウンド処理 [sound.h]
-// Author : 星 克昌
+// Author : 武藤 颯太
 //
 //=============================================================================
 #pragma once
 
 #include <windows.h>
-#include "xaudio2.h"						// サウンド処理で必要
+#include "xaudio2.h"			// サウンド処理で必要
+#include "xaudio2fx.h"			// サウンドのエフェクト処理で必要
+#include <XAPOFX.h>				// サウンドのエフェクト処理で必要
 
 //*****************************************************************************
 // サウンドファイル
@@ -44,7 +46,9 @@ enum
 	SOUND_LABEL_SE_TIMEUP,			// 
 	SOUND_LABEL_SE_MEDAL,			// 
 	SOUND_LABEL_SE_SCORE,			// 
-	SOUND_LABEL_SE_CHECKPOINT,			// 
+	SOUND_LABEL_SE_CHECKPOINT,		// 
+
+
 	SOUND_LABEL_MAX,
 };
 
@@ -57,6 +61,9 @@ typedef enum
 	AUDIOFADE_OUT,					// フェードアウト処理
 	AUDIOFADE_MAX
 } AUDIOFADE;
+
+
+
 
 //*****************************************************************************
 // プロトタイプ宣言
