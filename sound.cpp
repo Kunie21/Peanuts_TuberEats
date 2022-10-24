@@ -39,6 +39,8 @@ IXAudio2MasteringVoice *g_pMasteringVoice = NULL;			// マスターボイス
 
 
 // サブミックスボイスの作成
+IXAudio2SubmixVoice *g_apDrySubmixVoice;					//サブミックスボイス(エフェクトなし)
+IXAudio2SubmixVoice *g_apWetSubmixVoice;					//サブミックスボイス(エフェクトあり)
 
 IXAudio2SourceVoice *g_apSourceVoice[SOUND_LABEL_MAX] = {};	// ソースボイス
 BYTE *g_apDataAudio[SOUND_LABEL_MAX] = {};					// オーディオデータ
@@ -146,6 +148,23 @@ BOOL InitSound(HWND hWnd)
 
 		return FALSE;
 	}
+
+	//サブミックスボイス（エフェクトあり）の作成
+	hr = g_pXAudio2->CreateSubmixVoice(&g_apWetSubmixVoice, 2, 48000);
+	if (FAILED(hr))
+	{
+		MessageBox(hWnd, "サブミックス（エフェクトあり）の生成に失敗！", "警告！", MB_ICONWARNING);
+		return FALSE;
+	}
+
+	//サブミックスボイス（エフェクトなし）の作成
+	hr = g_pXAudio2->CreateSubmixVoice(&g_apDrySubmixVoice, 2, 48000);
+	if (FAILED(hr))
+	{
+		MessageBox(hWnd, "サブミックス（エフェクトなし）の生成に失敗！", "警告！", MB_ICONWARNING);
+		return FALSE;
+	}
+
 
 	//// サウンドデータの初期化
 	//for (int nCntSound = 0; nCntSound < SOUND_LABEL_MAX; nCntSound++)
@@ -355,7 +374,7 @@ BOOL LoadSound(void)
 	}
 
 	// ソースボイスの生成
-	hr = g_pXAudio2->CreateSourceVoice(&g_apSourceVoice[g_LoadPoint], &(wfx.Format));
+	hr = g_pXAudio2->CreateSourceVoice(&g_apSourceVoice[g_LoadPoint], &(wfx.Format), XAUDIO2_VOICE_USEFILTER, 16.0f);
 	if (FAILED(hr))
 	{
 		MessageBox(hWnd, "ソースボイスの生成に失敗！", "警告！", MB_ICONWARNING);
@@ -440,6 +459,10 @@ void UninitSound(void)
 		}
 	}
 
+	// サブミックスボイスの破棄
+	g_apWetSubmixVoice->DestroyVoice();
+	g_apDrySubmixVoice->DestroyVoice();
+
 	// マスターボイスの破棄
 	g_pMasteringVoice->DestroyVoice();
 	g_pMasteringVoice = NULL;
@@ -486,6 +509,12 @@ void PlaySound(int label, float volume)
 		// オーディオバッファの削除
 		g_apSourceVoice[label]->FlushSourceBuffers();
 	}
+
+	//サブミックスボイスに送信
+	XAUDIO2_SEND_DESCRIPTOR Send[2] = { 0, g_apWetSubmixVoice,
+										0, g_apDrySubmixVoice };
+	XAUDIO2_VOICE_SENDS SendList = { 2, Send };
+	g_apSourceVoice[label]->SetOutputVoices(&SendList);
 
 	// オーディオバッファの登録
 	g_apSourceVoice[label]->SubmitSourceBuffer(&buffer);
