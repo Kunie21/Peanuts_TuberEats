@@ -14,7 +14,7 @@
 #define	AUDIO_FADEOUT_SPEED		(0.01f)			// オーディオフェードインスピード
 #define	AUDIO_FADEIN_SPEED		(0.01f)			// オーディオフェードアウトスピード
 
-#define NO_AUDIO	// サウンド無し
+#define NO_AUDIO	// サウンド無し(これ消せばロードはいる)
 
 //*****************************************************************************
 // パラメータ構造体定義
@@ -23,6 +23,9 @@ typedef struct
 {
 	char *pFilename;	// ファイル名
 	int nCntLoop;		// ループカウント
+	//BOOL UseFilter;		//エフェクト使うか使わないか？？
+	//int type;			// サウンドの種類
+
 } SOUNDPARAM;
 
 //*****************************************************************************
@@ -49,6 +52,9 @@ DWORD g_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
 AUDIOFADE g_AudioFade = AUDIOFADE_IN;						// フェードの状態
 float g_VolumeSound = 1.0f;									// 音量
 int g_Label = 0;											// オーディオラベル番号の初期化
+
+//音量管理
+float				g_VolParam[SOUND_TYPE_MAX];
 
 static int	g_LoadPoint = 0;
 
@@ -88,20 +94,33 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	{ (char*)"data/SE/TIMEUP.wav", 0 },			// 
 	{ (char*)"data/SE/MEDAL.wav", 0 },			// 
 	{ (char*)"data/SE/SCORE.wav", 0 },			// 
-	{ (char*)"data/SE/CHECKPOINT.wav", 0 },			// 
+	{ (char*)"data/SE/CHECKPOINT.wav", 0 },		// 
 };
 
 //*****************************************************************************
 // エフェクト関連
 //*****************************************************************************
-
 //リバーブ
+IUnknown *g_apXPO_Reverb;
+XAUDIO2_EFFECT_DESCRIPTOR g_Descriptior[SOUND_EFFECT_MAX];
+XAUDIO2_EFFECT_CHAIN g_Chain;
+
+//リバーブのパラメータ
+FXECHO_PARAMETERS g_ReverbParam;
+XAUDIO2FX_REVERB_I3DL2_PARAMETERS g_i3dl2Param = XAUDIO2FX_I3DL2_PRESET_BATHROOM;
+XAUDIO2FX_REVERB_PARAMETERS g_reverbParam;
 
 //エコー
+IUnknown *g_apXPO_Echo;
+
+//エコーのパラメータ
+FXECHO_PARAMETERS g_EchoParam;
 
 //EQ
+IUnknown *g_apXPO_EQ;
 
-
+//EQのパラメータ
+FXEQ_PARAMETERS g_EQParam;
 
 
 //=============================================================================
@@ -164,102 +183,6 @@ BOOL InitSound(HWND hWnd)
 		MessageBox(hWnd, "サブミックス（エフェクトなし）の生成に失敗！", "警告！", MB_ICONWARNING);
 		return FALSE;
 	}
-
-
-	//// サウンドデータの初期化
-	//for (int nCntSound = 0; nCntSound < SOUND_LABEL_MAX; nCntSound++)
-	//{
-	//	HANDLE hFile;
-	//	DWORD dwChunkSize = 0;
-	//	DWORD dwChunkPosition = 0;
-	//	DWORD dwFiletype;
-	//	WAVEFORMATEXTENSIBLE wfx;
-	//	XAUDIO2_BUFFER buffer;
-
-
-	//	// バッファのクリア
-	//	memset(&wfx, 0, sizeof(WAVEFORMATEXTENSIBLE));
-	//	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
-
-	//	// サウンドデータファイルの生成
-	//	hFile = CreateFile(g_aParam[nCntSound].pFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	//	if (hFile == INVALID_HANDLE_VALUE)
-	//	{
-	//		MessageBox(hWnd, "サウンドデータファイルの生成に失敗！(1)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-	//	if (SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-	//	{// ファイルポインタを先頭に移動
-	//		MessageBox(hWnd, "サウンドデータファイルの生成に失敗！(2)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-
-	//	// WAVEファイルのチェック
-	//	hr = CheckChunk(hFile, 'FFIR', &dwChunkSize, &dwChunkPosition);
-	//	if (FAILED(hr))
-	//	{
-	//		MessageBox(hWnd, "WAVEファイルのチェックに失敗！(1)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-	//	hr = ReadChunkData(hFile, &dwFiletype, sizeof(DWORD), dwChunkPosition);
-	//	if (FAILED(hr))
-	//	{
-	//		MessageBox(hWnd, "WAVEファイルのチェックに失敗！(2)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-	//	if (dwFiletype != 'EVAW')
-	//	{
-	//		MessageBox(hWnd, "WAVEファイルのチェックに失敗！(3)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-
-	//	// フォーマットチェック
-	//	hr = CheckChunk(hFile, ' tmf', &dwChunkSize, &dwChunkPosition);
-	//	if (FAILED(hr))
-	//	{
-	//		MessageBox(hWnd, "フォーマットチェックに失敗！(1)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-	//	hr = ReadChunkData(hFile, &wfx, dwChunkSize, dwChunkPosition);
-	//	if (FAILED(hr))
-	//	{
-	//		MessageBox(hWnd, "フォーマットチェックに失敗！(2)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-
-	//	// オーディオデータ読み込み
-	//	hr = CheckChunk(hFile, 'atad', &g_aSizeAudio[nCntSound], &dwChunkPosition);
-	//	if (FAILED(hr))
-	//	{
-	//		MessageBox(hWnd, "オーディオデータ読み込みに失敗！(1)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-	//	g_apDataAudio[nCntSound] = (BYTE*)malloc(g_aSizeAudio[nCntSound]);
-	//	hr = ReadChunkData(hFile, g_apDataAudio[nCntSound], g_aSizeAudio[nCntSound], dwChunkPosition);
-	//	if (FAILED(hr))
-	//	{
-	//		MessageBox(hWnd, "オーディオデータ読み込みに失敗！(2)", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-
-	//	// ソースボイスの生成
-	//	hr = g_pXAudio2->CreateSourceVoice(&g_apSourceVoice[nCntSound], &(wfx.Format));
-	//	if (FAILED(hr))
-	//	{
-	//		MessageBox(hWnd, "ソースボイスの生成に失敗！", "警告！", MB_ICONWARNING);
-	//		return FALSE;
-	//	}
-
-	//	// バッファの値設定
-	//	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
-	//	buffer.AudioBytes = g_aSizeAudio[nCntSound];
-	//	buffer.pAudioData = g_apDataAudio[nCntSound];
-	//	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	//	buffer.LoopCount = g_aParam[nCntSound].nCntLoop;
-
-	//	// オーディオバッファの登録
-	//	g_apSourceVoice[nCntSound]->SubmitSourceBuffer(&buffer);
-	//}
 
 	g_LoadPoint = 0;
 
@@ -391,6 +314,94 @@ BOOL LoadSound(void)
 	// オーディオバッファの登録
 	g_apSourceVoice[g_LoadPoint]->SubmitSourceBuffer(&buffer);
 
+	////エフェクトの生成
+	//{
+	//	//リバーブの生成
+	//	XAudio2CreateReverb(&g_apXPO_Reverb);
+
+	//	//EFFECT_DESCRIPTOR(リバーブ)の初期化
+	//	g_Descriptior[REVERB].InitialState = FALSE;			//有効状態に
+	//	g_Descriptior[REVERB].OutputChannels = 2;				//2chのエフェクト
+	//	g_Descriptior[REVERB].pEffect = g_apXPO_Reverb;		//エフェクト本体
+
+	//	//エコーの生成
+	//	CreateFX(_uuidof(FXEcho), &g_apXPO_Echo);
+
+	//	//EFFECT_DESCRIPTOR(エコー)の初期化
+	//	g_Descriptior[ECHO].InitialState = FALSE;				//無効状態に
+	//	g_Descriptior[ECHO].OutputChannels = 2;				//2chのエフェクト
+	//	g_Descriptior[ECHO].pEffect = g_apXPO_Echo;			//エフェクト本体
+
+	//	//EQの生成
+	//	CreateFX(_uuidof(FXEQ), &g_apXPO_EQ);
+
+	//	//EFFECT_DESCRIPTOR(EQ)の初期化
+	//	g_Descriptior[EQ].InitialState = FALSE;				//有効状態に
+	//	g_Descriptior[EQ].OutputChannels = 2;					//2chのエフェクト
+	//	g_Descriptior[EQ].pEffect = g_apXPO_EQ;				//エフェクト本体
+
+	//	//EFFECT_CHAINの作成
+	//	g_Chain.EffectCount = SOUND_EFFECT_MAX;								//挿すのはSOUND_EFFECT_MAX分
+	//	g_Chain.pEffectDescriptors = g_Descriptior;							//さっきの構造体を指示
+
+	//	//ボイスにEFFECT_CHAINを挿す
+	//	g_apWetSubmixVoice->SetEffectChain(&g_Chain);
+
+	//	//Release
+	//	g_apXPO_Reverb->Release();
+	//	g_apXPO_Echo->Release();
+	//	g_apXPO_EQ->Release();
+	//}
+
+
+	////パラメーターの初期化
+	//{
+	//	// リバーブ
+	//	// I3DL2_REVERB_PARAM 変換
+	//	ReverbConvertI3DL2ToNative(&g_i3dl2Param, &g_reverbParam);
+
+	//	//エフェクトに通知する
+	//	g_apWetSubmixVoice->SetEffectParameters(REVERB, &g_reverbParam, sizeof(g_reverbParam));
+
+	//	// エコー
+	//	g_EchoParam.WetDryMix = FXECHO_DEFAULT_WETDRYMIX;
+	//	g_EchoParam.Delay = FXECHO_DEFAULT_DELAY;
+	//	g_EchoParam.Feedback = FXECHO_DEFAULT_FEEDBACK;
+
+	//	//エフェクトに通知する
+	//	g_apWetSubmixVoice->SetEffectParameters(ECHO, &g_EchoParam, sizeof(g_EchoParam));
+
+	//	//EQ
+	//	g_EQParam.FrequencyCenter0 = FXEQ_DEFAULT_FREQUENCY_CENTER_0;
+	//	g_EQParam.FrequencyCenter1 = FXEQ_DEFAULT_FREQUENCY_CENTER_1;
+	//	g_EQParam.FrequencyCenter2 = FXEQ_DEFAULT_FREQUENCY_CENTER_2;
+	//	g_EQParam.FrequencyCenter3 = FXEQ_DEFAULT_FREQUENCY_CENTER_3;
+
+	//	g_EQParam.Bandwidth0 = FXEQ_DEFAULT_BANDWIDTH;
+	//	g_EQParam.Bandwidth1 = FXEQ_DEFAULT_BANDWIDTH;
+	//	g_EQParam.Bandwidth2 = FXEQ_DEFAULT_BANDWIDTH;
+	//	g_EQParam.Bandwidth3 = FXEQ_DEFAULT_BANDWIDTH;
+
+	//	g_EQParam.Gain0 = FXEQ_DEFAULT_GAIN;
+	//	g_EQParam.Gain1 = FXEQ_DEFAULT_GAIN;
+	//	g_EQParam.Gain2 = FXEQ_DEFAULT_GAIN;
+	//	g_EQParam.Gain3 = FXEQ_DEFAULT_GAIN;
+
+	//	//エフェクトに通知する
+	//	g_apWetSubmixVoice->SetEffectParameters(EQ, &g_EQParam, sizeof(g_EQParam));
+	//}
+
+
+	////音量の初期化
+	//{
+	//	g_VolParam[MASTER] = 1.0f;
+	//	g_VolParam[BGM] = 1.0f;
+	//	g_VolParam[SE] = 1.0f;
+	//	g_VolParam[VOICE] = 1.0f;
+	//}
+
+
+
 	return TRUE;
 }
 
@@ -510,25 +521,22 @@ void PlaySound(int label, float volume)
 		g_apSourceVoice[label]->FlushSourceBuffers();
 	}
 
-	//サブミックスボイスに送信
-	XAUDIO2_SEND_DESCRIPTOR Send[2] = { 0, g_apWetSubmixVoice,
-										0, g_apDrySubmixVoice };
-	XAUDIO2_VOICE_SENDS SendList = { 2, Send };
-	g_apSourceVoice[label]->SetOutputVoices(&SendList);
-
+	//if (g_aParam[label].UseFilter == TRUE)
+	{
+		//サブミックスボイスに送信
+		XAUDIO2_SEND_DESCRIPTOR Send[2] = { 0, g_apWetSubmixVoice,
+											0, g_apDrySubmixVoice };
+		XAUDIO2_VOICE_SENDS SendList = { 2, Send };
+		g_apSourceVoice[label]->SetOutputVoices(&SendList);
+	}
 	// オーディオバッファの登録
 	g_apSourceVoice[label]->SubmitSourceBuffer(&buffer);
 
 	// 再生
 	g_apSourceVoice[label]->Start(0);
 
-	// 音量を変えている
-	g_apSourceVoice[label]->SetVolume(g_VolumeSound);
-
-	if (volume >= 0.0f)
-	{
-		g_apSourceVoice[label]->SetVolume(volume);
-	}
+	// 再生
+	//g_apSourceVoice[label]->SetVolume(g_VolParam[g_aParam[label].type]);}
 }
 
 //=============================================================================
@@ -696,7 +704,45 @@ void SetAudioFade(AUDIOFADE audiofade, int label)
 //=============================================================================
 // 現在鳴っているラベル番号取得
 //=============================================================================
-int GetAudioLabel(void)
+int GetSoundLabel(void)
 {
 	return g_Label;
 }
+
+//=============================================================================
+// ソースボイスの音量調整
+//=============================================================================
+void SetSourceVolume(int label, float volume)
+{
+	volume *= volume;
+	g_apSourceVoice[label]->SetVolume(volume);
+	return;
+}
+
+//=============================================================================
+// ソースボイスのボイスの再生ピッチ調整
+//=============================================================================
+void SetFrequencyRatio(int label, float Pitch)
+{
+	g_apSourceVoice[label]->SetFrequencyRatio(Pitch);
+	return;
+}
+
+//=============================================================================
+// ソースボイスの一時停止
+//=============================================================================
+void PauseSound(int label)
+{
+	g_apSourceVoice[label]->Stop(XAUDIO2_PLAY_TAILS);
+	return;
+}
+
+//=============================================================================
+// ソースボイスの再開
+//=============================================================================
+void ReStartSound(int label)
+{
+	g_apSourceVoice[label]->Start();
+	return;
+}
+
