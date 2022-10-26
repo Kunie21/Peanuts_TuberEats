@@ -18,6 +18,8 @@
 #include "gimmick.h"
 #include "player.h"
 #include "ui_game.h"
+#include "stage.h"
+#include "teamlogo.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -44,6 +46,7 @@ HRESULT InitGame(void)
 	InitGimmick();
 	InitPlayer();
 	InitGameUI();
+	InitStage();
 
 	g_Load = TRUE;
 	return S_OK;
@@ -83,10 +86,11 @@ void UninitGame(void)
 {
 	if (g_Load == FALSE) return;
 
+	UninitStage();
+	UninitGameUI();
 	UninitPlayer();
 	UninitGimmick();
 	UninitTube();
-	UninitGameUI();
 
 	g_Load = FALSE;
 }
@@ -113,6 +117,7 @@ void UpdateGame(void)
 	UpdateGimmick();
 	UpdatePlayer();
 	UpdateGameUI();
+	UpdateStage();
 
 }
 
@@ -138,6 +143,7 @@ void DrawGame(void)
 
 	SetDraw2DTexture();
 	DrawGameUI();
+
 
 	// アウトラインを引く
 	//if (g_bOutline)

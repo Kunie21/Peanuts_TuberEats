@@ -6,9 +6,9 @@
 //=============================================================================
 #include "main.h"
 #include "renderer.h"
-#include "fade.h"
-#include "teamlogo.h"
 #include "texture2d.h"
+#include "teamlogo.h"
+#include "fade.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -55,6 +55,7 @@ HRESULT InitTeamLogo(void)
 
 	// è⁄ç◊ê›íË
 	g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f, 1.0f };
+
 	g_td[TEXTURE_TEAMLOGO].size = { TEXTURE_WIDTH_LOGO, TEXTURE_HEIGHT_LOGO };
 	g_td[TEXTURE_TEAMLOGO].scl = { 0.5f, 0.5f };
 
@@ -96,6 +97,7 @@ void UpdateTeamLogo(void)
 //=============================================================================
 void DrawTeamLogo(void)
 {
+	SetDraw2DTexture();
 	DrawTexture2D(&g_td[TEXTURE_BG]);
 	DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
 }

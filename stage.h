@@ -11,15 +11,26 @@
 //*****************************************************************************
 struct CURVE
 {
-	int startPosNo;	// 曲がり始め
-	int goalPosNo;
-	XMFLOAT2 angle;
-	float rate;
+	int zPosNo;		// 位置
+	XMFLOAT2 angle;	// 角度
 };
 
 struct STAGE
 {
-	GIMMICK* arrGmk = NULL;
+	GIMMICK* arrGmk = NULL;	// ギミックの配列
+	CURVE* arrCrv = NULL;	// カーブの配列
+	int gmkNum;				// ギミック数
+	int crvNum;				// カーブ数
+	int length;				// パイプの長さ
+};
+
+enum STAGE_LABEL
+{
+	STAGE_OSAKA =0,
+	STAGE_SHANGHAI,
+	STAGE_PARIS,
+	STAGE_NEWYORK,
+	STAGE_MAX
 };
 
 //*****************************************************************************
@@ -29,3 +40,6 @@ HRESULT InitStage(void);
 void UninitStage(void);
 void UpdateStage(void);
 void DrawStage(void);
+
+STAGE* GetStage(int stageNo);
+void SetStageCurve(int stageNo, float zPos);

@@ -21,59 +21,85 @@
 // マクロ定義
 //*****************************************************************************
 //#define MODEL_MAX		(1)
-#define ICE_NUM		(50)
-#define RING_NUM	(20)
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static int				g_Time = 0;
-static BOOL				g_Load = FALSE;
+static BOOL		g_Load = FALSE;
+static STAGE	g_Stage[STAGE_MAX];
 
-enum GIMMICK_TYPE
-{
-	GIMMICK_ICE = 0,
-	GIMMICK_RING,
-
-	GIMMICK_MAX
-};
-
-struct GIMMICK
-{
-	int rotPosNo = 0;
-	int zPosNo = 0;
-	float rotSizeHalf = XM_PIDIV4;
-};
-static GIMMICK g_GmIce[ICE_NUM];
-static GIMMICK g_GmRing[RING_NUM];
-
-static DX11_MODEL	g_Model[GIMMICK_MAX];	// プレイヤーのモデル管理
-
-
-static float		g_Rotation = 0.0f;
+static GIMMICK	g_Gmk_Osaka[10];
+static CURVE	g_Crv_Osaka[6];
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT InitStage(void)
 {
-	LoadModel("data/MODEL/ice_1.obj", &g_Model[GIMMICK_ICE]);
-	LoadModel("data/MODEL/ring_1.obj", &g_Model[GIMMICK_RING]);
+	g_Stage[STAGE_OSAKA].arrGmk = g_Gmk_Osaka;
+	g_Stage[STAGE_OSAKA].arrCrv = g_Crv_Osaka;
+	g_Stage[STAGE_OSAKA].gmkNum = 10;
+	g_Stage[STAGE_OSAKA].crvNum = 6;
+	g_Stage[STAGE_OSAKA].length = 1000;
 
-	for (int i = 0; i < ICE_NUM; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		g_GmIce[i].rotPosNo = (i * 5) % 8;
-		g_GmIce[i].zPosNo = i * 20;
+		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;
+		g_Gmk_Osaka[i].zPosNo = i * 20;
+		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 2);
 	}
-	for (int i = 0; i < RING_NUM; i++)
-	{
-		g_GmRing[i].rotPosNo = (i * 5) % 8;
-		g_GmRing[i].zPosNo = i * 50;
-	}
+
+	g_Crv_Osaka[0].angle = { 0.0f, 0.0f };
+	g_Crv_Osaka[0].zPosNo = 0;
+
+	g_Crv_Osaka[1].angle = { 0.0f, 0.0f };
+	g_Crv_Osaka[1].zPosNo = 100;
+
+	g_Crv_Osaka[2].angle = { 0.05f, 0.1f };
+	g_Crv_Osaka[2].zPosNo = 150;
+
+	g_Crv_Osaka[3].angle = { 0.05f, -0.1f };
+	g_Crv_Osaka[3].zPosNo = 200;
+
+	g_Crv_Osaka[4].angle = { -0.05f, 0.0f };
+	g_Crv_Osaka[4].zPosNo = 300;
+
+	g_Crv_Osaka[5].angle = { 0.0f, 0.0f };
+	g_Crv_Osaka[5].zPosNo = 1000;
 
 	g_Load = TRUE;
 	return S_OK;
 }
+
+STAGE* GetStage(int stageNo)
+{
+	return &g_Stage[stageNo];
+}
+
+void SetStageCurve(int stageNo, float zPos)
+{
+	CURVE_BUFFER curve;
+	curve.TexPos = zPos / MESH_SIZE;
+	float rate, rateA, rateB, start, end;
+	for (int i = 0; i < g_Stage[stageNo].crvNum - 1; i++)
+	{
+		start = g_Stage[stageNo].arrCrv[i].zPosNo * MESH_SIZE;
+		end = g_Stage[stageNo].arrCrv[i + 1].zPosNo * MESH_SIZE;
+
+		if (start < zPos && zPos < end)
+		{
+			rate = (zPos - start) / (end - start);
+			rateA = (1.0f - rate) * (1.0f - rate);
+			rateB = rate * rate;
+			//curve.Angle.x = g_Stage[stageNo].arrCrv[i].angle.x * (1.0f - rate) + g_Stage[stageNo].arrCrv[i + 1].angle.x * rate;
+			//curve.Angle.y = g_Stage[stageNo].arrCrv[i].angle.y * (1.0f - rate) + g_Stage[stageNo].arrCrv[i + 1].angle.y * rate;
+			curve.Angle.x = g_Stage[stageNo].arrCrv[i].angle.x * rateA + g_Stage[stageNo].arrCrv[i + 1].angle.x * rateB;
+			curve.Angle.y = g_Stage[stageNo].arrCrv[i].angle.y * rateA + g_Stage[stageNo].arrCrv[i + 1].angle.y * rateB;
+		}
+	}
+	SetCurveBuffer(&curve);
+}
+
 
 //=============================================================================
 // 終了処理
@@ -81,11 +107,6 @@ HRESULT InitStage(void)
 void UninitStage(void)
 {
 	if (g_Load == FALSE) return;
-
-	for (int i = 0; i < GIMMICK_MAX; i++)
-	{
-		UnloadModel(&g_Model[i]);
-	}
 
 	g_Load = FALSE;
 }
@@ -96,8 +117,6 @@ void UninitStage(void)
 void UpdateStage(void)
 {
 
-#ifdef _DEBUG	// デバッグ情報を表示する
-#endif
 }
 
 //=============================================================================
@@ -105,89 +124,5 @@ void UpdateStage(void)
 //=============================================================================
 void DrawStage(void)
 {
-	static float d_pos = 0;
-	d_pos -= GetPlayerSpeed();
-	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
-
-	// 氷
-	for (int i = 0; i < ICE_NUM; i++)
-	{
-		float zPos = d_pos + MESH_SIZE * g_GmIce[i].zPosNo;
-		if (-100.0f > zPos || zPos > 10000.0f)
-			continue;
-
-		// ワールドマトリックスの初期化
-		mtxWorld = XMMatrixIdentity();
-
-		// スケールを反映
-		mtxScl = XMMatrixScaling(4.0f, 3.0f, 4.0f);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-		float rot = XM_2PI * (float)g_GmIce[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation();
-
-		// 回転を反映：全体の角度
-		mtxRot = XMMatrixRotationRollPitchYaw(0.0f, XM_PIDIV2, 0.0f);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-		// 移動を反映
-		mtxTranslate = XMMatrixTranslation(0.0f, 120.0f, 0.0f);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-		// 回転を反映：個々の角度
-		mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rot + XM_PIDIV2);
-		//SetAfterRotation(&mtxRot);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-		// 移動を反映
-		mtxTranslate = XMMatrixTranslation(TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS* 0.8f * sinf(rot), zPos);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-		// ワールドマトリックスの設定
-		SetWorldBuffer(&mtxWorld);
-
-		//XMStoreFloat4x4(&g_Stage.mtxWorld, mtxWorld);
-
-		// モデル描画
-		DrawModel(&g_Model[GIMMICK_ICE]);
-	}
-	// リング
-	for (int i = 0; i < RING_NUM; i++)
-	{
-		float zPos = d_pos + MESH_SIZE * g_GmRing[i].zPosNo;
-		if (-100.0f > zPos || zPos > 10000.0f) continue;
-
-		// ワールドマトリックスの初期化
-		mtxWorld = XMMatrixIdentity();
-
-		// スケールを反映
-		mtxScl = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-		float rot = XM_2PI * (float)g_GmRing[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation();
-
-		// 回転を反映：全体の角度
-		mtxRot = XMMatrixRotationRollPitchYaw(XM_PIDIV2, 0.0f, 0.0f);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-		// 移動を反映
-		mtxTranslate = XMMatrixTranslation(0.0f, 50.0f, 0.0f);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-		// 回転を反映：個々の角度
-		mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rot + XM_PIDIV2);
-		//SetAfterRotation(&mtxRot);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-		// 移動を反映
-		mtxTranslate = XMMatrixTranslation(TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS* 0.8f * sinf(rot), zPos);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-		// ワールドマトリックスの設定
-		SetWorldBuffer(&mtxWorld);
-
-		//XMStoreFloat4x4(&g_Stage.mtxWorld, mtxWorld);
-
-		// モデル描画
-		DrawModel(&g_Model[GIMMICK_RING]);
-	}
+	
 }

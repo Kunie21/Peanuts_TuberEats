@@ -40,6 +40,14 @@ struct DX11_MODEL
 	unsigned short	SubsetNum;
 };
 
+struct MODEL_DATA
+{
+	DX11_MODEL	model;
+	XMFLOAT3	scl = { 1.0f, 1.0f, 1.0f };
+	XMFLOAT3	rot = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3	pos = { 0.0f, 0.0f, 0.0f };
+};
+
 
 
 //*****************************************************************************

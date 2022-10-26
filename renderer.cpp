@@ -710,7 +710,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateBuffer(&hBufferDesc, 8, &g_OutlineBuffer, sizeof(OUTLINE));
 		CreateBuffer(&hBufferDesc, 9, &g_FilterBuffer, sizeof(XMMATRIX));
 		//CreateBuffer(&hBufferDesc, 10, &g_MosaicBuffer, sizeof(MOSAIC));
-		CreateBuffer(&hBufferDesc, 10, &g_CurveBuffer, sizeof(CURVE));
+		CreateBuffer(&hBufferDesc, 10, &g_CurveBuffer, sizeof(CURVE_BUFFER));
 		CreateBuffer(&hBufferDesc, 11, &g_ConstantBuffer, sizeof(CONSTANT));
 
 		// インスタンス
@@ -876,7 +876,7 @@ void SetFrameTime(int time) {
 	CONSTANT constant = { time, 0.0f, 0.0f, 0.0f };
 	GetDeviceContext()->UpdateSubresource(g_ConstantBuffer, 0, NULL, &constant, 0, 0);
 }
-void SetCurveBuffer(CURVE* curve) {
+void SetCurveBuffer(CURVE_BUFFER* curve) {
 	GetDeviceContext()->UpdateSubresource(g_CurveBuffer, 0, NULL, curve, 0, 0);
 }
 

@@ -15,6 +15,7 @@
 #include "tube.h"
 #include "ui_game.h"
 #include "gimmick.h"
+#include "stage.h"
 
 // ブランチテスト
 #define test
@@ -22,7 +23,6 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MODEL_MAX		(1)
 #define DEFAULT_SPEED	(40.0f)
 #define DEFAULT_POS		(310.0f)
 #define MAX_SPEED		(70.0f)
@@ -35,15 +35,25 @@ static BOOL				g_Load = FALSE;
 // テクスチャ管理
 enum {
 	TEXTURE_TEAMLOGO = 0,
+	//TEXTURE_STAR,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/blueberry_.png",
+	//"data/MODEL/star1.jpg",
 };
 
-static DX11_MODEL	g_Model[MODEL_MAX];	// プレイヤーのモデル管理
+enum {
+	MODEL_ROCKET1 = 0,
+	MODEL_ROCKET2,
+	MODEL_ROCKET3,
+	MODEL_ROCKET4,
+	MODEL_ROCKET5,
+	MODEL_MAX,
+};
+static MODEL_DATA	g_Model[MODEL_MAX];	// プレイヤーのモデル管理
 
 
 static float		g_Rotation = 0.0f;
@@ -112,6 +122,7 @@ public:
 };
 
 static ROCKET g_Rocket;
+static int testNo = 0;
 
 //=============================================================================
 // 初期化処理
@@ -125,10 +136,20 @@ HRESULT InitPlayer(void)
 		g_td[i].tex = &g_Texture[i];
 	}
 
-	for (int i = 0; i < MODEL_MAX; i++)
+	//for (int i = 0; i < MODEL_MAX; i++)
 	{
-		LoadModel("data/MODEL/ice_1.obj", &g_Model[i]);
-		//LoadModel("data/MODEL/aloe.obj", &g_Model[i]);
+		LoadModel("data/MODEL/rocket01.obj", &g_Model[0].model);
+		LoadModel("data/MODEL/rocket02.obj", &g_Model[1].model);
+		LoadModel("data/MODEL/rocket03.obj", &g_Model[2].model);
+		LoadModel("data/MODEL/rocket04.obj", &g_Model[3].model);
+		LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
+		//LoadModel("data/MODEL/earth01.obj", &g_Model[4].model);
+		for (int i = 0; i < MODEL_MAX; i++)
+		{
+			g_Model[i].pos = { 0.0f, -60.0f, DEFAULT_POS };
+			g_Model[i].rot = { XM_PI, 0.0f, XM_PI };
+			g_Model[i].scl = { 0.3f, 0.3f, 0.3f };
+		}
 	}
 
 	// 詳細設定
@@ -156,7 +177,7 @@ void UninitPlayer(void)
 
 	for (int i = 0; i < MODEL_MAX; i++)
 	{
-		UnloadModel(&g_Model[i]);
+		UnloadModel(&g_Model[i].model);
 	}
 
 	g_Load = FALSE;
@@ -181,6 +202,11 @@ void UpdatePlayer(void)
 		g_Rocket.Rotate(-0.002f);
 		//if (g_Rotation > -0.05f) g_Rotation -= 0.002f;
 	}
+	if (GetKeyboardPress(DIK_1)) { testNo = 0; }
+	if (GetKeyboardPress(DIK_2)) { testNo = 1; }
+	if (GetKeyboardPress(DIK_3)) { testNo = 2; }
+	if (GetKeyboardPress(DIK_4)) { testNo = 3; }
+	if (GetKeyboardPress(DIK_5)) { testNo = 4; }
 	//g_Rotation *= 0.98f;
 	//RotateTube(g_Rotation);
 
@@ -188,7 +214,7 @@ void UpdatePlayer(void)
 	XMMATRIX mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_Rocket.GetRotate());
 	SetAfterRotation(&mtxRot);
 
-	static CURVE curve;
+	static CURVE_BUFFER curve;
 
 	// スピード
 	if (GetKeyboardTrigger(DIK_SPACE))
@@ -204,15 +230,15 @@ void UpdatePlayer(void)
 
 	g_Rocket.Drive();
 
-	//curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
-	//curve.TexSpd = g_Rocket.GetSpeed() / MESH_SIZE;
-	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE;
+	////curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
+	////curve.TexSpd = g_Rocket.GetSpeed() / MESH_SIZE;
+	//curve.TexPos = g_Rocket.GetPos() / MESH_SIZE;
 	
 	//g_TestAddSpeed *= 0.98f;
 
 	if (g_Rocket.AbleToCollision())
 	{
-		CollisionGimmick(oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
+		CollisionGimmick(0, oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
 		//SetDamageEffect();
 	}
 
@@ -221,23 +247,24 @@ void UpdatePlayer(void)
 #endif
 
 	// パイプ曲げ
-	if (GetKeyboardPress(DIK_F))
-	{
-		curve.Angle.y += 0.005f;
-	}
-	if (GetKeyboardPress(DIK_G))
-	{
-		curve.Angle.y -= 0.005f;
-	}
-	if (GetKeyboardPress(DIK_H))
-	{
-		curve.Angle.x += 0.005f;
-	}
-	if (GetKeyboardPress(DIK_J))
-	{
-		curve.Angle.x -= 0.005f;
-	}
-	SetCurveBuffer(&curve);
+	//if (GetKeyboardPress(DIK_F))
+	//{
+	//	curve.Angle.y += 0.005f;
+	//}
+	//if (GetKeyboardPress(DIK_G))
+	//{
+	//	curve.Angle.y -= 0.005f;
+	//}
+	//if (GetKeyboardPress(DIK_H))
+	//{
+	//	curve.Angle.x += 0.005f;
+	//}
+	//if (GetKeyboardPress(DIK_J))
+	//{
+	//	curve.Angle.x -= 0.005f;
+	//}
+	//SetCurveBuffer(&curve);
+	SetStageCurve(0, g_Rocket.GetPos());
 
 	//MoveTube(40.0f);
 	//TestCurveTube(40.0f);
@@ -245,7 +272,7 @@ void UpdatePlayer(void)
 	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
-	SetMapPosition(g_Rocket.GetPos() / 250000.0f);
+	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage(0)->length * MESH_SIZE));
 	SetSpeedMeter(g_Rocket.GetSpeed() / MAX_SPEED);
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
@@ -266,35 +293,39 @@ void UpdatePlayer(void)
 //=============================================================================
 void DrawPlayer(void)
 {
+	SetCullingMode(CULL_MODE_NONE);
+
 	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
 
 	// ワールドマトリックスの初期化
 	mtxWorld = XMMatrixIdentity();
 
 	// スケールを反映
-	mtxScl = XMMatrixScaling(0.8f, 0.8f, 0.8f);
+	mtxScl = XMMatrixScaling(g_Model[testNo].scl.x, g_Model[testNo].scl.y, g_Model[testNo].scl.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
 	// 回転を反映：全体の角度
-	mtxRot = XMMatrixRotationRollPitchYaw(-XM_PIDIV2, 0.0f, 0.0f);
+	mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].rot.x, g_Model[testNo].rot.y, g_Model[testNo].rot.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 	// 移動を反映
-	mtxTranslate = XMMatrixTranslation(0.0f, -60.0f, DEFAULT_POS);
+	mtxTranslate = XMMatrixTranslation(g_Model[testNo].pos.x, g_Model[testNo].pos.y, g_Model[testNo].pos.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 	// ワールドマトリックスの設定
 	SetWorldBuffer(&mtxWorld);
 
-	//XMStoreFloat4x4(&g_Player.mtxWorld, mtxWorld);
-
 	// マテリアル設定
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = { 1.0f, 1.0f, 1.0f, 0.5f };
+	material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//material.Diffuse = { 1.0f, 1.0f, 1.0f, 0.5f };
 
 	// モデル描画
-	DrawModel(&g_Model[0], NULL, &material);
+	DrawModel(&g_Model[testNo].model, NULL, &material);
+	//DrawModel(&g_Model[0].model, &g_Texture[TEXTURE_STAR], &material);
+
+	SetCullingMode(CULL_MODE_BACK);
 }
 
 float GetPlayerSpeed(void)

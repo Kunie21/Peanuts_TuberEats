@@ -155,7 +155,7 @@ struct MOSAIC {			// モザイク処理バッファ用構造体
 	int			Size;
 	float		Dummy[3];
 };
-struct CURVE {			// カーブ処理バッファ用構造体
+struct CURVE_BUFFER {			// カーブ処理バッファ用構造体
 	XMFLOAT2	Angle = { 0.0f, 0.0f };
 	float		TexPos = 0.0f;
 	float		Dummy;
@@ -201,7 +201,7 @@ void SetViewBuffer(XMMATRIX* ViewMatrix);
 void SetProjectionBuffer(XMMATRIX* ProjectionMatrix);
 void SetCameraBuffer(CAMERA* Camera);
 void SetMaterialBuffer(MATERIAL* Material);
-void SetCurveBuffer(CURVE* curve);
+void SetCurveBuffer(CURVE_BUFFER* curve);
 void SetAfterRotation(XMMATRIX* AfterRotationMatrix);
 
 
