@@ -79,8 +79,8 @@ HRESULT InitTeamLogo(void)
 	//g_td[TEXTURE_TEAMLOGO].scl = { 1.0f, 1.0f };
 
 	LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_STAR].model);
-	LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_EARTH].model);
-	//LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
+	//LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_EARTH].model);
+	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
 	LoadModel("data/MODEL/rocket01.obj", &g_Model[MODEL_ROCKET].model);
 
 	g_Model[MODEL_STAR].pos = { 0.0f, 0.0f, 0.0f };

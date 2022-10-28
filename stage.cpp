@@ -21,6 +21,7 @@
 // マクロ定義
 //*****************************************************************************
 //#define MODEL_MAX		(1)
+#define GIMMICK_OSAKA		(50)
 
 //*****************************************************************************
 // グローバル変数
@@ -28,7 +29,7 @@
 static BOOL		g_Load = FALSE;
 static STAGE	g_Stage[STAGE_MAX];
 
-static GIMMICK	g_Gmk_Osaka[10];
+static GIMMICK	g_Gmk_Osaka[GIMMICK_OSAKA];
 static CURVE	g_Crv_Osaka[6];
 
 //=============================================================================
@@ -38,11 +39,11 @@ HRESULT InitStage(void)
 {
 	g_Stage[STAGE_OSAKA].arrGmk = g_Gmk_Osaka;
 	g_Stage[STAGE_OSAKA].arrCrv = g_Crv_Osaka;
-	g_Stage[STAGE_OSAKA].gmkNum = 10;
+	g_Stage[STAGE_OSAKA].gmkNum = GIMMICK_OSAKA;
 	g_Stage[STAGE_OSAKA].crvNum = 6;
 	g_Stage[STAGE_OSAKA].length = 1000;
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < GIMMICK_OSAKA; i++)
 	{
 		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;
 		g_Gmk_Osaka[i].zPosNo = i * 20;
