@@ -27,11 +27,11 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static int				g_Time = 0;
-static BOOL				g_Load = FALSE;
+static int			g_Time = 0;
+static BOOL			g_Load = FALSE;
 
-static GIMMICK g_GmIce[ICE_NUM];
-static GIMMICK g_GmRing[RING_NUM];
+static GIMMICK		g_GmIce[ICE_NUM];
+static GIMMICK		g_GmRing[RING_NUM];
 
 static DX11_MODEL	g_Model[GIMMICK_MAX];	// プレイヤーのモデル管理
 
