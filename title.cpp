@@ -1,101 +1,173 @@
 ////=============================================================================
 ////
-//// ƒ`[ƒ€ƒƒS‰æ–Êˆ— [teamlogo.cpp]
-//// Author : š ] ãÄ‘¾
+//// ï¿½`ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½ï¿½Êï¿½ï¿½ï¿½ [title.cpp]
+//// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 ////
 ////=============================================================================
-//#include "main.h"
-//#include "renderer.h"
-//#include "fade.h"
-//#include "teamlogo.h"
-//#include "texture2d.h"
+#include "main.h"
+#include "renderer.h"
+#include "texture2d.h"
+#include "title.h"
+#include "fade.h"
+#include "model.h"
+
 //
 ////*****************************************************************************
-//// ƒ}ƒNƒ’è‹`
+//// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 ////*****************************************************************************
-//#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ”wŒiƒTƒCƒY‰¡
-//#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ”wŒiƒTƒCƒYc
-//
-//#define TEXTURE_WIDTH_LOGO			(371)			// ƒƒSƒTƒCƒY‰¡
-//#define TEXTURE_HEIGHT_LOGO			(160)			// ƒƒSƒTƒCƒYc
-//
-//#define TEAMLOGO_TIME				(100)			// ƒƒS•\¦ŠÔ
+#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½ï¿½
+#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½c
+
+//#define TEXTURE_WIDTH_LOGO			(1154)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
+//#define TEXTURE_HEIGHT_LOGO			(693)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
+#define TEXTURE_WIDTH_LOGO			(984)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
+#define TEXTURE_HEIGHT_LOGO			(590)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
+
+#define TEAMLOGO_TIME				(100)			// ï¿½ï¿½ï¿½Sï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //
 ////*****************************************************************************
-//// ƒOƒ[ƒoƒ‹•Ï”
+//// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 ////*****************************************************************************
-//static int				g_Time = 0;
-//static BOOL				g_Load = FALSE;
+static int				g_Time = 0;
+static BOOL				g_Load = FALSE;
 //
-//// ƒeƒNƒXƒ`ƒƒŠÇ—
-//enum
-//{
-//	TEXTURE_TEAMLOGO = 0,
-//	TEXTURE_MAX,
-//};
-//static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
-//static char*	g_TextureName[TEXTURE_MAX] = {
-//	"data/TEXTURE/blueberry_.png",
-//};
-//
+//// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
+enum
+{
+	TEXTURE_BG = 0,
+	TEXTURE_TEAMLOGO,
+	TEXTURE_STAR,
+	TEXTURE_MAX,
+};
+static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
+static char*	g_TextureName[TEXTURE_MAX] = {
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/peanuts_logo_color.png",
+	"data/MODEL/star1.jpg",
+	//"data/TEXTURE/peanuts_logo_white.png",
+	//"data/TEXTURE/peanuts_bg_1.png",
+	//"data/TEXTURE/peanuts.png",
+};
+
+enum {
+	MODEL_STAR = 0,
+	MODEL_EARTH,
+	MODEL_ROCKET,
+	MODEL_MAX,
+};
+static MODEL_DATA	g_Model[MODEL_MAX];	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Ç—ï¿½
+
+
 ////=============================================================================
-//// ‰Šú‰»ˆ—
+//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+HRESULT InitTitle(void)
+{
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	for (int i = 0; i < TEXTURE_MAX; i++)
+	{
+		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+		g_td[i].tex = &g_Texture[i];
+	}
+
+	// ï¿½Ú×İ’ï¿½
+	//g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	//g_td[TEXTURE_TEAMLOGO].size = { TEXTURE_WIDTH_LOGO, TEXTURE_HEIGHT_LOGO };
+	//g_td[TEXTURE_TEAMLOGO].scl = { 0.5f, 0.5f };
+
+	LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_STAR].model);
+	//LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
+	//LoadModel("data/MODEL/rocket01.obj", &g_Model[MODEL_ROCKET].model);
+
+	g_Model[MODEL_STAR].pos = { 0.0f, 0.0f, 0.0f };
+	g_Model[MODEL_EARTH].pos = { 25.0f, 0.0f, 100.0f };
+	g_Model[MODEL_STAR].scl = { 20.3f, 20.3f, 20.3f };
+	g_Model[MODEL_EARTH].scl = { 0.3f, 0.3f, 0.3f };
+	g_Model[MODEL_ROCKET].scl = { 0.01f, 0.01f, 0.01f };
+
+	g_Time = 0;
+
+	g_Load = TRUE;
+	return S_OK;
+}
+
 ////=============================================================================
-//HRESULT InitTeamLogo(void)
-//{
-//	// ƒeƒNƒXƒ`ƒƒ¶¬
-//	for (int i = 0; i < TEXTURE_MAX; i++)
-//	{
-//		D3DX11CreateShaderResourceViewFromFile(GetDevice(),
-//			g_TextureName[i],
-//			NULL,
-//			NULL,
-//			&g_Texture[i],
-//			NULL);
-//	}
-//
-//	// Ú×İ’è
-//	g_td[TEXTURE_TEAMLOGO].size = { TEXTURE_WIDTH_LOGO, TEXTURE_HEIGHT_LOGO };
-//	g_td[TEXTURE_TEAMLOGO].tex = &g_Texture[TEXTURE_TEAMLOGO];
-//
-//	g_Time = 0;
-//
-//	g_Load = TRUE;
-//	return S_OK;
-//}
-//
+//// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ////=============================================================================
-//// I—¹ˆ—
+void UninitTitle(void)
+{
+	if (g_Load == FALSE) return;
+
+	for (int i = 0; i < TEXTURE_MAX; i++)
+	{
+		if (g_Texture[i])
+		{
+			g_Texture[i]->Release();
+			g_Texture[i] = NULL;
+		}
+	}
+
+	g_Load = FALSE;
+}
+
 ////=============================================================================
-//void UninitTeamLogo(void)
-//{
-//	if (g_Load == FALSE) return;
-//
-//	for (int i = 0; i < TEXTURE_MAX; i++)
-//	{
-//		if (g_Texture[i])
-//		{
-//			g_Texture[i]->Release();
-//			g_Texture[i] = NULL;
-//		}
-//	}
-//
-//	g_Load = FALSE;
-//}
-//
+//// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 ////=============================================================================
-//// XVˆ—
+void UpdateTitle(void)
+{
+	g_Model[MODEL_EARTH].rot.y -= 0.01f;
+}
+
 ////=============================================================================
-//void UpdateTeamLogo(void)
-//{
-//	if(g_Time++ >TEAMLOGO_TIME) { SetFade(FADE_OUT, MODE_LOADING); }
-//}
-//
+//// ï¿½`ï¿½æˆï¿½ï¿½
 ////=============================================================================
-//// •`‰æˆ—
-////=============================================================================
-//void DrawTeamLogo(void)
-//{
-//	DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
-//}
+void DrawTitle(void)
+{
+
+	SetDrawNoLighting();
+
+	SetCullingMode(CULL_MODE_NONE);
+
+	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
+
+	for (int testNo = 0; testNo < MODEL_MAX; testNo++)
+	{
+		// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+		mtxWorld = XMMatrixIdentity();
+
+		// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ”½‰f
+		mtxScl = XMMatrixScaling(g_Model[testNo].scl.x, g_Model[testNo].scl.y, g_Model[testNo].scl.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
+
+		// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½Sï¿½Ì‚ÌŠpï¿½x
+		mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].rot.x, g_Model[testNo].rot.y, g_Model[testNo].rot.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
+
+		// ï¿½Ú“ï¿½ï¿½ğ”½‰f
+		mtxTranslate = XMMatrixTranslation(g_Model[testNo].pos.x, g_Model[testNo].pos.y, g_Model[testNo].pos.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+
+		// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìİ’ï¿½
+		SetWorldBuffer(&mtxWorld);
+
+		// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½İ’ï¿½
+		MATERIAL material;
+		ZeroMemory(&material, sizeof(material));
+		material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
+		if (testNo != MODEL_STAR)
+		{
+			DrawModel(&g_Model[testNo].model, NULL, &material);
+		}
+		else
+		{
+			DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
+		}
+	}
+
+	SetCullingMode(CULL_MODE_BACK);
+
+
+}

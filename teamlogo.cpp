@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒ`[ƒ€ƒƒS‰æ–Êˆ— [teamlogo.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½`ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½ï¿½Êï¿½ï¿½ï¿½ [teamlogo.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -11,53 +11,53 @@
 #include "fade.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ”wŒiƒTƒCƒY‰¡
-#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ”wŒiƒTƒCƒYc
+#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½ï¿½
+#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½c
 
-#define TEXTURE_WIDTH_LOGO			(1154)			// ƒƒSƒTƒCƒY‰¡
-#define TEXTURE_HEIGHT_LOGO			(693)			// ƒƒSƒTƒCƒYc
+//#define TEXTURE_WIDTH_LOGO			(1154)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
+//#define TEXTURE_HEIGHT_LOGO			(693)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
 
-#define TEAMLOGO_TIME				(100)			// ƒƒS•\¦ŠÔ
+#define TEAMLOGO_TIME				(100)			// ï¿½ï¿½ï¿½Sï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static int				g_Time = 0;
 static BOOL				g_Load = FALSE;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum
 {
 	TEXTURE_BG = 0,
-	TEXTURE_TEAMLOGO,
+	//TEXTURE_TEAMLOGO,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/white.png",
-	"data/TEXTURE/peanuts.png",
+	//"data/TEXTURE/white.png",
+	"data/TEXTURE/peanuts_bg_1.png",
 };
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitTeamLogo(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 		g_td[i].tex = &g_Texture[i];
 	}
 
-	// Ú×İ’è
+	// ï¿½Ú×İ’ï¿½
 	g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	g_td[TEXTURE_TEAMLOGO].size = { TEXTURE_WIDTH_LOGO, TEXTURE_HEIGHT_LOGO };
-	g_td[TEXTURE_TEAMLOGO].scl = { 0.5f, 0.5f };
+	//g_td[TEXTURE_TEAMLOGO].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
+	//g_td[TEXTURE_TEAMLOGO].scl = { 0.5f, 0.5f };
 
 	g_Time = 0;
 
@@ -66,7 +66,7 @@ HRESULT InitTeamLogo(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitTeamLogo(void)
 {
@@ -85,7 +85,7 @@ void UninitTeamLogo(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateTeamLogo(void)
 {
@@ -93,11 +93,11 @@ void UpdateTeamLogo(void)
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawTeamLogo(void)
 {
 	SetDraw2DTexture();
 	DrawTexture2D(&g_td[TEXTURE_BG]);
-	DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
+	//DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
 }
