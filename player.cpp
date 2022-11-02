@@ -21,7 +21,7 @@
 // マクロ定義
 //*****************************************************************************
 #define DEFAULT_SPEED	(40.0f)
-#define DEFAULT_POS		(310.0f)
+//#define DEFAULT_POS		(310.0f)
 #define MAX_SPEED		(70.0f)
 
 //*****************************************************************************
@@ -48,6 +48,7 @@ enum {
 	MODEL_ROCKET3,
 	MODEL_ROCKET4,
 	MODEL_ROCKET5,
+	MODEL_FIRE,
 	MODEL_MAX,
 };
 static MODEL_DATA	g_Model[MODEL_MAX];	// プレイヤーのモデル管理
@@ -113,6 +114,7 @@ public:
 	bool AbleToCollision(void) const { if (m_invTime < 1.0f) return true; return false; }
 	float GetPos(void) const { return m_pos; }
 	float GetSpeed(void) const { return m_posSpd + m_addSpd; }
+	float GetSpeedRate(void) const { return GetSpeed() / MAX_SPEED; }
 	float GetRotate(void) const { return m_rot; }
 	float GetFuel(void) const { return m_fuel; }
 	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
@@ -135,17 +137,19 @@ HRESULT InitPlayer(void)
 
 	//for (int i = 0; i < MODEL_MAX; i++)
 	{
+		//LoadModel("data/MODEL/earth01.obj", &g_Model[0].model);
 		LoadModel("data/MODEL/rocket01.obj", &g_Model[0].model);
 		LoadModel("data/MODEL/rocket02.obj", &g_Model[1].model);
 		LoadModel("data/MODEL/rocket03.obj", &g_Model[2].model);
 		LoadModel("data/MODEL/rocket04.obj", &g_Model[3].model);
 		LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
-		//LoadModel("data/MODEL/earth01.obj", &g_Model[4].model);
+		LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
 		for (int i = 0; i < MODEL_MAX; i++) {
-			g_Model[i].srt.pos = { 0.0f, -60.0f, DEFAULT_POS };
+			g_Model[i].srt.pos = { 0.0f, -60.0f, 0.0f };
 			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
 			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
 		}
+		g_Model[MODEL_FIRE].srt.pos.z = -30.0f;
 	}
 
 	// 詳細設定
@@ -204,7 +208,7 @@ void UpdatePlayer(void)
 
 	// コリジョン
 	if (g_Rocket.AbleToCollision()){
-		CollisionGimmick(0, oldRocket.GetPos() + DEFAULT_POS, g_Rocket.GetPos() + DEFAULT_POS, oldRocket.GetRotate(), g_Rocket.GetRotate());
+		CollisionGimmick(0, oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
 		//SetDamageEffect();
 	}
 
@@ -224,7 +228,7 @@ void UpdatePlayer(void)
 	static int time = 0;
 	SetFrameTime(time++);
 	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage(0)->length * MESH_SIZE));
-	SetSpeedMeter(g_Rocket.GetSpeed() / MAX_SPEED);
+	SetSpeedMeter(g_Rocket.GetSpeedRate());
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
 #ifdef _DEBUG	// デバッグ情報を表示する
@@ -246,22 +250,27 @@ void DrawPlayer(void) {
 	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, NULL, &material);	// モデル描画
 	SetCullingMode(CULL_MODE_BACK);
 }
+void DrawFire(void) {
+	g_Model[MODEL_FIRE].srt.scl.x = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
+	g_Model[MODEL_FIRE].srt.scl.y = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
+	g_Model[MODEL_FIRE].srt.scl.z = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
+	MATERIAL material;
+	material.Shininess = 1.0f;
+	material.Diffuse.w = 1.0f;
+	DrawModel(&g_Model[MODEL_FIRE].model, &g_Model[MODEL_FIRE].srt, NULL, &material);	// モデル描画
+}
 
-float GetPlayerSpeed(void)
-{
+float GetPlayerSpeed(void) {
 	return g_Rocket.GetSpeed();
 }
-float GetPlayerPosition(void)
-{
+float GetPlayerPosition(void) {
 	return g_Rocket.GetPos();
 }
-void SetPlayerThroughRing(void)
-{
+void SetPlayerThroughRing(void) {
 	g_Rocket.Boost(30.0f);
 	g_Rocket.Collision();
 }
-void SetPlayerCollisionIce(void)
-{
+void SetPlayerCollisionIce(void) {
 	g_Rocket.LostFuel(500.0f);
 	g_Rocket.Boost(-60.0f);
 	g_Rocket.Collision();

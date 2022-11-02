@@ -54,7 +54,9 @@ VS_OUTPUT VertexShaderTube(VS_INPUT input) {
 VS_OUTPUT VertexShaderGimmick(VS_INPUT input) {
 	VS_OUTPUT output;
 	output.WorldPos = mul(input.Position, World);
+	//output.WorldPos = mul(mul(input.Position, World), transpose(AfterRot));
 	output.Position = GetTubeCurvePos(output.WorldPos);
+	//output.Normal = normalize(GetTubeCurvePos(float4(input.Normal.xyz, 0.0f)));
 	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), World));
 	output.TexCoord = input.TexCoord;
 	output.Diffuse = input.Diffuse * Material.Diffuse;
@@ -167,7 +169,7 @@ float4 PixelShaderLL(VS_OUTPUT input) : SV_Target {
 
 	// ライトの色と方向と距離
 	float3 lightColor = float3(1.0f, 1.0f, 1.0f);
-	float3 lightVec = float3(input.WorldPos.x, input.WorldPos.y - 180.0f, 0.0f);
+	float3 lightVec = float3(input.WorldPos.x, input.WorldPos.y - LL_POS, 0.0f);
 	float3 lightDir = normalize(lightVec);
 	float lightLen = length(lightVec);
 	float len2 = lightLen * lightLen;
@@ -188,9 +190,9 @@ float4 PixelShaderLL(VS_OUTPUT input) : SV_Target {
 	float specular = pow(saturate(dot(reflectDir, -cameraDir)), Material.Shininess);
 	outDiffuse.rgb += lightColor * specular * Material.Specular.rgb;
 
-	// 環境光を加算合成
-	float3 AmbientLightColor = AmbientLight.Color.rgb * AmbientLight.Intensity;
-	outDiffuse.rgb += AmbientLightColor * Material.Ambient.rgb * color.rgb;
+	//// 環境光を加算合成
+	//float3 AmbientLightColor = AmbientLight.Color.rgb * AmbientLight.Intensity;
+	//outDiffuse.rgb += AmbientLightColor * Material.Ambient.rgb * color.rgb;
 
 	return outDiffuse;
 }
@@ -568,7 +570,8 @@ void GeometryShaderPL(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT>
 			NewVtx.TexCoord = Input[vtx1].TexCoord;
 			NewVtx.Diffuse = Input[vtx1].Diffuse;
 			Output.Append(NewVtx);
-			NewVtx.Position = mul(newWorldPos0, VP);
+			NewVtx.Position = GetTubeCurvePos(newWorldPos0);
+			//NewVtx.Position = mul(newWorldPos0, VP);
 			NewVtx.WorldPos = newWorldPos0;
 			NewVtx.Normal = newNormal;
 			NewVtx.TexCoord = Input[vtx0].TexCoord;
@@ -583,13 +586,15 @@ void GeometryShaderPL(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT>
 			NewVtx.TexCoord = Input[vtx1].TexCoord;
 			NewVtx.Diffuse = Input[vtx1].Diffuse;
 			Output.Append(NewVtx);
-			NewVtx.Position = mul(newWorldPos1, VP);
+			NewVtx.Position = GetTubeCurvePos(newWorldPos1);
+			//NewVtx.Position = mul(newWorldPos1, VP);
 			NewVtx.WorldPos = newWorldPos1;
 			NewVtx.Normal = newNormal;
 			NewVtx.TexCoord = Input[vtx1].TexCoord;
 			NewVtx.Diffuse = Input[vtx1].Diffuse;
 			Output.Append(NewVtx);
-			NewVtx.Position = mul(newWorldPos0, VP);
+			NewVtx.Position = GetTubeCurvePos(newWorldPos0);
+			//NewVtx.Position = mul(newWorldPos0, VP);
 			NewVtx.WorldPos = newWorldPos0;
 			NewVtx.Normal = newNormal;
 			NewVtx.TexCoord = Input[vtx0].TexCoord;
@@ -658,6 +663,180 @@ void GeometryShaderSL(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT>
 			NewVtx.Diffuse = Input[vtx1].Diffuse;
 			Output.Append(NewVtx);
 			NewVtx.Position = mul(newWorldPos0, VP);
+			NewVtx.WorldPos = newWorldPos0;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx0].TexCoord;
+			NewVtx.Diffuse = Input[vtx0].Diffuse;
+			Output.Append(NewVtx);
+			Output.RestartStrip();
+		}
+	}
+}
+// 線光源のシャドウボリューム作成
+[MaxVertexCount(18)]	// 3edge*1square(=2triangle)*3vertex
+void GeometryShaderLLPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Output)
+{
+	//float4 LineLightPos = GetTubeCurvePos(mul(float4(0.0f, LL_POS, 0.0f, 1.0f), World));
+	//float3 lightDir[3] = {
+	//	Input[0].WorldPos.xyz - LineLightPos.xyz,
+	//	Input[1].WorldPos.xyz - LineLightPos.xyz,
+	//	Input[2].WorldPos.xyz - LineLightPos.xyz
+	//};
+
+	//float4 LineLightPos = { 0.0f, LL_POS, World._43, 1.0f };
+	//float3 lightDir[3] = {
+	//	Input[0].WorldPos.xyz - LineLightPos.xyz,
+	//	Input[1].WorldPos.xyz - LineLightPos.xyz,
+	//	Input[2].WorldPos.xyz - LineLightPos.xyz
+	//};
+
+	//float3 lightDir[3] = {
+	//	float3(Input[0].WorldPos.x, Input[0].WorldPos.y - LL_POS, 0.0f),
+	//	float3(Input[1].WorldPos.x, Input[1].WorldPos.y - LL_POS, 0.0f),
+	//	float3(Input[2].WorldPos.x, Input[2].WorldPos.y - LL_POS, 0.0f)
+	//};
+
+	//float4 LineLightPos = { 0.0f, LL_POS, World._43, 1.0f };
+	//float3 PosAVE = (Input[0].WorldPos + Input[1].WorldPos + Input[2].WorldPos) / 3;
+	//float3 lightDir = PosAVE - LineLightPos;
+
+	//float3 lightDir = -float3(0.0f, LL_POS, World._43);
+	float3 lightDir = float3(World._41, World._42 - LL_POS, 0.0f);
+
+	//float3 lightDirAVE = (lightDir[0] + lightDir[1] + lightDir[2]) / 3;
+	float3 normalDirAVE = (Input[0].Normal.xyz + Input[1].Normal.xyz + Input[2].Normal.xyz) / 3;
+	if (dot(-lightDir, normalDirAVE) <= 0.0f)	// 陰になる角度
+	{
+		PS_INPUT NewVtx;
+		uint vtx0, vtx1;
+		float4 newWorldPos0, newWorldPos1, newNormal;
+		for (int e = 0; e < 3; e++)	// 辺ごとに影を伸ばす
+		{
+			vtx0 = e;
+			vtx1 = (e + 1) % 3;
+			newWorldPos0 = float4(Input[vtx0].WorldPos.xyz + lightDir * SHADOW_LENGTH, 1.0f);	// wは1.0f
+			newWorldPos1 = float4(Input[vtx1].WorldPos.xyz + lightDir * SHADOW_LENGTH, 1.0f);
+			newNormal = float4(cross(newWorldPos1.xyz - newWorldPos0.xyz, lightDir), 1.0f);
+
+			// 1つ目の三角形
+			NewVtx.Position = Input[vtx0].Position;
+			NewVtx.WorldPos = Input[vtx0].WorldPos;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx0].TexCoord;
+			NewVtx.Diffuse = Input[vtx0].Diffuse;
+			Output.Append(NewVtx);
+			NewVtx.Position = Input[vtx1].Position;
+			NewVtx.WorldPos = Input[vtx1].WorldPos;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx1].TexCoord;
+			NewVtx.Diffuse = Input[vtx1].Diffuse;
+			Output.Append(NewVtx);
+			//NewVtx.Position = mul(newWorldPos0, VP);
+			//NewVtx.Position = GetTubeCurvePos(newWorldPos0);
+			NewVtx.Position = mul(mul(newWorldPos0, AfterRot), VP);
+			NewVtx.WorldPos = newWorldPos0;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx0].TexCoord;
+			NewVtx.Diffuse = Input[vtx0].Diffuse;
+			Output.Append(NewVtx);
+			Output.RestartStrip();
+
+			// 2つ目の三角形
+			NewVtx.Position = Input[vtx1].Position;
+			NewVtx.WorldPos = Input[vtx1].WorldPos;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx1].TexCoord;
+			NewVtx.Diffuse = Input[vtx1].Diffuse;
+			Output.Append(NewVtx);
+			//NewVtx.Position = mul(newWorldPos1, VP);
+			//NewVtx.Position = GetTubeCurvePos(newWorldPos1);
+			NewVtx.Position = mul(mul(newWorldPos1, AfterRot), VP);
+			NewVtx.WorldPos = newWorldPos1;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx1].TexCoord;
+			NewVtx.Diffuse = Input[vtx1].Diffuse;
+			Output.Append(NewVtx);
+			//NewVtx.Position = mul(newWorldPos0, VP);
+			//NewVtx.Position = GetTubeCurvePos(newWorldPos0);
+			NewVtx.Position = mul(mul(newWorldPos0, AfterRot), VP);
+			NewVtx.WorldPos = newWorldPos0;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx0].TexCoord;
+			NewVtx.Diffuse = Input[vtx0].Diffuse;
+			Output.Append(NewVtx);
+			Output.RestartStrip();
+		}
+	}
+}
+[MaxVertexCount(18)]	// 3edge*1square(=2triangle)*3vertex
+void GeometryShaderLLNonPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Output)
+{
+	//float3 lightDir = { 0.0f, -1.0f, World._43 };
+
+	//float4 LineLightPos = { 0.0f, LL_POS, World._43, 1.0f };
+	//float3 lightDir[3] = {
+	//	Input[0].WorldPos.xyz - LineLightPos.xyz,
+	//	Input[1].WorldPos.xyz - LineLightPos.xyz,
+	//	Input[2].WorldPos.xyz - LineLightPos.xyz
+	//};
+	//float3 lightDirAVE = (lightDir[0] + lightDir[1] + lightDir[2]) / 3;
+
+	float3 lightDir = float3(World._41, World._42 - LL_POS, 0.0f);	// ワールド座標（モデルの中心）のx, yからライトの方向を作る
+	float3 normalDirAVE = (Input[0].Normal.xyz + Input[1].Normal.xyz + Input[2].Normal.xyz) / 3;
+	if (dot(-lightDir, normalDirAVE) <= 0.0f)	// 陰になる角度
+	{
+		PS_INPUT NewVtx;
+		uint vtx0, vtx1;
+		float4 newWorldPos0, newWorldPos1, newNormal;
+		for (int e = 0; e < 3; e++)	// 辺ごとに影を伸ばす
+		{
+			vtx0 = e;
+			vtx1 = (e + 1) % 3;
+			newWorldPos0 = float4(Input[vtx0].WorldPos.xyz + lightDir * SHADOW_LENGTH, 1.0f);	// wは1.0f
+			newWorldPos1 = float4(Input[vtx1].WorldPos.xyz + lightDir * SHADOW_LENGTH, 1.0f);
+			newNormal = float4(cross(newWorldPos1.xyz - newWorldPos0.xyz, lightDir), 1.0f);
+
+			// 1つ目の三角形
+			NewVtx.Position = Input[vtx0].Position;
+			NewVtx.WorldPos = Input[vtx0].WorldPos;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx0].TexCoord;
+			NewVtx.Diffuse = Input[vtx0].Diffuse;
+			Output.Append(NewVtx);
+			NewVtx.Position = Input[vtx1].Position;
+			NewVtx.WorldPos = Input[vtx1].WorldPos;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx1].TexCoord;
+			NewVtx.Diffuse = Input[vtx1].Diffuse;
+			Output.Append(NewVtx);
+			//NewVtx.Position = mul(newWorldPos0, VP);
+			//NewVtx.Position = mul(GetTubeCurvePos(newWorldPos0), transpose(AfterRot));
+			NewVtx.Position = GetTubeCurvePos(newWorldPos0);
+			NewVtx.WorldPos = newWorldPos0;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx0].TexCoord;
+			NewVtx.Diffuse = Input[vtx0].Diffuse;
+			Output.Append(NewVtx);
+			Output.RestartStrip();
+
+			// 2つ目の三角形
+			NewVtx.Position = Input[vtx1].Position;
+			NewVtx.WorldPos = Input[vtx1].WorldPos;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx1].TexCoord;
+			NewVtx.Diffuse = Input[vtx1].Diffuse;
+			Output.Append(NewVtx);
+			//NewVtx.Position = mul(newWorldPos1, VP);
+			//NewVtx.Position = mul(GetTubeCurvePos(newWorldPos1), transpose(AfterRot));
+			NewVtx.Position = GetTubeCurvePos(newWorldPos1);
+			NewVtx.WorldPos = newWorldPos1;
+			NewVtx.Normal = newNormal;
+			NewVtx.TexCoord = Input[vtx1].TexCoord;
+			NewVtx.Diffuse = Input[vtx1].Diffuse;
+			Output.Append(NewVtx);
+			//NewVtx.Position = mul(newWorldPos0, VP);
+			//NewVtx.Position = mul(GetTubeCurvePos(newWorldPos0), transpose(AfterRot));
+			NewVtx.Position = GetTubeCurvePos(newWorldPos0);
 			NewVtx.WorldPos = newWorldPos0;
 			NewVtx.Normal = newNormal;
 			NewVtx.TexCoord = Input[vtx0].TexCoord;

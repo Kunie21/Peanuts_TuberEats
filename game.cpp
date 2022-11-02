@@ -127,7 +127,7 @@ void UpdateGame(void)
 void DrawAllObjects(void)
 {
 	DrawTube();
-	DrawGimmick();
+	//DrawGimmick();
 	DrawPlayer();
 }
 void DrawGame(void)
@@ -136,34 +136,76 @@ void DrawGame(void)
 	//DrawPlayer();
 	
 	{
-		SetDrawFillBlack();
-		DrawTube();
-		DrawGimmick();
+		// 黒塗りする
+		{
+			SetDrawFillBlack(SHADER_TUBE);
+			DrawTube();
+			SetDrawFillBlack(SHADER_GIMMICK);
+			DrawGimmick(GIMMICK_ICE);
+			SetDrawFillBlack(SHADER_PLAYER);
+			DrawPlayer();
+		}
 
-		SetDrawFillBlackPlayer();
-		DrawPlayer();
-
+		// 加算合成モードにする
 		SetBlendState(BLEND_MODE_ADD);
 
-		// ライト番号をセット
-		//SetLightNo(0);
+		{
+			// 影になる部分のステンシルを作成
+			//SetStencilWriteLL(SHADER_TUBE);
+			//DrawTube();
+			SetStencilWriteLL(SHADER_GIMMICK);
+			DrawGimmick(GIMMICK_ICE);
+			//SetStencilWritePL();
+			SetStencilWriteLL(SHADER_PLAYER);
+			DrawPlayer();
 
-		SetDrawTube();
-		DrawTube();
+			// ステンシルテストを使って影以外の部分を加算合成で描画
 
-		SetDrawGimmick();
-		DrawTubeLight();
-		DrawGimmick();
+			// ラインライト
+			SetStencilReadLL(SHADER_TUBE);
+			DrawTube();
+			SetStencilReadLL(SHADER_GIMMICK);
+			DrawGimmick(GIMMICK_ICE);
+			SetStencilReadLL(SHADER_PLAYER);
+			DrawPlayer();
 
-		SetDrawPlayer();
-		DrawPlayer();
+			// ステンシルを初期化
+			ClearStencil();
 
+			// 環境光
+			SetStencilNoneAL(SHADER_TUBE);
+			DrawTube();
+			SetStencilNoneAL(SHADER_GIMMICK);
+			DrawGimmick(GIMMICK_ICE);
+			SetStencilNoneAL(SHADER_PLAYER);
+			DrawPlayer();
+
+			//SetDrawTube();
+			//DrawTube();
+
+			//SetDrawGimmick();
+
+			//SetDrawPlayer();
+			//DrawPlayer();
+
+			SetDrawLight();
+			DrawTubeLight();
+			DrawGimmick(GIMMICK_RING);
+
+			SetDrawFire();
+			DrawFire();
+		}
+
+		// 加算合成モードを終了する
 		SetBlendState(BLEND_MODE_ALPHABLEND);
 	}
 
+	// バックバッファをターゲットにして描画
+	DrawTarget();
 
 	SetDraw2DTexture();
 	DrawGameUI();
+
 
 
 	// アウトラインを引く

@@ -227,6 +227,9 @@ HRESULT InitTube(void)
 
 	// ライトパイプ
 	{
+		// マテリアル設定
+		g_MeshLight.material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+
 		// ポジション設定
 		g_MeshLight.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_MeshLight.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);

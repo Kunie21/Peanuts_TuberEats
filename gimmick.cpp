@@ -89,7 +89,7 @@ void UpdateGimmick(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawGimmick(void)
+void DrawGimmick(GIMMICK_TYPE gimmick)
 {
 	XMMATRIX mtxWorld;
 	float zPos, rot;
@@ -97,6 +97,8 @@ void DrawGimmick(void)
 	STAGE* pStage = GetStage(0);
 	for (int i = 0; i < pStage->gmkNum; i++)
 	{
+		if (pStage->arrGmk[i].type != gimmick) continue;
+
 		zPos = d_pos + MESH_SIZE * pStage->arrGmk[i].zPosNo;
 		if (-20000.0f > zPos || zPos > 20000.0f) continue;
 		
@@ -104,7 +106,7 @@ void DrawGimmick(void)
 		mtxWorld = XMMatrixIdentity();	// ワールドマトリックスの初期化
 
 		MATERIAL material;
-		switch (pStage->arrGmk[i].type)
+		switch (gimmick)
 		{
 		case GIMMICK_ICE:
 			MulMtxScl(mtxWorld, 4.0f, 1.8f, 4.0f);				// スケールを反映

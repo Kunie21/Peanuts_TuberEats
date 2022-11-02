@@ -46,6 +46,7 @@ HRESULT InitStage(void)
 	for (int i = 0; i < GIMMICK_OSAKA; i++)
 	{
 		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;
+		if (g_Gmk_Osaka[i].rotPosNo%MESH_NUM_X == 0) g_Gmk_Osaka[i].rotPosNo++;
 		g_Gmk_Osaka[i].zPosNo = i * 20;
 		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 2);
 	}
@@ -56,16 +57,16 @@ HRESULT InitStage(void)
 	g_Crv_Osaka[1].angle = { 0.0f, 0.0f };
 	g_Crv_Osaka[1].zPosNo = 100;
 
-	g_Crv_Osaka[2].angle = { 0.05f, 0.1f };
+	g_Crv_Osaka[2].angle = { 0.0f, 0.1f };
 	g_Crv_Osaka[2].zPosNo = 150;
 
-	g_Crv_Osaka[3].angle = { 0.05f, -0.1f };
+	g_Crv_Osaka[3].angle = { 0.0f, -0.1f };
 	g_Crv_Osaka[3].zPosNo = 200;
 
-	g_Crv_Osaka[4].angle = { -0.05f, 0.0f };
+	g_Crv_Osaka[4].angle = { -0.2f, 0.2f };
 	g_Crv_Osaka[4].zPosNo = 300;
 
-	g_Crv_Osaka[5].angle = { 0.0f, 0.0f };
+	g_Crv_Osaka[5].angle = { 0.2f, -0.2f };
 	g_Crv_Osaka[5].zPosNo = 1000;
 
 	g_Load = TRUE;

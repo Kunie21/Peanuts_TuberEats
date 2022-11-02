@@ -13,6 +13,7 @@ HRESULT InitPlayer(void);
 void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);
+void DrawFire(void);
 
 float GetPlayerSpeed(void);
 float GetPlayerPosition(void);

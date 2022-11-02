@@ -49,12 +49,12 @@ enum CULL_MODE {		// カリングモード
 	CULL_MODE_NUM
 };
 enum POSITION_TYPE {	// 位置の種類
-	POSITION_RELATIVE = 0,	// 相対位置
-	POSITION_ABSOLUTE,		// 絶対位置
+	POSITION_RELATIVE = 0,	// 相対位置（画面中心を0,0としてPositionを数える）
+	POSITION_ABSOLUTE,		// 絶対位置（画面左上を0,0としてPositionを数える）
 };
-enum CENTER_TYPE {	// 中心の種類
-	CENTER_LEFTTOP = 0,	// 左上を指すとき
-	CENTER_CENTER,		// 中心を指すとき
+enum CENTER_TYPE {		// 中心の種類
+	CENTER_LEFTTOP = 0,		// Positionがテクスチャの左上を指すとき
+	CENTER_CENTER,			// Positionがテクスチャの中心を指すとき
 };
 enum HORIZONTAL_POSITION {	// 水平位置の種類
 	HORIZONTAL_LEFT = 0,	// 左寄せ
@@ -65,6 +65,11 @@ enum VERTICAL_POSITION {	// 垂直位置の種類
 	VERTICAL_TOP = 0,		// 上寄せ
 	VERTICAL_MIDDLE,		// 中央寄せ
 	VERTICAL_BOTTOM,		// 下寄せ
+};
+enum SHADER_TYPE {	// シェーダーの種類
+	SHADER_TUBE = 0,	// パイプ用（カーブ＆テクスチャが移動する）
+	SHADER_GIMMICK,		// ギミック用（カーブ）
+	SHADER_PLAYER,		// プレイヤー用（特に無し）
 };
 
 //*********************************************************
@@ -218,20 +223,24 @@ void SetBackGroundColor(XMFLOAT4 color);
 void SetStencilWriteDL(void);
 void SetStencilWritePL(void);
 void SetStencilWriteSL(void);
+void SetStencilWriteLL(SHADER_TYPE shader);
 void SetStencilRead(void);
 void SetStencilReadDL(void);
 void SetStencilReadPL(void);
 void SetStencilReadSL(void);
+void SetStencilReadLL(SHADER_TYPE shader);
 void SetStencilNone(void);
-void SetStencilNoneAL(void);
+void SetStencilNoneAL(SHADER_TYPE shader);
 void SetStencilNoneOnlyDepth(void);
 void SetDrawOutline(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f });
-void SetDrawFillBlack(void);
+void SetDrawFillBlack(SHADER_TYPE shader);
 void SetDrawFillBlackPlayer(void);
 void SetDrawNoLighting(void);
 void SetDrawTube(void);
 void SetDrawGimmick(void);
 void SetDrawPlayer(void);
+void SetDrawLight(void);
+void SetDrawFire(void);
 void SetDraw2DTexture(void);
 //void SetDrawPreOutline(void);
 //void SetDrawPostOutline(void);

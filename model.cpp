@@ -140,11 +140,19 @@ void LoadModel( char *FileName, DX11_MODEL *Model)
 //=============================================================================
 // 終了処理
 //=============================================================================
-void UnloadModel( DX11_MODEL *Model )
+void UnloadModel(DX11_MODEL *Model)
 {
-	if( Model->VertexBuffer )		Model->VertexBuffer->Release();
-	if( Model->IndexBuffer )		Model->IndexBuffer->Release();
-	if( Model->SubsetArray )		delete[] Model->SubsetArray;
+	if (Model->VertexBuffer)		Model->VertexBuffer->Release();
+	if (Model->IndexBuffer)		Model->IndexBuffer->Release();
+
+	// テクスチャを解放する
+	for (int i = 0; i < Model->SubsetNum; i++) {
+		if (Model->SubsetArray[i].Material.Material.noTexSampling == 0) {
+			Model->SubsetArray[i].Material.Texture->Release();
+		}
+	}
+
+	if (Model->SubsetArray)        delete[] Model->SubsetArray;
 }
 
 
