@@ -122,12 +122,14 @@ static ID3D11VertexShader*		g_VertexShader = NULL;
 static ID3D11VertexShader*		g_VertexShaderOutline = NULL;
 static ID3D11VertexShader*		g_VertexShaderTube = NULL;
 static ID3D11VertexShader*		g_VertexShaderGimmick = NULL;
+static ID3D11VertexShader*		g_VertexShaderPlayer = NULL;
 static ID3D11PixelShader*		g_PixelShader = NULL;
 static ID3D11PixelShader*		g_PixelShaderOutline = NULL;
 static ID3D11PixelShader*		g_PixelShaderAL = NULL;
 static ID3D11PixelShader*		g_PixelShaderDL = NULL;
 static ID3D11PixelShader*		g_PixelShaderPL = NULL;
 static ID3D11PixelShader*		g_PixelShaderSL = NULL;
+static ID3D11PixelShader*		g_PixelShaderLL = NULL;
 static ID3D11GeometryShader*	g_GeometryShaderDL = NULL;
 static ID3D11GeometryShader*	g_GeometryShaderPL = NULL;
 static ID3D11GeometryShader*	g_GeometryShaderSL = NULL;
@@ -218,12 +220,14 @@ void UninitRenderer(void)
 	if (g_VertexShaderOutline)	g_VertexShaderOutline->Release();
 	if (g_VertexShaderTube)		g_VertexShaderTube->Release();
 	if (g_VertexShaderGimmick)	g_VertexShaderGimmick->Release();
+	if (g_VertexShaderPlayer)	g_VertexShaderPlayer->Release();
 	if (g_PixelShader)			g_PixelShader->Release();
 	if (g_PixelShaderOutline)	g_PixelShaderOutline->Release();
 	if (g_PixelShaderAL)		g_PixelShaderAL->Release();
 	if (g_PixelShaderDL)		g_PixelShaderDL->Release();
 	if (g_PixelShaderPL)		g_PixelShaderPL->Release();
 	if (g_PixelShaderSL)		g_PixelShaderSL->Release();
+	if (g_PixelShaderLL)		g_PixelShaderLL->Release();
 	if (g_GeometryShaderDL)		g_GeometryShaderDL->Release();
 	if (g_GeometryShaderPL)		g_GeometryShaderPL->Release();
 	if (g_GeometryShaderSL)		g_GeometryShaderSL->Release();
@@ -656,6 +660,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateShader("shader.hlsl", "VertexShaderOutline", &g_VertexShaderOutline, shFlag);
 		CreateShader("shader.hlsl", "VertexShaderTube", &g_VertexShaderTube, shFlag);
 		CreateShader("shader.hlsl", "VertexShaderGimmick", &g_VertexShaderGimmick, shFlag);
+		CreateShader("shader.hlsl", "VertexShaderPlayer", &g_VertexShaderPlayer, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VertexShaderFilter", &g_VertexShaderFilter, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VertexShaderNormalMap", &g_VertexShaderNormalMap, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VertexShaderDepthMap", &g_VertexShaderDepthMap, shFlag);
@@ -671,6 +676,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateShader("shader.hlsl", "PixelShaderDL", &g_PixelShaderDL, shFlag);
 		CreateShader("shader.hlsl", "PixelShaderPL", &g_PixelShaderPL, shFlag);
 		CreateShader("shader.hlsl", "PixelShaderSL", &g_PixelShaderSL, shFlag);
+		CreateShader("shader.hlsl", "PixelShaderLL", &g_PixelShaderLL, shFlag);
 		CreateShader("shader.hlsl", "PixelShaderOutline", &g_PixelShaderOutline, shFlag);
 		CreateShader("shader_postEffect.hlsl", "PixelShaderFilter", &g_PixelShaderFilter, shFlag);
 		CreateShader("shader_postEffect.hlsl", "PixelShaderOnlyTex", &g_PixelShaderOnlyTex, shFlag);
@@ -709,7 +715,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateBuffer(&hBufferDesc, 7, &g_LightBuffer, sizeof(LIGHT_NO));
 		CreateBuffer(&hBufferDesc, 8, &g_OutlineBuffer, sizeof(OUTLINE));
 		CreateBuffer(&hBufferDesc, 9, &g_FilterBuffer, sizeof(XMMATRIX));
-		//CreateBuffer(&hBufferDesc, 10, &g_MosaicBuffer, sizeof(MOSAIC));
+		CreateBuffer(&hBufferDesc, 10, &g_MosaicBuffer, sizeof(MOSAIC));
 		CreateBuffer(&hBufferDesc, 10, &g_CurveBuffer, sizeof(CURVE_BUFFER));
 		CreateBuffer(&hBufferDesc, 11, &g_ConstantBuffer, sizeof(CONSTANT));
 
@@ -829,6 +835,13 @@ void SetWorldViewProjection2D(void) {
 	XMStoreFloat4x4(&matrix.WorldViewProjection, XMMatrixTranspose(worldViewProjection));
 	GetDeviceContext()->UpdateSubresource(g_MatrixBuffer, 0, NULL, &matrix, 0, 0);
 }
+void SetWorldBuffer(SRT& srt) {
+	XMMATRIX mtxWorld = XMMatrixIdentity();		// ワールドマトリックスの初期化
+	MulMtxScl(mtxWorld, srt.scl);	// スケールを反映
+	MulMtxRot(mtxWorld, srt.rot);	// 回転を反映：全体の角度
+	MulMtxPos(mtxWorld, srt.pos);	// 移動を反映
+	SetWorldBuffer(&mtxWorld);		// ワールドマトリックスの設定
+}
 void SetWorldBuffer(XMMATRIX* WorldMatrix) {
 	XMStoreFloat4x4(&g_Matrix.World, *WorldMatrix);
 
@@ -839,7 +852,6 @@ void SetWorldBuffer(XMMATRIX* WorldMatrix) {
 	XMStoreFloat4x4(&matrix.World, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.World)));
 	XMStoreFloat4x4(&matrix.View, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.View)));
 	XMStoreFloat4x4(&matrix.Projection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.Projection)));
-	XMStoreFloat4x4(&matrix.World, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.World)));
 	XMStoreFloat4x4(&matrix.ViewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.ViewProjection)));
 	XMStoreFloat4x4(&matrix.WorldViewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.WorldViewProjection)));
 	XMStoreFloat4x4(&matrix.AfterRotation, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.AfterRotation)));
@@ -1050,7 +1062,8 @@ void SetStencilNoneAL(void)
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PixelShaderAL, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 
 void SetStencilNoneOnlyDepth(void)
@@ -1081,11 +1094,26 @@ void SetDrawFillBlack(void)
 	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
 	SetCullingMode(CULL_MODE_BACK);
+	//g_ImmediateContext->VSSetShader(g_VertexShaderOutline, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VertexShaderTube, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderOutline, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
+}
+void SetDrawFillBlackPlayer(void)
+{
+	OUTLINE outline = { { 0.0f, 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f} };
+	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
+
+	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VertexShaderOutline, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PixelShaderOutline, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 void SetDrawNoLighting(void)
 {
@@ -1098,11 +1126,35 @@ void SetDrawNoLighting(void)
 }
 void SetDrawTube(void)
 {
+	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VertexShaderTube, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PixelShaderPL, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PixelShaderAL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderLL, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 void SetDrawGimmick(void)
 {
+	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VertexShaderGimmick, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PixelShaderPL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderLL, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
+}
+void SetDrawPlayer(void)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VertexShaderPlayer, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderLL, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 void SetDraw2DTexture(void)
 {
@@ -1325,8 +1377,28 @@ void DrawDepthMap(void)
 }
 
 // Float3をFloat4に変換
-XMFLOAT4 Float4(XMFLOAT3* f3) {
-	return { f3->x, f3->y, f3->z, 0.0f };
+XMFLOAT4 Float4(XMFLOAT3& f3) {
+	return { f3.x, f3.y, f3.z, 0.0f };
+}
+
+// マトリクス計算
+void MulMtxScl(XMMATRIX& mtxWorld, XMFLOAT3& scl) {
+	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixScaling(scl.x, scl.y, scl.z));
+}
+void MulMtxScl(XMMATRIX& mtxWorld, float x, float y, float z) {
+	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixScaling(x, y, z));
+}
+void MulMtxRot(XMMATRIX& mtxWorld, XMFLOAT3& rot) {
+	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z));
+}
+void MulMtxRot(XMMATRIX& mtxWorld, float x, float y, float z) {
+	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixRotationRollPitchYaw(x, y, z));
+}
+void MulMtxPos(XMMATRIX& mtxWorld, XMFLOAT3& pos) {
+	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixTranslation(pos.x, pos.y, pos.z));
+}
+void MulMtxPos(XMMATRIX& mtxWorld, float x, float y, float z) {
+	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixTranslation(x, y, z));
 }
 
 XMFLOAT4 GetBackGroundColor(void)

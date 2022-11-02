@@ -15,6 +15,7 @@ void UpdatePlayer(void);
 void DrawPlayer(void);
 
 float GetPlayerSpeed(void);
+float GetPlayerPosition(void);
 void SetPlayerThroughRing(void);
 void SetPlayerCollisionIce(void);
 

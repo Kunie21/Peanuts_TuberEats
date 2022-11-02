@@ -72,23 +72,17 @@ HRESULT InitStage(void)
 	return S_OK;
 }
 
-STAGE* GetStage(int stageNo)
-{
-	return &g_Stage[stageNo];
-}
+STAGE* GetStage(int stageNo) { return &g_Stage[stageNo]; }
 
-void SetStageCurve(int stageNo, float zPos)
-{
+void SetStageCurve(int stageNo, float zPos) {
 	CURVE_BUFFER curve;
 	curve.TexPos = zPos / MESH_SIZE;
 	float rate, rateA, rateB, start, end;
-	for (int i = 0; i < g_Stage[stageNo].crvNum - 1; i++)
-	{
+	for (int i = 0; i < g_Stage[stageNo].crvNum - 1; i++) {
 		start = g_Stage[stageNo].arrCrv[i].zPosNo * MESH_SIZE;
 		end = g_Stage[stageNo].arrCrv[i + 1].zPosNo * MESH_SIZE;
 
-		if (start < zPos && zPos < end)
-		{
+		if (start < zPos && zPos < end) {
 			rate = (zPos - start) / (end - start);
 			rateA = (1.0f - rate) * (1.0f - rate);
 			rateB = rate * rate;

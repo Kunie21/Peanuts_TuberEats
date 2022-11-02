@@ -8,6 +8,9 @@
 #include "renderer.h"
 #include "light.h"
 
+#include "input.h"
+#include "debugproc.h"
+
 //=============================================================================
 // ÉOÉçÅ[ÉoÉãïœêî
 //=============================================================================
@@ -22,7 +25,7 @@ LIGHT_SPOT			g_Spot[LIGHT_SPOT_MAX];
 void InitLight(void)
 {
 	g_Ambient.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_Ambient.Intensity = 0.2f;
+	g_Ambient.Intensity = 0.7f; // 0.2f;
 	g_Ambient.Use = TRUE;
 	SetAmbientLight(&g_Ambient);
 
@@ -44,11 +47,11 @@ void InitLight(void)
 	{
 		g_Point[i].Use = FALSE;
 	}
-	//g_Point[0].Color = { 1.0f, 1.0f, 1.0f, 0.0f };
-	//g_Point[0].Position = { 0.0f, 500.0f, -300.0f, 1.0f };
-	//g_Point[0].Intensity = 1.0f;
-	//g_Point[0].Attenuation = 2000.0f;
-	//g_Point[0].Use = TRUE;
+	g_Point[0].Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+	g_Point[0].Position = { 0.0f, 180.0f, 700.0f, 1.0f };
+	g_Point[0].Intensity = 1.0f;
+	g_Point[0].Attenuation = 2000.0f;
+	g_Point[0].Use = TRUE;
 	SetPointLight(g_Point);
 
 	for (int i = 0; i < LIGHT_SPOT_MAX; i++)
@@ -77,7 +80,26 @@ void InitLight(void)
 //=============================================================================
 void UpdateLight(void)
 {
-
+	if (GetKeyboardPress(DIK_6)) {
+		g_Point[0].Position.y += 10.0f;
+		SetPointLight(g_Point);
+	}
+	if (GetKeyboardPress(DIK_7)) {
+		g_Point[0].Position.y -= 10.0f;
+		SetPointLight(g_Point);
+	}
+	if (GetKeyboardPress(DIK_8)) {
+		g_Point[0].Position.x += 10.0f;
+		SetPointLight(g_Point);
+	}
+	if (GetKeyboardPress(DIK_9)) {
+		g_Point[0].Position.x -= 10.0f;
+		SetPointLight(g_Point);
+	}
+#ifdef _DEBUG
+	PrintDebugProc("lightposy:%f\n", g_Point[0].Position.y);
+	PrintDebugProc("lightposx:%f\n", g_Point[0].Position.x);
+#endif
 }
 
 //=============================================================================

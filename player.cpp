@@ -17,9 +17,6 @@
 #include "gimmick.h"
 #include "stage.h"
 
-// ブランチテスト
-#define test
-
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -62,7 +59,7 @@ static float		g_TestAddSpeed = 0.0f;
 class ROCKET
 {
 private:
-	float m_pos = DEFAULT_POS;
+	float m_pos = 0;
 	float m_posSpd = DEFAULT_SPEED;
 	float m_addSpd = 0.0f;
 
@@ -144,11 +141,10 @@ HRESULT InitPlayer(void)
 		LoadModel("data/MODEL/rocket04.obj", &g_Model[3].model);
 		LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
 		//LoadModel("data/MODEL/earth01.obj", &g_Model[4].model);
-		for (int i = 0; i < MODEL_MAX; i++)
-		{
-			g_Model[i].pos = { 0.0f, -60.0f, DEFAULT_POS };
-			g_Model[i].rot = { XM_PI, 0.0f, XM_PI };
-			g_Model[i].scl = { 0.3f, 0.3f, 0.3f };
+		for (int i = 0; i < MODEL_MAX; i++) {
+			g_Model[i].srt.pos = { 0.0f, -60.0f, DEFAULT_POS };
+			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
+			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
 		}
 	}
 
@@ -166,19 +162,14 @@ void UninitPlayer(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
+	for (int i = 0; i < TEXTURE_MAX; i++) {
+		if (g_Texture[i]) {
 			g_Texture[i]->Release();
 			g_Texture[i] = NULL;
 		}
 	}
 
-	for (int i = 0; i < MODEL_MAX; i++)
-	{
-		UnloadModel(&g_Model[i].model);
-	}
+	for (int i = 0; i < MODEL_MAX; i++) { UnloadModel(&g_Model[i].model); }
 
 	g_Load = FALSE;
 }
@@ -188,86 +179,46 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
-	static ROCKET oldRocket;
-	oldRocket = g_Rocket;
-
-	// 回転
-	if (GetKeyboardPress(DIK_A))
-	{
-		g_Rocket.Rotate(0.002f);
-		//if (g_Rotation < 0.05f) g_Rotation += 0.002f;
-	}
-	if (GetKeyboardPress(DIK_D))
-	{
-		g_Rocket.Rotate(-0.002f);
-		//if (g_Rotation > -0.05f) g_Rotation -= 0.002f;
-	}
+	// ロケットの種類変更
 	if (GetKeyboardPress(DIK_1)) { testNo = 0; }
 	if (GetKeyboardPress(DIK_2)) { testNo = 1; }
 	if (GetKeyboardPress(DIK_3)) { testNo = 2; }
 	if (GetKeyboardPress(DIK_4)) { testNo = 3; }
 	if (GetKeyboardPress(DIK_5)) { testNo = 4; }
-	//g_Rotation *= 0.98f;
-	//RotateTube(g_Rotation);
 
-	// 世界の回転を反映
-	XMMATRIX mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_Rocket.GetRotate());
-	SetAfterRotation(&mtxRot);
+	// ロケットの状態を保存
+	static ROCKET oldRocket;
+	oldRocket = g_Rocket;
 
-	static CURVE_BUFFER curve;
+	// 回転
+	if (GetKeyboardPress(DIK_A)) { g_Rocket.Rotate(0.002f); }
+	if (GetKeyboardPress(DIK_D)) { g_Rocket.Rotate(-0.002f); }
+	SetAfterRotation(&XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_Rocket.GetRotate()));
 
-	// スピード
-	if (GetKeyboardTrigger(DIK_SPACE))
-	{
-		g_Rocket.Accel(5.0f);
-		//g_TestAddSpeed += 5.0f;
-	}
-	if (GetKeyboardTrigger(DIK_BACK))
-	{
-		g_Rocket.Brake(5.0f);
-		//g_TestAddSpeed -= 5.0f;
-	}
+	// アクセル
+	if (GetKeyboardTrigger(DIK_SPACE)) { g_Rocket.Accel(5.0f); }
+	if (GetKeyboardTrigger(DIK_BACK)) { g_Rocket.Brake(5.0f); }
 
+	// ドライブ
 	g_Rocket.Drive();
 
-	////curve.TexSpd = (DEFAULT_SPEED + g_TestAddSpeed) / MESH_SIZE;
-	////curve.TexSpd = g_Rocket.GetSpeed() / MESH_SIZE;
-	//curve.TexPos = g_Rocket.GetPos() / MESH_SIZE;
-	
-	//g_TestAddSpeed *= 0.98f;
-
-	if (g_Rocket.AbleToCollision())
-	{
-		CollisionGimmick(0, oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
+	// コリジョン
+	if (g_Rocket.AbleToCollision()){
+		CollisionGimmick(0, oldRocket.GetPos() + DEFAULT_POS, g_Rocket.GetPos() + DEFAULT_POS, oldRocket.GetRotate(), g_Rocket.GetRotate());
 		//SetDamageEffect();
 	}
 
-#ifdef _DEBUG
-	PrintDebugProc("g_TestAddSpeed:%f\n", g_TestAddSpeed);
-#endif
-
-	// パイプ曲げ
-	//if (GetKeyboardPress(DIK_F))
-	//{
-	//	curve.Angle.y += 0.005f;
-	//}
-	//if (GetKeyboardPress(DIK_G))
-	//{
-	//	curve.Angle.y -= 0.005f;
-	//}
-	//if (GetKeyboardPress(DIK_H))
-	//{
-	//	curve.Angle.x += 0.005f;
-	//}
-	//if (GetKeyboardPress(DIK_J))
-	//{
-	//	curve.Angle.x -= 0.005f;
-	//}
-	//SetCurveBuffer(&curve);
-	SetStageCurve(0, g_Rocket.GetPos());
-
-	//MoveTube(40.0f);
-	//TestCurveTube(40.0f);
+	// パイプ曲げ（手動）
+	static CURVE_BUFFER curve;
+	if (GetKeyboardPress(DIK_F)) { curve.Angle.y += 0.005f; }
+	if (GetKeyboardPress(DIK_G)) { curve.Angle.y -= 0.005f; }
+	if (GetKeyboardPress(DIK_H)) { curve.Angle.x += 0.005f; }
+	if (GetKeyboardPress(DIK_J)) { curve.Angle.x -= 0.005f; }
+	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE;
+	SetCurveBuffer(&curve);
+	
+	// パイプ曲げ（ステージ設定に従って自動で曲げる）
+	//SetStageCurve(0, g_Rocket.GetPos());
 
 	// GPU_TIME
 	static int time = 0;
@@ -277,60 +228,32 @@ void UpdatePlayer(void)
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
 #ifdef _DEBUG	// デバッグ情報を表示する
-	static int dZMove = 0;
-	static int dTime = 0;
-	dZMove += 40;
-	dTime++;
-	PrintDebugProc("Meshs:%d\n", dZMove / (int)MESH_SIZE);
-	PrintDebugProc("Tubes:%d\n", dZMove / (int)(MESH_SIZE * MESH_NUM_Z));
-	PrintDebugProc("Time:%d\n", dTime / 60);
-	PrintDebugProc("Speed:%f\n", g_Rocket.GetSpeed());
+	PrintDebugProc("ThroughMeshs:%d\n", g_Rocket.GetPos() / (int)MESH_SIZE);
+	PrintDebugProc("ThroughTubes:%d\n", g_Rocket.GetPos() / (int)TUBE_SIZE);
+	PrintDebugProc("Time(sec):%f\n", GetTime());
+	PrintDebugProc("RocketSpeed:%f\n", g_Rocket.GetSpeed());
+	PrintDebugProc("CurveAngleX:%f\n", curve.Angle.x);
+	PrintDebugProc("CurveAngleY:%f\n", curve.Angle.y);
 #endif
 }
 
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawPlayer(void)
-{
+void DrawPlayer(void) {
 	SetCullingMode(CULL_MODE_NONE);
-
-	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
-
-	// ワールドマトリックスの初期化
-	mtxWorld = XMMatrixIdentity();
-
-	// スケールを反映
-	mtxScl = XMMatrixScaling(g_Model[testNo].scl.x, g_Model[testNo].scl.y, g_Model[testNo].scl.z);
-	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-	// 回転を反映：全体の角度
-	mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].rot.x, g_Model[testNo].rot.y, g_Model[testNo].rot.z);
-	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	// 移動を反映
-	mtxTranslate = XMMatrixTranslation(g_Model[testNo].pos.x, g_Model[testNo].pos.y, g_Model[testNo].pos.z);
-	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	// ワールドマトリックスの設定
-	SetWorldBuffer(&mtxWorld);
-
-	// マテリアル設定
 	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//material.Diffuse = { 1.0f, 1.0f, 1.0f, 0.5f };
-
-	// モデル描画
-	DrawModel(&g_Model[testNo].model, NULL, &material);
-	//DrawModel(&g_Model[0].model, &g_Texture[TEXTURE_STAR], &material);
-
+	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, NULL, &material);	// モデル描画
 	SetCullingMode(CULL_MODE_BACK);
 }
 
 float GetPlayerSpeed(void)
 {
 	return g_Rocket.GetSpeed();
+}
+float GetPlayerPosition(void)
+{
+	return g_Rocket.GetPos();
 }
 void SetPlayerThroughRing(void)
 {

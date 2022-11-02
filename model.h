@@ -43,9 +43,7 @@ struct DX11_MODEL
 struct MODEL_DATA
 {
 	DX11_MODEL	model;
-	XMFLOAT3	scl = { 1.0f, 1.0f, 1.0f };
-	XMFLOAT3	rot = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT3	pos = { 0.0f, 0.0f, 0.0f };
+	SRT			srt;
 };
 
 
@@ -55,6 +53,8 @@ struct MODEL_DATA
 //*****************************************************************************
 void LoadModel( char *FileName, DX11_MODEL *Model );
 void UnloadModel( DX11_MODEL *Model );
+void DrawModel(DX11_MODEL *Model, XMMATRIX* mtx, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
+void DrawModel(DX11_MODEL *Model, SRT* srt, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
 void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
 
 // モデルのマテリアルのディフューズを取得する。Max16個分にしてある

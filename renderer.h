@@ -77,10 +77,10 @@ struct INSTANCE {		// インスタンシングバッファ用構造体
 	XMFLOAT4 col[1024];
 };
 struct VERTEX_3D {		// 頂点バッファ用構造体
-    XMFLOAT3	Position;
-    XMFLOAT3	Normal;
-    XMFLOAT4	Diffuse;
-    XMFLOAT2	TexCoord;
+	XMFLOAT3	Position;
+	XMFLOAT3	Normal;
+	XMFLOAT4	Diffuse;
+	XMFLOAT2	TexCoord;
 };
 struct MATRIX {		// マトリクスバッファ用構造体
 	XMFLOAT4X4	World;
@@ -95,12 +95,12 @@ struct CAMERA {			// カメラバッファ用構造体
 	XMFLOAT4	ViewVolume;
 };
 struct MATERIAL {		// マテリアルバッファ用構造体
-	XMFLOAT4	Ambient;
-	XMFLOAT4	Diffuse;
-	XMFLOAT4	Specular;
-	XMFLOAT4	Emission;
-	float		Shininess;
-	int			noTexSampling;
+	XMFLOAT4	Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	Specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	Emission = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	float		Shininess = 10.0f;
+	int			noTexSampling = 0;
 	float		Dummy[2];		//16bit境界用
 };
 struct LIGHT {			// ライトバッファ用構造体
@@ -170,6 +170,11 @@ struct UV_POSITION {	// UV座標構造体
 	float uw = 1.0f;
 	float vh = 1.0f;
 };
+struct SRT {	// ScaleRotTrans構造体
+	XMFLOAT3 pos = { 1.0f, 1.0f, 1.0f };
+	XMFLOAT3 rot = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 scl = { 0.0f, 0.0f, 0.0f };
+};
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -196,6 +201,7 @@ void SetLightNo(int lightNo);
 void SetFrameTime(int time);
 
 void SetWorldViewProjection2D(void);
+void SetWorldBuffer(SRT& srt);
 void SetWorldBuffer(XMMATRIX* WorldMatrix);
 void SetViewBuffer(XMMATRIX* ViewMatrix);
 void SetProjectionBuffer(XMMATRIX* ProjectionMatrix);
@@ -221,9 +227,11 @@ void SetStencilNoneAL(void);
 void SetStencilNoneOnlyDepth(void);
 void SetDrawOutline(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f });
 void SetDrawFillBlack(void);
+void SetDrawFillBlackPlayer(void);
 void SetDrawNoLighting(void);
 void SetDrawTube(void);
 void SetDrawGimmick(void);
+void SetDrawPlayer(void);
 void SetDraw2DTexture(void);
 //void SetDrawPreOutline(void);
 //void SetDrawPostOutline(void);
@@ -261,4 +269,11 @@ ID3D11Buffer* GetInstanceBuffer(void);
 void SetShaderInstanceingBillboard(XMFLOAT4X4 mtxView);
 void SetShaderDefault(void);
 
-XMFLOAT4 Float4(XMFLOAT3* f3);
+XMFLOAT4 Float4(XMFLOAT3& f3);
+
+void MulMtxScl(XMMATRIX& mtxWorld, XMFLOAT3& scl);
+void MulMtxScl(XMMATRIX& mtxWorld, float x, float y, float z);
+void MulMtxRot(XMMATRIX& mtxWorld, XMFLOAT3& rot);
+void MulMtxRot(XMMATRIX& mtxWorld, float x, float y, float z);
+void MulMtxPos(XMMATRIX& mtxWorld, XMFLOAT3& pos);
+void MulMtxPos(XMMATRIX& mtxWorld, float x, float y, float z);

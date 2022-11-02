@@ -132,14 +132,35 @@ void DrawAllObjects(void)
 }
 void DrawGame(void)
 {
-	SetDrawNoLighting();
-	DrawPlayer();
+	//SetDrawNoLighting();
+	//DrawPlayer();
+	
+	{
+		SetDrawFillBlack();
+		DrawTube();
+		DrawGimmick();
 
-	SetDrawTube();
-	DrawTube();
+		SetDrawFillBlackPlayer();
+		DrawPlayer();
 
-	SetDrawGimmick();
-	DrawGimmick();
+		SetBlendState(BLEND_MODE_ADD);
+
+		// ライト番号をセット
+		//SetLightNo(0);
+
+		SetDrawTube();
+		DrawTube();
+
+		SetDrawGimmick();
+		DrawTubeLight();
+		DrawGimmick();
+
+		SetDrawPlayer();
+		DrawPlayer();
+
+		SetBlendState(BLEND_MODE_ALPHABLEND);
+	}
+
 
 	SetDraw2DTexture();
 	DrawGameUI();

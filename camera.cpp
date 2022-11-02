@@ -45,7 +45,7 @@ void InitCamera(void)
 	//SetCameraPosition(&g_CameraPosition);
 
 	CAMERA c;
-	c.Position = Float4(&g_Camera.pos);
+	c.Position = Float4(g_Camera.pos);
 	c.ViewVolume = XMFLOAT4(SCREEN_WIDTH, SCREEN_HEIGHT, VIEW_NEAR_Z, VIEW_FAR_Z);
 	SetCameraBuffer(&c);
 }
