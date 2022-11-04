@@ -71,6 +71,11 @@ enum
 	TEXTURE_RESULT_POINT,
 	TEXTURE_RESULT_MIUS_POINT,
 	TEXTURE_RESULT_TOTAL_POINT,
+	TEXTURE_RESULT_FIREWORK_1,
+	TEXTURE_RESULT_FIREWORK_2,
+	TEXTURE_RESULT_FIREWORK_3,
+	TEXTURE_RESULT_FIREWORK_4,
+	TEXTURE_RESULT_FIREWORK_5,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
@@ -100,7 +105,12 @@ static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/result_gamen/point.png",
 	"data/TEXTURE/result_gamen/minus_point.png",
 	"data/TEXTURE/result_gamen/total_point.png",
-	
+	"data/TEXTURE/result_gamen/firework1.png",
+	"data/TEXTURE/result_gamen/firework2.png",
+	"data/TEXTURE/result_gamen/firework3.png",
+	"data/TEXTURE/result_gamen/firework4.png",
+	"data/TEXTURE/result_gamen/firework5.png",
+
 };
 
 static float ResultTime = 0.0f;
@@ -240,6 +250,31 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_TOTAL_POINT].tex = &g_Texture[TEXTURE_RESULT_TOTAL_POINT];
 	g_td[TEXTURE_RESULT_TOTAL_POINT].pos = { (YEN_FINAL_POS + 32.0f) , 1725.0f };
 
+	//â‘âŒ
+	g_td[TEXTURE_RESULT_FIREWORK_1].size = { 664.0f, 664.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_1].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_1];
+	g_td[TEXTURE_RESULT_FIREWORK_1].pos = { -600.0f , 200.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_1].scl = { 0.0f, 0.0f };
+
+	g_td[TEXTURE_RESULT_FIREWORK_2].size = { 679.0f, 632.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_2].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_2];
+	g_td[TEXTURE_RESULT_FIREWORK_2].pos = { 500.0f , -250.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_2].scl = { 0.0f, 0.0f };
+
+	g_td[TEXTURE_RESULT_FIREWORK_3].size = { 483.0f, 471.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_3].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_3];
+	g_td[TEXTURE_RESULT_FIREWORK_3].pos = {-300.0f , -100.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_3].scl = { 0.0f, 0.0f };
+
+	g_td[TEXTURE_RESULT_FIREWORK_4].size = { 610.0f, 613.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_4].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_4];
+	g_td[TEXTURE_RESULT_FIREWORK_4].pos = { 400.0f , 300.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_4].scl = { 0.0f, 0.0f };
+
+	g_td[TEXTURE_RESULT_FIREWORK_5].size = { 368.0f, 349.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_5].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_5];
+	g_td[TEXTURE_RESULT_FIREWORK_5].pos = { -600.0f , -250.0f };
+	g_td[TEXTURE_RESULT_FIREWORK_5].scl = { 0.0f, 0.0f };
 
 
 	//ResultTime = GetTimer();
@@ -313,6 +348,11 @@ void UpdateResult(void)
 			g_td[TEXTURE_RESULT_MIUS_POINT].pos.y -= MOVE;
 			g_td[TEXTURE_RESULT_TOTAL_POINT].pos.y -= MOVE;
 
+			g_td[TEXTURE_RESULT_FIREWORK_1].pos.y -= MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_2].pos.y -= MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_3].pos.y -= MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_4].pos.y -= MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_5].pos.y -= MOVE;
 		}
 	}
 	if (GetKeyboardPress(DIK_UP))
@@ -344,6 +384,12 @@ void UpdateResult(void)
 			g_td[TEXTURE_RESULT_MIUS_POINT].pos.y += MOVE;
 			g_td[TEXTURE_RESULT_TOTAL_POINT].pos.y += MOVE;
 
+			g_td[TEXTURE_RESULT_FIREWORK_1].pos.y += MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_2].pos.y += MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_3].pos.y += MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_4].pos.y += MOVE;
+			g_td[TEXTURE_RESULT_FIREWORK_5].pos.y += MOVE;
+
 		}
 	}
 
@@ -373,6 +419,58 @@ void UpdateResult(void)
 		GreenStarNum = 0;
 	}
 
+	//â‘âŒ
+	if (g_Time > 60)
+	{
+		if (g_td[TEXTURE_RESULT_FIREWORK_1].scl.x <= 1.0f)
+		{
+			g_td[TEXTURE_RESULT_FIREWORK_1].scl.x += 0.01f;
+			g_td[TEXTURE_RESULT_FIREWORK_1].scl.y += 0.01f;
+			g_td[TEXTURE_RESULT_FIREWORK_1].col.w -= 0.01f;
+
+		}
+	}	
+	if (g_Time > 80)
+	{
+		if (g_td[TEXTURE_RESULT_FIREWORK_2].scl.x <= 0.8f)
+		{
+			g_td[TEXTURE_RESULT_FIREWORK_2].scl.x += 0.02f;
+			g_td[TEXTURE_RESULT_FIREWORK_2].scl.y += 0.02f;
+		}
+		g_td[TEXTURE_RESULT_FIREWORK_2].col.w -= 0.02f;
+	}
+
+	if (g_Time > 90)
+	{
+		if (g_td[TEXTURE_RESULT_FIREWORK_3].scl.x <= 1.0f)
+		{
+			g_td[TEXTURE_RESULT_FIREWORK_3].scl.x += 0.02f;
+			g_td[TEXTURE_RESULT_FIREWORK_3].scl.y += 0.02f;
+		}
+		g_td[TEXTURE_RESULT_FIREWORK_3].col.w -= 0.02f;
+	}
+	if (g_Time > 110)
+	{
+		if (g_td[TEXTURE_RESULT_FIREWORK_4].scl.x <= 0.7f)
+		{
+			g_td[TEXTURE_RESULT_FIREWORK_4].scl.x += 0.01f;
+			g_td[TEXTURE_RESULT_FIREWORK_4].scl.y += 0.01f;
+		}
+		g_td[TEXTURE_RESULT_FIREWORK_4].col.w -= 0.02f;
+	}
+	if (g_Time > 130)
+	{
+		if (g_td[TEXTURE_RESULT_FIREWORK_5].scl.x <= 1.0f)
+		{
+			g_td[TEXTURE_RESULT_FIREWORK_5].scl.x += 0.02f;
+			g_td[TEXTURE_RESULT_FIREWORK_5].scl.y += 0.02f;
+		}
+		g_td[TEXTURE_RESULT_FIREWORK_5].col.w -= 0.02f;
+	}
+
+	
+
+
 	g_Time++;
 }
 
@@ -397,7 +495,7 @@ void DrawResult(void)
 	//älìæÇµÇΩêØï`âÊ
 	for (int i = 0; i < GreenStarNum; i++)
 	{
-		if (g_Time >= (i + 2) * 50)
+		if (g_Time >= (i + 1) * 40)
 		{
 			DrawTexture2D(&g_td[TEXTURE_RESULT_GREEN_STARS]);
 			g_td[TEXTURE_RESULT_GREEN_STARS].pos.x = (-(g_td[TEXTURE_RESULT_GREEN_STARS].size.x + 50.0f) * 2) + ((g_td[TEXTURE_RESULT_GREEN_STARS].size.x + 50.0f) * i);
@@ -498,6 +596,14 @@ void DrawResult(void)
 		DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_NUMBER], FALSE, TRUE);
 
 	}
+
+	//â‘âŒï`âÊ
+	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_1]);
+	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_2]);
+	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_3]);
+	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_4]);
+	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_5]);
+
 
 	//ç≈å„Ç…è„ÇÃÉoÅ[ï`âÊ
 	DrawTexture2D(&g_td[TEXTURE_RESULT_BAR]);
