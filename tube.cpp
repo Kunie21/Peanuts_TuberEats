@@ -592,7 +592,7 @@ void DrawTubeLight(void)
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_WHITE]);
 
 	XMMATRIX mtxWorld = XMMatrixIdentity();			// ワールドマトリックスの初期化
-	MulMtxScl(mtxWorld, 0.1f, 0.1f, 1.0f);		// スケールを反映
+	MulMtxScl(mtxWorld, 0.05f, 0.05f, 1.0f);		// スケールを反映
 	MulMtxPos(mtxWorld, 0.0f, TUBE_RADIUS, 0.0f);	// 移動を反映
 	SetWorldBuffer(&mtxWorld);						// ワールドマトリックスの設定
 

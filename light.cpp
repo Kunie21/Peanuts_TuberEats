@@ -25,7 +25,7 @@ LIGHT_SPOT			g_Spot[LIGHT_SPOT_MAX];
 void InitLight(void)
 {
 	g_Ambient.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_Ambient.Intensity = 0.7f; // 0.2f;
+	g_Ambient.Intensity = 0.8f; // 0.2f;
 	g_Ambient.Use = TRUE;
 	SetAmbientLight(&g_Ambient);
 

@@ -168,7 +168,7 @@ float4 PixelShaderLL(VS_OUTPUT input) : SV_Target {
 	float3 normalDir = normalize(input.Normal.xyz);
 
 	// ƒ‰ƒCƒg‚ÌF‚Æ•ûŒü‚Æ‹——£
-	float3 lightColor = float3(1.0f, 1.0f, 1.0f);
+	float3 lightColor = float3(1.0f, 1.0f, 1.0f) * 0.2f;
 	float3 lightVec = float3(input.WorldPos.x, input.WorldPos.y - LL_POS, 0.0f);
 	float3 lightDir = normalize(lightVec);
 	float lightLen = length(lightVec);
@@ -683,12 +683,12 @@ void GeometryShaderLLPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_
 	//	Input[2].WorldPos.xyz - LineLightPos.xyz
 	//};
 
-	//float4 LineLightPos = { 0.0f, LL_POS, World._43, 1.0f };
-	//float3 lightDir[3] = {
-	//	Input[0].WorldPos.xyz - LineLightPos.xyz,
-	//	Input[1].WorldPos.xyz - LineLightPos.xyz,
-	//	Input[2].WorldPos.xyz - LineLightPos.xyz
-	//};
+	float4 LineLightPos = { 0.0f, LL_POS, World._43, 1.0f };
+	float3 lightDir[3] = {
+		Input[0].WorldPos.xyz - LineLightPos.xyz,
+		Input[1].WorldPos.xyz - LineLightPos.xyz,
+		Input[2].WorldPos.xyz - LineLightPos.xyz
+	};
 
 	//float3 lightDir[3] = {
 	//	float3(Input[0].WorldPos.x, Input[0].WorldPos.y - LL_POS, 0.0f),
@@ -701,11 +701,11 @@ void GeometryShaderLLPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_
 	//float3 lightDir = PosAVE - LineLightPos;
 
 	//float3 lightDir = -float3(0.0f, LL_POS, World._43);
-	float3 lightDir = float3(World._41, World._42 - LL_POS, 0.0f);
+	//float3 lightDir = float3(World._41, World._42 - LL_POS, 0.0f);
 
-	//float3 lightDirAVE = (lightDir[0] + lightDir[1] + lightDir[2]) / 3;
+	float3 lightDirAVE = (lightDir[0] + lightDir[1] + lightDir[2]) / 3;
 	float3 normalDirAVE = (Input[0].Normal.xyz + Input[1].Normal.xyz + Input[2].Normal.xyz) / 3;
-	if (dot(-lightDir, normalDirAVE) <= 0.0f)	// ‰A‚É‚È‚éŠp“x
+	if (dot(-lightDirAVE, normalDirAVE) <= 0.0f)	// ‰A‚É‚È‚éŠp“x
 	{
 		PS_INPUT NewVtx;
 		uint vtx0, vtx1;
@@ -714,9 +714,9 @@ void GeometryShaderLLPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_
 		{
 			vtx0 = e;
 			vtx1 = (e + 1) % 3;
-			newWorldPos0 = float4(Input[vtx0].WorldPos.xyz + lightDir * SHADOW_LENGTH, 1.0f);	// w‚Í1.0f
-			newWorldPos1 = float4(Input[vtx1].WorldPos.xyz + lightDir * SHADOW_LENGTH, 1.0f);
-			newNormal = float4(cross(newWorldPos1.xyz - newWorldPos0.xyz, lightDir), 1.0f);
+			newWorldPos0 = float4(Input[vtx0].WorldPos.xyz + lightDir[vtx0] * SHADOW_LENGTH, 1.0f);	// w‚Í1.0f
+			newWorldPos1 = float4(Input[vtx1].WorldPos.xyz + lightDir[vtx1] * SHADOW_LENGTH, 1.0f);
+			newNormal = float4(cross(newWorldPos1.xyz - newWorldPos0.xyz, lightDir[vtx0]), 1.0f);
 
 			// 1‚Â–Ú‚ÌOŠpŒ`
 			NewVtx.Position = Input[vtx0].Position;
