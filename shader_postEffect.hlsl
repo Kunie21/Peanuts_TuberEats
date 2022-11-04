@@ -20,9 +20,28 @@ float4 PixelShaderFilter(VS_OUTPUT input) : SV_Target{
 	int pos_x = int(input.TexCoord.x * width);
 	int pos_y = int(input.TexCoord.y * height);
 	float4 outDiffuse = float4(0.0f, 0.0f, 0.0f, 1.0f);
-	for(int x = -1; x <= 1; x++) {
-		for(int y = -1; y <= 1; y++) {
-			if(pos_x + x < 0 || pos_y + y < 0 || pos_x + x >= (int)width || pos_y + y >= (int)height) {
+	for (int x = -1; x <= 1; x++) {
+		for (int y = -1; y <= 1; y++) {
+			if (pos_x + x < 0 || pos_y + y < 0 || pos_x + x >= (int)width || pos_y + y >= (int)height) {
+				outDiffuse.rgb += filter[y + 1][x + 1] * g_Texture.Load(int3(pos_x, pos_y, 0)).rgb;
+				continue;
+			}
+			outDiffuse.rgb += filter[y + 1][x + 1] * g_Texture.Load(int3(pos_x + x, pos_y + y, 0)).rgb;
+		}
+	}
+	outDiffuse *= 0.9f;
+	return outDiffuse;
+}
+
+float4 PixelShaderLight(VS_OUTPUT input) : SV_Target{
+	uint width, height;
+	g_Texture.GetDimensions(width, height);
+	int pos_x = int(input.TexCoord.x * width);
+	int pos_y = int(input.TexCoord.y * height);
+	float4 outDiffuse = float4(0.0f, 0.0f, 0.0f, 1.0f);
+	for (int x = -1; x <= 1; x++) {
+		for (int y = -1; y <= 1; y++) {
+			if (pos_x + x < 0 || pos_y + y < 0 || pos_x + x >= (int)width || pos_y + y >= (int)height) {
 				outDiffuse.rgb += filter[y + 1][x + 1] * g_Texture.Load(int3(pos_x, pos_y, 0)).rgb;
 				continue;
 			}

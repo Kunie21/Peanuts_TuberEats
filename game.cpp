@@ -188,9 +188,12 @@ void DrawGame(void)
 			//SetDrawPlayer();
 			//DrawPlayer();
 
-			SetDrawLight();
-			DrawTubeLight();
-			DrawGimmick(GIMMICK_RING);
+			{
+				SetDrawLight();
+				DrawTubeLight();
+				DrawGimmick(GIMMICK_RING);
+				ApplyLightToTarget();
+			}
 
 			SetDrawFire();
 			DrawFire();
@@ -199,6 +202,8 @@ void DrawGame(void)
 		// 加算合成モードを終了する
 		SetBlendState(BLEND_MODE_ALPHABLEND);
 	}
+
+	//ApplyFilter(FILTER_MODE_GAUSSIAN);
 
 	// バックバッファをターゲットにして描画
 	DrawTarget();

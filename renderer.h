@@ -239,7 +239,7 @@ void SetDrawNoLighting(void);
 void SetDrawTube(void);
 void SetDrawGimmick(void);
 void SetDrawPlayer(void);
-void SetDrawLight(void);
+void SetDrawTubeLight(void);
 void SetDrawFire(void);
 void SetDraw2DTexture(void);
 //void SetDrawPreOutline(void);
@@ -249,6 +249,9 @@ void SetDraw2DTexture(void);
 
 void ClearStencil(void);
 void ClearWriteView(void);
+
+void SetDrawLight(void);
+void ApplyLightToTarget(void);
 
 void ApplyFilter(FILTER_MODE filter);
 void ApplyMosaic(int pixel_size);

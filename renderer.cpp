@@ -111,11 +111,15 @@ static ID3D11PixelShader*		g_PixelShaderCA = NULL;
 static ID3D11PixelShader*		g_PixelShaderMonitoring = NULL;
 static ID3D11PixelShader*		g_PixelShaderOldGame = NULL;
 
-// マルチレンダーターゲット
+// フィルター適用用レンダーターゲット
 static ID3D11RenderTargetView*	g_RenderTargetViewWrite[2] = { NULL, NULL };
 static ID3D11ShaderResourceView*g_WrittenTexture[2] = { NULL, NULL };
 static int						g_CurrentTarget = 0;
 static int						g_CurrentResource = 0;
+
+// ライト用レンダーターゲット
+static ID3D11RenderTargetView*	g_RenderTargetViewLight = NULL;
+static ID3D11ShaderResourceView*g_LightTexture = NULL;
 
 // その他シェーダー
 static ID3D11VertexShader*		g_VertexShader = NULL;
@@ -213,9 +217,15 @@ void UninitRenderer(void)
 	if (g_PixelShaderMonitoring)g_PixelShaderMonitoring->Release();
 	if (g_PixelShaderOldGame)	g_PixelShaderOldGame->Release();
 
-	// マルチレンダーターゲット
+	// フィルター適用用レンダーターゲット
 	if (g_RenderTargetViewWrite[0])	g_RenderTargetViewWrite[0]->Release();
 	if (g_RenderTargetViewWrite[1])	g_RenderTargetViewWrite[1]->Release();
+	if (g_WrittenTexture[0])	g_WrittenTexture[0]->Release();
+	if (g_WrittenTexture[1])	g_WrittenTexture[1]->Release();
+
+	// ライト用レンダーターゲット
+	if(g_RenderTargetViewLight) g_RenderTargetViewLight->Release();
+	if (g_LightTexture)			g_LightTexture->Release();
 
 	// その他シェーダー
 	if (g_VertexShader)			g_VertexShader->Release();
@@ -407,6 +417,36 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvd.Texture2D.MipLevels = 1;
 		g_D3DDevice->CreateShaderResourceView(writeTexture, &srvd, &g_WrittenTexture[i]);
+	}
+
+	// 書き込み用テクスチャ作成
+	{
+		ID3D11Texture2D* lightTexture = NULL;
+		D3D11_TEXTURE2D_DESC td;
+		ZeroMemory(&td, sizeof(td));
+		td.Width = sd.BufferDesc.Width;
+		td.Height = sd.BufferDesc.Height;
+		td.MipLevels = 1;
+		td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		td.SampleDesc.Count = 1;
+		td.SampleDesc.Quality = 0;
+		td.Usage = D3D11_USAGE_DEFAULT;
+		td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		td.CPUAccessFlags = 0;
+		td.MiscFlags = 0;
+		g_D3DDevice->CreateTexture2D(&td, NULL, &lightTexture);
+
+		// レンダーターゲットビュー生成、設定
+		g_D3DDevice->CreateRenderTargetView(lightTexture, NULL, &g_RenderTargetViewLight);
+
+		//シェーダーリソースビュー作成
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
+		ZeroMemory(&srvd, sizeof(srvd));
+		srvd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvd.Texture2D.MipLevels = 1;
+		g_D3DDevice->CreateShaderResourceView(lightTexture, &srvd, &g_LightTexture);
 	}
 
 	// ノーマルマップ用テクスチャ作成
@@ -1234,7 +1274,7 @@ void SetDrawPlayer(void)
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
-void SetDrawLight(void)
+void SetDrawTubeLight(void)
 {
 	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VertexShaderTube, NULL, 0);
@@ -1256,6 +1296,15 @@ void SetDrawFire(void)
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
+void SetDrawLight(void)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VertexShaderGimmick, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight, g_DepthStencilView);
+}
 void SetDraw2DTexture(void)
 {
 	g_ImmediateContext->VSSetShader(g_VertexShaderFilter, NULL, 0);
@@ -1266,6 +1315,42 @@ void SetDraw2DTexture(void)
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
 
+void ApplyLightToTarget(void)	// 加算合成する
+{
+	XMMATRIX f;
+	for (int x = 0; x < 3; x++)
+	{
+		for (int y = 0; y < 3; y++)
+		{
+			f.r[y].m128_f32[x] = g_Filter[FILTER_MODE_GAUSSIAN][y][x];
+		}
+	}
+	GetDeviceContext()->UpdateSubresource(g_FilterBuffer, 0, NULL, &f, 0, 0);
+
+	SetCullingMode(CULL_MODE_BACK);
+	SetBlendState(BLEND_MODE_NONE);
+	g_ImmediateContext->VSSetShader(g_VertexShaderFilter, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderFilter, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PixelShaderLight, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight, g_DepthStencilView);
+
+	DrawScreen(&g_LightTexture);
+
+	//SetBlendState(BLEND_MODE_ALPHABLEND);
+	SetBlendState(BLEND_MODE_ADD);
+	g_ImmediateContext->VSSetShader(g_VertexShaderFilter, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+
+	DrawScreen(&g_LightTexture);
+
+	SetBlendState(BLEND_MODE_ADD);
+}
 void ApplyFilter(FILTER_MODE filter)
 {
 	// ターゲットの切り替え
@@ -1527,6 +1612,7 @@ void Clear(void)
 	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetView, ClearColor);
 	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewWrite[0], ClearColor);
 	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewWrite[1], ClearColor);
+	//g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight, ClearColor);
 	g_ImmediateContext->ClearDepthStencilView(g_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 void ClearStencil(void)
