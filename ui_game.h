@@ -21,3 +21,4 @@ void SetDamageEffect(void);
 void SetBoostEffect(void);
 void SetTimer(float time);
 void OnTimer(void);
+float GetTimer(void);

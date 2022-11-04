@@ -258,3 +258,8 @@ void OnTimer(void)
 {
 	g_Timer += 0.01666666f;
 }
+
+float GetTimer(void)
+{
+	return g_Timer;
+}
