@@ -89,126 +89,44 @@ void UpdateGimmick(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawGimmick(void)
+void DrawGimmick(GIMMICK_TYPE gimmick)
 {
-	static float d_pos = 0;
-	d_pos -= GetPlayerSpeed();
-	//XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
 	XMMATRIX mtxWorld;
-
 	float zPos, rot;
+	float d_pos = -GetPlayerPosition();
 	STAGE* pStage = GetStage(0);
 	for (int i = 0; i < pStage->gmkNum; i++)
 	{
+		if (pStage->arrGmk[i].type != gimmick) continue;
+
 		zPos = d_pos + MESH_SIZE * pStage->arrGmk[i].zPosNo;
-		if (-100.0f > zPos || zPos > 10000.0f) continue;
+		if (zPos < -500.0f || 10000.0f < zPos) continue;
 		
-		rot = XM_2PI * (float)pStage->arrGmk[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation();
+		rot = XM_2PI * (float)pStage->arrGmk[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation() + XM_PIDIV2;
 		mtxWorld = XMMatrixIdentity();	// ワールドマトリックスの初期化
-		switch (pStage->arrGmk[i].type)
+
+		MATERIAL material;
+		switch (gimmick)
 		{
 		case GIMMICK_ICE:
-
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixScaling(4.0f, 3.0f, 4.0f));	// スケールを反映
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixRotationRollPitchYaw(0.0f, XM_PIDIV2, 0.0f));	// 回転を反映：全体の角度
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixTranslation(0.0f, 120.0f, 0.0f));					// 移動を反映
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rot + XM_PIDIV2));	// 回転を反映：個々の角度
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixTranslation(TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos));	// 移動を反映
+			MulMtxScl(mtxWorld, 4.0f, 1.8f, 4.0f);				// スケールを反映
+			MulMtxRot(mtxWorld, 0.0f, -XM_PIDIV4 + 0.3f, 0.0f);	// 回転を反映：全体の角度
+			MulMtxPos(mtxWorld, 0.0f, 80.0f, 0.0f);				// 移動を反映
+			MulMtxRot(mtxWorld, 0.0f, 0.0f, rot + XM_PIDIV2);	// 回転を反映：個々の角度
+			MulMtxPos(mtxWorld, TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos);	// 移動を反映
 			break;
 
 		case GIMMICK_RING:
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixScaling(1.0f, 1.0f, 1.0f));	// スケールを反映
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixRotationRollPitchYaw(XM_PIDIV2, 0.0f, 0.0f));	// 回転を反映：全体の角度
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixTranslation(0.0f, 50.0f, 0.0f));					// 移動を反映
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rot + XM_PIDIV2));	// 回転を反映：個々の角度
-			mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixTranslation(TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos));	// 移動を反映
-
+			material.Diffuse = { 2.0f, 2.0f, 2.0f, 1.0f };
+			MulMtxScl(mtxWorld, 1.0f, 1.0f, 1.0f);				// スケールを反映
+			MulMtxRot(mtxWorld, XM_PIDIV2, 0.0f, 0.0f);			// 回転を反映：全体の角度
+			MulMtxPos(mtxWorld, 0.0f, 50.0f, 0.0f);				// 移動を反映
+			MulMtxRot(mtxWorld, 0.0f, 0.0f, rot + XM_PIDIV2);	// 回転を反映：個々の角度
+			MulMtxPos(mtxWorld, TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos);	// 移動を反映
 			break;
 		}
-		SetWorldBuffer(&mtxWorld);	// ワールドマトリックスの設定
-		DrawModel(&g_Model[pStage->arrGmk[i].type]);	// モデル描画
+		DrawModel(&g_Model[pStage->arrGmk[i].type], &mtxWorld, NULL, &material);	// モデル描画
 	}
-	//// 氷
-	//for (int i = 0; i < ICE_NUM; i++)
-	//{
-	//	float zPos = d_pos + MESH_SIZE * g_GmIce[i].zPosNo;
-	//	if (-100.0f > zPos || zPos > 10000.0f)
-	//		continue;
-
-	//	// ワールドマトリックスの初期化
-	//	mtxWorld = XMMatrixIdentity();
-
-	//	// スケールを反映
-	//	mtxScl = XMMatrixScaling(4.0f, 3.0f, 4.0f);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-	//	float rot = XM_2PI * (float)g_GmIce[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation();
-
-	//	// 回転を反映：全体の角度
-	//	mtxRot = XMMatrixRotationRollPitchYaw(0.0f, XM_PIDIV2, 0.0f);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(0.0f, 120.0f, 0.0f);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// 回転を反映：個々の角度
-	//	mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rot + XM_PIDIV2);
-	//	//SetAfterRotation(&mtxRot);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS* 0.8f * sinf(rot), zPos);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// ワールドマトリックスの設定
-	//	SetWorldBuffer(&mtxWorld);
-
-	//	//XMStoreFloat4x4(&g_Gimmick.mtxWorld, mtxWorld);
-
-	//	// モデル描画
-	//	DrawModel(&g_Model[GIMMICK_ICE]);
-	//}
-	//// リング
-	//for (int i = 0; i < RING_NUM; i++)
-	//{
-	//	float zPos = d_pos + MESH_SIZE * g_GmRing[i].zPosNo;
-	//	if (-100.0f > zPos || zPos > 10000.0f) continue;
-
-	//	// ワールドマトリックスの初期化
-	//	mtxWorld = XMMatrixIdentity();
-
-	//	// スケールを反映
-	//	mtxScl = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-	//	float rot = XM_2PI * (float)g_GmRing[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation();
-
-	//	// 回転を反映：全体の角度
-	//	mtxRot = XMMatrixRotationRollPitchYaw(XM_PIDIV2, 0.0f, 0.0f);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(0.0f, 50.0f, 0.0f);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// 回転を反映：個々の角度
-	//	mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rot + XM_PIDIV2);
-	//	//SetAfterRotation(&mtxRot);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS* 0.8f * sinf(rot), zPos);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// ワールドマトリックスの設定
-	//	SetWorldBuffer(&mtxWorld);
-
-	//	//XMStoreFloat4x4(&g_Gimmick.mtxWorld, mtxWorld);
-
-	//	// モデル描画
-	//	DrawModel(&g_Model[GIMMICK_RING]);
-	//}
 }
 
 bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot)
@@ -223,7 +141,7 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 	{
 		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
 		int colZPosNo = oldZPosNoInt + 1;
-		float colRot = oldRot + (newRot - oldRot) * rate;
+		float colRot = oldRot + (newRot - oldRot) * rate + XM_PIDIV2;
 		for (int i = 0; i < GetStage(stageNo)->gmkNum; i++)
 		{
 			if (GetStage(stageNo)->arrGmk[i].zPosNo == colZPosNo)

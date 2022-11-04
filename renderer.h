@@ -49,12 +49,12 @@ enum CULL_MODE {		// カリングモード
 	CULL_MODE_NUM
 };
 enum POSITION_TYPE {	// 位置の種類
-	POSITION_RELATIVE = 0,	// 相対位置
-	POSITION_ABSOLUTE,		// 絶対位置
+	POSITION_RELATIVE = 0,	// 相対位置（画面中心を0,0としてPositionを数える）
+	POSITION_ABSOLUTE,		// 絶対位置（画面左上を0,0としてPositionを数える）
 };
-enum CENTER_TYPE {	// 中心の種類
-	CENTER_LEFTTOP = 0,	// 左上を指すとき
-	CENTER_CENTER,		// 中心を指すとき
+enum CENTER_TYPE {		// 中心の種類
+	CENTER_LEFTTOP = 0,		// Positionがテクスチャの左上を指すとき
+	CENTER_CENTER,			// Positionがテクスチャの中心を指すとき
 };
 enum HORIZONTAL_POSITION {	// 水平位置の種類
 	HORIZONTAL_LEFT = 0,	// 左寄せ
@@ -65,6 +65,11 @@ enum VERTICAL_POSITION {	// 垂直位置の種類
 	VERTICAL_TOP = 0,		// 上寄せ
 	VERTICAL_MIDDLE,		// 中央寄せ
 	VERTICAL_BOTTOM,		// 下寄せ
+};
+enum SHADER_TYPE {	// シェーダーの種類
+	SHADER_TUBE = 0,	// パイプ用（カーブ＆テクスチャが移動する）
+	SHADER_GIMMICK,		// ギミック用（カーブ）
+	SHADER_PLAYER,		// プレイヤー用（特に無し）
 };
 
 //*********************************************************
@@ -77,10 +82,10 @@ struct INSTANCE {		// インスタンシングバッファ用構造体
 	XMFLOAT4 col[1024];
 };
 struct VERTEX_3D {		// 頂点バッファ用構造体
-    XMFLOAT3	Position;
-    XMFLOAT3	Normal;
-    XMFLOAT4	Diffuse;
-    XMFLOAT2	TexCoord;
+	XMFLOAT3	Position;
+	XMFLOAT3	Normal;
+	XMFLOAT4	Diffuse;
+	XMFLOAT2	TexCoord;
 };
 struct MATRIX {		// マトリクスバッファ用構造体
 	XMFLOAT4X4	World;
@@ -95,12 +100,12 @@ struct CAMERA {			// カメラバッファ用構造体
 	XMFLOAT4	ViewVolume;
 };
 struct MATERIAL {		// マテリアルバッファ用構造体
-	XMFLOAT4	Ambient;
-	XMFLOAT4	Diffuse;
-	XMFLOAT4	Specular;
-	XMFLOAT4	Emission;
-	float		Shininess;
-	int			noTexSampling;
+	XMFLOAT4	Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	Specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	Emission = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	float		Shininess = 10.0f;
+	int			noTexSampling = 0;
 	float		Dummy[2];		//16bit境界用
 };
 struct LIGHT {			// ライトバッファ用構造体
@@ -170,6 +175,11 @@ struct UV_POSITION {	// UV座標構造体
 	float uw = 1.0f;
 	float vh = 1.0f;
 };
+struct SRT {	// ScaleRotTrans構造体
+	XMFLOAT3 pos = { 1.0f, 1.0f, 1.0f };
+	XMFLOAT3 rot = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 scl = { 0.0f, 0.0f, 0.0f };
+};
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -196,6 +206,7 @@ void SetLightNo(int lightNo);
 void SetFrameTime(int time);
 
 void SetWorldViewProjection2D(void);
+void SetWorldBuffer(SRT& srt);
 void SetWorldBuffer(XMMATRIX* WorldMatrix);
 void SetViewBuffer(XMMATRIX* ViewMatrix);
 void SetProjectionBuffer(XMMATRIX* ProjectionMatrix);
@@ -212,18 +223,24 @@ void SetBackGroundColor(XMFLOAT4 color);
 void SetStencilWriteDL(void);
 void SetStencilWritePL(void);
 void SetStencilWriteSL(void);
+void SetStencilWriteLL(SHADER_TYPE shader);
 void SetStencilRead(void);
 void SetStencilReadDL(void);
 void SetStencilReadPL(void);
 void SetStencilReadSL(void);
+void SetStencilReadLL(SHADER_TYPE shader);
 void SetStencilNone(void);
-void SetStencilNoneAL(void);
+void SetStencilNoneAL(SHADER_TYPE shader);
 void SetStencilNoneOnlyDepth(void);
 void SetDrawOutline(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f });
-void SetDrawFillBlack(void);
+void SetDrawFillBlack(SHADER_TYPE shader);
+void SetDrawFillBlackPlayer(void);
 void SetDrawNoLighting(void);
 void SetDrawTube(void);
 void SetDrawGimmick(void);
+void SetDrawPlayer(void);
+void SetDrawLight(void);
+void SetDrawFire(void);
 void SetDraw2DTexture(void);
 //void SetDrawPreOutline(void);
 //void SetDrawPostOutline(void);
@@ -261,4 +278,11 @@ ID3D11Buffer* GetInstanceBuffer(void);
 void SetShaderInstanceingBillboard(XMFLOAT4X4 mtxView);
 void SetShaderDefault(void);
 
-XMFLOAT4 Float4(XMFLOAT3* f3);
+XMFLOAT4 Float4(XMFLOAT3& f3);
+
+void MulMtxScl(XMMATRIX& mtxWorld, XMFLOAT3& scl);
+void MulMtxScl(XMMATRIX& mtxWorld, float x, float y, float z);
+void MulMtxRot(XMMATRIX& mtxWorld, XMFLOAT3& rot);
+void MulMtxRot(XMMATRIX& mtxWorld, float x, float y, float z);
+void MulMtxPos(XMMATRIX& mtxWorld, XMFLOAT3& pos);
+void MulMtxPos(XMMATRIX& mtxWorld, float x, float y, float z);

@@ -46,6 +46,7 @@ HRESULT InitStage(void)
 	for (int i = 0; i < GIMMICK_OSAKA; i++)
 	{
 		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;
+		if (g_Gmk_Osaka[i].rotPosNo%MESH_NUM_X == 0) g_Gmk_Osaka[i].rotPosNo++;
 		g_Gmk_Osaka[i].zPosNo = i * 20;
 		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 2);
 	}
@@ -56,39 +57,33 @@ HRESULT InitStage(void)
 	g_Crv_Osaka[1].angle = { 0.0f, 0.0f };
 	g_Crv_Osaka[1].zPosNo = 100;
 
-	g_Crv_Osaka[2].angle = { 0.05f, 0.1f };
+	g_Crv_Osaka[2].angle = { 0.0f, 0.1f };
 	g_Crv_Osaka[2].zPosNo = 150;
 
-	g_Crv_Osaka[3].angle = { 0.05f, -0.1f };
+	g_Crv_Osaka[3].angle = { 0.0f, -0.1f };
 	g_Crv_Osaka[3].zPosNo = 200;
 
-	g_Crv_Osaka[4].angle = { -0.05f, 0.0f };
+	g_Crv_Osaka[4].angle = { -0.2f, 0.2f };
 	g_Crv_Osaka[4].zPosNo = 300;
 
-	g_Crv_Osaka[5].angle = { 0.0f, 0.0f };
+	g_Crv_Osaka[5].angle = { 0.2f, -0.2f };
 	g_Crv_Osaka[5].zPosNo = 1000;
 
 	g_Load = TRUE;
 	return S_OK;
 }
 
-STAGE* GetStage(int stageNo)
-{
-	return &g_Stage[stageNo];
-}
+STAGE* GetStage(int stageNo) { return &g_Stage[stageNo]; }
 
-void SetStageCurve(int stageNo, float zPos)
-{
+void SetStageCurve(int stageNo, float zPos) {
 	CURVE_BUFFER curve;
 	curve.TexPos = zPos / MESH_SIZE;
 	float rate, rateA, rateB, start, end;
-	for (int i = 0; i < g_Stage[stageNo].crvNum - 1; i++)
-	{
+	for (int i = 0; i < g_Stage[stageNo].crvNum - 1; i++) {
 		start = g_Stage[stageNo].arrCrv[i].zPosNo * MESH_SIZE;
 		end = g_Stage[stageNo].arrCrv[i + 1].zPosNo * MESH_SIZE;
 
-		if (start < zPos && zPos < end)
-		{
+		if (start < zPos && zPos < end) {
 			rate = (zPos - start) / (end - start);
 			rateA = (1.0f - rate) * (1.0f - rate);
 			rateB = rate * rate;

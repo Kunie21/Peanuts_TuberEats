@@ -11,6 +11,11 @@
 #include "camera.h"
 
 //*****************************************************************************
+// マクロ定義
+//*****************************************************************************
+#define DEFAULT_POS		(-310.0f)
+
+//*****************************************************************************
 // グローバル変数
 //*****************************************************************************
 static XMMATRIX				g_CameraViewMatrix;
@@ -31,7 +36,7 @@ static CAMERA_DESC			g_Camera;
 //=============================================================================
 void InitCamera(void)
 {
-	g_Camera.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	g_Camera.pos = XMFLOAT3(0.0f, 0.0f, DEFAULT_POS);
 	g_Camera.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	g_Camera.at = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	g_Camera.up = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -45,7 +50,7 @@ void InitCamera(void)
 	//SetCameraPosition(&g_CameraPosition);
 
 	CAMERA c;
-	c.Position = Float4(&g_Camera.pos);
+	c.Position = Float4(g_Camera.pos);
 	c.ViewVolume = XMFLOAT4(SCREEN_WIDTH, SCREEN_HEIGHT, VIEW_NEAR_Z, VIEW_FAR_Z);
 	SetCameraBuffer(&c);
 }

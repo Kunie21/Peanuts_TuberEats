@@ -83,11 +83,11 @@ HRESULT InitTeamLogo(void)
 	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
 	LoadModel("data/MODEL/rocket01.obj", &g_Model[MODEL_ROCKET].model);
 
-	g_Model[MODEL_STAR].pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_EARTH].pos = { 25.0f, 0.0f, 100.0f };
-	g_Model[MODEL_STAR].scl = { 20.3f, 20.3f, 20.3f };
-	g_Model[MODEL_EARTH].scl = { 0.3f, 0.3f, 0.3f };
-	g_Model[MODEL_ROCKET].scl = { 0.01f, 0.01f, 0.01f };
+	g_Model[MODEL_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
+	g_Model[MODEL_EARTH].srt.pos = { 25.0f, 0.0f, 100.0f };
+	g_Model[MODEL_STAR].srt.scl = { 20.3f, 20.3f, 20.3f };
+	g_Model[MODEL_EARTH].srt.scl = { 0.3f, 0.3f, 0.3f };
+	g_Model[MODEL_ROCKET].srt.scl = { 0.01f, 0.01f, 0.01f };
 
 	g_Time = 0;
 
@@ -119,7 +119,7 @@ void UninitTeamLogo(void)
 //=============================================================================
 void UpdateTeamLogo(void)
 {
-	g_Model[MODEL_EARTH].rot.y -= 0.01f;
+	g_Model[MODEL_EARTH].srt.rot.y -= 0.01f;
 	//if (g_Time++ > TEAMLOGO_TIME) { g_Time = 0; SetFade(FADE_OUT, MODE_GAME); }
 }
 
@@ -132,47 +132,47 @@ void DrawTeamLogo(void)
 	//DrawTexture2D(&g_td[TEXTURE_BG]);
 	//DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
 
-	SetDrawNoLighting();
+	//SetDrawNoLighting();
 
-	SetCullingMode(CULL_MODE_NONE);
+	//SetCullingMode(CULL_MODE_NONE);
 
-	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
+	//XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
 
-	for (int testNo = 0; testNo < MODEL_MAX; testNo++)
-	{
-		// ワールドマトリックスの初期化
-		mtxWorld = XMMatrixIdentity();
+	//for (int testNo = 0; testNo < MODEL_MAX; testNo++)
+	//{
+	//	// ワールドマトリックスの初期化
+	//	mtxWorld = XMMatrixIdentity();
 
-		// スケールを反映
-		mtxScl = XMMatrixScaling(g_Model[testNo].scl.x, g_Model[testNo].scl.y, g_Model[testNo].scl.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
+	//	// スケールを反映
+	//	mtxScl = XMMatrixScaling(g_Model[testNo].scl.x, g_Model[testNo].scl.y, g_Model[testNo].scl.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-		// 回転を反映：全体の角度
-		mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].rot.x, g_Model[testNo].rot.y, g_Model[testNo].rot.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
+	//	// 回転を反映：全体の角度
+	//	mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].rot.x, g_Model[testNo].rot.y, g_Model[testNo].rot.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
-		// 移動を反映
-		mtxTranslate = XMMatrixTranslation(g_Model[testNo].pos.x, g_Model[testNo].pos.y, g_Model[testNo].pos.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+	//	// 移動を反映
+	//	mtxTranslate = XMMatrixTranslation(g_Model[testNo].pos.x, g_Model[testNo].pos.y, g_Model[testNo].pos.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
-		// ワールドマトリックスの設定
-		SetWorldBuffer(&mtxWorld);
+	//	// ワールドマトリックスの設定
+	//	SetWorldBuffer(&mtxWorld);
 
-		// マテリアル設定
-		MATERIAL material;
-		ZeroMemory(&material, sizeof(material));
-		material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//	// マテリアル設定
+	//	MATERIAL material;
+	//	ZeroMemory(&material, sizeof(material));
+	//	material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		// モデル描画
-		if (testNo != MODEL_STAR)
-		{
-			DrawModel(&g_Model[testNo].model, NULL, &material);
-		}
-		else
-		{
-			DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
-		}
-	}
+	//	// モデル描画
+	//	if (testNo != MODEL_STAR)
+	//	{
+	//		DrawModel(&g_Model[testNo].model, NULL, &material);
+	//	}
+	//	else
+	//	{
+	//		DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
+	//	}
+	//}
 
-	SetCullingMode(CULL_MODE_BACK);
+	//SetCullingMode(CULL_MODE_BACK);
 }
