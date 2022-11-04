@@ -118,8 +118,10 @@ static int						g_CurrentTarget = 0;
 static int						g_CurrentResource = 0;
 
 // ライト用レンダーターゲット
-static ID3D11RenderTargetView*	g_RenderTargetViewLight = NULL;
-static ID3D11ShaderResourceView*g_LightTexture = NULL;
+static ID3D11RenderTargetView*	g_RenderTargetViewLight[2] = { NULL, NULL };
+static ID3D11ShaderResourceView*g_LightTexture[2] = { NULL, NULL };
+static int						g_CurrentTargetLight = 0;
+static int						g_CurrentResourceLight = 0;
 
 // その他シェーダー
 static ID3D11VertexShader*		g_VertexShader = NULL;
@@ -224,8 +226,10 @@ void UninitRenderer(void)
 	if (g_WrittenTexture[1])	g_WrittenTexture[1]->Release();
 
 	// ライト用レンダーターゲット
-	if(g_RenderTargetViewLight) g_RenderTargetViewLight->Release();
-	if (g_LightTexture)			g_LightTexture->Release();
+	if (g_RenderTargetViewLight[0]) g_RenderTargetViewLight[0]->Release();
+	if (g_RenderTargetViewLight[1]) g_RenderTargetViewLight[1]->Release();
+	if (g_LightTexture[0])			g_LightTexture[0]->Release();
+	if (g_LightTexture[1])			g_LightTexture[1]->Release();
 
 	// その他シェーダー
 	if (g_VertexShader)			g_VertexShader->Release();
@@ -420,6 +424,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	}
 
 	// 書き込み用テクスチャ作成
+	for (int i = 0; i < 2; i++)
 	{
 		ID3D11Texture2D* lightTexture = NULL;
 		D3D11_TEXTURE2D_DESC td;
@@ -438,7 +443,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		g_D3DDevice->CreateTexture2D(&td, NULL, &lightTexture);
 
 		// レンダーターゲットビュー生成、設定
-		g_D3DDevice->CreateRenderTargetView(lightTexture, NULL, &g_RenderTargetViewLight);
+		g_D3DDevice->CreateRenderTargetView(lightTexture, NULL, &g_RenderTargetViewLight[i]);
 
 		//シェーダーリソースビュー作成
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
@@ -446,7 +451,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		srvd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvd.Texture2D.MipLevels = 1;
-		g_D3DDevice->CreateShaderResourceView(lightTexture, &srvd, &g_LightTexture);
+		g_D3DDevice->CreateShaderResourceView(lightTexture, &srvd, &g_LightTexture[i]);
 	}
 
 	// ノーマルマップ用テクスチャ作成
@@ -1303,7 +1308,7 @@ void SetDrawLight(void)
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight, g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
 }
 void SetDraw2DTexture(void)
 {
@@ -1317,6 +1322,9 @@ void SetDraw2DTexture(void)
 
 void ApplyLightToTarget(void)	// 加算合成する
 {
+	// ターゲットの切り替え
+	g_CurrentTargetLight = g_CurrentTargetLight ? 0 : 1;
+
 	XMMATRIX f;
 	for (int x = 0; x < 3; x++)
 	{
@@ -1335,9 +1343,12 @@ void ApplyLightToTarget(void)	// 加算合成する
 	//g_ImmediateContext->PSSetShader(g_PixelShaderOnlyTex, NULL, 0);
 	//g_ImmediateContext->PSSetShader(g_PixelShaderLight, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight, g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
 
-	DrawScreen(&g_LightTexture);
+	DrawScreen(&g_LightTexture[g_CurrentResourceLight]);
+
+	// リソースの切り替え
+	g_CurrentResourceLight = g_CurrentResourceLight ? 0 : 1;
 
 	//SetBlendState(BLEND_MODE_ALPHABLEND);
 	SetBlendState(BLEND_MODE_ADD);
@@ -1347,7 +1358,7 @@ void ApplyLightToTarget(void)	// 加算合成する
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 
-	DrawScreen(&g_LightTexture);
+	DrawScreen(&g_LightTexture[g_CurrentResourceLight]);
 
 	SetBlendState(BLEND_MODE_ADD);
 }

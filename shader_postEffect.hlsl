@@ -29,7 +29,7 @@ float4 PixelShaderFilter(VS_OUTPUT input) : SV_Target{
 			outDiffuse.rgb += filter[y + 1][x + 1] * g_Texture.Load(int3(pos_x + x, pos_y + y, 0)).rgb;
 		}
 	}
-	outDiffuse *= 0.9f;
+	outDiffuse *= 0.7f;
 	return outDiffuse;
 }
 
