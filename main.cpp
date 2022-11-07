@@ -27,6 +27,7 @@
 #include "title.h"
 
 // start
+#include "start.h"
 
 // home
 
@@ -67,7 +68,7 @@ int		g_CountFPS;							// FPS�J�E���^
 char	g_DebugStr[2048] = WINDOW_NAME;		// �f�o�b�O�����\���p
 #endif
 
-MODE_LABEL	g_Mode = MODE_TITLE;	// �N�����̉�ʂ�ݒ�
+MODE_LABEL	g_Mode = MODE_START;	// �N�����̉�ʂ�ݒ�
 
 //=============================================================================
 // ���C���֐�
@@ -246,6 +247,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitFade();
 	InitTeamLogo();
 	InitTitle();
+	InitStart();
 	
 
 	SetMode(g_Mode);	// �ŏ��̃��[�h��Z�b�g
@@ -268,6 +270,7 @@ void Uninit(void)
 	UninitRenderer();
 	UninitTeamLogo();
 	UninitTitle();
+	UninitStart();
 }
 
 //=============================================================================
@@ -290,6 +293,7 @@ void Update(void)
 		UpdateTitle();
 		break;
 	case MODE_START:
+		UpdateStart();
 		break;
 	case MODE_HOME:
 		break;
@@ -331,6 +335,7 @@ void Draw(void)
 		DrawTitle();
 		break;
 	case MODE_START:
+		DrawStart();
 		break;
 	case MODE_HOME:
 		break;
@@ -377,6 +382,7 @@ void SetMode(MODE_LABEL mode)
 		InitTitle();
 		break;
 	case MODE_START:
+		InitStart();
 		break;
 	case MODE_HOME:
 		break;

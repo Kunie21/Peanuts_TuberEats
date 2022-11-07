@@ -1,29 +1,31 @@
 //=============================================================================
 //
-// 2D‰æ‘œ•`‰æˆ— [texture2D.h]
-// Author : š ] ãÄ‘¾
+// 2Dï¿½æ‘œï¿½`ï¿½æˆï¿½ï¿½ [texture2D.h]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #pragma once
 
-// 2D‰æ‘œ•`‰æ—pƒf[ƒ^
+// 2Dï¿½æ‘œï¿½`ï¿½ï¿½pï¿½fï¿½[ï¿½^
 struct TEXTURE2D_DESC
 {
-	UV_POSITION uv_pos = { 0.0f, 0.0f, 1.0f, 1.0f };	// UVÀ•W
-	XMFLOAT4 col = { 1.0f, 1.0f, 1.0f, 1.0f };			// F
-	XMFLOAT4 sd_col = { 0.0f, 0.0f, 0.0f, 0.5f };		// ‰eF
-	XMFLOAT2 sd_pos = { 5.0f, 5.0f };					// ‰eˆÊ’ui‚¸‚ç‚·—Êj
-	XMFLOAT2 size = { SCREEN_WIDTH, SCREEN_HEIGHT };	// ƒTƒCƒY
-	XMFLOAT2 pos = { 0.0f, 0.0f };						// ˆÊ’u
-	XMFLOAT2 scl = { 1.0f, 1.0f };						// Šg‘å—¦
-	float rot = 0.0f;									// ‰ñ“]
-	CENTER_TYPE ctrType = CENTER_CENTER;				// ’†S‚ÌŽí—Þ
-	POSITION_TYPE posType = POSITION_RELATIVE;			// ˆÊ’u‚ÌŽí—Þ
-	ID3D11ShaderResourceView** tex = NULL ;				// ƒeƒNƒXƒ`ƒƒ
+	UV_POSITION uv_pos = { 0.0f, 0.0f, 1.0f, 1.0f };	// UVï¿½ï¿½ï¿½W
+	XMFLOAT4 col = { 1.0f, 1.0f, 1.0f, 1.0f };			// ï¿½F
+	XMFLOAT4 sd_col = { 0.0f, 0.0f, 0.0f, 0.5f };		// ï¿½eï¿½F
+	XMFLOAT2 sd_pos = { 5.0f, 5.0f };					// ï¿½eï¿½Ê’uï¿½iï¿½ï¿½ï¿½ç‚·ï¿½Êj
+	XMFLOAT2 size = { SCREEN_WIDTH, SCREEN_HEIGHT };	// ï¿½Tï¿½Cï¿½Y
+	XMFLOAT2 pos = { 0.0f, 0.0f };						// ï¿½Ê’u
+	XMFLOAT2 scl = { 1.0f, 1.0f };						// ï¿½gï¿½å—¦
+	float rot = 0.0f;									// ï¿½ï¿½]
+	CENTER_TYPE ctrType = CENTER_CENTER;				// ï¿½ï¿½ï¿½Sï¿½ÌŽï¿½ï¿½
+	POSITION_TYPE posType = POSITION_RELATIVE;			// ï¿½Ê’uï¿½ÌŽï¿½ï¿½
+	HORIZONTAL_POSITION horType = HORIZONTAL_LEFT;
+	VERTICAL_POSITION verType = VERTICAL_TOP;
+	ID3D11ShaderResourceView** tex = NULL ;				// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½
 };
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 HRESULT InitTexture2D(void);
 void UninitTexture2D(void);

@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ƒJƒƒ‰ˆ— [camera.cpp]
+// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [camera.cpp]
 // Author : 
 //
 //=============================================================================
@@ -11,7 +11,7 @@
 #include "camera.h"
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static XMMATRIX				g_CameraViewMatrix;
 static XMMATRIX				g_CameraInvViewMatrix;
@@ -27,7 +27,7 @@ struct CAMERA_DESC
 static CAMERA_DESC			g_Camera;
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void InitCamera(void)
 {
@@ -36,7 +36,7 @@ void InitCamera(void)
 	g_Camera.at = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	g_Camera.up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-	// ‹“_‚Æ’‹“_‚Ì‹——£‚ğŒvZ
+	// ï¿½ï¿½ï¿½_ï¿½Æ’ï¿½ï¿½ï¿½ï¿½_ï¿½Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Z
 	float vx, vz;
 	vx = g_Camera.pos.x - g_Camera.at.x;
 	vz = g_Camera.pos.z - g_Camera.at.z;
@@ -51,19 +51,19 @@ void InitCamera(void)
 }
 
 //=============================================================================
-// ƒJƒƒ‰‚ÌI—¹ˆ—
+// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitCamera(void) {}
 
 //=============================================================================
-// ƒJƒƒ‰‚ÌXVˆ—
+// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌXï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateCamera(void)
 {
 #ifdef _DEBUG
 
 	if (GetKeyboardPress(DIK_Z))
-	{// ‹“_ù‰ñu¶v
+	{// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½v
 		g_Camera.rot.y += VALUE_ROTATE_CAMERA;
 		if (g_Camera.rot.y > XM_PI)
 		{
@@ -75,7 +75,7 @@ void UpdateCamera(void)
 	}
 
 	if (GetKeyboardPress(DIK_C))
-	{// ‹“_ù‰ñu‰Ev
+	{// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½uï¿½Eï¿½v
 		g_Camera.rot.y -= VALUE_ROTATE_CAMERA;
 		if (g_Camera.rot.y < -XM_PI)
 		{
@@ -87,17 +87,17 @@ void UpdateCamera(void)
 	}
 
 	if (GetKeyboardPress(DIK_Y))
-	{// ‹“_ˆÚ“®uãv
+	{// ï¿½ï¿½ï¿½_ï¿½Ú“ï¿½ï¿½uï¿½ï¿½v
 		g_Camera.pos.y += VALUE_MOVE_CAMERA;
 	}
 
 	if (GetKeyboardPress(DIK_N))
-	{// ‹“_ˆÚ“®u‰ºv
+	{// ï¿½ï¿½ï¿½_ï¿½Ú“ï¿½ï¿½uï¿½ï¿½ï¿½v
 		g_Camera.pos.y -= VALUE_MOVE_CAMERA;
 	}
 
 	if (GetKeyboardPress(DIK_Q))
-	{// ’‹“_ù‰ñu¶v
+	{// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½v
 		g_Camera.rot.y -= VALUE_ROTATE_CAMERA;
 		if (g_Camera.rot.y < -XM_PI)
 		{
@@ -109,7 +109,7 @@ void UpdateCamera(void)
 	}
 
 	if (GetKeyboardPress(DIK_E))
-	{// ’‹“_ù‰ñu‰Ev
+	{// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½uï¿½Eï¿½v
 		g_Camera.rot.y += VALUE_ROTATE_CAMERA;
 		if (g_Camera.rot.y > XM_PI)
 		{
@@ -121,71 +121,71 @@ void UpdateCamera(void)
 	}
 
 	if (GetKeyboardPress(DIK_T))
-	{// ’‹“_ˆÚ“®uãv
+	{// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Ú“ï¿½ï¿½uï¿½ï¿½v
 		g_Camera.at.y += VALUE_MOVE_CAMERA;
 	}
 
 	if (GetKeyboardPress(DIK_B))
-	{// ’‹“_ˆÚ“®u‰ºv
+	{// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Ú“ï¿½ï¿½uï¿½ï¿½ï¿½v
 		g_Camera.at.y -= VALUE_MOVE_CAMERA;
 	}
 
 	if (GetKeyboardPress(DIK_U))
-	{// ‹ß‚Ã‚­
+	{// ï¿½ß‚Ã‚ï¿½
 		g_Camera.len -= VALUE_MOVE_CAMERA;
 		g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
 		g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
 	}
 
 	if (GetKeyboardPress(DIK_M))
-	{// —£‚ê‚é
+	{// ï¿½ï¿½ï¿½ï¿½ï¿½
 		g_Camera.len += VALUE_MOVE_CAMERA;
 		g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
 		g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
 	}
 
-	// ƒJƒƒ‰‚ğ‰Šú‚É–ß‚·
+	// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É–ß‚ï¿½
 	if (GetKeyboardPress(DIK_R))
 	{
 		UninitCamera();
 		InitCamera();
 	}
 
-	if (GetKeyboardPress(DIK_UP))
-	{// ‹ß‚Ã‚­
-		g_Camera.pos.z += 50.0f;
-		g_Camera.at.z += 50.0f;
-	}
-	if (GetKeyboardPress(DIK_DOWN))
-	{// —£‚ê‚é
-		g_Camera.pos.z -= 50.0f;
-		g_Camera.at.z -= 50.0f;
-	}
-	if (GetKeyboardPress(DIK_RIGHT))
-	{// —£‚ê‚é
-		g_Camera.pos.x += 50.0f;
-		g_Camera.at.x += 50.0f;
-	}
-	if (GetKeyboardPress(DIK_LEFT))
-	{// ‹ß‚Ã‚­
-		g_Camera.pos.x -= 50.0f;
-		g_Camera.at.x -= 50.0f;
-	}
+	//if (GetKeyboardPress(DIK_UP))
+	//{// ï¿½ß‚Ã‚ï¿½
+	//	g_Camera.pos.z += 50.0f;
+	//	g_Camera.at.z += 50.0f;
+	//}
+	//if (GetKeyboardPress(DIK_DOWN))
+	//{// ï¿½ï¿½ï¿½ï¿½ï¿½
+	//	g_Camera.pos.z -= 50.0f;
+	//	g_Camera.at.z -= 50.0f;
+	//}
+	//if (GetKeyboardPress(DIK_RIGHT))
+	//{// ï¿½ï¿½ï¿½ï¿½ï¿½
+	//	g_Camera.pos.x += 50.0f;
+	//	g_Camera.at.x += 50.0f;
+	//}
+	//if (GetKeyboardPress(DIK_LEFT))
+	//{// ï¿½ß‚Ã‚ï¿½
+	//	g_Camera.pos.x -= 50.0f;
+	//	g_Camera.at.x -= 50.0f;
+	//}
 
-	//PrintDebugProc("Camera:ZC QE TB YN UM R\n");
+	PrintDebugProc("Camera:ZC QE TB YN UM R\n");
 #endif
 }
 
 //=============================================================================
-// ƒJƒƒ‰‚ÌXV
+// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌXï¿½V
 //=============================================================================
 void SetCamera(void) 
 {
-	// ƒrƒ…[s—ñİ’è
+	// ï¿½rï¿½ï¿½ï¿½[ï¿½sï¿½ï¿½İ’ï¿½
 	g_CameraViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&g_Camera.pos), XMLoadFloat3(&g_Camera.at), XMLoadFloat3(&g_Camera.up));
 	SetViewBuffer(&g_CameraViewMatrix);
 
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñİ’è
+	// ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½İ’ï¿½
 	g_CameraProjectionMatrix = XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT, VIEW_NEAR_Z, VIEW_FAR_Z);
 	SetProjectionBuffer(&g_CameraProjectionMatrix);
 }

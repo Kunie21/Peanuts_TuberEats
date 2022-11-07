@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒQ[ƒ€UIˆ— [ui_game.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½Qï¿½[ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½ [ui_game.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -10,7 +10,7 @@
 #include "ui_game.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
 #define MAP_LINE_Y		(-450.0f)
 #define MAP_EDGE		(700.0f)
@@ -22,11 +22,11 @@
 #define TIMER_CENTER_X	(MAP_EDGE + 125.0f)
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static BOOL				g_Load = FALSE;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum
 {
 	TEXTURE_FUEL_EMPTY = 0,
@@ -46,7 +46,7 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/game_UI/fuel_empty.png",
 	"data/TEXTURE/game_UI/fuel_font.png",
@@ -67,19 +67,19 @@ static char*	g_TextureName[TEXTURE_MAX] = {
 static float g_Timer = 0.0f;
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitGameUI(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 		g_td[i].tex = &g_Texture[i];
 	}
 
-	// Ú×İ’è
-	// ƒXƒs[ƒhƒ[ƒ^[
+	// ï¿½Ú×İ’ï¿½
+	// ï¿½Xï¿½sï¿½[ï¿½hï¿½ï¿½ï¿½[ï¿½^ï¿½[
 	g_td[TEXTURE_SPEED_FONT].size = { 82.0f, 23.0f };
 	g_td[TEXTURE_SPEED_FONT].pos = { SPEED_CENTER_X + 149.0f, SPEED_CENTER_Y + 154.0f };
 	g_td[TEXTURE_SPEED_EMPTY].size = { 218.0f, 333.0f };
@@ -87,7 +87,7 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_SPEED_GAUGE].size = { 218.0f, 333.0f };
 	g_td[TEXTURE_SPEED_GAUGE].pos = { SPEED_CENTER_X, SPEED_CENTER_Y };
 
-	// ”R—¿ƒ[ƒ^[
+	// ï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[
 	g_td[TEXTURE_FUEL_FONT].size = { 62.0f, 23.0f };
 	g_td[TEXTURE_FUEL_FONT].pos = { FUEL_CENTER_X - 310.0f, FUEL_LINE_Y };
 	g_td[TEXTURE_FUEL_EMPTY].size = { 554.0f, 24.0f };
@@ -95,11 +95,11 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_FUEL_FULL].size = { 554.0f, 24.0f };
 	g_td[TEXTURE_FUEL_FULL].pos = { FUEL_CENTER_X, FUEL_LINE_Y };
 
-	// ƒvƒŒƒCƒ„[ƒAƒCƒRƒ“
+	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Aï¿½Cï¿½Rï¿½ï¿½
 	g_td[TEXTURE_ICON].size = { 183.0f, 183.0f };
 	g_td[TEXTURE_ICON].pos = { -700.0f, 350.0f };
 
-	// ƒ}ƒbƒv
+	// ï¿½}ï¿½bï¿½v
 	g_td[TEXTURE_MAP].size = { 1425.0f, 25.0f };
 	g_td[TEXTURE_MAP].pos = { 0.0f, MAP_LINE_Y };
 	g_td[TEXTURE_MAP_ROCKET].size = { 91.0f, 40.0f };
@@ -107,7 +107,7 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_GOALPIN].size = { 36.0f, 48.0f };
 	g_td[TEXTURE_GOALPIN].pos = { MAP_EDGE, MAP_LINE_Y - 40.0f };
 
-	// ƒ^ƒCƒ}[
+	// ï¿½^ï¿½Cï¿½}ï¿½[
 	g_td[TEXTURE_TIMER_BACK].size = { 169.0f, 79.0f };
 	g_td[TEXTURE_TIMER_BACK].pos = { TIMER_CENTER_X, MAP_LINE_Y };
 	g_td[TEXTURE_SEMICOLON].size = { 20.0f, 90.0f };
@@ -117,7 +117,7 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_NUMBER].scl = { 0.1f, 1.0f };
 	g_td[TEXTURE_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
 
-	// ƒXƒNƒŠ[ƒ“ƒGƒtƒFƒNƒg—p
+	// ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Gï¿½tï¿½Fï¿½Nï¿½gï¿½p
 	g_td[TEXTURE_WHITE].col = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	g_Load = TRUE;
@@ -125,7 +125,7 @@ HRESULT InitGameUI(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitGameUI(void)
 {
@@ -144,7 +144,7 @@ void UninitGameUI(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateGameUI(void)
 {
@@ -153,7 +153,7 @@ void UpdateGameUI(void)
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawGameUI(void)
 {
@@ -189,7 +189,7 @@ void DrawGameUI(void)
 
 				time /= 10;
 			}
-			if (g_Timer < 1.0f)	// 0•b‚ğ•`‰æ
+			if (g_Timer < 1.0f)	// 0ï¿½bï¿½ï¿½`ï¿½ï¿½
 			{
 				g_td[i].uv_pos.u = 0.0f;
 				g_td[i].pos.x = TIMER_CENTER_X - 0.5f * 25.5f - 10.0f;

@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ƒŒƒ“ƒ_ƒŠƒ“ƒOˆ— [renderer.h]
+// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ [renderer.h]
 // Author : 
 //
 //=============================================================================
@@ -8,7 +8,7 @@
 
 
 //*********************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*********************************************************
 #define LIGHT_MAX		(5)
 #define LIGHT_DIRECTIONAL_MAX	5
@@ -16,73 +16,73 @@
 #define LIGHT_SPOT_MAX			10
 
 //*********************************************************
-// —ñ‹“Žq
+// ï¿½ñ‹“Žq
 //*********************************************************
-enum FILTER_MODE {	// ƒtƒBƒ‹ƒ^[ƒ‚[ƒh
-	FILTER_MODE_NONE,			// ƒtƒBƒ‹ƒ^‚È‚µ
-	FILTER_MODE_AVERAGING,		// •½‹Ï‰»ƒtƒBƒ‹ƒ^
-	FILTER_MODE_GAUSSIAN,		// ƒKƒEƒVƒAƒ“ƒtƒBƒ‹ƒ^
-	FILTER_MODE_SHARPNING,		// ‘N‰s‰»ƒtƒBƒ‹ƒ^Žã
-	FILTER_MODE_SHARPNING_HIGH,	// ‘N‰s‰»ƒtƒBƒ‹ƒ^‹­
-	FILTER_MODE_LAPLACIAN,		// ƒ‰ƒvƒ‰ƒVƒAƒ“ƒtƒBƒ‹ƒ^
-	FILTER_MODE_LAPLACIAN_COLOR,// ƒ‰ƒvƒ‰ƒVƒAƒ“ƒtƒBƒ‹ƒ^ƒJƒ‰[
-	FILTER_MODE_PREWITT_X,		// ƒvƒŠƒ…[ƒEƒBƒbƒgƒtƒBƒ‹ƒ^‰¡
-	FILTER_MODE_PREWITT_Y,		// ƒvƒŠƒ…[ƒEƒBƒbƒgƒtƒBƒ‹ƒ^c
-	FILTER_MODE_SOBEL_X,		// ƒ\[ƒxƒ‹ƒtƒBƒ‹ƒ^‰¡
-	FILTER_MODE_SOBEL_Y,		// ƒ\[ƒxƒ‹ƒtƒBƒ‹ƒ^c
+enum FILTER_MODE {	// ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½[ï¿½ï¿½ï¿½[ï¿½h
+	FILTER_MODE_NONE,			// ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½È‚ï¿½
+	FILTER_MODE_AVERAGING,		// ï¿½ï¿½ï¿½Ï‰ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^
+	FILTER_MODE_GAUSSIAN,		// ï¿½Kï¿½Eï¿½Vï¿½Aï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^
+	FILTER_MODE_SHARPNING,		// ï¿½Nï¿½sï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	FILTER_MODE_SHARPNING_HIGH,	// ï¿½Nï¿½sï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	FILTER_MODE_LAPLACIAN,		// ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Vï¿½Aï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^
+	FILTER_MODE_LAPLACIAN_COLOR,// ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Vï¿½Aï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½Jï¿½ï¿½ï¿½[
+	FILTER_MODE_PREWITT_X,		// ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Eï¿½Bï¿½bï¿½gï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	FILTER_MODE_PREWITT_Y,		// ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Eï¿½Bï¿½bï¿½gï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½c
+	FILTER_MODE_SOBEL_X,		// ï¿½\ï¿½[ï¿½xï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	FILTER_MODE_SOBEL_Y,		// ï¿½\ï¿½[ï¿½xï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½c
 
 	FILTER_MODE_NUM
 };
-enum BLEND_MODE {		// ƒuƒŒƒ“ƒhƒ‚[ƒh
-	BLEND_MODE_NONE,		//ƒuƒŒƒ“ƒh–³‚µ
-	BLEND_MODE_ALPHABLEND,	//ƒ¿ƒuƒŒƒ“ƒh
-	BLEND_MODE_ADD,			//‰ÁŽZƒuƒŒƒ“ƒh
-	BLEND_MODE_SUBTRACT,	//Œ¸ŽZƒuƒŒƒ“ƒh
+enum BLEND_MODE {		// ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½[ï¿½h
+	BLEND_MODE_NONE,		//ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½
+	BLEND_MODE_ALPHABLEND,	//ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½h
+	BLEND_MODE_ADD,			//ï¿½ï¿½ï¿½Zï¿½uï¿½ï¿½ï¿½ï¿½ï¿½h
+	BLEND_MODE_SUBTRACT,	//ï¿½ï¿½ï¿½Zï¿½uï¿½ï¿½ï¿½ï¿½ï¿½h
 
 	BLEDD_MODE_NUM
 };
-enum CULL_MODE {		// ƒJƒŠƒ“ƒOƒ‚[ƒh
-	CULL_MODE_NONE,			//ƒJƒŠƒ“ƒO–³‚µ
-	CULL_MODE_FRONT,		//•\‚Ìƒ|ƒŠƒSƒ“‚ð•`‰æ‚µ‚È‚¢(CW)
-	CULL_MODE_BACK,			//— ‚Ìƒ|ƒŠƒSƒ“‚ð•`‰æ‚µ‚È‚¢(CCW)
+enum CULL_MODE {		// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½[ï¿½h
+	CULL_MODE_NONE,			//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
+	CULL_MODE_FRONT,		//ï¿½\ï¿½Ìƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½`ï¿½æ‚µï¿½È‚ï¿½(CW)
+	CULL_MODE_BACK,			//ï¿½ï¿½ï¿½Ìƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½`ï¿½æ‚µï¿½È‚ï¿½(CCW)
 
 	CULL_MODE_NUM
 };
-enum POSITION_TYPE {	// ˆÊ’u‚ÌŽí—Þ
-	POSITION_RELATIVE = 0,	// ‘Š‘ÎˆÊ’u
-	POSITION_ABSOLUTE,		// â‘ÎˆÊ’u
+enum POSITION_TYPE {	// ï¿½Ê’uï¿½ÌŽï¿½ï¿½
+	POSITION_RELATIVE = 0,	// ï¿½ï¿½ï¿½ÎˆÊ’u
+	POSITION_ABSOLUTE,		// ï¿½ï¿½ÎˆÊ’u
 };
-enum CENTER_TYPE {	// ’†S‚ÌŽí—Þ
-	CENTER_LEFTTOP = 0,	// ¶ã‚ðŽw‚·‚Æ‚«
-	CENTER_CENTER,		// ’†S‚ðŽw‚·‚Æ‚«
+enum CENTER_TYPE {	// ï¿½ï¿½ï¿½Sï¿½ÌŽï¿½ï¿½
+	CENTER_LEFTTOP = 0,	// ï¿½ï¿½ï¿½ï¿½ï¿½wï¿½ï¿½ï¿½Æ‚ï¿½
+	CENTER_CENTER,		// ï¿½ï¿½ï¿½Sï¿½ï¿½wï¿½ï¿½ï¿½Æ‚ï¿½
 };
-enum HORIZONTAL_POSITION {	// …•½ˆÊ’u‚ÌŽí—Þ
-	HORIZONTAL_LEFT = 0,	// ¶Šñ‚¹
-	HORIZONTAL_CENTER,		// ’†‰›Šñ‚¹
-	HORIZONTAL_RIGHT,		// ‰EŠñ‚¹
+enum HORIZONTAL_POSITION {	// ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ÌŽï¿½ï¿½
+	HORIZONTAL_LEFT = 0,	// ï¿½ï¿½ï¿½ï¿½
+	HORIZONTAL_CENTER,		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	HORIZONTAL_RIGHT,		// ï¿½Eï¿½ï¿½
 };
-enum VERTICAL_POSITION {	// ‚’¼ˆÊ’u‚ÌŽí—Þ
-	VERTICAL_TOP = 0,		// ãŠñ‚¹
-	VERTICAL_MIDDLE,		// ’†‰›Šñ‚¹
-	VERTICAL_BOTTOM,		// ‰ºŠñ‚¹
+enum VERTICAL_POSITION {	// ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ÌŽï¿½ï¿½
+	VERTICAL_TOP = 0,		// ï¿½ï¿½ï¿½
+	VERTICAL_MIDDLE,		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	VERTICAL_BOTTOM,		// ï¿½ï¿½ï¿½ï¿½
 };
 
 //*********************************************************
-// \‘¢‘Ì
+// ï¿½\ï¿½ï¿½ï¿½ï¿½
 //*********************************************************
-struct INSTANCE {		// ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒOƒoƒbƒtƒ@—p\‘¢‘Ì
+struct INSTANCE {		// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	XMFLOAT4 pos[1024];
 	XMFLOAT4 rot[1024];
 	XMFLOAT4 scl[1024];
 	XMFLOAT4 col[1024];
 };
-struct VERTEX_3D {		// ’¸“_ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct VERTEX_3D {		// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
     XMFLOAT3	Position;
     XMFLOAT3	Normal;
     XMFLOAT4	Diffuse;
     XMFLOAT2	TexCoord;
 };
-struct MATRIX {		// ƒ}ƒgƒŠƒNƒXƒoƒbƒtƒ@—p\‘¢‘Ì
+struct MATRIX {		// ï¿½}ï¿½gï¿½ï¿½ï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	XMFLOAT4X4	World;
 	XMFLOAT4X4	View;
 	XMFLOAT4X4	Projection;
@@ -90,81 +90,81 @@ struct MATRIX {		// ƒ}ƒgƒŠƒNƒXƒoƒbƒtƒ@—p\‘¢‘Ì
 	XMFLOAT4X4	ViewProjection;
 	XMFLOAT4X4	AfterRotation;
 };
-struct CAMERA {			// ƒJƒƒ‰ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct CAMERA {			// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	XMFLOAT4	Position;
 	XMFLOAT4	ViewVolume;
 };
-struct MATERIAL {		// ƒ}ƒeƒŠƒAƒ‹ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct MATERIAL {		// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	XMFLOAT4	Ambient;
 	XMFLOAT4	Diffuse;
 	XMFLOAT4	Specular;
 	XMFLOAT4	Emission;
 	float		Shininess;
 	int			noTexSampling;
-	float		Dummy[2];		//16bit‹«ŠE—p
+	float		Dummy[2];		//16bitï¿½ï¿½ï¿½Eï¿½p
 };
-struct LIGHT {			// ƒ‰ƒCƒgƒoƒbƒtƒ@—p\‘¢‘Ì
-	XMFLOAT4	Direction;	// ƒ‰ƒCƒg‚Ì•ûŒü
-	XMFLOAT4	Position;	// ƒ‰ƒCƒg‚ÌˆÊ’u
-	XMFLOAT4	Diffuse;	// ŠgŽUŒõ‚ÌF
-	XMFLOAT4	Ambient;	// ŠÂ‹«Œõ‚ÌF
-	float		Attenuation;// Œ¸Š—¦
-	int			Type;		// ƒ‰ƒCƒgŽí•ÊE—LŒøƒtƒ‰ƒO
-	int			Enable;		// ƒ‰ƒCƒgŽí•ÊE—LŒøƒtƒ‰ƒO
-	float		Dummy;			//16bit‹«ŠE—p
+struct LIGHT {			// ï¿½ï¿½ï¿½Cï¿½gï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
+	XMFLOAT4	Direction;	// ï¿½ï¿½ï¿½Cï¿½gï¿½Ì•ï¿½ï¿½ï¿½
+	XMFLOAT4	Position;	// ï¿½ï¿½ï¿½Cï¿½gï¿½ÌˆÊ’u
+	XMFLOAT4	Diffuse;	// ï¿½gï¿½Uï¿½ï¿½ï¿½ÌF
+	XMFLOAT4	Ambient;	// ï¿½Â‹ï¿½ï¿½ï¿½ï¿½ÌF
+	float		Attenuation;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	int			Type;		// ï¿½ï¿½ï¿½Cï¿½gï¿½ï¿½ÊEï¿½Lï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
+	int			Enable;		// ï¿½ï¿½ï¿½Cï¿½gï¿½ï¿½ÊEï¿½Lï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
+	float		Dummy;			//16bitï¿½ï¿½ï¿½Eï¿½p
 };
-struct LIGHT_AMBIENT {	// ƒAƒ“ƒrƒGƒ“ƒgƒ‰ƒCƒgƒoƒbƒtƒ@—p\‘¢‘Ì
-	XMFLOAT4	Color;			// F
-	float		Intensity;		// ‹­“x
-	int			Use;			// Žg—p
+struct LIGHT_AMBIENT {	// ï¿½Aï¿½ï¿½ï¿½rï¿½Gï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Cï¿½gï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
+	XMFLOAT4	Color;			// ï¿½F
+	float		Intensity;		// ï¿½ï¿½ï¿½x
+	int			Use;			// ï¿½gï¿½p
 	float		Dummy[2];
 };
-struct LIGHT_DIRECTIONAL {	// ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒgƒoƒbƒtƒ@—p\‘¢‘Ì
-	XMFLOAT4	Color;			// F
-	XMFLOAT4	Direction;		// Œü‚«
-	float		Intensity;		// ‹­“x
-	int			Use;			// Žg—p
+struct LIGHT_DIRECTIONAL {	// ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½Vï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½gï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
+	XMFLOAT4	Color;			// ï¿½F
+	XMFLOAT4	Direction;		// ï¿½ï¿½ï¿½ï¿½
+	float		Intensity;		// ï¿½ï¿½ï¿½x
+	int			Use;			// ï¿½gï¿½p
 	float		Dummy[2];
 };
-struct LIGHT_POINT {		// ƒ|ƒCƒ“ƒgƒ‰ƒCƒgƒoƒbƒtƒ@—p\‘¢‘Ì
-	XMFLOAT4	Color;			// F
-	XMFLOAT4	Position;		// ˆÊ’u
-	float		Intensity;		// ‹­“x
-	float		Attenuation;	// Œ¸Š‹——£
-	int			Use;			// Žg—p
+struct LIGHT_POINT {		// ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Cï¿½gï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
+	XMFLOAT4	Color;			// ï¿½F
+	XMFLOAT4	Position;		// ï¿½Ê’u
+	float		Intensity;		// ï¿½ï¿½ï¿½x
+	float		Attenuation;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	int			Use;			// ï¿½gï¿½p
 	float		Dummy;
 };
-struct LIGHT_SPOT {		// ƒXƒ|ƒbƒgƒ‰ƒCƒgƒoƒbƒtƒ@—p\‘¢‘Ì
-	XMFLOAT4	Color;			// F
-	XMFLOAT4	Position;		// ˆÊ’u
-	XMFLOAT4	Direction;		// Œü‚«
-	float		Intensity;		// ‹­“x
-	float		Attenuation;	// Œ¸Š‹——£
-	float		Angle;			// Šp“x
-	int			Use;			// Žg—p
+struct LIGHT_SPOT {		// ï¿½Xï¿½|ï¿½bï¿½gï¿½ï¿½ï¿½Cï¿½gï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
+	XMFLOAT4	Color;			// ï¿½F
+	XMFLOAT4	Position;		// ï¿½Ê’u
+	XMFLOAT4	Direction;		// ï¿½ï¿½ï¿½ï¿½
+	float		Intensity;		// ï¿½ï¿½ï¿½x
+	float		Attenuation;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	float		Angle;			// ï¿½pï¿½x
+	int			Use;			// ï¿½gï¿½p
 };
-struct LIGHT_NO {		// ƒ‰ƒCƒg”Ô†ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct LIGHT_NO {		// ï¿½ï¿½ï¿½Cï¿½gï¿½Ôï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	int			lightNo;
 	float		Dummy[3];
 };
-struct OUTLINE {		// ƒAƒEƒgƒ‰ƒCƒ“ˆ—ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct OUTLINE {		// ï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	XMFLOAT4	Scale;
 	XMFLOAT4	Color;
 };
-struct MOSAIC {			// ƒ‚ƒUƒCƒNˆ—ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct MOSAIC {			// ï¿½ï¿½ï¿½Uï¿½Cï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	int			Size;
 	float		Dummy[3];
 };
-struct CURVE_BUFFER {			// ƒJ[ƒuˆ—ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct CURVE_BUFFER {			// ï¿½Jï¿½[ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	XMFLOAT2	Angle = { 0.0f, 0.0f };
 	float		TexPos = 0.0f;
 	float		Dummy;
 };
-struct CONSTANT {		// ’è”ƒoƒbƒtƒ@—p\‘¢‘Ì
+struct CONSTANT {		// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½pï¿½\ï¿½ï¿½ï¿½ï¿½
 	int			Time;
 	float		Dummy[3];
 };
-struct UV_POSITION {	// UVÀ•W\‘¢‘Ì
+struct UV_POSITION {	// UVï¿½ï¿½ï¿½Wï¿½\ï¿½ï¿½ï¿½ï¿½
 	float u = 0.0f;
 	float v = 0.0f;
 	float uw = 1.0f;
@@ -172,7 +172,7 @@ struct UV_POSITION {	// UVÀ•W\‘¢‘Ì
 };
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 void UninitRenderer(void);

@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒvƒŒƒCƒ„[ˆ— [player.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ [player.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -17,29 +17,29 @@
 #include "gimmick.h"
 #include "stage.h"
 
-// ƒuƒ‰ƒ“ƒ`ƒeƒXƒg
+// ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½eï¿½Xï¿½g
 #define test
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
 #define DEFAULT_SPEED	(40.0f)
 #define DEFAULT_POS		(310.0f)
 #define MAX_SPEED		(70.0f)
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static BOOL				g_Load = FALSE;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum {
 	TEXTURE_TEAMLOGO = 0,
 	//TEXTURE_STAR,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/blueberry_.png",
 	//"data/MODEL/star1.jpg",
@@ -53,7 +53,7 @@ enum {
 	MODEL_ROCKET5,
 	MODEL_MAX,
 };
-static MODEL_DATA	g_Model[MODEL_MAX];	// ƒvƒŒƒCƒ„[‚Ìƒ‚ƒfƒ‹ŠÇ—
+static MODEL_DATA	g_Model[MODEL_MAX];	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Ç—ï¿½
 
 
 static float		g_Rotation = 0.0f;
@@ -125,11 +125,11 @@ static ROCKET g_Rocket;
 static int testNo = 0;
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitPlayer(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
@@ -152,7 +152,7 @@ HRESULT InitPlayer(void)
 		}
 	}
 
-	// Ú×İ’è
+	// ï¿½Ú×İ’ï¿½
 	//g_td[TEXTURE_TEAMLOGO].tex = &g_Texture[TEXTURE_TEAMLOGO];
 
 	g_Load = TRUE;
@@ -160,7 +160,7 @@ HRESULT InitPlayer(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitPlayer(void)
 {
@@ -184,14 +184,14 @@ void UninitPlayer(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdatePlayer(void)
 {
 	static ROCKET oldRocket;
 	oldRocket = g_Rocket;
 
-	// ‰ñ“]
+	// ï¿½ï¿½]
 	if (GetKeyboardPress(DIK_A))
 	{
 		g_Rocket.Rotate(0.002f);
@@ -210,13 +210,13 @@ void UpdatePlayer(void)
 	//g_Rotation *= 0.98f;
 	//RotateTube(g_Rotation);
 
-	// ¢ŠE‚Ì‰ñ“]‚ğ”½‰f
+	// ï¿½ï¿½ï¿½Eï¿½Ì‰ï¿½]ï¿½ğ”½‰f
 	XMMATRIX mtxRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_Rocket.GetRotate());
 	SetAfterRotation(&mtxRot);
 
 	static CURVE_BUFFER curve;
 
-	// ƒXƒs[ƒh
+	// ï¿½Xï¿½sï¿½[ï¿½h
 	if (GetKeyboardTrigger(DIK_SPACE))
 	{
 		g_Rocket.Accel(5.0f);
@@ -246,7 +246,7 @@ void UpdatePlayer(void)
 	PrintDebugProc("g_TestAddSpeed:%f\n", g_TestAddSpeed);
 #endif
 
-	// ƒpƒCƒv‹È‚°
+	// ï¿½pï¿½Cï¿½vï¿½È‚ï¿½
 	//if (GetKeyboardPress(DIK_F))
 	//{
 	//	curve.Angle.y += 0.005f;
@@ -276,7 +276,7 @@ void UpdatePlayer(void)
 	SetSpeedMeter(g_Rocket.GetSpeed() / MAX_SPEED);
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
-#ifdef _DEBUG	// ƒfƒoƒbƒOî•ñ‚ğ•\¦‚·‚é
+#ifdef _DEBUG	// ï¿½fï¿½oï¿½bï¿½Oï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	static int dZMove = 0;
 	static int dTime = 0;
 	dZMove += 40;
@@ -289,7 +289,7 @@ void UpdatePlayer(void)
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawPlayer(void)
 {
@@ -297,31 +297,31 @@ void DrawPlayer(void)
 
 	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
 
-	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
 	mtxWorld = XMMatrixIdentity();
 
-	// ƒXƒP[ƒ‹‚ğ”½‰f
+	// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ”½‰f
 	mtxScl = XMMatrixScaling(g_Model[testNo].scl.x, g_Model[testNo].scl.y, g_Model[testNo].scl.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-	// ‰ñ“]‚ğ”½‰fF‘S‘Ì‚ÌŠp“x
+	// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½Sï¿½Ì‚ÌŠpï¿½x
 	mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].rot.x, g_Model[testNo].rot.y, g_Model[testNo].rot.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
-	// ˆÚ“®‚ğ”½‰f
+	// ï¿½Ú“ï¿½ï¿½ğ”½‰f
 	mtxTranslate = XMMatrixTranslation(g_Model[testNo].pos.x, g_Model[testNo].pos.y, g_Model[testNo].pos.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
-	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìİ’ï¿½
 	SetWorldBuffer(&mtxWorld);
 
-	// ƒ}ƒeƒŠƒAƒ‹İ’è
+	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½İ’ï¿½
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 	//material.Diffuse = { 1.0f, 1.0f, 1.0f, 0.5f };
 
-	// ƒ‚ƒfƒ‹•`‰æ
+	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
 	DrawModel(&g_Model[testNo].model, NULL, &material);
 	//DrawModel(&g_Model[0].model, &g_Texture[TEXTURE_STAR], &material);
 

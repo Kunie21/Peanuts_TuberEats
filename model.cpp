@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ƒ‚ƒfƒ‹‚Ìˆ— [model.cpp]
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ [model.cpp]
 // Author : 
 //
 //=============================================================================
@@ -10,20 +10,20 @@
 #include "camera.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define	VALUE_MOVE_MODEL	(0.50f)					// ˆÚ“®‘¬“x
-#define	RATE_MOVE_MODEL		(0.20f)					// ˆÚ“®Šµ«ŒW”
-#define	VALUE_ROTATE_MODEL	(XM_PI * 0.05f)			// ‰ñ“]‘¬“x
-#define	RATE_ROTATE_MODEL	(0.20f)					// ‰ñ“]Šµ«ŒW”
-#define	SCALE_MODEL			(10.0f)					// ‰ñ“]Šµ«ŒW”
+#define	VALUE_MOVE_MODEL	(0.50f)					// ï¿½Ú“ï¿½ï¿½ï¿½ï¿½x
+#define	RATE_MOVE_MODEL		(0.20f)					// ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½
+#define	VALUE_ROTATE_MODEL	(XM_PI * 0.05f)			// ï¿½ï¿½]ï¿½ï¿½ï¿½x
+#define	RATE_ROTATE_MODEL	(0.20f)					// ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½
+#define	SCALE_MODEL			(10.0f)					// ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½
 
 
 //*****************************************************************************
-// \‘¢‘Ì’è‹`
+// ï¿½\ï¿½ï¿½ï¿½Ì’ï¿½`
 //*****************************************************************************
 
-// ƒ}ƒeƒŠƒAƒ‹\‘¢‘Ì
+// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½
 struct MODEL_MATERIAL
 {
 	char						Name[256];
@@ -31,7 +31,7 @@ struct MODEL_MATERIAL
 	char						TextureName[256];
 };
 
-// •`‰æƒTƒuƒZƒbƒg\‘¢‘Ì
+// ï¿½`ï¿½ï¿½Tï¿½uï¿½Zï¿½bï¿½gï¿½\ï¿½ï¿½ï¿½ï¿½
 struct SUBSET
 {
 	unsigned short	StartIndex;
@@ -39,7 +39,7 @@ struct SUBSET
 	MODEL_MATERIAL	Material;
 };
 
-// ƒ‚ƒfƒ‹\‘¢‘Ì
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½
 struct MODEL
 {
 	VERTEX_3D		*VertexArray;
@@ -53,12 +53,12 @@ struct MODEL
 
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 void LoadObj( char *FileName, MODEL *Model );
 void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned short *MaterialNum );
@@ -67,7 +67,7 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void LoadModel( char *FileName, DX11_MODEL *Model)
 {
@@ -75,7 +75,7 @@ void LoadModel( char *FileName, DX11_MODEL *Model)
 
 	LoadObj( FileName, &model );
 
-	// ’¸“_ƒoƒbƒtƒ@¶¬
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 	{
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory( &bd, sizeof(bd) );
@@ -92,10 +92,10 @@ void LoadModel( char *FileName, DX11_MODEL *Model)
 	}
 
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+	 //ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 	{
 		D3D11_BUFFER_DESC bd;
-		ZeroMemory( &bd, sizeof(bd) );
+		ZeroMemory( &bd, sizeof(bd));
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.ByteWidth = sizeof( unsigned short ) * model.IndexNum;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -108,7 +108,7 @@ void LoadModel( char *FileName, DX11_MODEL *Model)
 		GetDevice()->CreateBuffer( &bd, &sd, &Model->IndexBuffer );
 	}
 
-	// ƒTƒuƒZƒbƒgÝ’è
+	// ï¿½Tï¿½uï¿½Zï¿½bï¿½gï¿½Ý’ï¿½
 	{
 		Model->SubsetArray = new DX11_SUBSET[ model.SubsetNum ];
 		Model->SubsetNum = model.SubsetNum;
@@ -138,7 +138,7 @@ void LoadModel( char *FileName, DX11_MODEL *Model)
 
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UnloadModel( DX11_MODEL *Model )
 {
@@ -149,24 +149,24 @@ void UnloadModel( DX11_MODEL *Model )
 
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
 {
-	// ’¸“_ƒoƒbƒtƒ@Ý’è
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ý’ï¿½
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	GetDeviceContext()->IASetVertexBuffers( 0, 1, &Model->VertexBuffer, &stride, &offset );
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@Ý’è
+	// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ý’ï¿½
 	GetDeviceContext()->IASetIndexBuffer( Model->IndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
 
-	// ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWÝ’è
+	// ï¿½vï¿½ï¿½ï¿½~ï¿½eï¿½Bï¿½uï¿½gï¿½|ï¿½ï¿½ï¿½Wï¿½Ý’ï¿½
 	GetDeviceContext()->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	for( unsigned short i = 0; i < Model->SubsetNum; i++ )
 	{
-		// ƒ}ƒeƒŠƒAƒ‹Ý’è
+		// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ý’ï¿½
 		if (pMaterial)
 		{
 			SetMaterialBuffer(pMaterial);
@@ -176,7 +176,7 @@ void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL
 			SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
 		}
 		
-		// ƒeƒNƒXƒ`ƒƒÝ’è
+		// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ý’ï¿½
 		if (Model->SubsetArray[i].Material.Material.noTexSampling == 0)
 		{
 			GetDeviceContext()->PSSetShaderResources(0, 1, &Model->SubsetArray[i].Material.Texture);
@@ -187,12 +187,12 @@ void DrawModel( DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL
 			GetDeviceContext()->PSSetShaderResources(0, 1, pTexture);
 		}
 
-		// ƒ|ƒŠƒSƒ“•`‰æ
+		// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½`ï¿½ï¿½
 		GetDeviceContext()->DrawIndexed( Model->SubsetArray[i].IndexNum, Model->SubsetArray[i].StartIndex, 0 );
 	}
 }
 
-//ƒ‚ƒfƒ‹“Çž////////////////////////////////////////////
+//ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Çï¿½////////////////////////////////////////////
 void LoadObj( char *FileName, MODEL *Model )
 {
 
@@ -220,13 +220,13 @@ void LoadObj( char *FileName, MODEL *Model )
 	file = fopen( FileName, "rt" );
 	if( file == NULL )
 	{
-		printf( "ƒGƒ‰[:LoadModel %s \n", FileName );
+		printf( "ï¿½Gï¿½ï¿½ï¿½[:LoadModel %s \n", FileName );
 		return;
 	}
 
 
 
-	//—v‘f”ƒJƒEƒ“ƒg
+	//ï¿½vï¿½fï¿½ï¿½ï¿½Jï¿½Eï¿½ï¿½ï¿½g
 	while( TRUE )
 	{
 		fscanf( file, "%s", str );
@@ -263,7 +263,7 @@ void LoadObj( char *FileName, MODEL *Model )
 			}
 			while( c != '\n' && c!= '\r' );
 
-			//ŽlŠp‚ÍŽOŠp‚É•ªŠ„
+			//ï¿½lï¿½pï¿½ÍŽOï¿½pï¿½É•ï¿½ï¿½ï¿½
 			if( in == 4 )
 				in = 6;
 
@@ -272,7 +272,7 @@ void LoadObj( char *FileName, MODEL *Model )
 	}
 
 
-	//ƒƒ‚ƒŠŠm•Û
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½ï¿½
 	positionArray = new XMFLOAT3[ positionNum ];
 	normalArray   = new XMFLOAT3[ normalNum ];
 	texcoordArray = new XMFLOAT2[ texcoordNum ];
@@ -290,7 +290,7 @@ void LoadObj( char *FileName, MODEL *Model )
 
 
 
-	//—v‘f“Çž
+	//ï¿½vï¿½fï¿½Çï¿½
 	XMFLOAT3 *position = positionArray;
 	XMFLOAT3 *normal = normalArray;
 	XMFLOAT2 *texcoord = texcoordArray;
@@ -311,7 +311,7 @@ void LoadObj( char *FileName, MODEL *Model )
 
 		if( strcmp( str, "mtllib" ) == 0 )
 		{
-			//ƒ}ƒeƒŠƒAƒ‹ƒtƒ@ƒCƒ‹
+			//ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½
 			fscanf( file, "%s", str );
 
 			char path[256];
@@ -322,12 +322,12 @@ void LoadObj( char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "o" ) == 0 )
 		{
-			//ƒIƒuƒWƒFƒNƒg–¼
+			//ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½
 			fscanf( file, "%s", str );
 		}
 		else if( strcmp( str, "v" ) == 0 )
 		{
-			//’¸“_À•W
+			//ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½W
 			fscanf( file, "%f", &position->x );
 			fscanf( file, "%f", &position->y );
 			fscanf( file, "%f", &position->z );
@@ -338,7 +338,7 @@ void LoadObj( char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "vn" ) == 0 )
 		{
-			//–@ü
+			//ï¿½@ï¿½ï¿½
 			fscanf( file, "%f", &normal->x );
 			fscanf( file, "%f", &normal->y );
 			fscanf( file, "%f", &normal->z );
@@ -346,7 +346,7 @@ void LoadObj( char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "vt" ) == 0 )
 		{
-			//ƒeƒNƒXƒ`ƒƒÀ•W
+			//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 			fscanf( file, "%f", &texcoord->x );
 			fscanf( file, "%f", &texcoord->y );
 			texcoord->y = 1.0f - texcoord->y;
@@ -354,7 +354,7 @@ void LoadObj( char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "usemtl" ) == 0 )
 		{
-			//ƒ}ƒeƒŠƒAƒ‹
+			//ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½
 			fscanf( file, "%s", str );
 
 			if( sc != 0 )
@@ -380,7 +380,7 @@ void LoadObj( char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "f" ) == 0 )
 		{
-			//–Ê
+			//ï¿½ï¿½
 			in = 0;
 
 			do
@@ -391,7 +391,7 @@ void LoadObj( char *FileName, MODEL *Model )
 				Model->VertexArray[vc].Position = positionArray[ atoi( s ) - 1 ];
 				if( s[ strlen( s ) + 1 ] != '/' )
 				{
-					//ƒeƒNƒXƒ`ƒƒÀ•W‚ª‘¶Ý‚µ‚È‚¢ê‡‚à‚ ‚é
+					//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ý‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½ï¿½ï¿½ï¿½
 					s = strtok( NULL, "/" );
 					Model->VertexArray[vc].TexCoord = texcoordArray[ atoi( s ) - 1 ];
 				}
@@ -409,7 +409,7 @@ void LoadObj( char *FileName, MODEL *Model )
 			}
 			while( c != '\n' && c != '\r' );
 
-			//ŽlŠp‚ÍŽOŠp‚É•ªŠ„
+			//ï¿½lï¿½pï¿½ÍŽOï¿½pï¿½É•ï¿½ï¿½ï¿½
 			if( in == 4 )
 			{
 				Model->IndexArray[ic] = vc - 4;
@@ -439,7 +439,7 @@ void LoadObj( char *FileName, MODEL *Model )
 
 
 
-//ƒ}ƒeƒŠƒAƒ‹“Ç‚Ýž‚Ý///////////////////////////////////////////////////////////////////
+//ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ç‚Ýï¿½ï¿½ï¿½///////////////////////////////////////////////////////////////////
 void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned short *MaterialNum )
 {
 	char str[256];
@@ -448,14 +448,14 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 	file = fopen( FileName, "rt" );
 	if( file == NULL )
 	{
-		printf( "ƒGƒ‰[:LoadMaterial %s \n", FileName );
+		printf( "ï¿½Gï¿½ï¿½ï¿½[:LoadMaterial %s \n", FileName );
 		return;
 	}
 
 	MODEL_MATERIAL *materialArray;
 	unsigned short materialNum = 0;
 
-	//—v‘f”ƒJƒEƒ“ƒg
+	//ï¿½vï¿½fï¿½ï¿½ï¿½Jï¿½Eï¿½ï¿½ï¿½g
 	while( TRUE )
 	{
 		fscanf( file, "%s", str );
@@ -471,12 +471,12 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 	}
 
 
-	//ƒƒ‚ƒŠŠm•Û
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½ï¿½
 	materialArray = new MODEL_MATERIAL[ materialNum ];
 	ZeroMemory(materialArray, sizeof(MODEL_MATERIAL)*materialNum);
 
 
-	//—v‘f“Çž
+	//ï¿½vï¿½fï¿½Çï¿½
 	int mc = -1;
 
 	fseek( file, 0, SEEK_SET );
@@ -491,7 +491,7 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 
 		if( strcmp( str, "newmtl" ) == 0 )
 		{
-			//ƒ}ƒeƒŠƒAƒ‹–¼
+			//ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½
 			mc++;
 			fscanf( file, "%s", materialArray[ mc ].Name );
 			strcpy( materialArray[ mc ].TextureName, "" );
@@ -499,7 +499,7 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 		}
 		else if( strcmp( str, "Ka" ) == 0 )
 		{
-			//ƒAƒ“ƒrƒGƒ“ƒg
+			//ï¿½Aï¿½ï¿½ï¿½rï¿½Gï¿½ï¿½ï¿½g
 			fscanf( file, "%f", &materialArray[ mc ].Material.Ambient.x );
 			fscanf( file, "%f", &materialArray[ mc ].Material.Ambient.y );
 			fscanf( file, "%f", &materialArray[ mc ].Material.Ambient.z );
@@ -507,12 +507,12 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 		}
 		else if( strcmp( str, "Kd" ) == 0 )
 		{
-			//ƒfƒBƒtƒ…[ƒY
+			//ï¿½fï¿½Bï¿½tï¿½ï¿½ï¿½[ï¿½Y
 			fscanf( file, "%f", &materialArray[ mc ].Material.Diffuse.x );
 			fscanf( file, "%f", &materialArray[ mc ].Material.Diffuse.y );
 			fscanf( file, "%f", &materialArray[ mc ].Material.Diffuse.z );
 
-			// Maya‚ÅƒeƒNƒXƒ`ƒƒ‚ð“\‚é‚Æ0.0f‚É‚È‚Á‚¿‚á‚¤‚Ý‚½‚¢‚È‚Ì‚Å
+			// Mayaï¿½Åƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½0.0fï¿½É‚È‚ï¿½ï¿½ï¿½ï¿½á‚¤ï¿½Ý‚ï¿½ï¿½ï¿½ï¿½È‚Ì‚ï¿½
 			if ((materialArray[mc].Material.Diffuse.x + materialArray[mc].Material.Diffuse.y + materialArray[mc].Material.Diffuse.z) == 0.0f)
 			{
 				materialArray[mc].Material.Diffuse.x = materialArray[mc].Material.Diffuse.y = materialArray[mc].Material.Diffuse.z = 1.0f;
@@ -522,7 +522,7 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 		}
 		else if( strcmp( str, "Ks" ) == 0 )
 		{
-			//ƒXƒyƒLƒ…ƒ‰
+			//ï¿½Xï¿½yï¿½Lï¿½ï¿½ï¿½ï¿½
 			fscanf( file, "%f", &materialArray[ mc ].Material.Specular.x );
 			fscanf( file, "%f", &materialArray[ mc ].Material.Specular.y );
 			fscanf( file, "%f", &materialArray[ mc ].Material.Specular.z );
@@ -530,17 +530,17 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 		}
 		else if( strcmp( str, "Ns" ) == 0 )
 		{
-			//ƒXƒyƒLƒ…ƒ‰‹­“x
+			//ï¿½Xï¿½yï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½x
 			fscanf( file, "%f", &materialArray[ mc ].Material.Shininess );
 		}
 		else if( strcmp( str, "d" ) == 0 )
 		{
-			//ƒAƒ‹ƒtƒ@
+			//ï¿½Aï¿½ï¿½ï¿½tï¿½@
 			fscanf( file, "%f", &materialArray[ mc ].Material.Diffuse.w );
 		}
 		else if( strcmp( str, "map_Kd" ) == 0 )
 		{
-			//ƒeƒNƒXƒ`ƒƒ
+			//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½
 			fscanf( file, "%s", str );
 
 			char path[256];
@@ -560,23 +560,23 @@ void LoadMaterial( char *FileName, MODEL_MATERIAL **MaterialArray, unsigned shor
 }
 
 
-// ƒ‚ƒfƒ‹‚Ì‘Sƒ}ƒeƒŠƒAƒ‹‚ÌƒfƒBƒtƒ…[ƒY‚ðŽæ“¾‚·‚éBMax16ŒÂ•ª‚É‚µ‚Ä‚ ‚é
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì‘Sï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ìƒfï¿½Bï¿½tï¿½ï¿½ï¿½[ï¿½Yï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½BMax16ï¿½Â•ï¿½ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 void GetModelDiffuse(DX11_MODEL *Model, XMFLOAT4 *diffuse)
 {
 	int max = (Model->SubsetNum < MODEL_MAX_MATERIAL) ? Model->SubsetNum : MODEL_MAX_MATERIAL;
 
 	for (unsigned short i = 0; i < max; i++)
 	{
-		// ƒfƒBƒtƒ…[ƒYÝ’è
+		// ï¿½fï¿½Bï¿½tï¿½ï¿½ï¿½[ï¿½Yï¿½Ý’ï¿½
 		diffuse[i] = Model->SubsetArray[i].Material.Material.Diffuse;
 	}
 }
 
 
-// ƒ‚ƒfƒ‹‚ÌŽw’èƒ}ƒeƒŠƒAƒ‹‚ÌƒfƒBƒtƒ…[ƒY‚ðƒZƒbƒg‚·‚éB
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŽwï¿½ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ìƒfï¿½Bï¿½tï¿½ï¿½ï¿½[ï¿½Yï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½B
 void SetModelDiffuse(DX11_MODEL *Model, int mno, XMFLOAT4 diffuse)
 {
-	// ƒfƒBƒtƒ…[ƒYÝ’è
+	// ï¿½fï¿½Bï¿½tï¿½ï¿½ï¿½[ï¿½Yï¿½Ý’ï¿½
 	Model->SubsetArray[mno].Material.Material.Diffuse = diffuse;
 }
 
