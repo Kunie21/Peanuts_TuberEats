@@ -23,7 +23,7 @@ typedef struct
 {
 	char *pFilename;	// ファイル名
 	int nCntLoop;		// ループカウント
-	//BOOL UseFilter;		//エフェクト使うか使わないか？？
+	//BOOL UseFilter;		// エフェクト使うか使わないか？？
 	//int type;			// サウンドの種類
 
 } SOUNDPARAM;
@@ -33,6 +33,7 @@ typedef struct
 //*****************************************************************************
 HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
 HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset);
+
 
 //*****************************************************************************
 // グローバル変数
@@ -122,6 +123,10 @@ IUnknown *g_apXPO_EQ;
 //EQのパラメータ
 FXEQ_PARAMETERS g_EQParam;
 
+////LowPass
+//XAUDIO2_FILTER_PARAMETERS FilterParams;
+
+// マスタリングリミッターつくる
 
 //=============================================================================
 // 初期化処理
@@ -189,6 +194,9 @@ BOOL InitSound(HWND hWnd)
 	return TRUE;
 }
 
+//=============================================================================
+// データ処理
+//=============================================================================
 BOOL LoadSoundKernel(float* loadPalam, int* loadSum)
 {
 #ifdef NO_AUDIO
@@ -212,6 +220,9 @@ BOOL LoadSoundKernel(float* loadPalam, int* loadSum)
 	return FALSE;
 }
 
+//=============================================================================
+// サウンドデータ処理
+//=============================================================================
 BOOL LoadSound(void)
 {
 #ifdef NO_AUDIO
@@ -436,7 +447,6 @@ void UpdateAudioFade(void)
 				g_AudioFade = AUDIOFADE_NONE;
 			}
 			g_apSourceVoice[g_Label]->SetVolume(g_VolumeSound);		// 音量を変えている
-
 		}
 	}
 	PrintDebugProc("音量: %f\n", g_VolumeSound);
@@ -498,7 +508,10 @@ void PlaySound(int label, float volume)
 	return;
 #endif
 
-	g_Label = label;					// 現在鳴らしているラベル番号を保存
+	//if (g_aParam[label].type == BGM)
+	{
+		g_Label = label;					// 現在鳴らしているBGMラベル番号を保存
+	}
 
 	XAUDIO2_VOICE_STATE xa2state;
 	XAUDIO2_BUFFER buffer;
@@ -714,7 +727,11 @@ int GetSoundLabel(void)
 //=============================================================================
 void SetSourceVolume(int label, float volume)
 {
-	volume *= volume;
+	// 音量が1.0f以下の時は2乗カーブ
+	if (volume <= 1.0f)
+	{
+		volume *= volume;
+	}
 	g_apSourceVoice[label]->SetVolume(volume);
 	return;
 }
@@ -722,9 +739,9 @@ void SetSourceVolume(int label, float volume)
 //=============================================================================
 // ソースボイスのボイスの再生ピッチ調整
 //=============================================================================
-void SetFrequencyRatio(int label, float Pitch)
+void SetFrequencyRatio(int label, float pitch)
 {
-	g_apSourceVoice[label]->SetFrequencyRatio(Pitch);
+	g_apSourceVoice[label]->SetFrequencyRatio(pitch);
 	return;
 }
 
@@ -733,7 +750,10 @@ void SetFrequencyRatio(int label, float Pitch)
 //=============================================================================
 void PauseSound(int label)
 {
-	g_apSourceVoice[label]->Stop(XAUDIO2_PLAY_TAILS);
+	//if (g_aParam[label].type == BGM)
+	{
+		g_apSourceVoice[label]->Stop(XAUDIO2_PLAY_TAILS);
+	}
 	return;
 }
 
