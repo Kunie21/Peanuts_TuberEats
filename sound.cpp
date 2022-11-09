@@ -65,37 +65,35 @@ static int	g_LoadPoint = 0;
 //*****************************************************************************
 SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 {
-	{ (char*)"data/BGM/TITLE.wav", -1 },		// 
-	{ (char*)"data/BGM/STAGESELECT.wav", -1 },	// 
-	{ (char*)"data/BGM/TUTORIAL.wav", -1 },		// 
-	{ (char*)"data/BGM/NORMAL.wav", -1 },		// 
-	{ (char*)"data/BGM/ICE.wav", -1 },			// 
-	{ (char*)"data/BGM/SAND.wav", -1 },			// 
-	{ (char*)"data/BGM/MAGMA.wav", -1 },		// 
-	{ (char*)"data/BGM/BONE.wav", -1 },			// 
-	{ (char*)"data/BGM/SECRET.wav", -1 },		// 
-	{ (char*)"data/BGM/RESULT.wav", -1 },		// 
-	{ (char*)"data/BGM/ENDING.wav", -1 },		// 
-	{ (char*)"data/SE/DECIDE.wav", 0 },			// 
-	{ (char*)"data/SE/DECIDE_FROG.wav", 0 },	// 
-	{ (char*)"data/SE/DECIDE_KIRA.wav", 0 },	// 
-	{ (char*)"data/SE/DECIDE_KORO.wav", 0 },	// 
-	{ (char*)"data/SE/DECIDE_GAO.wav", 0 },		// 
-	{ (char*)"data/SE/BACK.wav", 0 },			// 
-	{ (char*)"data/SE/CLEAR.wav", 0 },			// 
-	{ (char*)"data/SE/SWIPE.wav", 0 },			// 
-	{ (char*)"data/SE/BUBBLE.wav", 0 },			// 
-	{ (char*)"data/SE/FALL.wav", 0 },			// 
-	{ (char*)"data/SE/HOLD.wav", 0 },			// 
-	{ (char*)"data/SE/INTODARK.wav", 0 },		// 
-	{ (char*)"data/SE/INTOMAGMA.wav", 0 },		// 
-	{ (char*)"data/SE/JUMP.wav", 0 },			// 
-	{ (char*)"data/SE/MARVELOUS.wav", 0 },		// 
-	{ (char*)"data/SE/GOAL.wav", 0 },			// 
-	{ (char*)"data/SE/TIMEUP.wav", 0 },			// 
-	{ (char*)"data/SE/MEDAL.wav", 0 },			// 
-	{ (char*)"data/SE/SCORE.wav", 0 },			// 
-	{ (char*)"data/SE/CHECKPOINT.wav", 0 },		// 
+	{ (char*)"data/BGM/title.wav", -1 },			// タイトル
+	{ (char*)"data/BGM/STAGESELECT.wav", -1 },		// スタート
+	{ (char*)"data/BGM/home.wav", -1 },				// ホーム
+	{ (char*)"data/BGM/stage_select.wav", -1 },		// ステージセレクト
+	{ (char*)"data/BGM/stage_1_1.wav", -1 },		// ステージ1-1
+	//{ (char*)"data/BGM/stage_1_2.wav", -1 },		// ステージ1-2
+	//{ (char*)"data/BGM/stage_1_3.wav", -1 },		// ステージ1-3
+	//{ (char*)"data/BGM/stage_2_1.wav", -1 },		// ステージ2-1
+	//{ (char*)"data/BGM/stage_2_2.wav", -1 },		// ステージ2-2
+	//{ (char*)"data/BGM/stage_2_3.wav", -1 },		// ステージ2-3
+	//{ (char*)"data/BGM/stage_3_1.wav", -1 },		// ステージ3-1
+	//{ (char*)"data/BGM/stage_3_2.wav", -1 },		// ステージ3-2
+	//{ (char*)"data/BGM/stage_3_3.wav", -1 },		// ステージ3-3
+	//{ (char*)"data/BGM/stage_4_1.wav", -1 },		// ステージ4-1
+	//{ (char*)"data/BGM/stage_4_2.wav", -1 },		// ステージ4-2
+	//{ (char*)"data/BGM/stage_4_3.wav", -1 },		// ステージ4-3
+	{ (char*)"data/BGM/result.wav", 0 },			// リザルト
+	{ (char*)"data/BGM/ending.wav", 0 },			// エンディング
+	{ (char*)"data/SE/select.wav", 0 },			// 選択音
+	{ (char*)"data/SE/decide.wav", 0 },			// 決定音
+	{ (char*)"data/SE/decide.wav", 0 },			// オープニングSE?
+	{ (char*)"data/SE/engine.wav", 0 },			// エンジン音
+	{ (char*)"data/SE/collision.wav", 0 },		// 衝突音
+	//{ (char*)"data/SE/INTOMAGMA.wav", 0 },		// プレイヤーボイス
+	{ (char*)"data/SE/airleak.wav", 0 },		// 空気漏れ音
+	{ (char*)"data/SE/door_open.wav", 0 },		// ドアが開く音
+	{ (char*)"data/SE/across_ring.wav", 0 },	// リング通過音
+	{ (char*)"data/SE/star.wav", 0 },			// 星の音
+	{ (char*)"data/SE/point_add.wav", 0 },		// ポイント加算
 };
 
 //*****************************************************************************
