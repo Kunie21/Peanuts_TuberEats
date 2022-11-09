@@ -40,7 +40,7 @@
 #define TEXTURE_WIDTH_CREDIT_JP		(335)			// ���S�T�C�Y��
 
 #define TEXTURE_WIDTH_QUIT			(227)			// ���S�T�C�Y��
-#define TEXTURE_WIDTH_QUIT_JP		(600)			// ���S�T�C�Y��
+#define TEXTURE_WIDTH_QUIT_JP		(121)			// ���S�T�C�Y��
 
 #define TEXTURE_WIDTH_MENUPANNEL	(1273)			// ���S�T�C�Y��
 #define TEXTURE_HEIGHT_MENUPANNEL	(1080)			// ���S�T�C�Y��
@@ -57,7 +57,7 @@ static BOOL				g_Load = FALSE;
 static BOOL				IsMenuMove = FALSE;
 static int MenuPannelNum;
 static int MenuNum;
-
+static int MenuJp;
 //static BOOL		eventStart = FALSE;
 //static int		cursorPosition;
 //
@@ -91,6 +91,7 @@ enum
 	TEXTURE_MENU_PANNEL_04,
 	TEXTURE_MENU_PANNEL_05,
 	TEXTURE_MENU_DISPLAY,
+	TEXTURE_MENU_JP,
 	TEXTURE_MAX,
 
 };
@@ -233,6 +234,26 @@ HRESULT InitStart(void)
 	g_td[TEXTURE_START_JP].ctrType = CENTER_LEFTTOP;
 	g_td[TEXTURE_START_JP].posType = POSITION_ABSOLUTE;
 
+	g_td[TEXTURE_OPTION_JP].size = { TEXTURE_WIDTH_OPTION_JP, TEXTURE_HEIGHT_MENUALL_JP };
+	g_td[TEXTURE_OPTION_JP].scl = { 1.0f, 1.0f };
+	g_td[TEXTURE_OPTION_JP].pos = { 100.0f, 950.0f };
+
+
+	g_td[TEXTURE_GALLERY_JP].size = { TEXTURE_WIDTH_GALLERY_JP, TEXTURE_HEIGHT_MENUALL_JP };
+	g_td[TEXTURE_GALLERY_JP].scl = { 1.0f, 1.0f };
+	g_td[TEXTURE_GALLERY_JP].pos = { 100.0f, 950.0f };
+
+
+	g_td[TEXTURE_CREDIT_JP].size = { TEXTURE_WIDTH_CREDIT_JP, TEXTURE_HEIGHT_MENUALL_JP };
+	g_td[TEXTURE_CREDIT_JP].scl = { 1.0f, 1.0f };
+	g_td[TEXTURE_CREDIT_JP].pos = { 100.0f, 950.0f };
+
+
+	g_td[TEXTURE_QUIT_JP].size = { TEXTURE_WIDTH_QUIT_JP, TEXTURE_HEIGHT_MENUALL_JP };
+	g_td[TEXTURE_QUIT_JP].scl = { 1.0f, 1.0f };
+	g_td[TEXTURE_QUIT_JP].pos = { 100.0f, 950.0f };
+
+
 
 	g_td[TEXTURE_MENU_PANNEL_01].size = { TEXTURE_WIDTH_MENUPANNEL, TEXTURE_HEIGHT_MENUPANNEL };
 	g_td[TEXTURE_MENU_PANNEL_01].scl = { 1.0f, 1.0f };
@@ -280,6 +301,15 @@ HRESULT InitStart(void)
 	g_td[TEXTURE_MENU_DISPLAY].posType = POSITION_ABSOLUTE;
 
 
+	g_td[TEXTURE_MENU_JP].tex = g_td[MenuJp].tex;
+	g_td[TEXTURE_MENU_JP].size = { TEXTURE_WIDTH_START, TEXTURE_HEIGHT_MENUALL };
+	g_td[TEXTURE_MENU_JP].scl = { 1.0f, 1.0f };
+	g_td[TEXTURE_MENU_JP].pos = { 100.0f, 950.0f };
+	g_td[TEXTURE_MENU_JP].col = { 1.0f, 1.0f, 1.0f, 1.0f };
+	g_td[TEXTURE_MENU_JP].ctrType = CENTER_LEFTTOP;
+	g_td[TEXTURE_MENU_JP].posType = POSITION_ABSOLUTE;
+
+
 	g_Model[MODEL_STAR].pos = { 0.0f, 0.0f, 0.0f };
 	g_Model[MODEL_EARTH].pos = { 0.0f, 0.0f, 100.0f };
 	g_Model[MODEL_STAR].scl = { 10.0f, 10.0f, 10.0f };
@@ -291,6 +321,7 @@ HRESULT InitStart(void)
 	g_Time = 0;
 	MenuPannelNum = TEXTURE_MENU_PANNEL_01;
 	MenuNum = TEXTURE_START_01;
+	MenuJp = TEXTURE_START_JP;
 
 	g_Load = TRUE;
 	return S_OK;
@@ -367,6 +398,9 @@ void UpdateStart(void)
 				g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[--MenuNum];
 				g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
 				g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
+				g_td[TEXTURE_MENU_JP].tex = &g_Texture[--MenuJp];
+				g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
+				g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
 
 	
 			}
@@ -374,10 +408,14 @@ void UpdateStart(void)
 			{
 				MenuPannelNum = TEXTURE_MENU_PANNEL_05;
 				MenuNum = TEXTURE_QUIT_01;
+				MenuJp = TEXTURE_QUIT_JP;
 				g_td[TEXTURE_MENU_PANNEL_01].tex = &g_Texture[MenuPannelNum];
 				g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[MenuNum];
 				g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
 				g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
+				g_td[TEXTURE_MENU_JP].tex = &g_Texture[MenuJp];
+				g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
+				g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
 
 
 			}
@@ -392,16 +430,23 @@ void UpdateStart(void)
 				g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[++MenuNum];
 				g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
 				g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
+				g_td[TEXTURE_MENU_JP].tex = &g_Texture[++MenuJp];
+				g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
+				g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
+
 			}
 			else
 			{
 				MenuPannelNum = TEXTURE_MENU_PANNEL_01;
 				MenuNum = TEXTURE_START_01;
+				MenuJp = TEXTURE_START_JP;
 				g_td[TEXTURE_MENU_PANNEL_01].tex = &g_Texture[MenuPannelNum];
 				g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[MenuNum];
 				g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
 				g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
-
+				g_td[TEXTURE_MENU_JP].tex = &g_Texture[MenuJp];
+				g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
+				g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
 
 			}
 
@@ -471,7 +516,7 @@ void DrawStart(void)
 	DrawTexture2D(&g_td[TEXTURE_QUIT], FALSE, TRUE);
 	DrawTexture2D(&g_td[TEXTURE_MENU_PANNEL_01], FALSE, TRUE);
 	DrawTexture2D(&g_td[TEXTURE_MENU_DISPLAY], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_START_JP], FALSE, TRUE);
+	DrawTexture2D(&g_td[TEXTURE_MENU_JP], FALSE, TRUE);
 
 
 }

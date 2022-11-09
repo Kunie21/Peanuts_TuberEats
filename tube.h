@@ -1,24 +1,24 @@
 //=============================================================================
 //
-// ƒpƒCƒvƒ‰ƒCƒ“•Ç‚Ìˆ— [tube.h]
-// Author : š ] ãÄ‘¾
+// ï¿½pï¿½Cï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ç‚Ìï¿½ï¿½ï¿½ [tube.h]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #pragma once
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define	TUBE_RADIUS		(200.0f)	// ’f–Ê‚Ì”¼Œa
-#define	MESH_NUM_X		(7)			// ’f–Ê‚ÌŠp”
-#define	MESH_SIZE		(TUBE_RADIUS * 2.0f * XM_PI / MESH_NUM_X)	// ƒ}ƒX‚Ì1•Ó‚Ì’·‚³
-#define	MESH_NUM_Z		(100)		// ‰œs‚«‚Ìƒ}ƒX–Ú
-#define	TUBE_SIZE		(MESH_SIZE * MESH_NUM_Z)	// 1–{‚Ì’·‚³
+#define	TUBE_RADIUS		(200.0f)	// ï¿½fï¿½Ê‚Ì”ï¿½ï¿½a
+#define	MESH_NUM_X		(7)			// ï¿½fï¿½Ê‚ÌŠpï¿½ï¿½
+#define	MESH_SIZE		(TUBE_RADIUS * 2.0f * XM_PI / MESH_NUM_X)	// ï¿½}ï¿½Xï¿½ï¿½1ï¿½Ó‚Ì’ï¿½ï¿½ï¿½
+#define	MESH_NUM_Z		(100)		// ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ìƒ}ï¿½Xï¿½ï¿½
+#define	TUBE_SIZE		(MESH_SIZE * MESH_NUM_Z)	// 1ï¿½{ï¿½Ì’ï¿½ï¿½ï¿½
 #define	CURVE_RADIUS	(TUBE_SIZE * 0.5f)
 #define	CURVE_CENTER	(CURVE_RADIUS * sinf(XM_PIDIV4))
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 HRESULT InitTube(void);
 void UninitTube(void);
