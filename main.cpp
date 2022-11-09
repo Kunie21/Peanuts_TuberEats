@@ -342,13 +342,30 @@ void Draw(void)
 		break;
 	}
 
+
 	DrawFade();	// フェード描画
+
+	DrawTexture2DAll();
 
 #ifdef _DEBUG
 	DrawDebugProc();	// デバッグ表示
+
+	static LARGE_INTEGER s, e;
+	static int oldTime, nowTime;
+	nowTime++;
+	PrintDebugProc("PresentTime:%d\n", e.QuadPart - s.QuadPart);
+#endif
+
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&s); }
 #endif
 
 	Present();	// バックバッファ、フロントバッファ入れ替え
+
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&e); oldTime = nowTime; }
+#endif
+
 }
 
 //=============================================================================

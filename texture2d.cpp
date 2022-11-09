@@ -11,8 +11,14 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static ID3D11Buffer		*g_VertexBuffer = NULL;		// 頂点情報
-static BOOL				g_Load = FALSE;
+static ID3D11Buffer*				g_VertexBuffer = NULL;		// 頂点情報
+static BOOL							g_Load = FALSE;
+
+static INSTANCE						g_Instance;
+static int							g_InstenceCount = 0;
+static ID3D11ShaderResourceView**	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
+
+//#define NO_INSTANCING	// インスタンシングしないバージョン
 
 //=============================================================================
 // 初期化処理
@@ -161,12 +167,14 @@ void UpdateTexture2D(void)
 //=============================================================================
 void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 {
+#ifdef NO_INSTANCING
 	// UV座標の再設定
 	if (bUV) { SetUVTexture2D(&td->uv_pos); };
+#endif
 
 	// 位置の計算
 	XMFLOAT2 pos = td->pos;
-	if (td->posType== POSITION_RELATIVE)
+	if (td->posType == POSITION_RELATIVE)
 	{
 		pos.x += SCREEN_CENTER_X;
 		pos.y += SCREEN_CENTER_Y;
@@ -176,16 +184,6 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 		pos.x += td->size.x * 0.5f;
 		pos.y += td->size.y * 0.5f;
 	}
-
-	SetDepthEnable(FALSE);
-
-	// 頂点バッファ設定
-	UINT stride = sizeof(VERTEX_3D);
-	UINT offset = 0;
-	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
-
-	// プリミティブトポロジ設定
-	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	// マテリアル設定
 	MATERIAL material;
@@ -201,14 +199,27 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 		material.Diffuse.z *= td->sd_col.z;
 		material.Diffuse.w *= td->sd_col.w;
 	}
+
+#ifdef NO_INSTANCING
 	SetMaterialBuffer(&material);
+
+	// テクスチャ設定
+	GetDeviceContext()->PSSetShaderResources(0, 1, td->tex);
+
+	SetDepthEnable(FALSE);
+
+	// 頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+	// プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	// 2Dマトリクス設定
 	SetViewBuffer(&XMMatrixIdentity());
 	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
 
-	// テクスチャ設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, td->tex);
 
 	// ワールドマトリクスの初期化
 	XMMATRIX mtxWorld = XMMatrixIdentity();
@@ -242,11 +253,65 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 
 	SetDepthEnable(TRUE);
 
+#else
+	// テクスチャ設定
+	g_pTexture[g_InstenceCount] = td->tex;
+
+	// インスタンス情報を登録
+	g_Instance.scl[g_InstenceCount] = { td->size.x * td->scl.x, td->size.y * td->scl.y, 1.0f , 0.0f };
+	g_Instance.rot[g_InstenceCount] = { 0.0f, 0.0f, td->rot, 0.0f };
+	g_Instance.pos[g_InstenceCount] = { pos.x, pos.y, 0.0f, 0.0f };
+	g_Instance.col[g_InstenceCount] = material.Diffuse;
+	g_Instance.txc[g_InstenceCount] = { td->uv_pos.u, td->uv_pos.v, td->uv_pos.uw, td->uv_pos.vh };
+
+	// インスタンス数を更新
+	g_InstenceCount++;
+#endif
+
 	// 影が設定されている場合
 	if (bShadow) { DrawTexture2D(td); }	// 本体を描画する
 
+#ifdef NO_INSTANCING
 	// UV座標のリセット
 	if (bUV) { ResetUVTexture2D(); };
+#endif
+}
+
+
+void DrawTexture2DAll(void)
+{
+	// インスタンス情報を登録
+	D3D11_MAPPED_SUBRESOURCE msr;
+	GetDeviceContext()->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	*(INSTANCE*)msr.pData = g_Instance;
+	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
+	
+	// テクスチャ設定
+	for (int i = 0; i < g_InstenceCount; i++) { GetDeviceContext()->PSSetShaderResources(i + 1, 1, g_pTexture[i]); }
+
+	// 頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+	// プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// 2Dマトリクス設定
+	SetViewBuffer(&XMMatrixIdentity());
+	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
+
+	// ワールドマトリクスの初期化
+	SetWorldBuffer(&XMMatrixIdentity());
+
+	// インスタンシング描画設定
+	SetShaderInstanceingOnlyTex();
+	
+	// インスタンシング描画
+	GetDeviceContext()->DrawInstanced(4, g_InstenceCount, 0, 0);
+
+	// インスタンス数を更新
+	g_InstenceCount = 0;
 }
 
 

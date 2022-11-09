@@ -218,7 +218,7 @@ void UpdatePlayer(void)
 	if (GetKeyboardPress(DIK_G)) { curve.Angle.y -= 0.005f; }
 	if (GetKeyboardPress(DIK_H)) { curve.Angle.x += 0.005f; }
 	if (GetKeyboardPress(DIK_J)) { curve.Angle.x -= 0.005f; }
-	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE;
+	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z;
 	SetCurveBuffer(&curve);
 	
 	// パイプ曲げ（ステージ設定に従って自動で曲げる）
@@ -227,12 +227,12 @@ void UpdatePlayer(void)
 	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
-	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage(0)->length * MESH_SIZE));
+	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage(0)->length * MESH_SIZE_Z));
 	SetSpeedMeter(g_Rocket.GetSpeedRate());
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
 #ifdef _DEBUG	// デバッグ情報を表示する
-	PrintDebugProc("ThroughMeshs:%d\n", g_Rocket.GetPos() / (int)MESH_SIZE);
+	PrintDebugProc("ThroughMeshs:%d\n", g_Rocket.GetPos() / (int)MESH_SIZE_Z);
 	PrintDebugProc("ThroughTubes:%d\n", g_Rocket.GetPos() / (int)TUBE_SIZE);
 	PrintDebugProc("Time(sec):%f\n", GetTime());
 	PrintDebugProc("RocketSpeed:%f\n", g_Rocket.GetSpeed());

@@ -75,11 +75,13 @@ enum SHADER_TYPE {	// シェーダーの種類
 //*********************************************************
 // 構造体
 //*********************************************************
+#define INSTANCE_MAX 100
 struct INSTANCE {		// インスタンシングバッファ用構造体
-	XMFLOAT4 pos[1024];
-	XMFLOAT4 rot[1024];
-	XMFLOAT4 scl[1024];
-	XMFLOAT4 col[1024];
+	XMFLOAT4 pos[INSTANCE_MAX];
+	XMFLOAT4 rot[INSTANCE_MAX];
+	XMFLOAT4 scl[INSTANCE_MAX];
+	XMFLOAT4 col[INSTANCE_MAX];
+	XMFLOAT4 txc[INSTANCE_MAX];
 };
 struct VERTEX_3D {		// 頂点バッファ用構造体
 	XMFLOAT3	Position;
@@ -229,6 +231,7 @@ void SetStencilReadDL(void);
 void SetStencilReadPL(void);
 void SetStencilReadSL(void);
 void SetStencilReadLL(SHADER_TYPE shader);
+void SetStencilReadLLGimmick(void);
 void SetStencilNone(void);
 void SetStencilNoneAL(SHADER_TYPE shader);
 void SetStencilNoneOnlyDepth(void);
@@ -278,7 +281,8 @@ void CreateShader(const char* pFileName, const char* pEntryPoint, ID3D11PixelSha
 void CreateShader(const char* pFileName, const char* pEntryPoint, ID3D11GeometryShader** pGS, DWORD shFlag);
 
 ID3D11Buffer* GetInstanceBuffer(void);
-void SetShaderInstanceingBillboard(XMFLOAT4X4 mtxView);
+void SetShaderInstanceingOnlyTex(void);
+//void SetShaderInstanceingBillboard(XMFLOAT4X4 mtxView);
 void SetShaderDefault(void);
 
 XMFLOAT4 Float4(XMFLOAT3& f3);

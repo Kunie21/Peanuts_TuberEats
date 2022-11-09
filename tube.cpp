@@ -7,6 +7,7 @@
 #include "main.h"
 #include "renderer.h"
 #include "tube.h"
+#include "input.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -65,6 +66,10 @@ static TUBE g_Tube;
 enum
 {
 	TEXTURE_NOMAL = 0,
+	TEXTURE_LINE1,
+	TEXTURE_LINE2,
+	TEXTURE_LINE3,
+	TEXTURE_LINE4,
 	TEXTURE_WHITE,
 	TEXTURE_MAX,
 };
@@ -73,6 +78,10 @@ static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒ
 static char*	g_TextureName[TEXTURE_MAX] = {
 	//"data/TEXTURE/metal.jpg",
 	"data/TEXTURE/r.tif",
+	"data/TEXTURE/Line.png",
+	"data/TEXTURE/Line2.png",
+	"data/TEXTURE/Line3.png",
+	"data/TEXTURE/Line4.png",
 	"data/TEXTURE/white.png",
 };
 
@@ -81,6 +90,7 @@ static float	g_time;
 static float	g_worldRot = 0.0f;
 
 //TUBE_TYPE testTubeArr[8];
+static int testNo = 0;
 
 //=============================================================================
 // ‰Šú‰»ˆ—
@@ -101,6 +111,8 @@ HRESULT InitTube(void)
 
 	// ’¼üƒpƒCƒv
 	{
+		g_MeshTube.material.Diffuse = { 0.0f, 0.5f, 0.5f, 1.0f };
+
 		// ƒ|ƒWƒVƒ‡ƒ“İ’è
 		g_MeshTube.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_MeshTube.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -119,8 +131,8 @@ HRESULT InitTube(void)
 		g_MeshTube.nPolygon = MESH_NUM_X * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
 
 		// ƒuƒƒbƒNƒTƒCƒY‚Ìİ’è
-		g_MeshTube.sizeX = MESH_SIZE;
-		g_MeshTube.sizeZ = MESH_SIZE;
+		g_MeshTube.sizeX = MESH_SIZE_X;
+		g_MeshTube.sizeZ = MESH_SIZE_Z;
 
 		// ’¸“_ƒoƒbƒtƒ@¶¬
 		D3D11_BUFFER_DESC bd;
@@ -182,7 +194,7 @@ HRESULT InitTube(void)
 					//i‰~’Œ‚ÌƒeƒNƒXƒ`ƒƒÀ•W‚ğ“rØ‚ê‚³‚¹‚È‚¢‚½‚ßAX²ƒuƒƒbƒN”‚Ì”¼•ª‚É“’B‚µ‚½‚çÀ•W‚Ì’l‚ğÜ‚è•Ô‚·Bj
 					if (nx > halfNumBlockX)
 					{
-						pVtx[nz * (g_MeshTube.nX + 1) + nx].TexCoord.x = halfNumBlockX + (halfNumBlockX - nx);
+						//pVtx[nz * (g_MeshTube.nX + 1) + nx].TexCoord.x = halfNumBlockX + (halfNumBlockX - nx);
 					}
 				}
 			}
@@ -228,7 +240,7 @@ HRESULT InitTube(void)
 	// ƒ‰ƒCƒgƒpƒCƒv
 	{
 		// ƒ}ƒeƒŠƒAƒ‹İ’è
-		g_MeshLight.material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+		g_MeshLight.material.Diffuse = { 1.5f, 1.5f, 1.5f, 1.5f };
 
 		// ƒ|ƒWƒVƒ‡ƒ“İ’è
 		g_MeshLight.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -248,8 +260,8 @@ HRESULT InitTube(void)
 		g_MeshLight.nPolygon = MESH_NUM_X * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
 
 		// ƒuƒƒbƒNƒTƒCƒY‚Ìİ’è
-		g_MeshLight.sizeX = MESH_SIZE;
-		g_MeshLight.sizeZ = MESH_SIZE;
+		g_MeshLight.sizeX = MESH_SIZE_X;
+		g_MeshLight.sizeZ = MESH_SIZE_Z;
 
 		// ’¸“_ƒoƒbƒtƒ@¶¬
 		D3D11_BUFFER_DESC bd;
@@ -541,6 +553,11 @@ void UninitTube(void)
 //=============================================================================
 void UpdateTube(void)
 {
+	if (GetKeyboardPress(DIK_6)) { testNo = 0; }
+	if (GetKeyboardPress(DIK_7)) { testNo = 1; }
+	if (GetKeyboardPress(DIK_8)) { testNo = 2; }
+	if (GetKeyboardPress(DIK_9)) { testNo = 3; }
+	if (GetKeyboardPress(DIK_0)) { testNo = 4; }
 }
 
 //=============================================================================
@@ -563,7 +580,7 @@ void DrawTube(void)
 	SetMaterialBuffer(&g_MeshTube.material);
 
 	// ƒeƒNƒXƒ`ƒƒİ’è
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_NOMAL]);
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[testNo]);
 
 	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
 	SetWorldBuffer(&XMMatrixIdentity());

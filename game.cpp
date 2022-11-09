@@ -134,66 +134,92 @@ void DrawGame(void)
 {
 	//SetDrawNoLighting();
 	//DrawPlayer();
-	
-	{
-		// 黒塗りする
+
+#ifdef _DEBUG
+	static LARGE_INTEGER Shadow_S, Shadow_E, Shade_S, Shade_E, Light_S, Light_E;
+	static int oldTime, nowTime;
+	nowTime++;
+#endif
+
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_S); }
+#endif
+	{	// ALL 25000 → 15000
+		// アウトラインを引く 3000
+		//SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
+		//DrawGimmick(GIMMICK_ICE);
+
+		// 環境光で下塗りする 3000
 		{
-			SetDrawFillBlack(SHADER_TUBE);
-			DrawTube();
-			SetDrawFillBlack(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
-			SetDrawFillBlack(SHADER_PLAYER);
-			DrawPlayer();
+			//SetStencilNoneAL(SHADER_TUBE);
+			//DrawTube();	// 800
+			//SetStencilNoneAL(SHADER_GIMMICK);
+			//DrawGimmick(GIMMICK_ICE);	// 1500
+			//SetStencilNoneAL(SHADER_PLAYER);
+			//DrawPlayer();	// 900
+
+			// 黒塗りする 3000
+			//SetDrawFillBlack(SHADER_TUBE);
+			//DrawTube();
+			//SetDrawFillBlack(SHADER_GIMMICK);
+			//DrawGimmick(GIMMICK_ICE);
+			//SetDrawFillBlack(SHADER_PLAYER);
+			//DrawPlayer();
 		}
 
 		// 加算合成モードにする
-		SetBlendState(BLEND_MODE_ADD);
+		//SetBlendState(BLEND_MODE_ADD);
 
 		{
+			// シャドウステンシルを描画 3000
+		{
 			// 影になる部分のステンシルを作成
-			//SetStencilWriteLL(SHADER_TUBE);
-			//DrawTube();
-			SetStencilWriteLL(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
-			//SetStencilWritePL();
-			SetStencilWriteLL(SHADER_PLAYER);
-			DrawPlayer();
+			////SetStencilWriteLL(SHADER_TUBE);
+			////DrawTube();
+			//SetStencilWriteLL(SHADER_GIMMICK);
+			//DrawGimmick(GIMMICK_ICE);
+			////SetStencilWritePL();
+			//SetStencilWriteLL(SHADER_PLAYER);
+			//DrawPlayer();
+		}
 
+#ifdef _DEBUG
+		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_S); }
+#endif
 			// ステンシルテストを使って影以外の部分を加算合成で描画
-
-			// ラインライト
+			// ラインライトの光 3000 → 5000
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
-			SetStencilReadLL(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
+			SetStencilReadLLGimmick();
+			//SetStencilReadLL(SHADER_GIMMICK);
+			DrawGimmickInstancing(GIMMICK_ICE);
+			//DrawGimmickInstancing(GIMMICK_ICE);
 			SetStencilReadLL(SHADER_PLAYER);
 			DrawPlayer();
 
+#ifdef _DEBUG
+		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
+#endif
 			// ステンシルを初期化
 			ClearStencil();
 
-			// 環境光
-			SetStencilNoneAL(SHADER_TUBE);
-			DrawTube();
-			SetStencilNoneAL(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
-			SetStencilNoneAL(SHADER_PLAYER);
-			DrawPlayer();
-
-			//SetDrawTube();
-			//DrawTube();
-
-			//SetDrawGimmick();
-
-			//SetDrawPlayer();
-			//DrawPlayer();
-
+#ifdef _DEBUG
+			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
+#endif
+			// 光るもの描画 3000
 			{
+				//SetDrawTubeLight();
+
+				SetBlendState(BLEND_MODE_ADD);
+
 				SetDrawLight();
-				DrawTubeLight();
 				DrawGimmick(GIMMICK_RING);
+				DrawTubeLight();
 				ApplyLightToTarget();
 			}
+#ifdef _DEBUG
+			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
+#endif
 
 			SetDrawFire();
 			DrawFire();
@@ -203,14 +229,36 @@ void DrawGame(void)
 		SetBlendState(BLEND_MODE_ALPHABLEND);
 	}
 
-	//ApplyFilter(FILTER_MODE_GAUSSIAN);
+	//ApplyFilter(FILTER_MODE_LAPLACIAN);
+	//	FILTER_MODE_NONE,			// フィルタなし
+	//	FILTER_MODE_AVERAGING,		// 平均化フィルタ
+	//	FILTER_MODE_GAUSSIAN,		// ガウシアンフィルタ
+	//	FILTER_MODE_SHARPNING,		// 鮮鋭化フィルタ弱
+	//	FILTER_MODE_SHARPNING_HIGH,	// 鮮鋭化フィルタ強
+	//	FILTER_MODE_LAPLACIAN,		// ラプラシアンフィルタ
+	//	FILTER_MODE_LAPLACIAN_COLOR,// ラプラシアンフィルタカラー
+	//	FILTER_MODE_PREWITT_X,		// プリューウィットフィルタ横
+	//	FILTER_MODE_PREWITT_Y,		// プリューウィットフィルタ縦
+	//	FILTER_MODE_SOBEL_X,		// ソーベルフィルタ横
+	//	FILTER_MODE_SOBEL_Y,		// ソーベルフィルタ縦
 
-	// バックバッファをターゲットにして描画
+	// バックバッファをターゲットにして描画 1000
 	DrawTarget();
 
+	// UI描画 15000 → 150（インスタンシング使用）
 	SetDraw2DTexture();
 	DrawGameUI();
 
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_E); }
+#endif
+
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) oldTime = nowTime;
+	PrintDebugProc("LightDrawTime:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
+	PrintDebugProc("ShadingDrawTime:%d\n", Shade_E.QuadPart - Shade_S.QuadPart);
+	PrintDebugProc("ALLDrawTime:%d\n", Light_E.QuadPart - Light_S.QuadPart);
+#endif
 
 
 	// アウトラインを引く

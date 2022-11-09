@@ -32,5 +32,6 @@ HRESULT InitGimmick(void);
 void UninitGimmick(void);
 void UpdateGimmick(void);
 void DrawGimmick(GIMMICK_TYPE gimmick);
+void DrawGimmickInstancing(GIMMICK_TYPE gimmick);
 
 bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot);

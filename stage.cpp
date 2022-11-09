@@ -45,10 +45,10 @@ HRESULT InitStage(void)
 
 	for (int i = 0; i < GIMMICK_OSAKA; i++)
 	{
-		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;
+		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;	// 角度番号
 		if (g_Gmk_Osaka[i].rotPosNo%MESH_NUM_X == 0) g_Gmk_Osaka[i].rotPosNo++;
-		g_Gmk_Osaka[i].zPosNo = i * 20;
-		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 2);
+		g_Gmk_Osaka[i].zPosNo = i * 20;			// 位置番号
+		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 2);	// ギミック番号
 	}
 
 	g_Crv_Osaka[0].angle = { 0.0f, 0.0f };
@@ -77,11 +77,11 @@ STAGE* GetStage(int stageNo) { return &g_Stage[stageNo]; }
 
 void SetStageCurve(int stageNo, float zPos) {
 	CURVE_BUFFER curve;
-	curve.TexPos = zPos / MESH_SIZE;
+	curve.TexPos = zPos / MESH_SIZE_Z;
 	float rate, rateA, rateB, start, end;
 	for (int i = 0; i < g_Stage[stageNo].crvNum - 1; i++) {
-		start = g_Stage[stageNo].arrCrv[i].zPosNo * MESH_SIZE;
-		end = g_Stage[stageNo].arrCrv[i + 1].zPosNo * MESH_SIZE;
+		start = g_Stage[stageNo].arrCrv[i].zPosNo * MESH_SIZE_Z;
+		end = g_Stage[stageNo].arrCrv[i + 1].zPosNo * MESH_SIZE_Z;
 
 		if (start < zPos && zPos < end) {
 			rate = (zPos - start) / (end - start);
