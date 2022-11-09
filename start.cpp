@@ -302,7 +302,7 @@ HRESULT InitStart(void)
 
 
 	g_td[TEXTURE_MENU_JP].tex = g_td[MenuJp].tex;
-	g_td[TEXTURE_MENU_JP].size = { TEXTURE_WIDTH_START, TEXTURE_HEIGHT_MENUALL };
+	g_td[TEXTURE_MENU_JP].size = { TEXTURE_WIDTH_START_JP, TEXTURE_HEIGHT_MENUALL_JP };
 	g_td[TEXTURE_MENU_JP].scl = { 1.0f, 1.0f };
 	g_td[TEXTURE_MENU_JP].pos = { 100.0f, 950.0f };
 	g_td[TEXTURE_MENU_JP].col = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -451,6 +451,20 @@ void UpdateStart(void)
 			}
 
 		}
+
+		if (GetKeyboardTrigger(DIK_RETURN))
+		{
+			switch (MenuPannelNum)
+			{
+			case TEXTURE_MENU_PANNEL_01:
+				SetMode(MODE_GAME);
+				break;
+			case TEXTURE_MENU_PANNEL_05:
+				exit(-1);
+			break;
+			}
+		}
+
 
 
 

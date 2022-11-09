@@ -68,7 +68,7 @@ int		g_CountFPS;							// FPS�J�E���^
 char	g_DebugStr[2048] = WINDOW_NAME;		// �f�o�b�O�����\���p
 #endif
 
-MODE_LABEL	g_Mode = MODE_GAME;	// �N�����̉�ʂ�ݒ�
+MODE_LABEL	g_Mode = MODE_START;	// �N�����̉�ʂ�ݒ�
 
 //=============================================================================
 // ���C���֐�
