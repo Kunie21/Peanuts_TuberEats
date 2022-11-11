@@ -76,6 +76,9 @@
     <ClCompile Include="stage.cpp">
       <Filter>game</Filter>
     </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -152,6 +155,9 @@
       <Filter>game</Filter>
     </ClInclude>
     <ClInclude Include="stage.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
       <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>

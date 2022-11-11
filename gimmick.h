@@ -19,6 +19,7 @@ enum GIMMICK_TYPE
 
 struct GIMMICK
 {
+	BOOL use = TRUE;
 	int rotPosNo = 0;
 	int zPosNo = 0;
 	float rotSizeHalf = XM_PIDIV4;
@@ -35,3 +36,4 @@ void DrawGimmick(GIMMICK_TYPE gimmick);
 void DrawGimmickInstancing(GIMMICK_TYPE gimmick);
 
 bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot);
+bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float newRot);

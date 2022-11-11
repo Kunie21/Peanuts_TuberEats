@@ -140,13 +140,12 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick)
 	INSTANCE* b_pInstance = (INSTANCE*)msr.pData;
 	int instCount = 0;
 
-	MATERIAL material;
-	XMMATRIX mtxWorld;
 	float zPos, rot;
 	float d_pos = -GetPlayerPosition();
 	STAGE* pStage = GetStage(0);
 	for (int i = 0; i < pStage->gmkNum; i++)
 	{
+		if (!pStage->arrGmk[i].use) continue;
 		if (pStage->arrGmk[i].type != gimmick) continue;
 
 		zPos = d_pos + MESH_SIZE_Z * pStage->arrGmk[i].zPosNo;
@@ -154,21 +153,19 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick)
 			continue;
 
 		rot = XM_2PI * (float)pStage->arrGmk[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation() + XM_PIDIV2;
-		mtxWorld = XMMatrixIdentity();	// ワールドマトリックスの初期化
-
 
 		switch (gimmick)
 		{
 		case GIMMICK_ICE:
-			b_pInstance->scl[instCount] = { 4.0f, 1.8f, 4.0f , 0.0f };
-			b_pInstance->rot[instCount] = { 0.0f, -XM_PIDIV4 + 0.3f, rot + XM_PIDIV2, 0.0f };
+			b_pInstance->scl[instCount] = { 4.0f, 1.8f, 4.0f, 0.0f };
+			b_pInstance->rot[instCount] = { 0.0f, XM_PI - XM_PIDIV4 + 0.3f, rot + XM_PIDIV2, 0.0f };
 			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos, 0.0f };
 			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			break;
 
 		case GIMMICK_RING:
-			b_pInstance->scl[instCount] = { 4.0f, 1.8f, 4.0f , 0.0f };
-			b_pInstance->rot[instCount] = { 0.0f, XM_PIDIV2, rot + XM_PIDIV2, 0.0f };
+			b_pInstance->scl[instCount] = { 1.0f, 1.0f, 1.0f, 0.0f };
+			b_pInstance->rot[instCount] = { XM_PIDIV2, XM_PI, rot + XM_PIDIV2, 0.0f };
 			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 50.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 50.0f) * 0.8f * sinf(rot), zPos, 0.0f };
 			b_pInstance->col[instCount] = { 2.0f, 2.0f, 0.0f, 2.0f };
 			break;
@@ -177,7 +174,10 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick)
 		instCount++;
 	}
 	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
-	DrawModelInstanced(&g_Model[gimmick], instCount);	// モデル描画
+
+	SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
+	static MATERIAL material;
+	DrawModelInstanced(&g_Model[gimmick], instCount, &material);	// モデル描画
 }
 
 bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot)
@@ -188,22 +188,23 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 	int newZPosNoInt = (int)newZPosNoFloat;
 	if (oldZPosNoInt == (int)newZPosNoInt) return false;
 	float length = newZPosNoFloat - oldZPosNoFloat;
+	STAGE* pStage = GetStage(stageNo);
 	while (oldZPosNoInt <= newZPosNoInt)
 	{
 		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
 		int colZPosNo = oldZPosNoInt + 1;
 		float colRot = oldRot + (newRot - oldRot) * rate + XM_PIDIV2;
-		for (int i = 0; i < GetStage(stageNo)->gmkNum; i++)
+		for (int i = 0; i < pStage->gmkNum; i++)
 		{
-			if (GetStage(stageNo)->arrGmk[i].zPosNo == colZPosNo)
+			if (pStage->arrGmk[i].use && pStage->arrGmk[i].zPosNo == colZPosNo)
 			{
-				float rot = colRot + XM_PIDIV2 + XM_2PI * (float)GetStage(stageNo)->arrGmk[i].rotPosNo / (float)MESH_NUM_X;
+				float rot = colRot + XM_PIDIV2 + XM_2PI * (float)pStage->arrGmk[i].rotPosNo / (float)MESH_NUM_X;
 				while (rot < 0.0f) rot += XM_2PI;
 				while (rot > XM_2PI) rot -= XM_2PI;
-				if (rot < GetStage(stageNo)->arrGmk[i].rotSizeHalf ||
-					XM_2PI - GetStage(stageNo)->arrGmk[i].rotSizeHalf < rot)
+				if (rot < pStage->arrGmk[i].rotSizeHalf ||
+					XM_2PI - pStage->arrGmk[i].rotSizeHalf < rot)
 				{
-					switch (GetStage(stageNo)->arrGmk[i].type)
+					switch (pStage->arrGmk[i].type)
 					{
 					case GIMMICK_ICE:
 						SetDamageEffect();
@@ -218,38 +219,46 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 				}
 			}
 		}
-		//for (int i = 0; i < ICE_NUM; i++)
-		//{
-		//	if (g_GmIce[i].zPosNo == colZPosNo)
-		//	{
-		//		float rot = colRot + XM_PIDIV2 + XM_2PI * (float)g_GmIce[i].rotPosNo / (float)MESH_NUM_X;
-		//		while (rot < 0.0f) rot += XM_2PI;
-		//		while (rot > XM_2PI) rot -= XM_2PI;
-		//		if (rot < g_GmIce[i].rotSizeHalf ||
-		//			XM_2PI - g_GmIce[i].rotSizeHalf < rot)
-		//		{
-		//			SetDamageEffect();
-		//			SetPlayerCollisionIce();
-		//			return true;
-		//		}
-		//	}
-		//}
-		//for (int i = 0; i < RING_NUM; i++)
-		//{
-		//	if (g_GmRing[i].zPosNo == colZPosNo)
-		//	{
-		//		float rot = colRot + XM_PIDIV2 + XM_2PI * (float)g_GmRing[i].rotPosNo / (float)MESH_NUM_X;
-		//		while (rot < 0.0f) rot += XM_2PI;
-		//		while (rot > XM_2PI) rot -= XM_2PI;
-		//		if (rot < g_GmRing[i].rotSizeHalf ||
-		//			XM_2PI - g_GmRing[i].rotSizeHalf < rot)
-		//		{
-		//			SetBoostEffect();
-		//			SetPlayerThroughRing();
-		//			return true;
-		//		}
-		//	}
-		//}
+		oldZPosNoInt++;
+	}
+	return false;
+}
+bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float newRot)
+{
+	float oldZPosNoFloat = oldZ / MESH_SIZE_Z;
+	float newZPosNoFloat = newZ / MESH_SIZE_Z;
+	int oldZPosNoInt = (int)oldZPosNoFloat;
+	int newZPosNoInt = (int)newZPosNoFloat;
+	if (oldZPosNoInt == (int)newZPosNoInt) return false;
+	float length = newZPosNoFloat - oldZPosNoFloat;
+	STAGE* pStage = GetStage(stageNo);
+	while (oldZPosNoInt <= newZPosNoInt)
+	{
+		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
+		int colZPosNo = oldZPosNoInt + 1;
+		float colRot = oldRot + (newRot - oldRot) * rate + XM_PIDIV2;
+		for (int i = 0; i < pStage->gmkNum; i++)
+		{
+			if (pStage->arrGmk[i].use && pStage->arrGmk[i].zPosNo == colZPosNo)
+			{
+				float rot = colRot + XM_PIDIV2 + XM_2PI * (float)pStage->arrGmk[i].rotPosNo / (float)MESH_NUM_X;
+				while (rot < 0.0f) rot += XM_2PI;
+				while (rot > XM_2PI) rot -= XM_2PI;
+				if (rot < pStage->arrGmk[i].rotSizeHalf ||
+					XM_2PI - pStage->arrGmk[i].rotSizeHalf < rot)
+				{
+					switch (pStage->arrGmk[i].type)
+					{
+					case GIMMICK_ICE:
+						pStage->arrGmk[i].use = FALSE;
+						break;
+					case GIMMICK_RING:
+						break;
+					}
+					return true;
+				}
+			}
+		}
 		oldZPosNoInt++;
 	}
 	return false;

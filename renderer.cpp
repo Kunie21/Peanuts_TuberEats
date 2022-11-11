@@ -126,6 +126,7 @@ static int						g_CurrentResourceLight = 0;
 // その他シェーダー
 static ID3D11VertexShader*		g_VS = NULL;
 static ID3D11VertexShader*		g_VSOutline = NULL;
+static ID3D11VertexShader*		g_VSOutlineInstancing = NULL;
 static ID3D11VertexShader*		g_VSTube = NULL;
 static ID3D11VertexShader*		g_VSGimmick = NULL;
 static ID3D11VertexShader*		g_VSPlayer = NULL;
@@ -237,6 +238,7 @@ void UninitRenderer(void)
 	// その他シェーダー
 	if (g_VS)					g_VS->Release();
 	if (g_VSOutline)			g_VSOutline->Release();
+	if (g_VSOutlineInstancing)	g_VSOutlineInstancing->Release();
 	if (g_VSTube)				g_VSTube->Release();
 	if (g_VSGimmick)			g_VSGimmick->Release();
 	if (g_VSPlayer)				g_VSPlayer->Release();
@@ -712,6 +714,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 		// その他の頂点シェーダコンパイル・生成
 		CreateShader("shader.hlsl", "VSOutline", &g_VSOutline, shFlag);
+		CreateShader("shader.hlsl", "VSOutlineInstancing", &g_VSOutlineInstancing, shFlag);
 		CreateShader("shader.hlsl", "VSTube", &g_VSTube, shFlag);
 		CreateShader("shader.hlsl", "VSGimmick", &g_VSGimmick, shFlag);
 		CreateShader("shader.hlsl", "VSPlayer", &g_VSPlayer, shFlag);
@@ -1213,7 +1216,7 @@ void SetDrawOutline(float Scale, XMFLOAT4 Color)
 	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
 	SetCullingMode(CULL_MODE_FRONT);
-	g_ImmediateContext->VSSetShader(g_VSOutline, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VSOutlineInstancing, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOutline, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
@@ -1328,6 +1331,16 @@ void SetDrawLight(void)
 {
 	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VSGimmick, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+}
+void SetDrawInstancingOnlyTex(void)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);

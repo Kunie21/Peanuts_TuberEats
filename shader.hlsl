@@ -53,9 +53,7 @@ VS_OUTPUT VSTube(VS_INPUT input) {
 VS_OUTPUT VSGimmick(VS_INPUT input) {
 	VS_OUTPUT output;
 	output.WorldPos = mul(input.Position, World);
-	//output.WorldPos = mul(mul(input.Position, World), transpose(AfterRot));
 	output.Position = GetTubeCurvePos(output.WorldPos);
-	//output.Normal = normalize(GetTubeCurvePos(float4(input.Normal.xyz, 0.0f)));
 	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), World));
 	output.TexCoord = input.TexCoord;
 	output.Diffuse = input.Diffuse * Material.Diffuse;
@@ -77,10 +75,18 @@ VS_OUTPUT VSPlayer(VS_INPUT input) {
 VS_OUTPUT VSOutline(VS_INPUT input) {	// 法線方向に膨らませる
 	VS_OUTPUT output;
 	input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * Outline.Scale.x;
-	//output.Position = mul(input.Position, WVP);
-	input.Position = mul(input.Position, World);
-	output.Position = GetTubeCurvePos(input.Position);
+	output.Position = GetTubeCurvePos(mul(input.Position, World));
 	return output;
+}
+VS_OUTPUT VSOutlineInstancing(VS_INPUT input, uint instID : SV_InstanceID) {	// 法線方向に膨らませる
+	VS_OUTPUT output;
+	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * Outline.Scale.x;
+	output.Position = GetTubeCurvePos(mul(input.Position, mtxWorld));
+	return output;
+}
+float4 PSOutline(VS_OUTPUT input) : SV_Target{
+	return Outline.Color;
 }
 
 //=============================================================================
@@ -94,16 +100,11 @@ VS_OUTPUT VSInstancing(VS_INPUT input, uint instID : SV_InstanceID) {
 	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), mtxWorld));
 	output.TexCoord = input.TexCoord;
 	output.Diffuse = input.Diffuse * Instance.col[instID] * Material.Diffuse;
-	//output.Diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	return output;
 }
 
 IS_OUTPUT VSInstancingTexture(VS_INPUT input, uint instID : SV_InstanceID) {
 	IS_OUTPUT output;
-	//matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
-	//output.WorldPos = mul(input.Position, mul(mtxWorld, VP));
-	//output.Position = GetTubeCurvePos(output.WorldPos);
-
 	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
 	output.Position = mul(input.Position, mul(mtxWorld, VP));
 	output.WorldPos = mul(input.Position, mtxWorld);
@@ -155,10 +156,6 @@ float4 PSInstancingOnlyTex(IS_OUTPUT input) : SV_Target{
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================
-// アウトライン用
-float4 PSOutline(VS_OUTPUT input) : SV_Target{
-	return Outline.Color;
-}
 
 // 光源別 ////////////////
 // 環境光
