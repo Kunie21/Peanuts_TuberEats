@@ -16,6 +16,7 @@
 #include "ui_game.h"
 #include "gimmick.h"
 #include "stage.h"
+#include "missile.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -73,6 +74,8 @@ private:
 
 	float m_invTime = 0.0f;
 
+	int m_missiles = 10;
+
 public:
 	//ROCKET() {}
 	//ROCKET(const ROCKET& rocket) {
@@ -118,6 +121,10 @@ public:
 	float GetRotate(void) const { return m_rot; }
 	float GetFuel(void) const { return m_fuel; }
 	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
+	bool Launch(MISSILE_TYPE type) {
+		//if (!m_missiles--)
+		//	return false;
+		return LaunchMissile(type, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd); }
 };
 
 static ROCKET g_Rocket;
@@ -206,11 +213,16 @@ void UpdatePlayer(void)
 	// ドライブ
 	g_Rocket.Drive();
 
+	// ミサイル
+	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_ICE); }
+	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_RING); }
+
 	// コリジョン
 	if (g_Rocket.AbleToCollision()){
 		CollisionGimmick(0, oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
 		//SetDamageEffect();
 	}
+
 
 	// パイプ曲げ（手動）
 	static CURVE_BUFFER curve;
@@ -265,6 +277,9 @@ float GetPlayerSpeed(void) {
 }
 float GetPlayerPosition(void) {
 	return g_Rocket.GetPos();
+}
+float GetPlayerRotation(void) {
+	return g_Rocket.GetRotate();
 }
 void SetPlayerThroughRing(void) {
 	g_Rocket.Boost(30.0f);

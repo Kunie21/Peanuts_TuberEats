@@ -20,6 +20,7 @@
 #include "ui_game.h"
 #include "stage.h"
 #include "teamlogo.h"
+#include "missile.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -47,6 +48,7 @@ HRESULT InitGame(void)
 	InitPlayer();
 	InitGameUI();
 	InitStage();
+	InitMissile();
 
 	g_Load = TRUE;
 	return S_OK;
@@ -86,6 +88,7 @@ void UninitGame(void)
 {
 	if (g_Load == FALSE) return;
 
+	UninitMissile();
 	UninitStage();
 	UninitGameUI();
 	UninitPlayer();
@@ -118,6 +121,7 @@ void UpdateGame(void)
 	UpdatePlayer();
 	UpdateGameUI();
 	UpdateStage();
+	UpdateMissile();
 
 }
 
@@ -146,8 +150,11 @@ void DrawGame(void)
 #endif
 	{	// ALL 25000 → 15000
 		// アウトラインを引く 3000
-		//SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
-		//DrawGimmick(GIMMICK_ICE);
+		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
+		DrawGimmickInstancing(GIMMICK_ICE);
+		SetDrawOutline(0.8f, { 0.0f, 0.0f, 1.0f, 1.0f });
+		DrawMissile(MISSILE_TYPE_RING);
+		DrawMissile(MISSILE_TYPE_ICE);
 
 		// 環境光で下塗りする 3000
 		{
@@ -193,7 +200,8 @@ void DrawGame(void)
 			SetStencilReadLLGimmick();
 			//SetStencilReadLL(SHADER_GIMMICK);
 			DrawGimmickInstancing(GIMMICK_ICE);
-			//DrawGimmickInstancing(GIMMICK_ICE);
+			DrawMissile(MISSILE_TYPE_RING);
+			DrawMissile(MISSILE_TYPE_ICE);
 			SetStencilReadLL(SHADER_PLAYER);
 			DrawPlayer();
 
@@ -212,9 +220,12 @@ void DrawGame(void)
 
 				SetBlendState(BLEND_MODE_ADD);
 
+				SetDrawInstancingOnlyTex();
+				DrawGimmickInstancing(GIMMICK_RING);
+
 				SetDrawLight();
-				DrawGimmick(GIMMICK_RING);
 				DrawTubeLight();
+
 				ApplyLightToTarget();
 			}
 #ifdef _DEBUG
