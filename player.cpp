@@ -230,7 +230,7 @@ void UpdatePlayer(void)
 	if (GetKeyboardPress(DIK_G)) { curve.Angle.y -= 0.005f; }
 	if (GetKeyboardPress(DIK_H)) { curve.Angle.x += 0.005f; }
 	if (GetKeyboardPress(DIK_J)) { curve.Angle.x -= 0.005f; }
-	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z;
+	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
 	SetCurveBuffer(&curve);
 	
 	// パイプ曲げ（ステージ設定に従って自動で曲げる）

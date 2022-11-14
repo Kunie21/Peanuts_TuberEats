@@ -24,6 +24,9 @@
 #define ICE_NUM		(50)
 #define RING_NUM	(20)
 
+#define EX_LENGTH		(1000.0f)
+#define EX_ACCEL		(0.98f)
+
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
@@ -55,6 +58,7 @@ HRESULT InitGimmick(void)
 	{
 		g_GmRing[i].rotPosNo = (i * 5) % 8;
 		g_GmRing[i].zPosNo = i * 50;
+		g_GmRing[i].col = { 2.0f, 2.0f, 0.0f, 2.0f };
 	}
 
 	g_Load = TRUE;
@@ -132,7 +136,7 @@ void DrawGimmick(GIMMICK_TYPE gimmick)
 		DrawModel(&g_Model[pStage->arrGmk[i].type], &mtxWorld, NULL, &material);	// モデル描画
 	}
 }
-void DrawGimmickInstancing(GIMMICK_TYPE gimmick)
+void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 {
 	// インスタンス情報を登録
 	D3D11_MAPPED_SUBRESOURCE msr;
@@ -145,7 +149,17 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick)
 	STAGE* pStage = GetStage(0);
 	for (int i = 0; i < pStage->gmkNum; i++)
 	{
-		if (!pStage->arrGmk[i].use) continue;
+		if (!pStage->arrGmk[i].use) {
+			if (bOutline) continue;
+			if (pStage->arrGmk[i].exSpd > 5.0f) {
+				pStage->arrGmk[i].exPos += pStage->arrGmk[i].exSpd;
+				pStage->arrGmk[i].exSpd *= EX_ACCEL;
+				pStage->arrGmk[i].col.w *= EX_ACCEL * 1.01f;
+			}
+			else {
+				continue;
+			}
+		}
 		if (pStage->arrGmk[i].type != gimmick) continue;
 
 		zPos = d_pos + MESH_SIZE_Z * pStage->arrGmk[i].zPosNo;
@@ -159,14 +173,15 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick)
 		case GIMMICK_ICE:
 			b_pInstance->scl[instCount] = { 4.0f, 1.8f, 4.0f, 0.0f };
 			b_pInstance->rot[instCount] = { 0.0f, XM_PI - XM_PIDIV4 + 0.3f, rot + XM_PIDIV2, 0.0f };
-			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos, 0.0f };
-			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
+			b_pInstance->col[instCount] = pStage->arrGmk[i].col;
 			break;
 
 		case GIMMICK_RING:
-			b_pInstance->scl[instCount] = { 1.0f, 1.0f, 1.0f, 0.0f };
+			b_pInstance->scl[instCount] = { 0.8f, 0.8f, 0.8f, 0.0f };
 			b_pInstance->rot[instCount] = { XM_PIDIV2, XM_PI, rot + XM_PIDIV2, 0.0f };
-			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 50.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 50.0f) * 0.8f * sinf(rot), zPos, 0.0f };
+			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
+			//b_pInstance->col[instCount] = pStage->arrGmk[i].col;
 			b_pInstance->col[instCount] = { 2.0f, 2.0f, 0.0f, 2.0f };
 			break;
 		}

@@ -251,6 +251,7 @@ void SetDraw2DTexture(void);
 //void DrawOutline(void);
 
 void ClearStencil(void);
+void ClearDepth(void);
 void ClearWriteView(void);
 
 void SetDrawLight(void);

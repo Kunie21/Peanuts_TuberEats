@@ -21,6 +21,7 @@
 #include "stage.h"
 #include "teamlogo.h"
 #include "missile.h"
+#include "texture2d.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -139,6 +140,7 @@ void DrawGame(void)
 	//SetDrawNoLighting();
 	//DrawPlayer();
 
+
 #ifdef _DEBUG
 	static LARGE_INTEGER Shadow_S, Shadow_E, Shade_S, Shade_E, Light_S, Light_E;
 	static int oldTime, nowTime;
@@ -151,7 +153,7 @@ void DrawGame(void)
 	{	// ALL 25000 → 15000
 		// アウトラインを引く 3000
 		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
-		DrawGimmickInstancing(GIMMICK_ICE);
+		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
 		SetDrawOutline(0.8f, { 0.0f, 0.0f, 1.0f, 1.0f });
 		DrawMissile(MISSILE_TYPE_RING);
 		DrawMissile(MISSILE_TYPE_ICE);
@@ -227,17 +229,20 @@ void DrawGame(void)
 				DrawTubeLight();
 
 				ApplyLightToTarget();
+
+				SetDrawFire();
+				DrawFire();
+
+				SetBlendState(BLEND_MODE_ALPHABLEND);
 			}
 #ifdef _DEBUG
 			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
 #endif
 
-			SetDrawFire();
-			DrawFire();
 		}
 
 		// 加算合成モードを終了する
-		SetBlendState(BLEND_MODE_ALPHABLEND);
+		//SetBlendState(BLEND_MODE_ALPHABLEND);
 	}
 
 	//ApplyFilter(FILTER_MODE_LAPLACIAN);
@@ -253,12 +258,19 @@ void DrawGame(void)
 	//	FILTER_MODE_SOBEL_X,		// ソーベルフィルタ横
 	//	FILTER_MODE_SOBEL_Y,		// ソーベルフィルタ縦
 
+	//// UI描画 15000 → 150（インスタンシング使用）
+	//SetDraw2DTexture();
+	//DrawGameUI();
+
 	// バックバッファをターゲットにして描画 1000
 	DrawTarget();
 
 	// UI描画 15000 → 150（インスタンシング使用）
-	SetDraw2DTexture();
+	//SetDraw2DTexture();
 	DrawGameUI();
+	//DrawTexture2DAll();
+	//ClearDepth();
+	
 
 #ifdef _DEBUG
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_E); }
