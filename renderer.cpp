@@ -171,7 +171,7 @@ static ID3D11Buffer*			g_ScreenVertexBuffer = NULL;
 static MATRIX					g_Matrix;
 static XMFLOAT4					g_LightVector;
 static XMFLOAT4					g_CameraPosition;
-static XMFLOAT4					g_BackGroundColor = { 0.5f, 0.5f, 0.5f, 1.0f };
+static XMFLOAT4					g_BackGroundColor = { 0.8f, 0.9f, 1.0f, 1.0f };
 //static XMFLOAT4					g_BackGroundColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 // デプスステンシル設定

@@ -246,6 +246,12 @@ float4 PSLL(IS_OUTPUT input) : SV_Target {
 	float3 AmbientLightColor = AmbientLight.Color.rgb * AmbientLight.Intensity;
 	outDiffuse.rgb += AmbientLightColor * Material.Ambient.rgb * color.rgb;
 
+	// フォグ計算
+	float z = input.Position.z * input.Position.w;
+	float f = saturate((20000.0f - z) * 0.00005f);
+	outDiffuse = f * outDiffuse + (1 - f) * float4(0.8f, 0.9f, 1.0f, 1.0f);
+	outDiffuse.a = color.a;
+
 	return outDiffuse;
 }
 

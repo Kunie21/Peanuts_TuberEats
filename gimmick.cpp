@@ -163,7 +163,7 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 		if (pStage->arrGmk[i].type != gimmick) continue;
 
 		zPos = d_pos + MESH_SIZE_Z * pStage->arrGmk[i].zPosNo;
-		if (zPos < -500.0f || 10000.0f < zPos)
+		if (zPos < -500.0f || 20000.0f < zPos)
 			continue;
 
 		rot = XM_2PI * (float)pStage->arrGmk[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation() + XM_PIDIV2;

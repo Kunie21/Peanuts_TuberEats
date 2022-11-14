@@ -101,7 +101,7 @@ public:
 	void Accel(float posSpd) { m_posSpd += posSpd; }
 	void Boost(float addSpd) { m_addSpd += addSpd; }
 	void Brake(float posSpd) { m_posSpd -= posSpd; }
-	void Drive(void) {
+	float Drive(void) {
 		m_pos += m_posSpd + m_addSpd;
 		m_rot += m_rotSpd;
 		while (m_rot < 0.0f) m_rot += XM_2PI;
@@ -110,6 +110,7 @@ public:
 		m_addSpd *= 0.98f;
 		m_invTime *= 0.98f;
 		m_fuel -= m_posSpd / MAX_SPEED;
+		return -m_rotSpd / c_rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
 	}
 	void LostFuel(float lostFuel) { m_fuel -= lostFuel; }
 	void Collision(void) { m_invTime = 1.5f; }
@@ -211,7 +212,7 @@ void UpdatePlayer(void)
 	if (GetKeyboardTrigger(DIK_BACK)) { g_Rocket.Brake(5.0f); }
 
 	// ドライブ
-	g_Rocket.Drive();
+	g_Model[testNo].srt.rot.z = g_Rocket.Drive();
 
 	// ミサイル
 	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_ICE); }

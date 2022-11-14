@@ -132,7 +132,8 @@ void UpdateGame(void)
 void DrawAllObjects(void)
 {
 	DrawTube();
-	//DrawGimmick();
+	DrawGimmick(GIMMICK_ICE);
+	DrawGimmick(GIMMICK_RING);
 	DrawPlayer();
 }
 void DrawGame(void)
