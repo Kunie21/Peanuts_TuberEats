@@ -23,6 +23,7 @@
 #include "missile.h"
 #include "texture2d.h"
 #include "door.h"
+#include "anim_start.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -52,6 +53,7 @@ HRESULT InitGame(void)
 	InitStage();
 	InitMissile();
 	InitDoor();
+	InitAnimStart();
 
 	g_Load = TRUE;
 	return S_OK;
@@ -91,6 +93,7 @@ void UninitGame(void)
 {
 	if (g_Load == FALSE) return;
 
+	UninitAnimStart();
 	UninitDoor();
 	UninitMissile();
 	UninitStage();
@@ -127,6 +130,7 @@ void UpdateGame(void)
 	UpdateStage();
 	UpdateMissile();
 	UpdateDoor();
+	UpdateAnimStart();
 
 }
 
@@ -142,6 +146,9 @@ void DrawAllObjects(void)
 }
 void DrawGame(void)
 {
+
+	DrawAnimStart();
+
 	//SetDrawNoLighting();
 	//DrawPlayer();
 
@@ -282,7 +289,6 @@ void DrawGame(void)
 	DrawGameUI();
 	//DrawTexture2DAll();
 	//ClearDepth();
-	
 
 #ifdef _DEBUG
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_E); }

@@ -153,7 +153,7 @@ HRESULT InitPlayer(void)
 		LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
 		LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
 		for (int i = 0; i < MODEL_MAX; i++) {
-			g_Model[i].srt.pos = { 0.0f, -60.0f, 0.0f };
+			g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
 			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
 			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
 		}

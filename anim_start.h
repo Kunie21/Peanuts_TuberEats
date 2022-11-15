@@ -14,3 +14,4 @@ void UninitAnimStart(void);
 void UpdateAnimStart(void);
 void DrawAnimStart(void);
 
+void SetCameraAnimStart(void);
