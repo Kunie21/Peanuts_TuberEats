@@ -161,6 +161,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	QueryPerformanceCounter(&UpdateEnd);
 	QueryPerformanceCounter(&DrawEnd);
 	QueryPerformanceCounter(&DrawStart);
+
+	// メモリリークチェック用
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
 #endif
 
 	// ウインドウの表示(初期化処理の後に呼ばないと駄目)
@@ -214,11 +217,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 				wsprintf(&g_DebugStr[strlen(g_DebugStr)], " MX:%d MY:%d", GetMousePosX(), GetMousePosY());
 				SetWindowText(hWnd, g_DebugStr);
+				
+				// メモリリークチェック用 ※毎フレーム呼ぶと重い
+				//_CrtDumpMemoryLeaks();
 #endif
 				dwFrameCount++;
 			}
 		}
 	}
+
 
 	// 分解能を戻す
 	timeEndPeriod(1);
@@ -342,22 +349,19 @@ void Draw(void)
 		break;
 	}
 
+	DrawTarget();	// バックバッファをターゲットにして今描画されているものを描画
 
 	DrawFade();	// フェード描画
 
-	DrawTexture2DAll();
+	DrawTexture2DAll();	// 2Dの画像をまとめて描画
 
 #ifdef _DEBUG
-	DrawDebugProc();	// デバッグ表示
-
 	static LARGE_INTEGER s, e;
 	static int oldTime, nowTime;
 	nowTime++;
 	PrintDebugProc("PresentTime:%d\n", e.QuadPart - s.QuadPart);
-#endif
-
-#ifdef _DEBUG
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&s); }
+	DrawDebugProc();	// デバッグ表示
 #endif
 
 	Present();	// バックバッファ、フロントバッファ入れ替え

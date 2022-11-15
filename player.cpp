@@ -62,7 +62,7 @@ class ROCKET
 {
 private:
 	float m_pos = 0;
-	float m_posSpd = DEFAULT_SPEED;
+	float m_posSpd = 0.0f; // DEFAULT_SPEED;
 	float m_addSpd = 0.0f;
 
 	float m_rot = 0.0f;
@@ -215,8 +215,8 @@ void UpdatePlayer(void)
 	g_Model[testNo].srt.rot.z = g_Rocket.Drive();
 
 	// ミサイル
-	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_ICE); }
-	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_RING); }
+	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_01); }
+	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_02); }
 
 	// コリジョン
 	if (g_Rocket.AbleToCollision()){

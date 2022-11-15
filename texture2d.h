@@ -31,4 +31,4 @@ void UpdateTexture2D(void);
 void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow = FALSE, BOOL bUV = FALSE);
 void SetUVTexture2D(UV_POSITION* uv);
 void ResetUVTexture2D(void);
-void DrawTexture2DAll(void);
+void DrawTexture2DAll(BOOL bInterrupt = FALSE);	// TRUEÇ≈äÑÇËçûÇ›ÅiìríÜÇ≈ï`âÊÇ∑ÇÈÅj

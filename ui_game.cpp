@@ -148,7 +148,7 @@ void UninitGameUI(void)
 //=============================================================================
 void UpdateGameUI(void)
 {
-	g_td[TEXTURE_WHITE].col.w *= 0.9f;
+	g_td[TEXTURE_WHITE].col.w *= 0.97f;
 	OnTimer();
 }
 

@@ -228,6 +228,7 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 					case GIMMICK_RING:
 						SetBoostEffect();
 						SetPlayerThroughRing();
+						//pStage->arrGmk[i].use = FALSE;
 						break;
 					}
 					return true;
@@ -266,11 +267,11 @@ bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float n
 					{
 					case GIMMICK_ICE:
 						pStage->arrGmk[i].use = FALSE;
+						return true;
 						break;
 					case GIMMICK_RING:
 						break;
 					}
-					return true;
 				}
 			}
 		}
