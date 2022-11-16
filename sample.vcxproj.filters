@@ -76,8 +76,13 @@
     <ClCompile Include="stage.cpp">
       <Filter>game</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="result_event.cpp">
       <Filter>result</Filter>
+=======
+    <ClCompile Include="missile.cpp">
+      <Filter>game</Filter>
+>>>>>>> origin/master
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,8 +162,13 @@
     <ClInclude Include="stage.h">
       <Filter>game</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="result_event.h">
       <Filter>result</Filter>
+=======
+    <ClInclude Include="missile.h">
+      <Filter>game</Filter>
+>>>>>>> origin/master
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

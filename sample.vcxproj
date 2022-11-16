@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="gimmick.h" />
     <ClInclude Include="home.h" />
+    <ClInclude Include="missile.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="result_event.h" />
@@ -166,6 +167,7 @@
   <ItemGroup>
     <ClCompile Include="gimmick.cpp" />
     <ClCompile Include="home.cpp" />
+    <ClCompile Include="missile.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="result_event.cpp" />

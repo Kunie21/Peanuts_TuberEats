@@ -300,8 +300,6 @@ void DrawTexture2DAll(void)
 	// 2Dマトリクス設定
 	SetViewBuffer(&XMMatrixIdentity());
 	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
-
-	// ワールドマトリクスの初期化
 	SetWorldBuffer(&XMMatrixIdentity());
 
 	// インスタンシング描画設定

@@ -22,6 +22,7 @@ struct STAGE
 	int gmkNum;				// ギミック数
 	int crvNum;				// カーブ数
 	int length;				// パイプの長さ
+	int corner = 7;			// パイプ断面の頂点数
 };
 
 enum STAGE_LABEL

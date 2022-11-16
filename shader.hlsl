@@ -53,9 +53,7 @@ VS_OUTPUT VSTube(VS_INPUT input) {
 VS_OUTPUT VSGimmick(VS_INPUT input) {
 	VS_OUTPUT output;
 	output.WorldPos = mul(input.Position, World);
-	//output.WorldPos = mul(mul(input.Position, World), transpose(AfterRot));
 	output.Position = GetTubeCurvePos(output.WorldPos);
-	//output.Normal = normalize(GetTubeCurvePos(float4(input.Normal.xyz, 0.0f)));
 	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), World));
 	output.TexCoord = input.TexCoord;
 	output.Diffuse = input.Diffuse * Material.Diffuse;
@@ -77,11 +75,20 @@ VS_OUTPUT VSPlayer(VS_INPUT input) {
 VS_OUTPUT VSOutline(VS_INPUT input) {	// 法線方向に膨らませる
 	VS_OUTPUT output;
 	input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * Outline.Scale.x;
-	//output.Position = mul(input.Position, WVP);
-	input.Position = mul(input.Position, World);
-	output.Position = GetTubeCurvePos(input.Position);
+	output.Position = GetTubeCurvePos(mul(input.Position, World));
 	return output;
 }
+VS_OUTPUT VSOutlineInstancing(VS_INPUT input, uint instID : SV_InstanceID) {	// 法線方向に膨らませる
+	VS_OUTPUT output;
+	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * Outline.Scale.x;
+	output.Position = GetTubeCurvePos(mul(input.Position, mtxWorld));
+	return output;
+}
+float4 PSOutline(VS_OUTPUT input) : SV_Target{
+	return Outline.Color;
+}
+
 
 //=============================================================================
 // インスタンシング描画用
@@ -91,19 +98,26 @@ VS_OUTPUT VSInstancing(VS_INPUT input, uint instID : SV_InstanceID) {
 	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
 	output.WorldPos = mul(input.Position, mtxWorld);
 	output.Position = GetTubeCurvePos(output.WorldPos);
+	output.WorldPos.w = Instance.pos[instID].w;
 	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), mtxWorld));
 	output.TexCoord = input.TexCoord;
 	output.Diffuse = input.Diffuse * Instance.col[instID] * Material.Diffuse;
-	//output.Diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	return output;
+}
+// ポリゴン爆発
+IS_OUTPUT VSEX(VS_INPUT input, uint instID : SV_InstanceID) {
+	IS_OUTPUT output;
+	output.Position = input.Position;
+	output.WorldPos = input.Position;
+	output.Normal = input.Normal;
+	output.TexCoord = input.TexCoord;
+	output.Id = instID;
+	output.Diffuse = input.Diffuse * Instance.col[instID] * Material.Diffuse;
 	return output;
 }
 
 IS_OUTPUT VSInstancingTexture(VS_INPUT input, uint instID : SV_InstanceID) {
 	IS_OUTPUT output;
-	//matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
-	//output.WorldPos = mul(input.Position, mul(mtxWorld, VP));
-	//output.Position = GetTubeCurvePos(output.WorldPos);
-
 	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
 	output.Position = mul(input.Position, mul(mtxWorld, VP));
 	output.WorldPos = mul(input.Position, mtxWorld);
@@ -155,10 +169,6 @@ float4 PSInstancingOnlyTex(IS_OUTPUT input) : SV_Target{
 //=============================================================================
 // ピクセルシェーダ
 //=============================================================================
-// アウトライン用
-float4 PSOutline(VS_OUTPUT input) : SV_Target{
-	return Outline.Color;
-}
 
 // 光源別 ////////////////
 // 環境光
@@ -178,7 +188,26 @@ float4 PSAL(VS_OUTPUT input) : SV_Target {
 }
 
 // ラインライト
-float4 PSLL(VS_OUTPUT input) : SV_Target {
+float4 PSLL(IS_OUTPUT input) : SV_Target {
+
+	//int instID = input.Id;
+	//matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	//input.WorldPos = mul(input.Position, mtxWorld);
+	//input.Position = GetTubeCurvePos(input.WorldPos);
+	//input.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), mtxWorld));
+	//input.TexCoord = input.TexCoord;
+	//input.Diffuse = input.Diffuse * Instance.col[instID] * Material.Diffuse;
+
+	//matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	////input[i].Position.xyz = input[i].Position.xyz + normalize(input[i].Normal.xyz) * Instance.pos[instID].w;
+	//input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * 5.0f;
+	//input.WorldPos = mul(input.Position, mtxWorld);
+	//input.Position = GetTubeCurvePos(input.WorldPos);
+	//input.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), mtxWorld));
+
+	//input.TexCoord = input.TexCoord;
+	//NewVtx.Diffuse = input.Diffuse;
+	//input.Diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// テクスチャから色をサンプリング
 	float4 color = input.Diffuse * g_Texture.Sample(g_SamplerState, input.TexCoord);
@@ -216,6 +245,12 @@ float4 PSLL(VS_OUTPUT input) : SV_Target {
 	// 環境光の色を反映
 	float3 AmbientLightColor = AmbientLight.Color.rgb * AmbientLight.Intensity;
 	outDiffuse.rgb += AmbientLightColor * Material.Ambient.rgb * color.rgb;
+
+	// フォグ計算
+	float z = input.Position.z * input.Position.w;
+	float f = saturate((20000.0f - z) * 0.00005f);
+	outDiffuse = f * outDiffuse + (1 - f) * float4(0.8f, 0.9f, 1.0f, 1.0f);
+	outDiffuse.a = color.a;
 
 	return outDiffuse;
 }
@@ -727,7 +762,7 @@ void GSLLPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Outpu
 	//float3 lightDir = float3(World._41, World._42 - LL_POS, 0.0f);
 
 	float3 lightDirAVE = (lightDir[0] + lightDir[1] + lightDir[2]) / 3;
-	float3 normalDirAVE = (Input[0].Normal.xyz + Input[1].Normal.xyz + Input[2].Normal.xyz) / 3;
+	float3 normalDirAVE = (Input[0].Normal.xyz + Input[1].Normal.xyz + Input[2].Normal.xyz) * 0.33333f;
 	//float d = dot(-normalize(lightDirAVE), normalize(normalDirAVE));
 	//if (-Outline.Color.z < d && d <= 0.0f)	// 陰になる角度
 	if (dot(-lightDirAVE, normalDirAVE) <= 0.0f)	// 陰になる角度
@@ -807,7 +842,7 @@ void GSLLNonPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Ou
 	//float3 lightDirAVE = (lightDir[0] + lightDir[1] + lightDir[2]) / 3;
 
 	float3 lightDir = float3(World._41, World._42 - LL_POS, 0.0f);	// ワールド座標（モデルの中心）のx, yからライトの方向を作る
-	float3 normalDirAVE = (Input[0].Normal.xyz + Input[1].Normal.xyz + Input[2].Normal.xyz) / 3;
+	float3 normalDirAVE = (Input[0].Normal.xyz + Input[1].Normal.xyz + Input[2].Normal.xyz) * 0.33333f;
 	//float d = dot(-normalize(lightDir), normalize(normalDirAVE));
 	//if (-Outline.Color.z < d && d <= 0.0f)	// 陰になる角度
 	if (dot(-lightDir, normalDirAVE) <= 0.0f)	// 陰になる角度
@@ -872,4 +907,39 @@ void GSLLNonPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Ou
 			Output.RestartStrip();
 		}
 	}
+}
+
+// ポリゴン爆発
+[MaxVertexCount(3)]	// 3edge*1square(=2triangle)*3vertex
+void GSEX(triangle VS_OUTPUT input[3], inout TriangleStream<PS_INPUT> output)
+{
+	PS_INPUT NewVtx;
+
+	//int instID = input[0].Id;
+	//matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	float3 normalDirAVE = normalize((input[0].Normal.xyz + input[1].Normal.xyz + input[2].Normal.xyz) * 0.33333f);
+	float length = input[0].WorldPos.w;
+
+	// 新しい三角形
+	for (int i = 0; i < 3; i++)
+	{
+		//int instID = input[0].Id;
+		//matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+
+		//input[i].Position.xyz = input[i].Position.xyz + normalize(input[i].Normal.xyz) * Instance.pos[instID].w;
+		//input[i].Position.xyz = input[i].Position.xyz + normalize(input[i].Normal.xyz) * 5.0f;
+		//NewVtx.WorldPos = mul(input[i].Position, mtxWorld);
+		//NewVtx.Position = GetTubeCurvePos(NewVtx.WorldPos);
+
+		input[i].WorldPos.xyz = input[i].WorldPos.xyz + normalDirAVE * length;
+		NewVtx.WorldPos = input[i].WorldPos;
+		//NewVtx.WorldPos = float4(input[i].WorldPos.xyz, 0.0f);
+		NewVtx.Position = GetTubeCurvePos(float4(input[i].WorldPos.xyz, 1.0f));
+		NewVtx.Normal = input[i].Normal;
+		NewVtx.TexCoord = input[i].TexCoord;
+		NewVtx.Diffuse = input[i].Diffuse;
+		output.Append(NewVtx);
+	}
+
+	output.RestartStrip();
 }

@@ -126,9 +126,11 @@ static int						g_CurrentResourceLight = 0;
 // その他シェーダー
 static ID3D11VertexShader*		g_VS = NULL;
 static ID3D11VertexShader*		g_VSOutline = NULL;
+static ID3D11VertexShader*		g_VSOutlineInstancing = NULL;
 static ID3D11VertexShader*		g_VSTube = NULL;
 static ID3D11VertexShader*		g_VSGimmick = NULL;
 static ID3D11VertexShader*		g_VSPlayer = NULL;
+static ID3D11VertexShader*		g_VSEX = NULL;
 static ID3D11PixelShader*		g_PS = NULL;
 static ID3D11PixelShader*		g_PSOutline = NULL;
 static ID3D11PixelShader*		g_PSAL = NULL;
@@ -142,6 +144,7 @@ static ID3D11GeometryShader*	g_GSPL = NULL;
 static ID3D11GeometryShader*	g_GSSL = NULL;
 static ID3D11GeometryShader*	g_GSLLPlayer = NULL;
 static ID3D11GeometryShader*	g_GSLLNonPlayer = NULL;
+static ID3D11GeometryShader*	g_GSEX = NULL;
 
 // インプットレイアウト
 static ID3D11InputLayout*		g_VertexLayout = NULL;
@@ -168,7 +171,7 @@ static ID3D11Buffer*			g_ScreenVertexBuffer = NULL;
 static MATRIX					g_Matrix;
 static XMFLOAT4					g_LightVector;
 static XMFLOAT4					g_CameraPosition;
-static XMFLOAT4					g_BackGroundColor = { 0.5f, 0.5f, 0.5f, 1.0f };
+static XMFLOAT4					g_BackGroundColor = { 0.8f, 0.9f, 1.0f, 1.0f };
 //static XMFLOAT4					g_BackGroundColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 // デプスステンシル設定
@@ -237,9 +240,11 @@ void UninitRenderer(void)
 	// その他シェーダー
 	if (g_VS)					g_VS->Release();
 	if (g_VSOutline)			g_VSOutline->Release();
+	if (g_VSOutlineInstancing)	g_VSOutlineInstancing->Release();
 	if (g_VSTube)				g_VSTube->Release();
 	if (g_VSGimmick)			g_VSGimmick->Release();
 	if (g_VSPlayer)				g_VSPlayer->Release();
+	if (g_VSEX)					g_VSEX->Release();
 	if (g_PS)					g_PS->Release();
 	if (g_PSOutline)			g_PSOutline->Release();
 	if (g_PSAL)					g_PSAL->Release();
@@ -253,6 +258,7 @@ void UninitRenderer(void)
 	if (g_GSSL)					g_GSSL->Release();
 	if (g_GSLLPlayer)			g_GSLLPlayer->Release();
 	if (g_GSLLNonPlayer)		g_GSLLNonPlayer->Release();
+	if (g_GSEX)					g_GSEX->Release();
 
 	// 頂点レイアウト
 	if (g_VertexLayout)			g_VertexLayout->Release();
@@ -611,7 +617,9 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 		g_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &g_DepthStateEnable);//深度有効ステート
 
+		depthStencilDesc.DepthEnable = FALSE;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		//depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
 		g_D3DDevice->CreateDepthStencilState(&depthStencilDesc, &g_DepthStateDisable);//深度無効ステート
 
 		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
@@ -712,9 +720,11 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 		// その他の頂点シェーダコンパイル・生成
 		CreateShader("shader.hlsl", "VSOutline", &g_VSOutline, shFlag);
+		CreateShader("shader.hlsl", "VSOutlineInstancing", &g_VSOutlineInstancing, shFlag);
 		CreateShader("shader.hlsl", "VSTube", &g_VSTube, shFlag);
 		CreateShader("shader.hlsl", "VSGimmick", &g_VSGimmick, shFlag);
 		CreateShader("shader.hlsl", "VSPlayer", &g_VSPlayer, shFlag);
+		CreateShader("shader.hlsl", "VSEX", &g_VSEX, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VSFilter", &g_VSFilter, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VSNormalMap", &g_VSNormalMap, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VSDepthMap", &g_VSDepthMap, shFlag);
@@ -725,6 +735,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateShader("shader.hlsl", "GSSL", &g_GSSL, shFlag);
 		CreateShader("shader.hlsl", "GSLLPlayer", &g_GSLLPlayer, shFlag);
 		CreateShader("shader.hlsl", "GSLLNonPlayer", &g_GSLLNonPlayer, shFlag);
+		CreateShader("shader.hlsl", "GSEX", &g_GSEX, shFlag);
 
 		// ピクセルシェーダコンパイル・生成
 		CreateShader("shader.hlsl", "PSPolygon", &g_PS, shFlag);
@@ -953,8 +964,13 @@ void SetCurveBuffer(CURVE_BUFFER* curve) {
 // インスタンシング関連
 ID3D11Buffer* GetInstanceBuffer(void) { return g_InstanceBuffer; }
 void SetShaderInstanceingOnlyTex(void) {
+	//SetBlendState(BLEND_MODE_ALPHABLEND);
 	g_ImmediateContext->VSSetShader(g_VSInstancingTexture, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSInstancingOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, NULL);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
 }
 //void SetShaderInstanceingBillbooard(XMFLOAT4X4 mtxView) {
 //	XMMATRIX invView = XMMatrixIdentity();
@@ -1159,8 +1175,11 @@ void SetStencilReadLLGimmick(void)
 {
 	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
-	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	//g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	//g_ImmediateContext->VSSetShader(g_VSEX, NULL, 0);
+	g_ImmediateContext->GSSetShader(g_GSEX, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSLL, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	//g_ImmediateContext->OMSetDepthStencilState(g_StencilRead, NULL);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
@@ -1213,7 +1232,7 @@ void SetDrawOutline(float Scale, XMFLOAT4 Color)
 	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
 	SetCullingMode(CULL_MODE_FRONT);
-	g_ImmediateContext->VSSetShader(g_VSOutline, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VSOutlineInstancing, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOutline, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
@@ -1330,7 +1349,17 @@ void SetDrawLight(void)
 	g_ImmediateContext->VSSetShader(g_VSGimmick, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
-	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+}
+void SetDrawInstancingOnlyTex(void)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
@@ -1340,8 +1369,8 @@ void SetDraw2DTexture(void)
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
-	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
 }
 
 void ApplyLightToTarget(void)	// 加算合成する
@@ -1365,7 +1394,7 @@ void ApplyLightToTarget(void)	// 加算合成する
 	//g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	//g_ImmediateContext->PSSetShader(g_PSLight, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], NULL);
 
 	DrawScreen(&g_LightTexture[g_CurrentResourceLight]);
 
@@ -1374,7 +1403,7 @@ void ApplyLightToTarget(void)	// 加算合成する
 
 	SetBlendState(BLEND_MODE_ADD);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
 
 	DrawScreen(&g_LightTexture[g_CurrentResourceLight]);
 
@@ -1478,12 +1507,13 @@ void ApplyOldGame(void)
 }
 void DrawTarget(void)
 {
+	SetBlendState(BLEND_MODE_ALPHABLEND);
 	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VSFilter, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, NULL);
 
 	DrawScreen(&g_WrittenTexture[g_CurrentResource]);
 
@@ -1646,6 +1676,10 @@ void Clear(void)
 void ClearStencil(void)
 {
 	g_ImmediateContext->ClearDepthStencilView(g_DepthStencilView, D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+void ClearDepth(void)
+{
+	g_ImmediateContext->ClearDepthStencilView(g_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 void ClearWriteView(void)
 {

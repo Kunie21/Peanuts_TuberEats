@@ -19,10 +19,14 @@ enum GIMMICK_TYPE
 
 struct GIMMICK
 {
+	BOOL use = TRUE;
 	int rotPosNo = 0;
 	int zPosNo = 0;
 	float rotSizeHalf = XM_PIDIV4;
 	GIMMICK_TYPE type = GIMMICK_ICE;
+	float exPos = 0.0f;
+	float exSpd = 50.0f;
+	XMFLOAT4 col = { 1.0, 1.0, 1.0, 1.0 };
 };
 
 //*****************************************************************************
@@ -32,6 +36,7 @@ HRESULT InitGimmick(void);
 void UninitGimmick(void);
 void UpdateGimmick(void);
 void DrawGimmick(GIMMICK_TYPE gimmick);
-void DrawGimmickInstancing(GIMMICK_TYPE gimmick);
+void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline = FALSE);
 
 bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot);
+bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float newRot);

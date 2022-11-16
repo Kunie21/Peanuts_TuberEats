@@ -205,7 +205,7 @@ void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL*
 		//GetDeviceContext()->DrawIndexedInstanced(Model->SubsetArray[i].IndexNum, 1, Model->SubsetArray[i].StartIndex, 0, 0);
 	}
 }
-void DrawModelInstanced(DX11_MODEL *Model, int instanceCount)
+void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMaterial)
 {
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
@@ -221,7 +221,12 @@ void DrawModelInstanced(DX11_MODEL *Model, int instanceCount)
 	for (unsigned short i = 0; i < Model->SubsetNum; i++)
 	{
 		// マテリアル設定
-		SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
+		if (pMaterial) {
+			SetMaterialBuffer(pMaterial);
+		}
+		else {
+			SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
+		}
 
 		// テクスチャ設定
 		if (Model->SubsetArray[i].Material.Material.noTexSampling == 0)

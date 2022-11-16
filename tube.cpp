@@ -111,7 +111,7 @@ HRESULT InitTube(void)
 
 	// 直線パイプ
 	{
-		g_MeshTube.material.Diffuse = { 0.0f, 0.5f, 0.5f, 1.0f };
+		g_MeshTube.material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		// ポジション設定
 		g_MeshTube.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -154,9 +154,9 @@ HRESULT InitTube(void)
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshTube.indexBuffer);
 
 		{//頂点バッファの中身を埋める
-#if 0
-			const float texSizeX = 1.0f / g_nX;
-			const float texSizeZ = 1.0f / g_nZ;
+#if 1
+			const float texSizeX = 1.0f / g_MeshTube.nX;
+			const float texSizeZ = 1.0f / g_MeshTube.nZ;
 #else
 			const float texSizeX = 1.0f;
 			const float texSizeZ = 1.0f;
@@ -283,9 +283,9 @@ HRESULT InitTube(void)
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshLight.indexBuffer);
 
 		{//頂点バッファの中身を埋める
-#if 0
-			const float texSizeX = 1.0f / g_nX;
-			const float texSizeZ = 1.0f / g_nZ;
+#if 1
+			const float texSizeX = 1.0f / g_MeshLight.nX;
+			const float texSizeZ = 1.0f / g_MeshLight.nZ;
 #else
 			const float texSizeX = 1.0f;
 			const float texSizeZ = 1.0f;
