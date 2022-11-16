@@ -151,11 +151,6 @@ void DrawGame(void)
 
 	//SetDrawNoLighting();
 	//DrawPlayer();
-<<<<<<< HEAD
-	
-	{
-		// ���h�肷��
-=======
 
 	//DrawGameUI();
 	//DrawTexture2DAll(TRUE);
@@ -179,7 +174,6 @@ void DrawGame(void)
 		//DrawMissile(MISSILE_TYPE_02);
 
 		// �����ŉ��h�肷�� 3000
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 		{
 			//SetStencilNoneAL(SHADER_TUBE);
 			//DrawTube();	// 800
@@ -197,24 +191,6 @@ void DrawGame(void)
 			//DrawPlayer();
 		}
 
-<<<<<<< HEAD
-		// ���Z�������[�h�ɂ���
-		SetBlendState(BLEND_MODE_ADD);
-
-		{
-			// �e�ɂȂ镔���̃X�e���V����쐬
-			//SetStencilWriteLL(SHADER_TUBE);
-			//DrawTube();
-			SetStencilWriteLL(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
-			//SetStencilWritePL();
-			SetStencilWriteLL(SHADER_PLAYER);
-			DrawPlayer();
-
-			// �X�e���V���e�X�g��g���ĉe�ȊO�̕�������Z�����ŕ`��
-
-			// ���C�����C�g
-=======
 		// ���Z�������[�h�ɂ���
 		//SetBlendState(BLEND_MODE_ADD);
 
@@ -236,7 +212,6 @@ void DrawGame(void)
 #endif
 			// �X�e���V���e�X�g��g���ĉe�ȊO�̕�������Z�����ŕ`��
 			// ���C�����C�g�̌� 3000 �� 5000
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
 			DrawDoor();
@@ -248,27 +223,6 @@ void DrawGame(void)
 			SetStencilReadLL(SHADER_PLAYER);
 			DrawPlayer();
 
-<<<<<<< HEAD
-			// �X�e���V���������
-			ClearStencil();
-
-			// ����
-			SetStencilNoneAL(SHADER_TUBE);
-			DrawTube();
-			SetStencilNoneAL(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
-			SetStencilNoneAL(SHADER_PLAYER);
-			DrawPlayer();
-
-			//SetDrawTube();
-			//DrawTube();
-
-			//SetDrawGimmick();
-
-			//SetDrawPlayer();
-			//DrawPlayer();
-
-=======
 #ifdef _DEBUG
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
 #endif
@@ -279,7 +233,6 @@ void DrawGame(void)
 			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
 #endif
 			// �����̕`�� 3000
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 			{
 				//SetDrawTubeLight();
 
@@ -307,13 +260,8 @@ void DrawGame(void)
 
 		}
 
-<<<<<<< HEAD
-		// ���Z�������[�h��I������
-		SetBlendState(BLEND_MODE_ALPHABLEND);
-=======
 		// ���Z�������[�h��I������
 		//SetBlendState(BLEND_MODE_ALPHABLEND);
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 	}
 
 	//ApplyFilter(FILTER_MODE_LAPLACIAN);
@@ -329,14 +277,9 @@ void DrawGame(void)
 	//	FILTER_MODE_SOBEL_X,		// �\�[�x���t�B���^��
 	//	FILTER_MODE_SOBEL_Y,		// �\�[�x���t�B���^�c
 
-<<<<<<< HEAD
-	// �o�b�N�o�b�t�@��^�[�Q�b�g�ɂ��ĕ`��
-	DrawTarget();
-=======
 	//// UI�`�� 15000 �� 150�i�C���X�^���V���O�g�p�j
 	//SetDraw2DTexture();
 	//DrawGameUI();
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 
 	//// �o�b�N�o�b�t�@��^�[�Q�b�g�ɂ��ĕ`�� 1000
 	//DrawTarget();

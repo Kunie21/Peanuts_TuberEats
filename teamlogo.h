@@ -21,5 +21,4 @@ HRESULT InitTeamLogo(void);
 void UninitTeamLogo(void);
 void UpdateTeamLogo(void);
 void DrawTeamLogo(void);
-
-
+#pragma once

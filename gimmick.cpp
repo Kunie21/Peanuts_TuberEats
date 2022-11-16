@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒMƒ~ƒbƒNˆ— [gimmick.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½Mï¿½~ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ [gimmick.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -18,7 +18,7 @@
 #include "stage.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
 //#define MODEL_MAX		(1)
 #define ICE_NUM		(50)
@@ -28,7 +28,7 @@
 #define EX_ACCEL		(0.98f)
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static int			g_Time = 0;
 static BOOL			g_Load = FALSE;
@@ -36,13 +36,13 @@ static BOOL			g_Load = FALSE;
 static GIMMICK		g_GmIce[ICE_NUM];
 static GIMMICK		g_GmRing[RING_NUM];
 
-static DX11_MODEL	g_Model[GIMMICK_MAX];	// ƒvƒŒƒCƒ„[‚Ìƒ‚ƒfƒ‹ŠÇ—
+static DX11_MODEL	g_Model[GIMMICK_MAX];	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Ç—ï¿½
 
 
 static float		g_Rotation = 0.0f;
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitGimmick(void)
 {
@@ -66,7 +66,7 @@ HRESULT InitGimmick(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitGimmick(void)
 {
@@ -81,17 +81,17 @@ void UninitGimmick(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateGimmick(void)
 {
 
-#ifdef _DEBUG	// ƒfƒoƒbƒOî•ñ‚ğ•\¦‚·‚é
+#ifdef _DEBUG	// ï¿½fï¿½oï¿½bï¿½Oï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #endif
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawGimmick(GIMMICK_TYPE gimmick)
 {
@@ -108,37 +108,37 @@ void DrawGimmick(GIMMICK_TYPE gimmick)
 			continue;
 		
 		rot = XM_2PI * (float)pStage->arrGmk[i].rotPosNo / (float)MESH_NUM_X + GetTubeRotation() + XM_PIDIV2;
-		mtxWorld = XMMatrixIdentity();	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+		mtxWorld = XMMatrixIdentity();	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
 
 		MATERIAL material;
 		switch (gimmick)
 		{
 		case GIMMICK_ICE:
-			//MulMtxScl(mtxWorld, 4.0f, 1.8f, 4.0f);				// ƒXƒP[ƒ‹‚ğ”½‰f
-			//MulMtxRot(mtxWorld, 0.0f, -XM_PIDIV4 + 0.3f, 0.0f);	// ‰ñ“]‚ğ”½‰fF‘S‘Ì‚ÌŠp“x
-			//MulMtxPos(mtxWorld, 0.0f, 80.0f, 0.0f);				// ˆÚ“®‚ğ”½‰f
-			//MulMtxRot(mtxWorld, 0.0f, 0.0f, rot + XM_PIDIV2);	// ‰ñ“]‚ğ”½‰fFŒÂX‚ÌŠp“x
-			//MulMtxPos(mtxWorld, TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos);	// ˆÚ“®‚ğ”½‰f
-			MulMtxScl(mtxWorld, 4.0f, 1.8f, 4.0f);				// ƒXƒP[ƒ‹‚ğ”½‰f
-			MulMtxRot(mtxWorld, 0.0f, -XM_PIDIV4 + 0.3f, rot + XM_PIDIV2);	// ‰ñ“]‚ğ”½‰fF‘S‘Ì‚ÌŠp“x
-			MulMtxPos(mtxWorld, (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos);				// ˆÚ“®‚ğ”½‰f
+			//MulMtxScl(mtxWorld, 4.0f, 1.8f, 4.0f);				// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ”½‰f
+			//MulMtxRot(mtxWorld, 0.0f, -XM_PIDIV4 + 0.3f, 0.0f);	// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½Sï¿½Ì‚ÌŠpï¿½x
+			//MulMtxPos(mtxWorld, 0.0f, 80.0f, 0.0f);				// ï¿½Ú“ï¿½ï¿½ğ”½‰f
+			//MulMtxRot(mtxWorld, 0.0f, 0.0f, rot + XM_PIDIV2);	// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½ÂXï¿½ÌŠpï¿½x
+			//MulMtxPos(mtxWorld, TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos);	// ï¿½Ú“ï¿½ï¿½ğ”½‰f
+			MulMtxScl(mtxWorld, 4.0f, 1.8f, 4.0f);				// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ”½‰f
+			MulMtxRot(mtxWorld, 0.0f, -XM_PIDIV4 + 0.3f, rot + XM_PIDIV2);	// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½Sï¿½Ì‚ÌŠpï¿½x
+			MulMtxPos(mtxWorld, (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos);				// ï¿½Ú“ï¿½ï¿½ğ”½‰f
 			break;
 
 		case GIMMICK_RING:
 			material.Diffuse = { 2.0f, 2.0f, 0.0f, 2.0f };
-			MulMtxScl(mtxWorld, 1.0f, 1.0f, 1.0f);				// ƒXƒP[ƒ‹‚ğ”½‰f
-			MulMtxRot(mtxWorld, XM_PIDIV2, 0.0f, 0.0f);			// ‰ñ“]‚ğ”½‰fF‘S‘Ì‚ÌŠp“x
-			MulMtxPos(mtxWorld, 0.0f, 50.0f, 0.0f);				// ˆÚ“®‚ğ”½‰f
-			MulMtxRot(mtxWorld, 0.0f, 0.0f, rot + XM_PIDIV2);	// ‰ñ“]‚ğ”½‰fFŒÂX‚ÌŠp“x
-			MulMtxPos(mtxWorld, TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos);	// ˆÚ“®‚ğ”½‰f
+			MulMtxScl(mtxWorld, 1.0f, 1.0f, 1.0f);				// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ”½‰f
+			MulMtxRot(mtxWorld, XM_PIDIV2, 0.0f, 0.0f);			// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½Sï¿½Ì‚ÌŠpï¿½x
+			MulMtxPos(mtxWorld, 0.0f, 50.0f, 0.0f);				// ï¿½Ú“ï¿½ï¿½ğ”½‰f
+			MulMtxRot(mtxWorld, 0.0f, 0.0f, rot + XM_PIDIV2);	// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½ÂXï¿½ÌŠpï¿½x
+			MulMtxPos(mtxWorld, TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos);	// ï¿½Ú“ï¿½ï¿½ğ”½‰f
 			break;
 		}
-		DrawModel(&g_Model[pStage->arrGmk[i].type], &mtxWorld, NULL, &material);	// ƒ‚ƒfƒ‹•`‰æ
+		DrawModel(&g_Model[pStage->arrGmk[i].type], &mtxWorld, NULL, &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
 	}
 }
 void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 {
-	// ƒCƒ“ƒXƒ^ƒ“ƒXî•ñ‚ğ“o˜^
+	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½oï¿½^
 	D3D11_MAPPED_SUBRESOURCE msr;
 	GetDeviceContext()->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	INSTANCE* b_pInstance = (INSTANCE*)msr.pData;
@@ -185,14 +185,14 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 			b_pInstance->col[instCount] = { 2.0f, 2.0f, 0.0f, 2.0f };
 			break;
 		}
-		// ƒCƒ“ƒXƒ^ƒ“ƒX”‚ğXV
+		// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½Xï¿½V
 		instCount++;
 	}
 	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
 
-	SetWorldBuffer(&XMMatrixIdentity());	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	SetWorldBuffer(&XMMatrixIdentity());	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìİ’ï¿½
 	static MATERIAL material;
-	DrawModelInstanced(&g_Model[gimmick], instCount, &material);	// ƒ‚ƒfƒ‹•`‰æ
+	DrawModelInstanced(&g_Model[gimmick], instCount, &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
 }
 
 bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot)

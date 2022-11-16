@@ -19,8 +19,6 @@
 
 //#define TEXTURE_WIDTH_LOGO			(1154)			// ���S�T�C�Y��
 //#define TEXTURE_HEIGHT_LOGO			(693)			// ���S�T�C�Y�c
-#define TEXTURE_WIDTH_LOGO			(984)			// ���S�T�C�Y��
-#define TEXTURE_HEIGHT_LOGO			(590)			// ���S�T�C�Y�c
 
 #define TEAMLOGO_TIME				(100)			// ���S�\������
 
@@ -34,19 +32,14 @@ static BOOL				g_Load = FALSE;
 enum
 {
 	TEXTURE_BG = 0,
-	TEXTURE_TEAMLOGO,
-	TEXTURE_STAR,
+	//TEXTURE_TEAMLOGO,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// �e�N�X�`�����
 static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/white.png",
-	"data/TEXTURE/peanuts_logo_color.png",
-	"data/MODEL/star1.jpg",
-	//"data/TEXTURE/peanuts_logo_white.png",
-	//"data/TEXTURE/peanuts_bg_1.png",
-	//"data/TEXTURE/peanuts.png",
+	//"data/TEXTURE/white.png",
+	"data/TEXTURE/peanuts_bg_1.png",
 };
 
 
@@ -72,22 +65,7 @@ HRESULT InitTeamLogo(void)
 
 	// �ڍאݒ�
 	g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//g_td[TEXTURE_BG].col = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	g_td[TEXTURE_TEAMLOGO].size = { TEXTURE_WIDTH_LOGO, TEXTURE_HEIGHT_LOGO };
-	g_td[TEXTURE_TEAMLOGO].scl = { 0.5f, 0.5f };
-	//g_td[TEXTURE_TEAMLOGO].scl = { 1.0f, 1.0f };
-
-	LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_STAR].model);
-	//LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_EARTH].model);
-	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
-	LoadModel("data/MODEL/rocket01.obj", &g_Model[MODEL_ROCKET].model);
-
-	g_Model[MODEL_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_EARTH].srt.pos = { 25.0f, 0.0f, 100.0f };
-	g_Model[MODEL_STAR].srt.scl = { 20.3f, 20.3f, 20.3f };
-	g_Model[MODEL_EARTH].srt.scl = { 0.3f, 0.3f, 0.3f };
-	g_Model[MODEL_ROCKET].srt.scl = { 0.01f, 0.01f, 0.01f };
 
 	g_Time = 0;
 
@@ -119,8 +97,7 @@ void UninitTeamLogo(void)
 //=============================================================================
 void UpdateTeamLogo(void)
 {
-	g_Model[MODEL_EARTH].srt.rot.y -= 0.01f;
-	//if (g_Time++ > TEAMLOGO_TIME) { g_Time = 0; SetFade(FADE_OUT, MODE_GAME); }
+	if (g_Time++ > TEAMLOGO_TIME) { g_Time = 0; SetFade(FADE_OUT, MODE_GAME); }
 }
 
 //=============================================================================
@@ -130,49 +107,48 @@ void DrawTeamLogo(void)
 {
 	SetDraw2DTexture();
 	DrawTexture2D(&g_td[TEXTURE_BG]);
-	DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
 
 	SetDrawNoLighting();
 
 	SetCullingMode(CULL_MODE_NONE);
 
-	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
+	//XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
 
-	for (int testNo = 0; testNo < MODEL_MAX; testNo++)
-	{
-		// ���[���h�}�g���b�N�X�̏�����
-		mtxWorld = XMMatrixIdentity();
+	//for (int testNo = 0; testNo < MODEL_MAX; testNo++)
+	//{
+	//	// ���[���h�}�g���b�N�X�̏�����
+	//	mtxWorld = XMMatrixIdentity();
 
-		// �X�P�[���𔽉f
-		mtxScl = XMMatrixScaling(g_Model[testNo].srt.scl.x, g_Model[testNo].srt.scl.y, g_Model[testNo].srt.scl.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
+	//	// �X�P�[���𔽉f
+	//	mtxScl = XMMatrixScaling(g_Model[testNo].srt.scl.x, g_Model[testNo].srt.scl.y, g_Model[testNo].srt.scl.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-		// ��]�𔽉f�F�S�̂̊p�x
-		mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].srt.rot.x, g_Model[testNo].srt.rot.y, g_Model[testNo].srt.rot.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
+	//	// ��]�𔽉f�F�S�̂̊p�x	
+	//	mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].srt.rot.x, g_Model[testNo].srt.rot.y, g_Model[testNo].srt.rot.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
-		// �ړ��𔽉f
-		mtxTranslate = XMMatrixTranslation(g_Model[testNo].srt.pos.x, g_Model[testNo].srt.pos.y, g_Model[testNo].srt.pos.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+	//	// �ړ��𔽉f
+	//	mtxTranslate = XMMatrixTranslation(g_Model[testNo].srt.pos.x, g_Model[testNo].srt.pos.y, g_Model[testNo].srt.pos.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
-		// ���[���h�}�g���b�N�X�̐ݒ�
-		SetWorldBuffer(&mtxWorld);
+	//	// ���[���h�}�g���b�N�X�̐ݒ�
+	//	SetWorldBuffer(&mtxWorld);
 
-		// �}�e���A���ݒ�
-		MATERIAL material;
-		ZeroMemory(&material, sizeof(material));
-		material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//	// �}�e���A���ݒ�
+	//	MATERIAL material;
+	//	ZeroMemory(&material, sizeof(material));
+	//	material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		// ���f���`��
-		if (testNo != MODEL_STAR)
-		{
-			DrawModel(&g_Model[testNo].model, NULL, &material);
-		}
-		else
-		{
-			DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
-		}
-	}
+	//	// ���f���`��
+	//	if (testNo != MODEL_STAR)
+	//	{
+	//		DrawModel(&g_Model[testNo].model, NULL, &material);
+	//	}
+	//	else
+	//	{
+	//		DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
+	//	}
+	//}
 
 	SetCullingMode(CULL_MODE_BACK);
 }

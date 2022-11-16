@@ -16,15 +16,6 @@
     <ClCompile Include="fade.cpp">
       <Filter>system</Filter>
     </ClCompile>
-    <ClCompile Include="teamlogo.cpp">
-      <Filter>opening</Filter>
-    </ClCompile>
-    <ClCompile Include="title.cpp">
-      <Filter>title</Filter>
-    </ClCompile>
-    <ClCompile Include="start.cpp">
-      <Filter>start</Filter>
-    </ClCompile>
     <ClCompile Include="file.cpp">
       <Filter>system</Filter>
     </ClCompile>
@@ -33,9 +24,6 @@
     </ClCompile>
     <ClCompile Include="result.cpp">
       <Filter>result</Filter>
-    </ClCompile>
-    <ClCompile Include="stage_select.cpp">
-      <Filter>stage_select</Filter>
     </ClCompile>
     <ClCompile Include="home.cpp">
       <Filter>home</Filter>
@@ -85,6 +73,21 @@
     <ClCompile Include="anim_start.cpp">
       <Filter>game</Filter>
     </ClCompile>
+    <ClCompile Include="countDown.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="teamlogo.cpp">
+      <Filter>opening</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_select.cpp">
+      <Filter>stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="start.cpp">
+      <Filter>start</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -103,15 +106,6 @@
     <ClInclude Include="fade.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="teamlogo.h">
-      <Filter>opening</Filter>
-    </ClInclude>
-    <ClInclude Include="title.h">
-      <Filter>title</Filter>
-    </ClInclude>
-    <ClInclude Include="start.h">
-      <Filter>start</Filter>
-    </ClInclude>
     <ClInclude Include="file.h">
       <Filter>system</Filter>
     </ClInclude>
@@ -120,9 +114,6 @@
     </ClInclude>
     <ClInclude Include="result.h">
       <Filter>result</Filter>
-    </ClInclude>
-    <ClInclude Include="stage_select.h">
-      <Filter>stage_select</Filter>
     </ClInclude>
     <ClInclude Include="home.h">
       <Filter>home</Filter>
@@ -171,6 +162,21 @@
     </ClInclude>
     <ClInclude Include="anim_start.h">
       <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="countDown.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="teamlogo.h">
+      <Filter>opening</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select.h">
+      <Filter>stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="start.h">
+      <Filter>start</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -24,18 +24,21 @@
 #include "load.h"
 
 // title
+#include "title.h"
 
 // start
-
+#include "start.h"
 // home
 
 // stage_select
+#include "stage_select.h"
 
 // game
 #include "game.h"
 
 // result
 #include "result.h"
+
 
 
 //*****************************************************************************
@@ -67,7 +70,7 @@ int		g_CountFPS;							// FPS�J�E���^
 char	g_DebugStr[2048] = WINDOW_NAME;		// �f�o�b�O�����\���p
 #endif
 
-MODE_LABEL	g_Mode = MODE_GAME;	// �N�����̉�ʂ�ݒ�
+MODE_LABEL	g_Mode = MODE_TITLE;	// �N�����̉�ʂ�ݒ�
 
 //=============================================================================
 // ���C���֐�
@@ -226,12 +229,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		}
 	}
 
-<<<<<<< HEAD
-	// ����\��߂�
-=======
 
 	// ����\��߂�
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 	timeEndPeriod(1);
 
 	// �E�B���h�E�N���X�̓o�^����
@@ -293,12 +292,15 @@ void Update(void)
 	case MODE_LOADING:
 		break;
 	case MODE_TITLE:
+		UpdateTitle();
 		break;
 	case MODE_START:
+		UpdateStart();
 		break;
 	case MODE_HOME:
 		break;
 	case MODE_STAGESELECT:
+		UpdateStageSelect();
 		break;
 	case MODE_GAME:
 		UpdateGame();
@@ -334,12 +336,15 @@ void Draw(void)
 	case MODE_LOADING:
 		break;
 	case MODE_TITLE:
+		DrawTitle();
 		break;
 	case MODE_START:
+		DrawStart();
 		break;
 	case MODE_HOME:
 		break;
 	case MODE_STAGESELECT:
+		DrawStageSelect();
 		break;
 	case MODE_GAME:
 		DrawGame();
@@ -353,23 +358,13 @@ void Draw(void)
 		break;
 	}
 
-<<<<<<< HEAD
-	DrawFade();	// �t�F�[�h�`��
-=======
 	DrawTarget();	// �o�b�N�o�b�t�@��^�[�Q�b�g�ɂ��č��`�悳��Ă����̂�`��
 
 	DrawFade();	// �t�F�[�h�`��
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 
 	DrawTexture2DAll();	// 2D�̉摜��܂Ƃ߂ĕ`��
 
 #ifdef _DEBUG
-<<<<<<< HEAD
-	DrawDebugProc();	// �f�o�b�O�\��
-#endif
-
-	Present();	// �o�b�N�o�b�t�@�A�t�����g�o�b�t�@����ւ�
-=======
 	static LARGE_INTEGER s, e;
 	static int oldTime, nowTime;
 	nowTime++;
@@ -384,7 +379,6 @@ void Draw(void)
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&e); oldTime = nowTime; }
 #endif
 
->>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 }
 
 //=============================================================================
@@ -406,12 +400,15 @@ void SetMode(MODE_LABEL mode)
 	case MODE_LOADING:
 		break;
 	case MODE_TITLE:
+		InitTitle();
 		break;
 	case MODE_START:
+		InitStart();
 		break;
 	case MODE_HOME:
 		break;
 	case MODE_STAGESELECT:
+		InitStageSelect();
 		break;
 	case MODE_GAME:
 		InitGame();

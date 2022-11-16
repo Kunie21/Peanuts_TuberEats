@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="anim_start.h" />
+    <ClInclude Include="countDown.h" />
     <ClInclude Include="door.h" />
     <ClInclude Include="gimmick.h" />
     <ClInclude Include="home.h" />
@@ -145,6 +146,7 @@
     <ClInclude Include="stage.h" />
     <ClInclude Include="stage_select.h" />
     <ClInclude Include="start.h" />
+    <ClInclude Include="teamlogo.h" />
     <ClInclude Include="texture2d.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
@@ -157,7 +159,6 @@
     <ClInclude Include="load.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="teamlogo.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tube.h" />
     <ClInclude Include="model.h" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="anim_start.cpp" />
+    <ClCompile Include="countDown.cpp" />
     <ClCompile Include="door.cpp" />
     <ClCompile Include="gimmick.cpp" />
     <ClCompile Include="home.cpp" />
@@ -176,6 +178,7 @@
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="stage_select.cpp" />
     <ClCompile Include="start.cpp" />
+    <ClCompile Include="teamlogo.cpp" />
     <ClCompile Include="texture2d.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
@@ -187,7 +190,6 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="load.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="teamlogo.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tube.cpp" />
     <ClCompile Include="model.cpp" />
