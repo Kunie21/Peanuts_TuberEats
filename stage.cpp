@@ -46,8 +46,8 @@ HRESULT InitStage(void)
 	for (int i = 0; i < GIMMICK_OSAKA; i++)
 	{
 		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;	// 角度番号
-		if (g_Gmk_Osaka[i].rotPosNo%MESH_NUM_X == 0) g_Gmk_Osaka[i].rotPosNo++;
-		g_Gmk_Osaka[i].zPosNo = i * 20;			// 位置番号
+		if (g_Gmk_Osaka[i].rotPosNo % MESH_NUM_X == 0) g_Gmk_Osaka[i].rotPosNo++;	// ライトとかぶるとき
+		g_Gmk_Osaka[i].zPosNo = i * 20 + 20;			// 位置番号
 		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 2);	// ギミック番号
 	}
 

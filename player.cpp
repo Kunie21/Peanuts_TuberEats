@@ -62,7 +62,7 @@ class ROCKET
 {
 private:
 	float m_pos = 0;
-	float m_posSpd = DEFAULT_SPEED;
+	float m_posSpd = 0.0f; // DEFAULT_SPEED;
 	float m_addSpd = 0.0f;
 
 	float m_rot = 0.0f;
@@ -153,7 +153,7 @@ HRESULT InitPlayer(void)
 		LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
 		LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
 		for (int i = 0; i < MODEL_MAX; i++) {
-			g_Model[i].srt.pos = { 0.0f, -60.0f, 0.0f };
+			g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
 			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
 			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
 		}
@@ -215,8 +215,8 @@ void UpdatePlayer(void)
 	g_Model[testNo].srt.rot.z = g_Rocket.Drive();
 
 	// ミサイル
-	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_ICE); }
-	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_RING); }
+	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_01); }
+	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_02); }
 
 	// コリジョン
 	if (g_Rocket.AbleToCollision()){

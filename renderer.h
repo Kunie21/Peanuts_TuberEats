@@ -244,6 +244,7 @@ void SetDrawGimmick(void);
 void SetDrawPlayer(void);
 void SetDrawTubeLight(void);
 void SetDrawFire(void);
+void SetDrawMissileFire(void);
 void SetDraw2DTexture(void);
 //void SetDrawPreOutline(void);
 //void SetDrawPostOutline(void);
@@ -283,7 +284,7 @@ void CreateShader(const char* pFileName, const char* pEntryPoint, ID3D11PixelSha
 void CreateShader(const char* pFileName, const char* pEntryPoint, ID3D11GeometryShader** pGS, DWORD shFlag);
 
 ID3D11Buffer* GetInstanceBuffer(void);
-void SetShaderInstanceingOnlyTex(void);
+void SetShaderInstanceingOnlyTex(BOOL bInterrupt = FALSE);
 //void SetShaderInstanceingBillboard(XMFLOAT4X4 mtxView);
 void SetShaderDefault(void);
 

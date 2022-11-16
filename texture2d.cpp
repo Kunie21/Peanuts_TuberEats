@@ -7,6 +7,7 @@
 #include "main.h"
 #include "renderer.h"
 #include "texture2d.h"
+#include "camera.h"
 
 //*****************************************************************************
 // グローバル変数
@@ -278,7 +279,7 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 }
 
 
-void DrawTexture2DAll(void)
+void DrawTexture2DAll(BOOL bInterrupt)
 {
 	// インスタンス情報を登録
 	D3D11_MAPPED_SUBRESOURCE msr;
@@ -303,13 +304,16 @@ void DrawTexture2DAll(void)
 	SetWorldBuffer(&XMMatrixIdentity());
 
 	// インスタンシング描画設定
-	SetShaderInstanceingOnlyTex();
+	SetShaderInstanceingOnlyTex(bInterrupt);
 	
 	// インスタンシング描画
 	GetDeviceContext()->DrawInstanced(4, g_InstenceCount, 0, 0);
 
 	// インスタンス数を更新
 	g_InstenceCount = 0;
+
+	// ビュー・プロジェクションマトリクスを元に戻す
+	SetCamera();
 }
 
 

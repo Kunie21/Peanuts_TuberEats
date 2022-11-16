@@ -1,7 +1,7 @@
-newmtl rocket05_lambert3SG
+newmtl missile02_lambert3SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd rocket05.png
+map_Kd missile02.png
 Ni 1.00

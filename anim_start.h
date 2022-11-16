@@ -1,24 +1,17 @@
 //=============================================================================
 //
-// プレイヤー処理 [player.h]
+// スタートアニメーション処理 [anim_start.h]
 // Author : 國江 翔太
 //
 //=============================================================================
 #pragma once
 
-#define ROCKET_Y		(-60.0f)	// ロケットの高さ
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitPlayer(void);
-void UninitPlayer(void);
-void UpdatePlayer(void);
-void DrawPlayer(void);
-void DrawFire(void);
+HRESULT InitAnimStart(void);
+void UninitAnimStart(void);
+void UpdateAnimStart(void);
+void DrawAnimStart(void);
 
-float GetPlayerSpeed(void);
-float GetPlayerPosition(void);
-float GetPlayerRotation(void);
-void SetPlayerThroughRing(void);
-void SetPlayerCollisionIce(void);
-
+void SetCameraAnimStart(void);

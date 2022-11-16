@@ -963,14 +963,14 @@ void SetCurveBuffer(CURVE_BUFFER* curve) {
 
 // インスタンシング関連
 ID3D11Buffer* GetInstanceBuffer(void) { return g_InstanceBuffer; }
-void SetShaderInstanceingOnlyTex(void) {
+void SetShaderInstanceingOnlyTex(BOOL bInterrupt) {
 	//SetBlendState(BLEND_MODE_ALPHABLEND);
 	g_ImmediateContext->VSSetShader(g_VSInstancingTexture, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSInstancingOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, NULL);
-	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
+	if(bInterrupt) g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
+	else g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, NULL);
 }
 //void SetShaderInstanceingBillbooard(XMFLOAT4X4 mtxView) {
 //	XMMATRIX invView = XMMatrixIdentity();
@@ -1341,6 +1341,15 @@ void SetDrawFire(void)
 	//g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+}
+void SetDrawMissileFire(void)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
 void SetDrawLight(void)

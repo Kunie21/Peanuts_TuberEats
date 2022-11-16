@@ -11,8 +11,9 @@
 //*****************************************************************************
 enum MISSILE_TYPE
 {
-	MISSILE_TYPE_ICE = 0,
-	MISSILE_TYPE_RING,
+	MISSILE_TYPE_01 = 0,
+	MISSILE_TYPE_02,
+	MISSILE_TYPE_FIRE,
 
 	MISSILE_TYPE_MAX
 };
@@ -31,7 +32,7 @@ struct MISSILE
 	float	zAcl = 5.0f;
 
 	float	colSizeHalf = XM_PIDIV4;
-	MISSILE_TYPE	type = MISSILE_TYPE_ICE;
+	MISSILE_TYPE	type = MISSILE_TYPE_01;
 };
 
 //*****************************************************************************
@@ -41,4 +42,5 @@ HRESULT InitMissile(void);
 void UninitMissile(void);
 void UpdateMissile(void);
 void DrawMissile(MISSILE_TYPE gimmick);
+void DrawMissileFire(void);
 BOOL LaunchMissile(MISSILE_TYPE type, float zPos, float zSpd, float zRot, float zRotSpd);

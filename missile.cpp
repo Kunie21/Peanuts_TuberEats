@@ -21,8 +21,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-//#define MODEL_MAX		(1)
-#define MISSILE_NUM		(50)
+#define MISSILE_NUM			(50)
+#define MISSILE_SCL			(2.0f)
+#define MISSILE_FIRE_SCL	(0.1f)
 
 //*****************************************************************************
 // グローバル変数
@@ -42,9 +43,9 @@ static float		g_Rotation = 0.0f;
 //=============================================================================
 HRESULT InitMissile(void)
 {
-	LoadModel("data/MODEL/ice_1.obj", &g_Model[MISSILE_TYPE_ICE]);
-	//LoadModel("data/MODEL/rocket01.obj", &g_Model[MISSILE_TYPE_RING]);
-	LoadModel("data/MODEL/ring_1.obj", &g_Model[MISSILE_TYPE_RING]);
+	LoadModel("data/MODEL/missile01.obj", &g_Model[MISSILE_TYPE_01]);
+	LoadModel("data/MODEL/missile02.obj", &g_Model[MISSILE_TYPE_02]);
+	LoadModel("data/MODEL/fire01.obj", &g_Model[MISSILE_TYPE_FIRE]);
 
 	g_Load = TRUE;
 	return S_OK;
@@ -113,22 +114,11 @@ void DrawMissile(MISSILE_TYPE gimmick)
 		zPos = g_Ms[i].zPos;
 		rot = g_Ms[i].zRot + GetTubeRotation() + XM_PIDIV2;
 
-		switch (gimmick)
-		{
-		case MISSILE_TYPE_ICE:
-			b_pInstance->scl[instCount] = { 0.5f, 0.5f, 0.5f, 0.0f };
-			b_pInstance->rot[instCount] = { -XM_PIDIV2, 0.0f, rot + XM_PIDIV2, 0.0f };
-			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 120.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 120.0f) * 0.8f * sinf(rot), zPos, 0.0f };
-			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
-			break;
-
-		case MISSILE_TYPE_RING:
-			b_pInstance->scl[instCount] = { 0.1f, 0.1f, 0.1f, 0.0f };
-			b_pInstance->rot[instCount] = { XM_PIDIV2, XM_PI, rot + XM_PIDIV2, 0.0f };
-			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 120.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 120.0f) * 0.8f * sinf(rot), zPos, 0.0f };
-			b_pInstance->col[instCount] = { 0.0f, 0.0f, 1.0f, 1.0f };
-			break;
-		}
+		b_pInstance->scl[instCount] = { MISSILE_SCL, MISSILE_SCL, MISSILE_SCL, 0.0f };
+		b_pInstance->rot[instCount] = { 0.0f, XM_PIDIV2, rot, 0.0f };
+		b_pInstance->pos[instCount] = { (TUBE_RADIUS - 120.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 120.0f) * 0.8f * sinf(rot), zPos, 0.0f };
+		b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		
 		instCount++;	// インスタンス数を更新
 	}
 	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
@@ -136,6 +126,35 @@ void DrawMissile(MISSILE_TYPE gimmick)
 	SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
 	static MATERIAL material;
 	DrawModelInstanced(&g_Model[gimmick], instCount, &material);	// モデル描画
+}
+void DrawMissileFire(void) {
+	// インスタンス情報を登録
+	D3D11_MAPPED_SUBRESOURCE msr;
+	GetDeviceContext()->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	INSTANCE* b_pInstance = (INSTANCE*)msr.pData;
+	int instCount = 0;
+
+	float zPos, rot;
+	for (int i = 0; i < MISSILE_NUM; i++)
+	{
+		if (!g_Ms[i].use) continue;
+		if (g_Ms[i].zPos < -500.0f || 10000.0f < g_Ms[i].zPos) continue;
+
+		zPos = g_Ms[i].zPos;
+		rot = g_Ms[i].zRot + GetTubeRotation() + XM_PIDIV2;
+
+		b_pInstance->scl[instCount] = { MISSILE_FIRE_SCL + (float)(rand() % 10) * 0.003f, MISSILE_FIRE_SCL + (float)(rand() % 10) * 0.003f, MISSILE_FIRE_SCL + (float)(rand() % 10) * 0.003f, 0.0f };
+		b_pInstance->rot[instCount] = { XM_PI, 0.0f, rot, 0.0f };
+		b_pInstance->pos[instCount] = { (TUBE_RADIUS - 120.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 120.0f) * 0.8f * sinf(rot), zPos - 40.0f, 0.0f };
+		b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		instCount++;	// インスタンス数を更新
+	}
+	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
+
+	SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
+	static MATERIAL material;
+	DrawModelInstanced(&g_Model[MISSILE_TYPE_FIRE], instCount, &material);	// モデル描画
 }
 
 BOOL LaunchMissile(MISSILE_TYPE type, float zPos, float zSpd, float zRot, float zRotSpd)
@@ -145,8 +164,8 @@ BOOL LaunchMissile(MISSILE_TYPE type, float zPos, float zSpd, float zRot, float 
 		if (g_Ms[i].use) continue;
 		g_Ms[i].type = type;
 
-		g_Ms[i].zPos = zPos;
-		g_Ms[i].zPosOld = zPos;
+		g_Ms[i].zPos = zPos + 75.0f;
+		g_Ms[i].zPosOld = g_Ms[i].zPos;
 		g_Ms[i].zSpd = zSpd;
 
 		g_Ms[i].zRot = zRot;

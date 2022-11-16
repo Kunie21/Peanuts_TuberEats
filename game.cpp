@@ -22,6 +22,8 @@
 #include "teamlogo.h"
 #include "missile.h"
 #include "texture2d.h"
+#include "door.h"
+#include "anim_start.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -50,6 +52,8 @@ HRESULT InitGame(void)
 	InitGameUI();
 	InitStage();
 	InitMissile();
+	InitDoor();
+	InitAnimStart();
 
 	g_Load = TRUE;
 	return S_OK;
@@ -89,6 +93,8 @@ void UninitGame(void)
 {
 	if (g_Load == FALSE) return;
 
+	UninitAnimStart();
+	UninitDoor();
 	UninitMissile();
 	UninitStage();
 	UninitGameUI();
@@ -123,6 +129,8 @@ void UpdateGame(void)
 	UpdateGameUI();
 	UpdateStage();
 	UpdateMissile();
+	UpdateDoor();
+	UpdateAnimStart();
 
 }
 
@@ -138,8 +146,14 @@ void DrawAllObjects(void)
 }
 void DrawGame(void)
 {
+
+	DrawAnimStart();
+
 	//SetDrawNoLighting();
 	//DrawPlayer();
+
+	//DrawGameUI();
+	//DrawTexture2DAll(TRUE);
 
 
 #ifdef _DEBUG
@@ -155,9 +169,9 @@ void DrawGame(void)
 		// アウトラインを引く 3000
 		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
 		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
-		SetDrawOutline(0.8f, { 0.0f, 0.0f, 1.0f, 1.0f });
-		DrawMissile(MISSILE_TYPE_RING);
-		DrawMissile(MISSILE_TYPE_ICE);
+		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
+		//DrawMissile(MISSILE_TYPE_01);
+		//DrawMissile(MISSILE_TYPE_02);
 
 		// 環境光で下塗りする 3000
 		{
@@ -200,11 +214,12 @@ void DrawGame(void)
 			// ラインライトの光 3000 → 5000
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
+			DrawDoor();
 			SetStencilReadLLGimmick();
 			//SetStencilReadLL(SHADER_GIMMICK);
 			DrawGimmickInstancing(GIMMICK_ICE);
-			DrawMissile(MISSILE_TYPE_RING);
-			DrawMissile(MISSILE_TYPE_ICE);
+			DrawMissile(MISSILE_TYPE_01);
+			DrawMissile(MISSILE_TYPE_02);
 			SetStencilReadLL(SHADER_PLAYER);
 			DrawPlayer();
 
@@ -233,6 +248,9 @@ void DrawGame(void)
 
 				SetDrawFire();
 				DrawFire();
+
+				SetDrawMissileFire();
+				DrawMissileFire();
 
 				SetBlendState(BLEND_MODE_ALPHABLEND);
 			}
@@ -263,15 +281,14 @@ void DrawGame(void)
 	//SetDraw2DTexture();
 	//DrawGameUI();
 
-	// バックバッファをターゲットにして描画 1000
-	DrawTarget();
+	//// バックバッファをターゲットにして描画 1000
+	//DrawTarget();
 
 	// UI描画 15000 → 150（インスタンシング使用）
 	//SetDraw2DTexture();
 	DrawGameUI();
 	//DrawTexture2DAll();
 	//ClearDepth();
-	
 
 #ifdef _DEBUG
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_E); }
