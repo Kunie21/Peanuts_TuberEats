@@ -20,6 +20,10 @@
 #include "ui_game.h"
 #include "stage.h"
 #include "teamlogo.h"
+#include "missile.h"
+#include "texture2d.h"
+#include "door.h"
+#include "anim_start.h"
 
 //*****************************************************************************
 // ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
@@ -47,6 +51,9 @@ HRESULT InitGame(void)
 	InitPlayer();
 	InitGameUI();
 	InitStage();
+	InitMissile();
+	InitDoor();
+	InitAnimStart();
 
 	g_Load = TRUE;
 	return S_OK;
@@ -86,6 +93,9 @@ void UninitGame(void)
 {
 	if (g_Load == FALSE) return;
 
+	UninitAnimStart();
+	UninitDoor();
+	UninitMissile();
 	UninitStage();
 	UninitGameUI();
 	UninitPlayer();
@@ -118,6 +128,9 @@ void UpdateGame(void)
 	UpdatePlayer();
 	UpdateGameUI();
 	UpdateStage();
+	UpdateMissile();
+	UpdateDoor();
+	UpdateAnimStart();
 
 }
 
@@ -127,25 +140,64 @@ void UpdateGame(void)
 void DrawAllObjects(void)
 {
 	DrawTube();
-	//DrawGimmick();
+	DrawGimmick(GIMMICK_ICE);
+	DrawGimmick(GIMMICK_RING);
 	DrawPlayer();
 }
 void DrawGame(void)
 {
+
+	DrawAnimStart();
+
 	//SetDrawNoLighting();
 	//DrawPlayer();
+<<<<<<< HEAD
 	
 	{
 		// ï¿½ï¿½ï¿½hï¿½è‚·ï¿½ï¿½
+=======
+
+	//DrawGameUI();
+	//DrawTexture2DAll(TRUE);
+
+
+#ifdef _DEBUG
+	static LARGE_INTEGER Shadow_S, Shadow_E, Shade_S, Shade_E, Light_S, Light_E;
+	static int oldTime, nowTime;
+	nowTime++;
+#endif
+
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_S); }
+#endif
+	{	// ALL 25000 ¨ 15000
+		// ƒAƒEƒgƒ‰ƒCƒ“‚ğˆø‚­ 3000
+		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
+		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
+		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
+		//DrawMissile(MISSILE_TYPE_01);
+		//DrawMissile(MISSILE_TYPE_02);
+
+		// ŠÂ‹«Œõ‚Å‰º“h‚è‚·‚é 3000
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 		{
-			SetDrawFillBlack(SHADER_TUBE);
-			DrawTube();
-			SetDrawFillBlack(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
-			SetDrawFillBlack(SHADER_PLAYER);
-			DrawPlayer();
+			//SetStencilNoneAL(SHADER_TUBE);
+			//DrawTube();	// 800
+			//SetStencilNoneAL(SHADER_GIMMICK);
+			//DrawGimmick(GIMMICK_ICE);	// 1500
+			//SetStencilNoneAL(SHADER_PLAYER);
+			//DrawPlayer();	// 900
+
+			// •“h‚è‚·‚é 3000
+			//SetDrawFillBlack(SHADER_TUBE);
+			//DrawTube();
+			//SetDrawFillBlack(SHADER_GIMMICK);
+			//DrawGimmick(GIMMICK_ICE);
+			//SetDrawFillBlack(SHADER_PLAYER);
+			//DrawPlayer();
 		}
 
+<<<<<<< HEAD
 		// ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½É‚ï¿½ï¿½ï¿½
 		SetBlendState(BLEND_MODE_ADD);
 
@@ -162,13 +214,41 @@ void DrawGame(void)
 			// ï¿½Xï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½eï¿½Xï¿½gï¿½ï¿½gï¿½ï¿½ï¿½Ä‰eï¿½ÈŠOï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½Å•`ï¿½ï¿½
 
 			// ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½g
+=======
+		// ‰ÁZ‡¬ƒ‚[ƒh‚É‚·‚é
+		//SetBlendState(BLEND_MODE_ADD);
+
+		{
+			// ƒVƒƒƒhƒEƒXƒeƒ“ƒVƒ‹‚ğ•`‰æ 3000
+		{
+			// ‰e‚É‚È‚é•”•ª‚ÌƒXƒeƒ“ƒVƒ‹‚ğì¬
+			////SetStencilWriteLL(SHADER_TUBE);
+			////DrawTube();
+			//SetStencilWriteLL(SHADER_GIMMICK);
+			//DrawGimmick(GIMMICK_ICE);
+			////SetStencilWritePL();
+			//SetStencilWriteLL(SHADER_PLAYER);
+			//DrawPlayer();
+		}
+
+#ifdef _DEBUG
+		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_S); }
+#endif
+			// ƒXƒeƒ“ƒVƒ‹ƒeƒXƒg‚ğg‚Á‚Ä‰eˆÈŠO‚Ì•”•ª‚ğ‰ÁZ‡¬‚Å•`‰æ
+			// ƒ‰ƒCƒ“ƒ‰ƒCƒg‚ÌŒõ 3000 ¨ 5000
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
-			SetStencilReadLL(SHADER_GIMMICK);
-			DrawGimmick(GIMMICK_ICE);
+			DrawDoor();
+			SetStencilReadLLGimmick();
+			//SetStencilReadLL(SHADER_GIMMICK);
+			DrawGimmickInstancing(GIMMICK_ICE);
+			DrawMissile(MISSILE_TYPE_01);
+			DrawMissile(MISSILE_TYPE_02);
 			SetStencilReadLL(SHADER_PLAYER);
 			DrawPlayer();
 
+<<<<<<< HEAD
 			// ï¿½Xï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			ClearStencil();
 
@@ -188,29 +268,95 @@ void DrawGame(void)
 			//SetDrawPlayer();
 			//DrawPlayer();
 
+=======
+#ifdef _DEBUG
+		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
+#endif
+			// ƒXƒeƒ“ƒVƒ‹‚ğ‰Šú‰»
+			ClearStencil();
+
+#ifdef _DEBUG
+			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
+#endif
+			// Œõ‚é‚à‚Ì•`‰æ 3000
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 			{
+				//SetDrawTubeLight();
+
+				SetBlendState(BLEND_MODE_ADD);
+
+				SetDrawInstancingOnlyTex();
+				DrawGimmickInstancing(GIMMICK_RING);
+
 				SetDrawLight();
 				DrawTubeLight();
-				DrawGimmick(GIMMICK_RING);
-				ApplyLightToTarget();
-			}
 
-			SetDrawFire();
-			DrawFire();
+				ApplyLightToTarget();
+
+				SetDrawFire();
+				DrawFire();
+
+				SetDrawMissileFire();
+				DrawMissileFire();
+
+				SetBlendState(BLEND_MODE_ALPHABLEND);
+			}
+#ifdef _DEBUG
+			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
+#endif
+
 		}
 
+<<<<<<< HEAD
 		// ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		SetBlendState(BLEND_MODE_ALPHABLEND);
+=======
+		// ‰ÁZ‡¬ƒ‚[ƒh‚ğI—¹‚·‚é
+		//SetBlendState(BLEND_MODE_ALPHABLEND);
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 	}
 
-	//ApplyFilter(FILTER_MODE_GAUSSIAN);
+	//ApplyFilter(FILTER_MODE_LAPLACIAN);
+	//	FILTER_MODE_NONE,			// ƒtƒBƒ‹ƒ^‚È‚µ
+	//	FILTER_MODE_AVERAGING,		// •½‹Ï‰»ƒtƒBƒ‹ƒ^
+	//	FILTER_MODE_GAUSSIAN,		// ƒKƒEƒVƒAƒ“ƒtƒBƒ‹ƒ^
+	//	FILTER_MODE_SHARPNING,		// ‘N‰s‰»ƒtƒBƒ‹ƒ^ã
+	//	FILTER_MODE_SHARPNING_HIGH,	// ‘N‰s‰»ƒtƒBƒ‹ƒ^‹­
+	//	FILTER_MODE_LAPLACIAN,		// ƒ‰ƒvƒ‰ƒVƒAƒ“ƒtƒBƒ‹ƒ^
+	//	FILTER_MODE_LAPLACIAN_COLOR,// ƒ‰ƒvƒ‰ƒVƒAƒ“ƒtƒBƒ‹ƒ^ƒJƒ‰[
+	//	FILTER_MODE_PREWITT_X,		// ƒvƒŠƒ…[ƒEƒBƒbƒgƒtƒBƒ‹ƒ^‰¡
+	//	FILTER_MODE_PREWITT_Y,		// ƒvƒŠƒ…[ƒEƒBƒbƒgƒtƒBƒ‹ƒ^c
+	//	FILTER_MODE_SOBEL_X,		// ƒ\[ƒxƒ‹ƒtƒBƒ‹ƒ^‰¡
+	//	FILTER_MODE_SOBEL_Y,		// ƒ\[ƒxƒ‹ƒtƒBƒ‹ƒ^c
 
+<<<<<<< HEAD
 	// ï¿½oï¿½bï¿½Nï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½É‚ï¿½ï¿½Ä•`ï¿½ï¿½
 	DrawTarget();
+=======
+	//// UI•`‰æ 15000 ¨ 150iƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒOg—pj
+	//SetDraw2DTexture();
+	//DrawGameUI();
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 
-	SetDraw2DTexture();
+	//// ƒoƒbƒNƒoƒbƒtƒ@‚ğƒ^[ƒQƒbƒg‚É‚µ‚Ä•`‰æ 1000
+	//DrawTarget();
+
+	// UI•`‰æ 15000 ¨ 150iƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒOg—pj
+	//SetDraw2DTexture();
 	DrawGameUI();
+	//DrawTexture2DAll();
+	//ClearDepth();
 
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_E); }
+#endif
+
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) oldTime = nowTime;
+	PrintDebugProc("LightDrawTime:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
+	PrintDebugProc("ShadingDrawTime:%d\n", Shade_E.QuadPart - Shade_S.QuadPart);
+	PrintDebugProc("ALLDrawTime:%d\n", Light_E.QuadPart - Light_S.QuadPart);
+#endif
 
 
 	// ï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½

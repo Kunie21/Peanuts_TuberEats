@@ -6,6 +6,7 @@
 //=============================================================================
 #pragma once
 
+#define ROCKET_Y		(-60.0f)	// ロケットの高さ
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -17,6 +18,7 @@ void DrawFire(void);
 
 float GetPlayerSpeed(void);
 float GetPlayerPosition(void);
+float GetPlayerRotation(void);
 void SetPlayerThroughRing(void);
 void SetPlayerCollisionIce(void);
 

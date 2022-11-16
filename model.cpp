@@ -202,6 +202,40 @@ void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL*
 
 		// ポリゴン描画
 		GetDeviceContext()->DrawIndexed(Model->SubsetArray[i].IndexNum, Model->SubsetArray[i].StartIndex, 0);
+		//GetDeviceContext()->DrawIndexedInstanced(Model->SubsetArray[i].IndexNum, 1, Model->SubsetArray[i].StartIndex, 0, 0);
+	}
+}
+void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMaterial)
+{
+	// 頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &Model->VertexBuffer, &stride, &offset);
+
+	// インデックスバッファ設定
+	GetDeviceContext()->IASetIndexBuffer(Model->IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+	// プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	for (unsigned short i = 0; i < Model->SubsetNum; i++)
+	{
+		// マテリアル設定
+		if (pMaterial) {
+			SetMaterialBuffer(pMaterial);
+		}
+		else {
+			SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
+		}
+
+		// テクスチャ設定
+		if (Model->SubsetArray[i].Material.Material.noTexSampling == 0)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &Model->SubsetArray[i].Material.Texture);
+		}
+
+		// ポリゴン描画
+		GetDeviceContext()->DrawIndexedInstanced(Model->SubsetArray[i].IndexNum, instanceCount, Model->SubsetArray[i].StartIndex, 0, 0);
 	}
 }
 

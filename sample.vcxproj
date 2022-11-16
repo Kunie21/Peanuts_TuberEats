@@ -135,8 +135,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="anim_start.h" />
+    <ClInclude Include="door.h" />
     <ClInclude Include="gimmick.h" />
     <ClInclude Include="home.h" />
+    <ClInclude Include="missile.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="stage.h" />
@@ -163,8 +166,11 @@
     <ClInclude Include="ui_game.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="anim_start.cpp" />
+    <ClCompile Include="door.cpp" />
     <ClCompile Include="gimmick.cpp" />
     <ClCompile Include="home.cpp" />
+    <ClCompile Include="missile.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="stage.cpp" />

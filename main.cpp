@@ -161,6 +161,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	QueryPerformanceCounter(&UpdateEnd);
 	QueryPerformanceCounter(&DrawEnd);
 	QueryPerformanceCounter(&DrawStart);
+
+	// ƒƒ‚ƒŠƒŠ[ƒNƒ`ƒFƒbƒN—p
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
 #endif
 
 	// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì•\ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŒï¿½ÉŒÄ‚Î‚È‚ï¿½ï¿½Æ‘Ê–ï¿½)
@@ -214,13 +217,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 				wsprintf(&g_DebugStr[strlen(g_DebugStr)], " MX:%d MY:%d", GetMousePosX(), GetMousePosY());
 				SetWindowText(hWnd, g_DebugStr);
+				
+				// ƒƒ‚ƒŠƒŠ[ƒNƒ`ƒFƒbƒN—p ¦–ˆƒtƒŒ[ƒ€ŒÄ‚Ô‚Æd‚¢
+				//_CrtDumpMemoryLeaks();
 #endif
 				dwFrameCount++;
 			}
 		}
 	}
 
+<<<<<<< HEAD
 	// ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ß‚ï¿½
+=======
+
+	// •ª‰ğ”\‚ğ–ß‚·
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 	timeEndPeriod(1);
 
 	// ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Nï¿½ï¿½ï¿½Xï¿½Ì“oï¿½^ï¿½ï¿½ï¿½ï¿½
@@ -342,13 +353,38 @@ void Draw(void)
 		break;
 	}
 
+<<<<<<< HEAD
 	DrawFade();	// ï¿½tï¿½Fï¿½[ï¿½hï¿½`ï¿½ï¿½
+=======
+	DrawTarget();	// ƒoƒbƒNƒoƒbƒtƒ@‚ğƒ^[ƒQƒbƒg‚É‚µ‚Ä¡•`‰æ‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ğ•`‰æ
+
+	DrawFade();	// ƒtƒF[ƒh•`‰æ
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
+
+	DrawTexture2DAll();	// 2D‚Ì‰æ‘œ‚ğ‚Ü‚Æ‚ß‚Ä•`‰æ
 
 #ifdef _DEBUG
+<<<<<<< HEAD
 	DrawDebugProc();	// ï¿½fï¿½oï¿½bï¿½Oï¿½\ï¿½ï¿½
 #endif
 
 	Present();	// ï¿½oï¿½bï¿½Nï¿½oï¿½bï¿½tï¿½@ï¿½Aï¿½tï¿½ï¿½ï¿½ï¿½ï¿½gï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½Ö‚ï¿½
+=======
+	static LARGE_INTEGER s, e;
+	static int oldTime, nowTime;
+	nowTime++;
+	PrintDebugProc("PresentTime:%d\n", e.QuadPart - s.QuadPart);
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&s); }
+	DrawDebugProc();	// ƒfƒoƒbƒO•\¦
+#endif
+
+	Present();	// ƒoƒbƒNƒoƒbƒtƒ@Aƒtƒƒ“ƒgƒoƒbƒtƒ@“ü‚ê‘Ö‚¦
+
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&e); oldTime = nowTime; }
+#endif
+
+>>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 }
 
 //=============================================================================

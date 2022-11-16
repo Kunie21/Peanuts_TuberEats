@@ -16,6 +16,7 @@
 #include "ui_game.h"
 #include "gimmick.h"
 #include "stage.h"
+#include "missile.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -61,7 +62,7 @@ class ROCKET
 {
 private:
 	float m_pos = 0;
-	float m_posSpd = DEFAULT_SPEED;
+	float m_posSpd = 0.0f; // DEFAULT_SPEED;
 	float m_addSpd = 0.0f;
 
 	float m_rot = 0.0f;
@@ -72,6 +73,8 @@ private:
 	const float c_fuelMax = 5000.0f;
 
 	float m_invTime = 0.0f;
+
+	int m_missiles = 10;
 
 public:
 	//ROCKET() {}
@@ -98,7 +101,7 @@ public:
 	void Accel(float posSpd) { m_posSpd += posSpd; }
 	void Boost(float addSpd) { m_addSpd += addSpd; }
 	void Brake(float posSpd) { m_posSpd -= posSpd; }
-	void Drive(void) {
+	float Drive(void) {
 		m_pos += m_posSpd + m_addSpd;
 		m_rot += m_rotSpd;
 		while (m_rot < 0.0f) m_rot += XM_2PI;
@@ -107,6 +110,7 @@ public:
 		m_addSpd *= 0.98f;
 		m_invTime *= 0.98f;
 		m_fuel -= m_posSpd / MAX_SPEED;
+		return -m_rotSpd / c_rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
 	}
 	void LostFuel(float lostFuel) { m_fuel -= lostFuel; }
 	void Collision(void) { m_invTime = 1.5f; }
@@ -118,6 +122,10 @@ public:
 	float GetRotate(void) const { return m_rot; }
 	float GetFuel(void) const { return m_fuel; }
 	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
+	bool Launch(MISSILE_TYPE type) {
+		//if (!m_missiles--)
+		//	return false;
+		return LaunchMissile(type, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd); }
 };
 
 static ROCKET g_Rocket;
@@ -145,7 +153,7 @@ HRESULT InitPlayer(void)
 		LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
 		LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
 		for (int i = 0; i < MODEL_MAX; i++) {
-			g_Model[i].srt.pos = { 0.0f, -60.0f, 0.0f };
+			g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
 			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
 			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
 		}
@@ -204,7 +212,11 @@ void UpdatePlayer(void)
 	if (GetKeyboardTrigger(DIK_BACK)) { g_Rocket.Brake(5.0f); }
 
 	// ドライブ
-	g_Rocket.Drive();
+	g_Model[testNo].srt.rot.z = g_Rocket.Drive();
+
+	// ミサイル
+	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_01); }
+	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_02); }
 
 	// コリジョン
 	if (g_Rocket.AbleToCollision()){
@@ -212,13 +224,14 @@ void UpdatePlayer(void)
 		//SetDamageEffect();
 	}
 
+
 	// パイプ曲げ（手動）
 	static CURVE_BUFFER curve;
 	if (GetKeyboardPress(DIK_F)) { curve.Angle.y += 0.005f; }
 	if (GetKeyboardPress(DIK_G)) { curve.Angle.y -= 0.005f; }
 	if (GetKeyboardPress(DIK_H)) { curve.Angle.x += 0.005f; }
 	if (GetKeyboardPress(DIK_J)) { curve.Angle.x -= 0.005f; }
-	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE;
+	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
 	SetCurveBuffer(&curve);
 	
 	// パイプ曲げ（ステージ設定に従って自動で曲げる）
@@ -227,12 +240,12 @@ void UpdatePlayer(void)
 	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
-	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage(0)->length * MESH_SIZE));
+	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage(0)->length * MESH_SIZE_Z));
 	SetSpeedMeter(g_Rocket.GetSpeedRate());
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
 #ifdef _DEBUG	// デバッグ情報を表示する
-	PrintDebugProc("ThroughMeshs:%d\n", g_Rocket.GetPos() / (int)MESH_SIZE);
+	PrintDebugProc("ThroughMeshs:%d\n", g_Rocket.GetPos() / (int)MESH_SIZE_Z);
 	PrintDebugProc("ThroughTubes:%d\n", g_Rocket.GetPos() / (int)TUBE_SIZE);
 	PrintDebugProc("Time(sec):%f\n", GetTime());
 	PrintDebugProc("RocketSpeed:%f\n", g_Rocket.GetSpeed());
@@ -265,6 +278,9 @@ float GetPlayerSpeed(void) {
 }
 float GetPlayerPosition(void) {
 	return g_Rocket.GetPos();
+}
+float GetPlayerRotation(void) {
+	return g_Rocket.GetRotate();
 }
 void SetPlayerThroughRing(void) {
 	g_Rocket.Boost(30.0f);

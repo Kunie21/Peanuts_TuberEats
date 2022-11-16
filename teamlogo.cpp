@@ -128,51 +128,51 @@ void UpdateTeamLogo(void)
 //=============================================================================
 void DrawTeamLogo(void)
 {
-	//SetDraw2DTexture();
-	//DrawTexture2D(&g_td[TEXTURE_BG]);
-	//DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
+	SetDraw2DTexture();
+	DrawTexture2D(&g_td[TEXTURE_BG]);
+	DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
 
-	//SetDrawNoLighting();
+	SetDrawNoLighting();
 
-	//SetCullingMode(CULL_MODE_NONE);
+	SetCullingMode(CULL_MODE_NONE);
 
-	//XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
+	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
 
-	//for (int testNo = 0; testNo < MODEL_MAX; testNo++)
-	//{
-	//	// ワールドマトリックスの初期化
-	//	mtxWorld = XMMatrixIdentity();
+	for (int testNo = 0; testNo < MODEL_MAX; testNo++)
+	{
+		// ワールドマトリックスの初期化
+		mtxWorld = XMMatrixIdentity();
 
-	//	// スケールを反映
-	//	mtxScl = XMMatrixScaling(g_Model[testNo].scl.x, g_Model[testNo].scl.y, g_Model[testNo].scl.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
+		// スケールを反映
+		mtxScl = XMMatrixScaling(g_Model[testNo].srt.scl.x, g_Model[testNo].srt.scl.y, g_Model[testNo].srt.scl.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-	//	// 回転を反映：全体の角度
-	//	mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].rot.x, g_Model[testNo].rot.y, g_Model[testNo].rot.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
+		// 回転を反映：全体の角度
+		mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].srt.rot.x, g_Model[testNo].srt.rot.y, g_Model[testNo].srt.rot.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(g_Model[testNo].pos.x, g_Model[testNo].pos.y, g_Model[testNo].pos.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+		// 移動を反映
+		mtxTranslate = XMMatrixTranslation(g_Model[testNo].srt.pos.x, g_Model[testNo].srt.pos.y, g_Model[testNo].srt.pos.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
-	//	// ワールドマトリックスの設定
-	//	SetWorldBuffer(&mtxWorld);
+		// ワールドマトリックスの設定
+		SetWorldBuffer(&mtxWorld);
 
-	//	// マテリアル設定
-	//	MATERIAL material;
-	//	ZeroMemory(&material, sizeof(material));
-	//	material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+		// マテリアル設定
+		MATERIAL material;
+		ZeroMemory(&material, sizeof(material));
+		material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	//	// モデル描画
-	//	if (testNo != MODEL_STAR)
-	//	{
-	//		DrawModel(&g_Model[testNo].model, NULL, &material);
-	//	}
-	//	else
-	//	{
-	//		DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
-	//	}
-	//}
+		// モデル描画
+		if (testNo != MODEL_STAR)
+		{
+			DrawModel(&g_Model[testNo].model, NULL, &material);
+		}
+		else
+		{
+			DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
+		}
+	}
 
-	//SetCullingMode(CULL_MODE_BACK);
+	SetCullingMode(CULL_MODE_BACK);
 }

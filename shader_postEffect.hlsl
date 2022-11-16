@@ -7,14 +7,14 @@
 #include "shader.h"
 
 // フィルター ///////////////////////////////////////////////////
-VS_OUTPUT VertexShaderFilter(VS_INPUT input) {
+VS_OUTPUT VSFilter(VS_INPUT input) {
 	VS_OUTPUT output;
 	output.Position = mul(input.Position, WVP);
 	output.TexCoord = input.TexCoord;
 	output.Diffuse = input.Diffuse * Material.Diffuse;
 	return output;
 }
-float4 PixelShaderFilter(VS_OUTPUT input) : SV_Target{
+float4 PSFilter(VS_OUTPUT input) : SV_Target{
 	uint width, height;
 	g_Texture.GetDimensions(width, height);
 	int pos_x = int(input.TexCoord.x * width);
@@ -29,11 +29,10 @@ float4 PixelShaderFilter(VS_OUTPUT input) : SV_Target{
 			outDiffuse.rgb += filter[y + 1][x + 1] * g_Texture.Load(int3(pos_x + x, pos_y + y, 0)).rgb;
 		}
 	}
-	outDiffuse *= 0.9f;
 	return outDiffuse;
 }
 
-float4 PixelShaderLight(VS_OUTPUT input) : SV_Target{
+float4 PSLight(VS_OUTPUT input) : SV_Target{
 	uint width, height;
 	g_Texture.GetDimensions(width, height);
 	int pos_x = int(input.TexCoord.x * width);
@@ -48,16 +47,16 @@ float4 PixelShaderLight(VS_OUTPUT input) : SV_Target{
 			outDiffuse.rgb += filter[y + 1][x + 1] * g_Texture.Load(int3(pos_x + x, pos_y + y, 0)).rgb;
 		}
 	}
-	return outDiffuse;
+	return outDiffuse * 0.7f;
 }
 
 // テクスチャを参照するだけ（変換画像を画面に出力するときに使う）
-float4 PixelShaderOnlyTex(VS_OUTPUT input) : SV_Target {
+float4 PSOnlyTex(VS_OUTPUT input) : SV_Target {
 	return input.Diffuse * g_Texture.Sample(g_SamplerState, input.TexCoord);
 }
 
 // モザイク ///////////////////////////////////////////////////
-float4 PixelShaderMosaic(VS_OUTPUT input) : SV_Target {
+float4 PSMosaic(VS_OUTPUT input) : SV_Target {
 	uint width, height;
 	g_Texture.GetDimensions(width, height);
 	int pos_x = int(input.TexCoord.x * width);
@@ -72,7 +71,7 @@ float4 PixelShaderMosaic(VS_OUTPUT input) : SV_Target {
 
 // 色収差(RGBずらし) ///////////////////////////////////////////////////
 #define ABERRATION 5	// 収差
-float4 PixelShaderCA(VS_OUTPUT input) : SV_Target{
+float4 PSCA(VS_OUTPUT input) : SV_Target{
 	uint width, height;
 	g_Texture.GetDimensions(width, height);
 	int pos_x = int(input.TexCoord.x * width);
@@ -85,17 +84,17 @@ float4 PixelShaderCA(VS_OUTPUT input) : SV_Target{
 }
 
 // 監視カメラ風 ///////////////////////////////////////////////////
-float4 PixelShaderMonitoring(VS_OUTPUT input) : SV_Target{
+float4 PSMonitoring(VS_OUTPUT input) : SV_Target{
 	float4 outDiffuse;
 	outDiffuse = g_Texture.Sample(g_SamplerState, input.TexCoord);
-	outDiffuse -= abs(sin(input.TexCoord.y * 100.0f + Constant.Time * 0.10f)) * 0.04f;
-	outDiffuse -= abs(sin(input.TexCoord.y * 300.0f + Constant.Time * 0.15f)) * 0.08f;
+	//outDiffuse -= abs(sin(input.TexCoord.y * 100.0f + Constant.Time * 0.10f)) * 0.04f;
+	//outDiffuse -= abs(sin(input.TexCoord.y * 300.0f + Constant.Time * 0.15f)) * 0.08f;
 	outDiffuse.a = 1.0;
 	return outDiffuse;
 }
 
 // ゲームボーイ風 ///////////////////////////////////////////////////
-float4 PixelShaderOldGame(VS_OUTPUT input) : SV_Target{
+float4 PSOldGame(VS_OUTPUT input) : SV_Target{
 	float4 texColor = g_Texture.Sample(g_SamplerState, input.TexCoord);
 	float gamma = 1.0;
 	texColor.r = pow(texColor.r, gamma);
@@ -121,13 +120,13 @@ float4 PixelShaderOldGame(VS_OUTPUT input) : SV_Target{
 }
 
 // ノーマルマップ作成 ///////////////////////////////////////////////////
-VS_OUTPUT VertexShaderNormalMap(VS_INPUT input) {
+VS_OUTPUT VSNormalMap(VS_INPUT input) {
 	VS_OUTPUT output;
 	output.Position = mul(input.Position, WVP);
 	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), World));
 	return output;
 }
-float4 PixelShaderNormalMap(VS_OUTPUT input) : SV_Target{
+float4 PSNormalMap(VS_OUTPUT input) : SV_Target{
 	float4 outDiffuse;
 	outDiffuse = float4(normalize(input.Normal.xyz), 1.0f);	// 法線ベクトルを色として扱う
 	outDiffuse.z *= -1.0f;								// zを反転
@@ -136,12 +135,12 @@ float4 PixelShaderNormalMap(VS_OUTPUT input) : SV_Target{
 }
 
 // デプスマップ作成 ///////////////////////////////////////////////////
-VS_OUTPUT VertexShaderDepthMap(VS_INPUT input) {
+VS_OUTPUT VSDepthMap(VS_INPUT input) {
 	VS_OUTPUT output;
 	output.Position = mul(input.Position, WVP);
 	return output;
 }
-float4 PixelShaderDepthMap(VS_OUTPUT input) : SV_Target{
+float4 PSDepthMap(VS_OUTPUT input) : SV_Target{
 	float4 outDiffuse;
 	outDiffuse = 1.0f - (input.Position.z - Camera.ViewVolume.z) / (Camera.ViewVolume.w - Camera.ViewVolume.z);
 	outDiffuse.a = 1.0f;
