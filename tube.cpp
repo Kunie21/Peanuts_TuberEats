@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒpƒCƒvƒ‰ƒCƒ“•Ç‚Ìˆ— [tube.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½pï¿½Cï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ç‚Ìï¿½ï¿½ï¿½ [tube.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -10,27 +10,27 @@
 #include "input.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
 #define	TUBE_NUM			(2)	
 
 //*****************************************************************************
-// \‘¢‘Ì’è‹`
+// ï¿½\ï¿½ï¿½ï¿½Ì’ï¿½`
 //*****************************************************************************
 struct MESH_TUBE
 {
-	MATERIAL		material;		// ƒ}ƒeƒŠƒAƒ‹
-	XMFLOAT3		pos;			// ’†SÀ•W
-	XMFLOAT3		rot;			// ‰ñ“]
-	//XMFLOAT3		scl;			// Šg‘å—¦
-	int				nX, nZ;			// ƒuƒƒbƒN”
-	int				nVertex;		// ‘’¸“_”	
-	int				nVertexIndex;	// ‘ƒCƒ“ƒfƒbƒNƒX”
-	int				nPolygon;		// ‘ƒ|ƒŠƒSƒ“”
-	float			sizeX, sizeZ;	// ƒuƒƒbƒNƒTƒCƒY
+	MATERIAL		material;		// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½
+	XMFLOAT3		pos;			// ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½W
+	XMFLOAT3		rot;			// ï¿½ï¿½]
+	//XMFLOAT3		scl;			// ï¿½gï¿½å—¦
+	int				nX, nZ;			// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½
+	int				nVertex;		// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½	
+	int				nVertexIndex;	// ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½ï¿½
+	int				nPolygon;		// ï¿½ï¿½ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½
+	float			sizeX, sizeZ;	// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Y
 
-	ID3D11Buffer	*vertexBuffer;	// ’¸“_ƒoƒbƒtƒ@
-	ID3D11Buffer	*indexBuffer;	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	ID3D11Buffer	*vertexBuffer;	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@
+	ID3D11Buffer	*indexBuffer;	// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@
 };
 
 //enum TUBE_TYPE
@@ -50,19 +50,19 @@ struct MESH_TUBE
 
 struct TUBE
 {
-	XMFLOAT3	pos;	// ’†SÀ•W
-	XMFLOAT3	rot;	// ‰ñ“]
+	XMFLOAT3	pos;	// ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½W
+	XMFLOAT3	rot;	// ï¿½ï¿½]
 	//TUBE_TYPE	type;
 };
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static MESH_TUBE g_MeshTube;
 static MESH_TUBE g_MeshLight;
 static TUBE g_Tube;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum
 {
 	TEXTURE_NOMAL = 0,
@@ -74,10 +74,10 @@ enum
 	TEXTURE_MAX,
 };
 // static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
 	//"data/TEXTURE/metal.jpg",
-	"data/TEXTURE/r.tif",
+	"data/TEXTURE/tube21.jpg",
 	"data/TEXTURE/Line.png",
 	"data/TEXTURE/Line2.png",
 	"data/TEXTURE/Line3.png",
@@ -93,7 +93,7 @@ static float	g_worldRot = 0.0f;
 static int testNo = 0;
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitTube(void)
 {
@@ -103,38 +103,38 @@ HRESULT InitTube(void)
 	//	testTubeArr[i] = TUBE_TYPE_STRAIGHT;
 	//}
 
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 	}
 
-	// ’¼üƒpƒCƒv
+	// ï¿½ï¿½ï¿½ï¿½ï¿½pï¿½Cï¿½v
 	{
 		g_MeshTube.material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		// ƒ|ƒWƒVƒ‡ƒ“İ’è
+		// ï¿½|ï¿½Wï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
 		g_MeshTube.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_MeshTube.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-		// ƒuƒƒbƒN”‚Ìİ’è
+		// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshTube.nX = MESH_NUM_X;
 		g_MeshTube.nZ = MESH_NUM_Z;
 
-		// ’¸“_”‚Ìİ’è
+		// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshTube.nVertex = (MESH_NUM_X + 1) * (MESH_NUM_Z + 1);
 
-		// ƒCƒ“ƒfƒbƒNƒX”‚Ìİ’è
+		// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshTube.nVertexIndex = (MESH_NUM_X + 1) * 2 * MESH_NUM_Z + (MESH_NUM_Z - 1) * 2;
 
-		// ƒ|ƒŠƒSƒ“”‚Ìİ’è
+		// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshTube.nPolygon = MESH_NUM_X * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
 
-		// ƒuƒƒbƒNƒTƒCƒY‚Ìİ’è
+		// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Yï¿½Ìİ’ï¿½
 		g_MeshTube.sizeX = MESH_SIZE_X;
 		g_MeshTube.sizeZ = MESH_SIZE_Z;
 
-		// ’¸“_ƒoƒbƒtƒ@¶¬
+		// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage = D3D11_USAGE_DYNAMIC;
@@ -144,7 +144,7 @@ HRESULT InitTube(void)
 
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshTube.vertexBuffer);
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+		// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage = D3D11_USAGE_DYNAMIC;
 		bd.ByteWidth = sizeof(unsigned short) * g_MeshTube.nVertexIndex;
@@ -153,8 +153,8 @@ HRESULT InitTube(void)
 
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshTube.indexBuffer);
 
-		{//’¸“_ƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
-#if 1
+		{//ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ì’ï¿½ï¿½gï¿½ğ–„‚ß‚ï¿½
+#if 0
 			const float texSizeX = 1.0f / g_MeshTube.nX;
 			const float texSizeZ = 1.0f / g_MeshTube.nZ;
 #else
@@ -162,36 +162,36 @@ HRESULT InitTube(void)
 			const float texSizeZ = 1.0f;
 #endif
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+			// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ö‚Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½æ“¾
 			D3D11_MAPPED_SUBRESOURCE msr;
 			GetDeviceContext()->Map(g_MeshTube.vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 			VERTEX_3D* pVtx = (VERTEX_3D*)msr.pData;
 
-			float drad = XM_2PI / g_MeshTube.nX;	// ’PˆÊŠp“x
-			float halfNumBlockX = (float)(g_MeshTube.nX / 2);	// X²ƒuƒƒbƒN”‚Ì”¼•ª‚Ì’l
+			float drad = XM_2PI / g_MeshTube.nX;	// ï¿½Pï¿½ÊŠpï¿½x
+			float halfNumBlockX = (float)(g_MeshTube.nX / 2);	// Xï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½Ì’l
 
 			for (int nz = 0; nz < (g_MeshTube.nZ + 1); nz++)
 			{
 				for (int nx = 0; nx < (g_MeshTube.nX + 1); nx++)
 				{
-					// ’¸“_À•W‚Ìİ’è
+					// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshTube.nX + 1) + nx].Position.x = TUBE_RADIUS * cosf(nx * drad + XM_PIDIV2);
 					pVtx[nz * (g_MeshTube.nX + 1) + nx].Position.y = TUBE_RADIUS * sinf(nx * drad + XM_PIDIV2);
 					pVtx[nz * (g_MeshTube.nX + 1) + nx].Position.z = 0.5f * g_MeshTube.nZ * g_MeshTube.sizeZ - nz * g_MeshTube.sizeZ;
 
-					// –@ü‚Ìİ’è
+					// ï¿½@ï¿½ï¿½ï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshTube.nX + 1) + nx].Normal = XMFLOAT3(cosf(nx * drad + XM_PI + XM_PIDIV2), sinf(nx * drad + XM_PI + XM_PIDIV2), 0.0f);
 
-					// ŠgUŒõ‚Ìİ’è
+					// ï¿½gï¿½Uï¿½ï¿½ï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshTube.nX + 1) + nx].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-					// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+					// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshTube.nX + 1) + nx].TexCoord.x = texSizeX * nx;
 					pVtx[nz * (g_MeshTube.nX + 1) + nx].TexCoord.y = texSizeZ * nz;
 
-					// ƒeƒNƒXƒ`ƒƒÀ•W‚Ì’²®
-					//i‰~’Œ‚ÌƒeƒNƒXƒ`ƒƒÀ•W‚ğ“rØ‚ê‚³‚¹‚È‚¢‚½‚ßAX²ƒuƒƒbƒN”‚Ì”¼•ª‚É“’B‚µ‚½‚çÀ•W‚Ì’l‚ğÜ‚è•Ô‚·Bj
+					// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’ï¿½ï¿½ï¿½
+					//ï¿½iï¿½~ï¿½ï¿½ï¿½Ìƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½rï¿½Ø‚ê‚³ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ßAXï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’lï¿½ï¿½Ü‚ï¿½Ô‚ï¿½ï¿½Bï¿½j
 					if (nx > halfNumBlockX)
 					{
 						//pVtx[nz * (g_MeshTube.nX + 1) + nx].TexCoord.x = halfNumBlockX + (halfNumBlockX - nx);
@@ -202,8 +202,8 @@ HRESULT InitTube(void)
 			GetDeviceContext()->Unmap(g_MeshTube.vertexBuffer, 0);
 		}
 
-		{//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
-			// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+		{//ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ì’ï¿½ï¿½gï¿½ğ–„‚ß‚ï¿½
+			// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½æ“¾
 			D3D11_MAPPED_SUBRESOURCE msr;
 			GetDeviceContext()->Map(g_MeshTube.indexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
@@ -213,7 +213,7 @@ HRESULT InitTube(void)
 			for (int nz = 0; nz < g_MeshTube.nZ; nz++)
 			{
 				if (nz > 0)
-				{// k‘Şƒ|ƒŠƒSƒ“‚Ì‚½‚ß‚Ìƒ_ƒu‚è‚Ìİ’è
+				{// ï¿½kï¿½Şƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚Ìƒ_ï¿½uï¿½ï¿½Ìİ’ï¿½
 					pIdx[nCntIdx] = (nz + 1) * (g_MeshTube.nX + 1);
 					nCntIdx++;
 				}
@@ -227,7 +227,7 @@ HRESULT InitTube(void)
 				}
 
 				if (nz < (g_MeshTube.nZ - 1))
-				{// k‘Şƒ|ƒŠƒSƒ“‚Ì‚½‚ß‚Ìƒ_ƒu‚è‚Ìİ’è
+				{// ï¿½kï¿½Şƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚Ìƒ_ï¿½uï¿½ï¿½Ìİ’ï¿½
 					pIdx[nCntIdx] = nz * (g_MeshTube.nX + 1) + g_MeshTube.nX;
 					nCntIdx++;
 				}
@@ -237,33 +237,33 @@ HRESULT InitTube(void)
 		}
 	}
 
-	// ƒ‰ƒCƒgƒpƒCƒv
+	// ï¿½ï¿½ï¿½Cï¿½gï¿½pï¿½Cï¿½v
 	{
-		// ƒ}ƒeƒŠƒAƒ‹İ’è
+		// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½İ’ï¿½
 		g_MeshLight.material.Diffuse = { 1.5f, 1.5f, 1.5f, 1.5f };
 
-		// ƒ|ƒWƒVƒ‡ƒ“İ’è
+		// ï¿½|ï¿½Wï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
 		g_MeshLight.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_MeshLight.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-		// ƒuƒƒbƒN”‚Ìİ’è
+		// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshLight.nX = MESH_NUM_X;
 		g_MeshLight.nZ = MESH_NUM_Z;
 
-		// ’¸“_”‚Ìİ’è
+		// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshLight.nVertex = (MESH_NUM_X + 1) * (MESH_NUM_Z + 1);
 
-		// ƒCƒ“ƒfƒbƒNƒX”‚Ìİ’è
+		// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshLight.nVertexIndex = (MESH_NUM_X + 1) * 2 * MESH_NUM_Z + (MESH_NUM_Z - 1) * 2;
 
-		// ƒ|ƒŠƒSƒ“”‚Ìİ’è
+		// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 		g_MeshLight.nPolygon = MESH_NUM_X * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
 
-		// ƒuƒƒbƒNƒTƒCƒY‚Ìİ’è
+		// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Yï¿½Ìİ’ï¿½
 		g_MeshLight.sizeX = MESH_SIZE_X;
 		g_MeshLight.sizeZ = MESH_SIZE_Z;
 
-		// ’¸“_ƒoƒbƒtƒ@¶¬
+		// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage = D3D11_USAGE_DYNAMIC;
@@ -273,7 +273,7 @@ HRESULT InitTube(void)
 
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshLight.vertexBuffer);
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+		// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage = D3D11_USAGE_DYNAMIC;
 		bd.ByteWidth = sizeof(unsigned short) * g_MeshLight.nVertexIndex;
@@ -282,7 +282,7 @@ HRESULT InitTube(void)
 
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshLight.indexBuffer);
 
-		{//’¸“_ƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
+		{//ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ì’ï¿½ï¿½gï¿½ğ–„‚ß‚ï¿½
 #if 1
 			const float texSizeX = 1.0f / g_MeshLight.nX;
 			const float texSizeZ = 1.0f / g_MeshLight.nZ;
@@ -291,36 +291,36 @@ HRESULT InitTube(void)
 			const float texSizeZ = 1.0f;
 #endif
 
-			// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+			// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ö‚Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½æ“¾
 			D3D11_MAPPED_SUBRESOURCE msr;
 			GetDeviceContext()->Map(g_MeshLight.vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 			VERTEX_3D* pVtx = (VERTEX_3D*)msr.pData;
 
-			float drad = -XM_2PI / g_MeshLight.nX;	// ’PˆÊŠp“x
-			float halfNumBlockX = (float)(g_MeshLight.nX / 2);	// X²ƒuƒƒbƒN”‚Ì”¼•ª‚Ì’l
+			float drad = -XM_2PI / g_MeshLight.nX;	// ï¿½Pï¿½ÊŠpï¿½x
+			float halfNumBlockX = (float)(g_MeshLight.nX / 2);	// Xï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½Ì’l
 
 			for (int nz = 0; nz < (g_MeshLight.nZ + 1); nz++)
 			{
 				for (int nx = 0; nx < (g_MeshLight.nX + 1); nx++)
 				{
-					// ’¸“_À•W‚Ìİ’è
+					// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshLight.nX + 1) + nx].Position.x = TUBE_RADIUS * cosf(nx * drad + XM_PIDIV2);
 					pVtx[nz * (g_MeshLight.nX + 1) + nx].Position.y = TUBE_RADIUS * sinf(nx * drad + XM_PIDIV2);
 					pVtx[nz * (g_MeshLight.nX + 1) + nx].Position.z = 0.5f * g_MeshLight.nZ * g_MeshLight.sizeZ - nz * g_MeshLight.sizeZ;
 
-					// –@ü‚Ìİ’è
+					// ï¿½@ï¿½ï¿½ï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshLight.nX + 1) + nx].Normal = XMFLOAT3(cosf(nx * drad + XM_PI + XM_PIDIV2), sinf(nx * drad + XM_PI + XM_PIDIV2), 0.0f);
 
-					// ŠgUŒõ‚Ìİ’è
+					// ï¿½gï¿½Uï¿½ï¿½ï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshLight.nX + 1) + nx].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-					// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+					// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 					pVtx[nz * (g_MeshLight.nX + 1) + nx].TexCoord.x = texSizeX * nx;
 					pVtx[nz * (g_MeshLight.nX + 1) + nx].TexCoord.y = texSizeZ * nz;
 
-					// ƒeƒNƒXƒ`ƒƒÀ•W‚Ì’²®
-					//i‰~’Œ‚ÌƒeƒNƒXƒ`ƒƒÀ•W‚ğ“rØ‚ê‚³‚¹‚È‚¢‚½‚ßAX²ƒuƒƒbƒN”‚Ì”¼•ª‚É“’B‚µ‚½‚çÀ•W‚Ì’l‚ğÜ‚è•Ô‚·Bj
+					// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’ï¿½ï¿½ï¿½
+					//ï¿½iï¿½~ï¿½ï¿½ï¿½Ìƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½rï¿½Ø‚ê‚³ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ßAXï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’lï¿½ï¿½Ü‚ï¿½Ô‚ï¿½ï¿½Bï¿½j
 					if (nx > halfNumBlockX)
 					{
 						pVtx[nz * (g_MeshLight.nX + 1) + nx].TexCoord.x = halfNumBlockX + (halfNumBlockX - nx);
@@ -331,8 +331,8 @@ HRESULT InitTube(void)
 			GetDeviceContext()->Unmap(g_MeshLight.vertexBuffer, 0);
 		}
 
-		{//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
-			// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+		{//ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ì’ï¿½ï¿½gï¿½ğ–„‚ß‚ï¿½
+			// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½æ“¾
 			D3D11_MAPPED_SUBRESOURCE msr;
 			GetDeviceContext()->Map(g_MeshLight.indexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
@@ -342,7 +342,7 @@ HRESULT InitTube(void)
 			for (int nz = 0; nz < g_MeshLight.nZ; nz++)
 			{
 				if (nz > 0)
-				{// k‘Şƒ|ƒŠƒSƒ“‚Ì‚½‚ß‚Ìƒ_ƒu‚è‚Ìİ’è
+				{// ï¿½kï¿½Şƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚Ìƒ_ï¿½uï¿½ï¿½Ìİ’ï¿½
 					pIdx[nCntIdx] = (nz + 1) * (g_MeshLight.nX + 1);
 					nCntIdx++;
 				}
@@ -356,7 +356,7 @@ HRESULT InitTube(void)
 				}
 
 				if (nz < (g_MeshLight.nZ - 1))
-				{// k‘Şƒ|ƒŠƒSƒ“‚Ì‚½‚ß‚Ìƒ_ƒu‚è‚Ìİ’è
+				{// ï¿½kï¿½Şƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚Ìƒ_ï¿½uï¿½ï¿½Ìİ’ï¿½
 					pIdx[nCntIdx] = nz * (g_MeshLight.nX + 1) + g_MeshLight.nX;
 					nCntIdx++;
 				}
@@ -366,37 +366,37 @@ HRESULT InitTube(void)
 		}
 	}
 
-	// ƒJ[ƒuƒpƒCƒv
+	// ï¿½Jï¿½[ï¿½uï¿½pï¿½Cï¿½v
 	//{
-	//	// ƒ|ƒWƒVƒ‡ƒ“İ’è
+	//	// ï¿½|ï¿½Wï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
 	//	g_MeshTube[TUBE_TYPE_CURVE].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	//	g_MeshTube[TUBE_TYPE_CURVE].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	//	// ƒ}ƒeƒŠƒAƒ‹î•ñ‚Ì‰Šú‰»
+	//	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
 	//	ZeroMemory(&g_MeshTube[TUBE_TYPE_CURVE].material, sizeof(g_MeshTube[TUBE_TYPE_CURVE].material));
 	//	g_MeshTube[TUBE_TYPE_CURVE].material.Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	//	g_MeshTube[TUBE_TYPE_CURVE].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	//	g_MeshTube[TUBE_TYPE_CURVE].material.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	//	g_MeshTube[TUBE_TYPE_CURVE].material.Emission = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	//	// ƒuƒƒbƒN”‚Ìİ’è
+	//	// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ìİ’ï¿½
 	//	g_MeshTube[TUBE_TYPE_CURVE].nX = MESH_NUM_X;
 	//	g_MeshTube[TUBE_TYPE_CURVE].nZ = MESH_NUM_Z;
 
-	//	// ’¸“_”‚Ìİ’è
+	//	// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Ìİ’ï¿½
 	//	g_MeshTube[TUBE_TYPE_CURVE].nVertex = (MESH_NUM_X + 1) * (MESH_NUM_Z + 1);
 
-	//	// ƒCƒ“ƒfƒbƒNƒX”‚Ìİ’è
+	//	// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ìİ’ï¿½
 	//	g_MeshTube[TUBE_TYPE_CURVE].nVertexIndex = (MESH_NUM_X + 1) * 2 * MESH_NUM_Z + (MESH_NUM_Z - 1) * 2;
 
-	//	// ƒ|ƒŠƒSƒ“”‚Ìİ’è
+	//	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 	//	g_MeshTube[TUBE_TYPE_CURVE].nPolygon = MESH_NUM_X * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
 
-	//	// ƒuƒƒbƒNƒTƒCƒY‚Ìİ’è
+	//	// ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½Tï¿½Cï¿½Yï¿½Ìİ’ï¿½
 	//	g_MeshTube[TUBE_TYPE_CURVE].sizeX = MESH_SIZE;
 	//	g_MeshTube[TUBE_TYPE_CURVE].sizeZ = MESH_SIZE;
 
-	//	// ’¸“_ƒoƒbƒtƒ@¶¬
+	//	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 	//	D3D11_BUFFER_DESC bd;
 	//	ZeroMemory(&bd, sizeof(bd));
 	//	bd.Usage = D3D11_USAGE_DYNAMIC;
@@ -406,7 +406,7 @@ HRESULT InitTube(void)
 
 	//	GetDevice()->CreateBuffer(&bd, NULL, &g_MeshTube[TUBE_TYPE_CURVE].vertexBuffer);
 
-	//	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+	//	// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 	//	ZeroMemory(&bd, sizeof(bd));
 	//	bd.Usage = D3D11_USAGE_DYNAMIC;
 	//	bd.ByteWidth = sizeof(unsigned short) * g_MeshTube[TUBE_TYPE_CURVE].nVertexIndex;
@@ -415,45 +415,45 @@ HRESULT InitTube(void)
 
 	//	GetDevice()->CreateBuffer(&bd, NULL, &g_MeshTube[TUBE_TYPE_CURVE].indexBuffer);
 
-	//	{//’¸“_ƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
+	//	{//ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ì’ï¿½ï¿½gï¿½ğ–„‚ß‚ï¿½
 
 	//		const float texSizeX = 1.0f;
 	//		const float texSizeZ = 1.0f;
 
-	//		// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	//		// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ö‚Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½æ“¾
 	//		D3D11_MAPPED_SUBRESOURCE msr;
 	//		GetDeviceContext()->Map(g_MeshTube[TUBE_TYPE_CURVE].vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 	//		VERTEX_3D* pVtx = (VERTEX_3D*)msr.pData;
 
-	//		float drad = XM_2PI / g_MeshTube[TUBE_TYPE_CURVE].nX;	// ’PˆÊŠp“x
-	//		float halfNumBlockX = (float)(g_MeshTube[TUBE_TYPE_CURVE].nX / 2);	// X²ƒuƒƒbƒN”‚Ì”¼•ª‚Ì’l
+	//		float drad = XM_2PI / g_MeshTube[TUBE_TYPE_CURVE].nX;	// ï¿½Pï¿½ÊŠpï¿½x
+	//		float halfNumBlockX = (float)(g_MeshTube[TUBE_TYPE_CURVE].nX / 2);	// Xï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½Ì’l
 
 	//		for (int nz = 0; nz < (g_MeshTube[TUBE_TYPE_CURVE].nZ + 1); nz++)
 	//		{
 	//			for (int nx = 0; nx < (g_MeshTube[TUBE_TYPE_CURVE].nX + 1); nx++)
 	//			{
-	//				// ƒJ[ƒu‚Ì”¼Œa
+	//				// ï¿½Jï¿½[ï¿½uï¿½Ì”ï¿½ï¿½a
 	//				float rad = CURVE_RADIUS + TUBE_RADIUS * cosf(nx * drad);
-	//				float agl = XM_PIDIV2 * (float)nz / (float)g_MeshTube[TUBE_TYPE_CURVE].nZ - XM_PIDIV2;	// -XM_PIDIV2‚Å‰EƒJ[ƒu
+	//				float agl = XM_PIDIV2 * (float)nz / (float)g_MeshTube[TUBE_TYPE_CURVE].nZ - XM_PIDIV2;	// -XM_PIDIV2ï¿½Å‰Eï¿½Jï¿½[ï¿½u
 
-	//				// ’¸“_À•W‚Ìİ’è
+	//				// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	//				pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].Position.x = rad * sinf(agl) + CURVE_CENTER;
 	//				pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].Position.y = TUBE_RADIUS * sinf(nx * drad);
 	//				pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].Position.z = rad * cosf(agl) - CURVE_CENTER;
 
-	//				// –@ü‚Ìİ’è
+	//				// ï¿½@ï¿½ï¿½ï¿½Ìİ’ï¿½
 	//				pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].Normal = XMFLOAT3(cosf(nx * drad + XM_PI), sinf(nx * drad + XM_PI), 0.0f);
 
-	//				// ŠgUŒõ‚Ìİ’è
+	//				// ï¿½gï¿½Uï¿½ï¿½ï¿½Ìİ’ï¿½
 	//				pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	//				// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+	//				// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	//				pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].TexCoord.x = texSizeX * nx;
 	//				pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].TexCoord.y = texSizeZ * nz;
 
-	//				// ƒeƒNƒXƒ`ƒƒÀ•W‚Ì’²®
-	//				//i‰~’Œ‚ÌƒeƒNƒXƒ`ƒƒÀ•W‚ğ“rØ‚ê‚³‚¹‚È‚¢‚½‚ßAX²ƒuƒƒbƒN”‚Ì”¼•ª‚É“’B‚µ‚½‚çÀ•W‚Ì’l‚ğÜ‚è•Ô‚·Bj
+	//				// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’ï¿½ï¿½ï¿½
+	//				//ï¿½iï¿½~ï¿½ï¿½ï¿½Ìƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½rï¿½Ø‚ê‚³ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ßAXï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’lï¿½ï¿½Ü‚ï¿½Ô‚ï¿½ï¿½Bï¿½j
 	//				if (nx > halfNumBlockX)
 	//				{
 	//					pVtx[nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + nx].TexCoord.x = halfNumBlockX + (halfNumBlockX - nx);
@@ -464,8 +464,8 @@ HRESULT InitTube(void)
 	//		GetDeviceContext()->Unmap(g_MeshTube[TUBE_TYPE_CURVE].vertexBuffer, 0);
 	//	}
 
-	//	{//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
-	//		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	//	{//ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ì’ï¿½ï¿½gï¿½ğ–„‚ß‚ï¿½
+	//		// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½æ“¾
 	//		D3D11_MAPPED_SUBRESOURCE msr;
 	//		GetDeviceContext()->Map(g_MeshTube[TUBE_TYPE_CURVE].indexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
@@ -475,7 +475,7 @@ HRESULT InitTube(void)
 	//		for (int nz = 0; nz < g_MeshTube[TUBE_TYPE_CURVE].nZ; nz++)
 	//		{
 	//			if (nz > 0)
-	//			{// k‘Şƒ|ƒŠƒSƒ“‚Ì‚½‚ß‚Ìƒ_ƒu‚è‚Ìİ’è
+	//			{// ï¿½kï¿½Şƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚Ìƒ_ï¿½uï¿½ï¿½Ìİ’ï¿½
 	//				pIdx[nCntIdx] = (nz + 1) * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1);
 	//				nCntIdx++;
 	//			}
@@ -489,7 +489,7 @@ HRESULT InitTube(void)
 	//			}
 
 	//			if (nz < (g_MeshTube[TUBE_TYPE_CURVE].nZ - 1))
-	//			{// k‘Şƒ|ƒŠƒSƒ“‚Ì‚½‚ß‚Ìƒ_ƒu‚è‚Ìİ’è
+	//			{// ï¿½kï¿½Şƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚Ìƒ_ï¿½uï¿½ï¿½Ìİ’ï¿½
 	//				pIdx[nCntIdx] = nz * (g_MeshTube[TUBE_TYPE_CURVE].nX + 1) + g_MeshTube[TUBE_TYPE_CURVE].nX;
 	//				nCntIdx++;
 	//			}
@@ -515,27 +515,27 @@ HRESULT InitTube(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitTube(void)
 {
 	if (g_Load == FALSE) return;
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ì‰ğ•ú
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ì‰ï¿½ï¿½
 	if (g_MeshTube.vertexBuffer)
 	{
 		g_MeshTube.vertexBuffer->Release();
 		g_MeshTube.vertexBuffer = NULL;
 	}
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ì‰ğ•ú
+	// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½Ì‰ï¿½ï¿½
 	if (g_MeshTube.indexBuffer)
 	{
 		g_MeshTube.indexBuffer->Release();
 		g_MeshTube.indexBuffer = NULL;
 	}
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ì‰ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		if (g_Texture[i])
@@ -549,7 +549,7 @@ void UninitTube(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateTube(void)
 {
@@ -561,59 +561,59 @@ void UpdateTube(void)
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawTube(void)
 {
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½İ’ï¿½
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_MeshTube.vertexBuffer, &stride, &offset);
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+	// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½İ’ï¿½
 	GetDeviceContext()->IASetIndexBuffer(g_MeshTube.indexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
-	// ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWİ’è
+	// ï¿½vï¿½ï¿½ï¿½~ï¿½eï¿½Bï¿½uï¿½gï¿½|ï¿½ï¿½ï¿½Wï¿½İ’ï¿½
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	// ƒ}ƒeƒŠƒAƒ‹İ’è
+	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½İ’ï¿½
 	SetMaterialBuffer(&g_MeshTube.material);
 
-	// ƒeƒNƒXƒ`ƒƒİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½İ’ï¿½
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[testNo]);
 
-	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìİ’ï¿½
 	SetWorldBuffer(&XMMatrixIdentity());
 
-	// ƒ|ƒŠƒSƒ“‚Ì•`‰æ
+	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì•`ï¿½ï¿½
 	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
 }
 
 void DrawTubeLight(void)
 {
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½İ’ï¿½
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_MeshLight.vertexBuffer, &stride, &offset);
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@İ’è
+	// ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½oï¿½bï¿½tï¿½@ï¿½İ’ï¿½
 	GetDeviceContext()->IASetIndexBuffer(g_MeshLight.indexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
-	// ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWİ’è
+	// ï¿½vï¿½ï¿½ï¿½~ï¿½eï¿½Bï¿½uï¿½gï¿½|ï¿½ï¿½ï¿½Wï¿½İ’ï¿½
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	// ƒ}ƒeƒŠƒAƒ‹İ’è
+	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½İ’ï¿½
 	SetMaterialBuffer(&g_MeshLight.material);
 
-	// ƒeƒNƒXƒ`ƒƒİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½İ’ï¿½
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_WHITE]);
 
-	XMMATRIX mtxWorld = XMMatrixIdentity();			// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
-	MulMtxScl(mtxWorld, 0.05f, 0.05f, 1.0f);		// ƒXƒP[ƒ‹‚ğ”½‰f
-	MulMtxPos(mtxWorld, 0.0f, TUBE_RADIUS, 0.0f);	// ˆÚ“®‚ğ”½‰f
-	SetWorldBuffer(&mtxWorld);						// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	XMMATRIX mtxWorld = XMMatrixIdentity();			// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+	MulMtxScl(mtxWorld, 0.05f, 0.05f, 1.0f);		// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ”½‰f
+	MulMtxPos(mtxWorld, 0.0f, TUBE_RADIUS, 0.0f);	// ï¿½Ú“ï¿½ï¿½ğ”½‰f
+	SetWorldBuffer(&mtxWorld);						// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìİ’ï¿½
 
-	// ƒ|ƒŠƒSƒ“‚Ì•`‰æ
+	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì•`ï¿½ï¿½
 	GetDeviceContext()->DrawIndexed(g_MeshLight.nVertexIndex, 0, 0);
 }
 
@@ -744,44 +744,44 @@ float GetTubeRotation(void)
 //{
 //	int i = tube;
 //
-//	//’¸“_ƒoƒbƒtƒ@‚ğ‘‚«Š·‚¦‚é
+//	//ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //	const float texSizeX = 1.0f;
 //	const float texSizeZ = 1.0f;
 //
-//	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+//	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ö‚Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½æ“¾
 //	D3D11_MAPPED_SUBRESOURCE msr;
 //	GetDeviceContext()->Map(g_MeshTube[i].vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 //
 //	VERTEX_3D* pVtx = (VERTEX_3D*)msr.pData;
 //
-//	float drad = XM_2PI / g_MeshTube[i].nX;	// ’PˆÊŠp“x
-//	float halfNumBlockX = (float)(g_MeshTube[i].nX / 2);	// X²ƒuƒƒbƒN”‚Ì”¼•ª‚Ì’l
+//	float drad = XM_2PI / g_MeshTube[i].nX;	// ï¿½Pï¿½ÊŠpï¿½x
+//	float halfNumBlockX = (float)(g_MeshTube[i].nX / 2);	// Xï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½Ì’l
 //
 //	for (int nz = 0; nz < (g_MeshTube[i].nZ + 1); nz++)
 //	{
 //		for (int nx = 0; nx < (g_MeshTube[i].nX + 1); nx++)
 //		{
-//			// ƒJ[ƒu‚Ì”¼Œa
+//			// ï¿½Jï¿½[ï¿½uï¿½Ì”ï¿½ï¿½a
 //			float rad = CURVE_RADIUS + TUBE_RADIUS * cosf(nx * drad);
-//			float agl = XM_PIDIV2 * (float)nz / (float)g_MeshTube[i].nZ - XM_PIDIV2;	// -XM_PIDIV2‚Å‰EƒJ[ƒu
+//			float agl = XM_PIDIV2 * (float)nz / (float)g_MeshTube[i].nZ - XM_PIDIV2;	// -XM_PIDIV2ï¿½Å‰Eï¿½Jï¿½[ï¿½u
 //
-//			// ’¸“_À•W‚Ìİ’è
+//			// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 //			pVtx[nz * (g_MeshTube[i].nX + 1) + nx].Position.x = rad * sinf(agl) + CURVE_CENTER;
 //			pVtx[nz * (g_MeshTube[i].nX + 1) + nx].Position.y = TUBE_RADIUS * sinf(nx * drad);
 //			pVtx[nz * (g_MeshTube[i].nX + 1) + nx].Position.z = rad * cosf(agl) - CURVE_CENTER;
 //
-//			// –@ü‚Ìİ’è
+//			// ï¿½@ï¿½ï¿½ï¿½Ìİ’ï¿½
 //			pVtx[nz * (g_MeshTube[i].nX + 1) + nx].Normal = XMFLOAT3(cosf(nx * drad + XM_PI), sinf(nx * drad + XM_PI), 0.0f);
 //
-//			// ŠgUŒõ‚Ìİ’è
+//			// ï¿½gï¿½Uï¿½ï¿½ï¿½Ìİ’ï¿½
 //			pVtx[nz * (g_MeshTube[i].nX + 1) + nx].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 //
-//			// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+//			// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 //			pVtx[nz * (g_MeshTube[i].nX + 1) + nx].TexCoord.x = texSizeX * nx;
 //			pVtx[nz * (g_MeshTube[i].nX + 1) + nx].TexCoord.y = texSizeZ * nz;
 //
-//			// ƒeƒNƒXƒ`ƒƒÀ•W‚Ì’²®
-//			//i‰~’Œ‚ÌƒeƒNƒXƒ`ƒƒÀ•W‚ğ“rØ‚ê‚³‚¹‚È‚¢‚½‚ßAX²ƒuƒƒbƒN”‚Ì”¼•ª‚É“’B‚µ‚½‚çÀ•W‚Ì’l‚ğÜ‚è•Ô‚·Bj
+//			// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’ï¿½ï¿½ï¿½
+//			//ï¿½iï¿½~ï¿½ï¿½ï¿½Ìƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½rï¿½Ø‚ê‚³ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ßAXï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì’lï¿½ï¿½Ü‚ï¿½Ô‚ï¿½ï¿½Bï¿½j
 //			if (nx > halfNumBlockX)
 //			{
 //				pVtx[nz * (g_MeshTube[i].nX + 1) + nx].TexCoord.x = halfNumBlockX + (halfNumBlockX - nx);

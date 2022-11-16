@@ -478,6 +478,8 @@ void UpdateStageSelect(void)
 ////=============================================================================
 void DrawStageSelect(void)
 {
+	SetDrawNoLighting();
+
 
 	SetCullingMode(CULL_MODE_NONE);
 
@@ -502,7 +504,7 @@ void DrawStageSelect(void)
 	}
 
 	SetCullingMode(CULL_MODE_BACK);
-	SetDraw2DTexture();
+	//SetDraw2DTexture();
 	DrawTexture2D(&g_td[TEXTURE_MENUBOARD], FALSE, TRUE);
 	DrawTexture2D(&g_td[TEXTURE_MENU_LINE], FALSE, TRUE);
 	DrawTexture2D(&g_td[TEXTURE_START], FALSE, TRUE);

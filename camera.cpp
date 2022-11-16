@@ -156,26 +156,26 @@ void UpdateCamera(void)
 		InitCamera();
 	}
 
-	if (GetKeyboardPress(DIK_UP))
-	{// �߂Â�
-		g_Camera.pos.z += 50.0f;
-		g_Camera.at.z += 50.0f;
-	}
-	if (GetKeyboardPress(DIK_DOWN))
-	{// �����
-		g_Camera.pos.z -= 50.0f;
-		g_Camera.at.z -= 50.0f;
-	}
-	if (GetKeyboardPress(DIK_RIGHT))
-	{// �����
-		g_Camera.pos.x += 50.0f;
-		g_Camera.at.x += 50.0f;
-	}
-	if (GetKeyboardPress(DIK_LEFT))
-	{// �߂Â�
-		g_Camera.pos.x -= 50.0f;
-		g_Camera.at.x -= 50.0f;
-	}
+	//if (GetKeyboardPress(DIK_UP))
+	//{// �߂Â�
+	//	g_Camera.pos.z += 50.0f;
+	//	g_Camera.at.z += 50.0f;
+	//}
+	//if (GetKeyboardPress(DIK_DOWN))
+	//{// �����
+	//	g_Camera.pos.z -= 50.0f;
+	//	g_Camera.at.z -= 50.0f;
+	//}
+	//if (GetKeyboardPress(DIK_RIGHT))
+	//{// �����
+	//	g_Camera.pos.x += 50.0f;
+	//	g_Camera.at.x += 50.0f;
+	//}
+	//if (GetKeyboardPress(DIK_LEFT))
+	//{// �߂Â�
+	//	g_Camera.pos.x -= 50.0f;
+	//	g_Camera.at.x -= 50.0f;
+	//}
 
 	//PrintDebugProc("Camera:ZC QE TB YN UM R\n");
 #endif
