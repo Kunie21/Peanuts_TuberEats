@@ -1173,7 +1173,7 @@ void SetStencilNone(void)
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PS, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 void SetStencilNoneAL(SHADER_TYPE shader)
 {
@@ -1265,7 +1265,7 @@ void SetDrawNoLighting(void)
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 void SetDrawTube(void)
 {

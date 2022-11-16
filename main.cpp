@@ -36,6 +36,8 @@
 
 // result
 #include "result.h"
+#include "result_event.h"
+
 
 
 //*****************************************************************************
@@ -67,7 +69,7 @@ int		g_CountFPS;							// FPSカウンタ
 char	g_DebugStr[2048] = WINDOW_NAME;		// デバッグ文字表示用
 #endif
 
-MODE_LABEL	g_Mode = MODE_GAME;	// 起動時の画面を設定
+MODE_LABEL	g_Mode = MODE_RESULT;	// 起動時の画面を設定
 
 //=============================================================================
 // メイン関数
@@ -294,6 +296,7 @@ void Update(void)
 		break;
 	case MODE_RESULT:
 		UpdateResult();
+		UpdateResultEvent();
 		break;
 	case MODE_END:
 		break;
@@ -334,7 +337,9 @@ void Draw(void)
 		DrawGame();
 		break;
 	case MODE_RESULT:
-		DrawResult();
+		//DrawResult();
+		DrawResultEvent();
+		
 		break;
 	case MODE_END:
 		break;
@@ -376,7 +381,8 @@ void SetMode(MODE_LABEL mode)
 	// モードを変える前に全部メモリを解放しちゃう
 	UninitTeamLogo();
 	UninitResult();
-	
+	UninitResultEvent();
+
 	g_Mode = mode;	// 次のモードをセット
 
 	switch (g_Mode)
@@ -399,6 +405,7 @@ void SetMode(MODE_LABEL mode)
 		break;
 	case MODE_RESULT:
 		InitResult();
+		InitResultEvent();
 		break;
 	case MODE_END:
 		break;
