@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ƒ‚ƒfƒ‹‚Ìˆ— [model.h]
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ [model.h]
 // Author :
 //
 //=============================================================================
@@ -10,12 +10,12 @@
 #include "renderer.h"
 
 //*********************************************************
-// \‘¢‘Ì
+// ï¿½\ï¿½ï¿½ï¿½ï¿½
 //*********************************************************
 
-// ƒ}ƒeƒŠƒAƒ‹\‘¢‘Ì
+// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½
 
-#define MODEL_MAX_MATERIAL		(16)		// ‚Pƒ‚ƒfƒ‹‚ÌMaxƒ}ƒeƒŠƒAƒ‹”
+#define MODEL_MAX_MATERIAL		(16)		// ï¿½Pï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½Maxï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½
 
 struct DX11_MODEL_MATERIAL
 {
@@ -23,7 +23,7 @@ struct DX11_MODEL_MATERIAL
 	ID3D11ShaderResourceView	*Texture;
 };
 
-// •`‰æƒTƒuƒZƒbƒg\‘¢‘Ì
+// ï¿½`ï¿½ï¿½Tï¿½uï¿½Zï¿½bï¿½gï¿½\ï¿½ï¿½ï¿½ï¿½
 struct DX11_SUBSET
 {
 	unsigned short	StartIndex;
@@ -49,7 +49,7 @@ struct MODEL_DATA
 
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 void LoadModel( char *FileName, DX11_MODEL *Model );
 void UnloadModel( DX11_MODEL *Model );
@@ -58,10 +58,10 @@ void DrawModel(DX11_MODEL *Model, SRT* srt, ID3D11ShaderResourceView** Texture =
 void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
 void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMaterial = NULL);
 
-// ƒ‚ƒfƒ‹‚Ìƒ}ƒeƒŠƒAƒ‹‚ÌƒfƒBƒtƒ…[ƒY‚ğæ“¾‚·‚éBMax16ŒÂ•ª‚É‚µ‚Ä‚ ‚é
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ìƒ}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ìƒfï¿½Bï¿½tï¿½ï¿½ï¿½[ï¿½Yï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½BMax16ï¿½Â•ï¿½ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 void GetModelDiffuse(DX11_MODEL *Model, XMFLOAT4 *diffuse);
 
-// ƒ‚ƒfƒ‹‚Ìw’èƒ}ƒeƒŠƒAƒ‹‚ÌƒfƒBƒtƒ…[ƒY‚ğƒZƒbƒg‚·‚éB
+// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ìwï¿½ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ìƒfï¿½Bï¿½tï¿½ï¿½ï¿½[ï¿½Yï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½B
 void SetModelDiffuse(DX11_MODEL *Model, int mno, XMFLOAT4 diffuse);
 
 

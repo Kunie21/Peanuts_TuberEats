@@ -1,7 +1,7 @@
 ////=============================================================================
 ////
-//// ƒtƒ@ƒCƒ‹ˆ— [file.cpp]
-//// Author : š ] ãÄ‘¾
+//// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [file.cpp]
+//// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 ////
 ////=============================================================================
 //#include "main.h"
@@ -9,23 +9,23 @@
 //#include "file.h"
 //
 ///*******************************************************************************
-//* ƒOƒ[ƒoƒ‹•Ï”
+//* ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*******************************************************************************/
-//static SAVEDATA		g_SaveData;		// ƒZ[ƒuƒf[ƒ^ì¬êŠ
+//static SAVEDATA		g_SaveData;		// ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½ì¬ï¿½êŠ
 //
 ///*******************************************************************************
-//ŠÖ”–¼:	void SaveData( void )
-//ˆø”:	void
-//–ß‚è’l:	void
-//à–¾:	ƒZ[ƒuƒf[ƒ^‚ðì¬‚µAƒtƒ@ƒCƒ‹‚Öo—Í‚·‚é
+//ï¿½Öï¿½ï¿½ï¿½:	void SaveData( void )
+//ï¿½ï¿½ï¿½ï¿½:	void
+//ï¿½ß‚ï¿½l:	void
+//ï¿½ï¿½ï¿½:	ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½ï¿½ì¬ï¿½ï¿½ï¿½Aï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Öoï¿½Í‚ï¿½ï¿½ï¿½
 //*******************************************************************************/
 //BOOL SaveData(void)
 //{
-//	// ƒXƒRƒA‹L˜^ƒf[ƒ^
+//	// ï¿½Xï¿½Rï¿½Aï¿½Lï¿½^ï¿½fï¿½[ï¿½^
 //	{
 //		int *record = GetRecord();
 //
-//		// ƒZ[ƒu
+//		// ï¿½Zï¿½[ï¿½u
 //		for (int i = 0; i < STAGE_MAX; i++)
 //		{
 //			for (int j = 0; j < RECORD_MAX; j++)
@@ -34,105 +34,105 @@
 //			}
 //		}
 //	}
-//	// ƒNƒŠƒA‹L˜^ƒf[ƒ^
+//	// ï¿½Nï¿½ï¿½ï¿½Aï¿½Lï¿½^ï¿½fï¿½[ï¿½^
 //	{
 //		BOOL *clear = GetStageClear();
 //
-//		// ƒZ[ƒu
+//		// ï¿½Zï¿½[ï¿½u
 //		for (int i = 0; i < STAGE_MAX; i++)
 //		{
 //			g_SaveData.clear[i] = clear[i];
 //		}
 //	}
 //
-//	// ƒZ[ƒuƒf[ƒ^‚Ìƒ`ƒFƒbƒNƒTƒ€‚ð‹‚ß‚é
+//	// ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½Ìƒ`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 //	{
-//		char *adr = (char *)&g_SaveData;	// ƒZ[ƒuƒf[ƒ^‚Ìæ“ªƒAƒhƒŒƒX‚ðadr‚É“ü‚ê‚é
-//		int sum = 0;				// ŒvŽZ‚·‚éƒ`ƒFƒbƒNƒTƒ€
+//		char *adr = (char *)&g_SaveData;	// ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½Ìæ“ªï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½adrï¿½É“ï¿½ï¿½ï¿½ï¿½
+//		int sum = 0;				// ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½
 //
-//		g_SaveData.sum = 0;				// ƒ`ƒFƒbƒNƒTƒ€‚ð‚O‚ÅƒNƒŠƒA‚µ‚Ä‚¢‚­
+//		g_SaveData.sum = 0;				// ï¿½`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½ï¿½Oï¿½ÅƒNï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 //
 //		for (int i = 0; i < sizeof(SAVEDATA); i++)
 //		{
-//			sum += adr[i];	// charŒ^‚Ì‚PƒoƒCƒg’PˆÊ‚Ìƒf[ƒ^‚ð‘«‚µ‚Ä‚­
+//			sum += adr[i];	// charï¿½^ï¿½Ì‚Pï¿½oï¿½Cï¿½gï¿½Pï¿½Ê‚Ìƒfï¿½[ï¿½^ï¿½ð‘«‚ï¿½ï¿½Ä‚ï¿½
 //		}
 //
 //		g_SaveData.sum = sum;
 //	}
 //
-//	// SAVEDATA\‘¢‘Ì‚²‚Æ‘S•”‚ðƒtƒ@ƒCƒ‹‚Éo—Í‚·‚é
+//	// SAVEDATAï¿½\ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½Æ‘Sï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Éoï¿½Í‚ï¿½ï¿½ï¿½
 //	FILE *fp = NULL;
 //
-//	printf("\nƒZ[ƒuŠJŽnEEE");		// ƒfƒoƒbƒO‰æ–Ê‚Ì‚Ý
-//	fp = fopen("savedata.bin", "wb");	// ƒtƒ@ƒCƒ‹‚ðƒoƒCƒiƒŠ‘‚«ž‚Ýƒ‚[ƒh‚ÅOpen‚·‚é
+//	printf("\nï¿½Zï¿½[ï¿½uï¿½Jï¿½nï¿½Eï¿½Eï¿½E");		// ï¿½fï¿½oï¿½bï¿½Oï¿½ï¿½Ê‚Ì‚ï¿½
+//	fp = fopen("savedata.bin", "wb");	// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½oï¿½Cï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýƒï¿½ï¿½[ï¿½hï¿½ï¿½Openï¿½ï¿½ï¿½ï¿½
 //
-//	if (fp != NULL)								// ƒtƒ@ƒCƒ‹‚ª‚ ‚ê‚Î‘‚«ž‚ÝA–³‚¯‚ê‚Î–³Ž‹
+//	if (fp != NULL)								// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î–ï¿½ï¿½ï¿½
 //	{	
-//		fwrite(&g_SaveData, 1, sizeof(SAVEDATA), fp);	// Žw’è‚µ‚½ƒAƒhƒŒƒX‚©‚çŽw’è‚µ‚½ƒoƒCƒg”•ªƒtƒ@ƒCƒ‹‚Ö‘‚«ž‚Þ
-//		fclose(fp);								// Open‚µ‚Ä‚¢‚½ƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é
-//		printf("I—¹I\n");
+//		fwrite(&g_SaveData, 1, sizeof(SAVEDATA), fp);	// ï¿½wï¿½è‚µï¿½ï¿½ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½wï¿½è‚µï¿½ï¿½ï¿½oï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Öï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//		fclose(fp);								// Openï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½
+//		printf("ï¿½Iï¿½ï¿½ï¿½I\n");
 //	}
 //	else
 //	{
-//		printf("ƒtƒ@ƒCƒ‹ƒGƒ‰[I\n");			// ƒn[ƒh‚ª‚¢‚Á‚Ï‚¢A‘‚«ž‚Ý‹ÖŽ~‚ÌŽž
-//		return FALSE;	// ƒZ[ƒuŽ¸”s
+//		printf("ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½I\n");			// ï¿½nï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï‚ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý‹ÖŽ~ï¿½ÌŽï¿½
+//		return FALSE;	// ï¿½Zï¿½[ï¿½uï¿½ï¿½ï¿½s
 //	}
 //
-//	return TRUE;	// ƒZ[ƒu¬Œ÷
+//	return TRUE;	// ï¿½Zï¿½[ï¿½uï¿½ï¿½ï¿½ï¿½
 //}
 //
 ///*******************************************************************************
-//ŠÖ”–¼:	void LoadData( void )
-//ˆø”:	void
-//–ß‚è’l:	void
-//à–¾:	ƒZ[ƒuƒf[ƒ^‚ðƒtƒ@ƒCƒ‹‚©‚ç“Ç‚Ýž‚Þ
+//ï¿½Öï¿½ï¿½ï¿½:	void LoadData( void )
+//ï¿½ï¿½ï¿½ï¿½:	void
+//ï¿½ß‚ï¿½l:	void
+//ï¿½ï¿½ï¿½:	ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç‚Ýï¿½ï¿½ï¿½
 //*******************************************************************************/
 //BOOL LoadData(void)
 //{
-//	// ƒtƒ@ƒCƒ‹‚©‚çƒZ[ƒuƒf[ƒ^‚ð“Ç‚Ýž‚Þ
+//	// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½ï¿½Ç‚Ýï¿½ï¿½ï¿½
 //	FILE *fp = NULL;
 //
-//	printf("\nƒ[ƒhŠJŽnEEE");		// ƒfƒoƒbƒO‰æ–Ê‚Ì‚Ý
-//	fp = fopen("savedata.bin", "rb");	// ƒtƒ@ƒCƒ‹‚ðƒoƒCƒiƒŠ‘‚«ž‚Ýƒ‚[ƒh‚ÅOpen‚·‚é
+//	printf("\nï¿½ï¿½ï¿½[ï¿½hï¿½Jï¿½nï¿½Eï¿½Eï¿½E");		// ï¿½fï¿½oï¿½bï¿½Oï¿½ï¿½Ê‚Ì‚ï¿½
+//	fp = fopen("savedata.bin", "rb");	// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½oï¿½Cï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýƒï¿½ï¿½[ï¿½hï¿½ï¿½Openï¿½ï¿½ï¿½ï¿½
 //
-//	if (fp != NULL)						// ƒtƒ@ƒCƒ‹‚ª‚ ‚ê‚Î‘‚«ž‚ÝA–³‚¯‚ê‚Î–³Ž‹
+//	if (fp != NULL)						// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î–ï¿½ï¿½ï¿½
 //	{
-//		fread(&g_SaveData, 1, sizeof(SAVEDATA), fp);	// Žw’è‚µ‚½ƒAƒhƒŒƒX‚ÖŽw’è‚µ‚½ƒoƒCƒg”•ªƒtƒ@ƒCƒ‹‚©‚ç“Ç‚Ýž‚Þ
-//		fclose(fp);	// Open‚µ‚Ä‚¢‚½ƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é
-//		printf("I—¹I\n");
+//		fread(&g_SaveData, 1, sizeof(SAVEDATA), fp);	// ï¿½wï¿½è‚µï¿½ï¿½ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ÖŽwï¿½è‚µï¿½ï¿½ï¿½oï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç‚Ýï¿½ï¿½ï¿½
+//		fclose(fp);	// Openï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½
+//		printf("ï¿½Iï¿½ï¿½ï¿½I\n");
 //	}
 //	else
 //	{
-//		printf("ƒtƒ@ƒCƒ‹ƒGƒ‰[I\n");
-//		return FALSE;	// ƒ[ƒhŽ¸”s
+//		printf("ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½I\n");
+//		return FALSE;	// ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½s
 //	}
 //
-//	// ƒZ[ƒuƒf[ƒ^‚Ìƒ`ƒFƒbƒNƒTƒ€‚ª‚ ‚Á‚Ä‚¢‚é‚©’²‚×‚é
+//	// ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½Ìƒ`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½ï¿½ï¿½×‚ï¿½
 //	{
-//		char *adr = (char *)&g_SaveData;	// ƒZ[ƒuƒf[ƒ^‚Ìæ“ªƒAƒhƒŒƒX‚ðadr‚É“ü‚ê‚é
-//		int sum = 0;				// ŒvŽZ‚·‚éƒ`ƒFƒbƒNƒTƒ€
-//		int org = g_SaveData.sum;			// ƒZ[ƒuƒf[ƒ^“à‚Ìƒ`ƒFƒbƒNƒTƒ€
+//		char *adr = (char *)&g_SaveData;	// ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½Ìæ“ªï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½adrï¿½É“ï¿½ï¿½ï¿½ï¿½
+//		int sum = 0;				// ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½
+//		int org = g_SaveData.sum;			// ï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½ï¿½Ìƒ`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½
 //
-//		g_SaveData.sum = 0;				// ƒ`ƒFƒbƒNƒTƒ€‚ð‚O‚ÅƒNƒŠƒA‚µ‚Ä‚¢‚­
+//		g_SaveData.sum = 0;				// ï¿½`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½ï¿½Oï¿½ÅƒNï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 //
 //		for (int i = 0; i < sizeof(SAVEDATA); i++)
 //		{
-//			sum += adr[i];	// charŒ^‚Ì‚PƒoƒCƒg’PˆÊ‚Ìƒf[ƒ^‚ð‘«‚µ‚Ä‚­
+//			sum += adr[i];	// charï¿½^ï¿½Ì‚Pï¿½oï¿½Cï¿½gï¿½Pï¿½Ê‚Ìƒfï¿½[ï¿½^ï¿½ð‘«‚ï¿½ï¿½Ä‚ï¿½
 //		}
 //
-//		// ‚à‚Æ‚à‚Æ‚Ìƒ`ƒFƒbƒNƒTƒ€‚ÆÄŒvŽZ‚µ‚½ƒ`ƒFƒbƒNƒTƒ€‚ª“¯‚¶‚©’²‚×‚Ä‚¢‚é
+//		// ï¿½ï¿½Æ‚ï¿½Æ‚Ìƒ`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½ÆÄŒvï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×‚Ä‚ï¿½ï¿½ï¿½
 //		if (sum != org)
 //		{
-//			//ƒf[ƒ^‚ª‰ü‚´‚ñ‚³‚ê‚Ä‚¢‚é‚Ì‚Åƒf[ƒ^‚ðƒ[ƒh‚¹‚¸‚É–ß‚é
-//			return FALSE;	// ƒ[ƒhŽ¸”s
+//			//ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ‚³‚ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚Åƒfï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½É–ß‚ï¿½
+//			return FALSE;	// ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½s
 //		}
 //	}
 //
-//	// ƒXƒRƒA‹L˜^ƒf[ƒ^
+//	// ï¿½Xï¿½Rï¿½Aï¿½Lï¿½^ï¿½fï¿½[ï¿½^
 //	{
 //		int *record = GetRecord();
 //
-//		// ƒZ[ƒu
+//		// ï¿½Zï¿½[ï¿½u
 //		for (int i = 0; i < STAGE_MAX; i++)
 //		{
 //			for (int j = 0; j < RECORD_MAX; j++)
@@ -141,18 +141,18 @@
 //			}
 //		}
 //	}
-//	// ƒNƒŠƒA‹L˜^ƒf[ƒ^
+//	// ï¿½Nï¿½ï¿½ï¿½Aï¿½Lï¿½^ï¿½fï¿½[ï¿½^
 //	{
 //		BOOL *clear = GetStageClear();
 //
-//		// ƒZ[ƒu
+//		// ï¿½Zï¿½[ï¿½u
 //		for (int i = 0; i < STAGE_MAX; i++)
 //		{
 //			clear[i] = g_SaveData.clear[i];
 //		}
 //	}
 //
-//	return TRUE;	// ƒ[ƒh¬Œ÷
+//	return TRUE;	// ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½
 //}
 //
 //void DeleteSaveData(void)
@@ -168,12 +168,12 @@
 //
 //	if (fp != NULL)
 //	{
-//		fprintf(fp, "%d\n", param);	// Žw’è‚µ‚½ƒAƒhƒŒƒX‚©‚çŽw’è‚µ‚½ƒoƒCƒg”•ªƒtƒ@ƒCƒ‹‚Ö‘‚«ž‚Þ
-//		fclose(fp);					// Open‚µ‚Ä‚¢‚½ƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é
-//		printf("I—¹I\n");
+//		fprintf(fp, "%d\n", param);	// ï¿½wï¿½è‚µï¿½ï¿½ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½wï¿½è‚µï¿½ï¿½ï¿½oï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Öï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//		fclose(fp);					// Openï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½
+//		printf("ï¿½Iï¿½ï¿½ï¿½I\n");
 //	}
 //	else
 //	{
-//		printf("ƒtƒ@ƒCƒ‹ƒGƒ‰[I\n");	// ƒn[ƒh‚ª‚¢‚Á‚Ï‚¢A‘‚«ž‚Ý‹ÖŽ~‚ÌŽž
+//		printf("ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½I\n");	// ï¿½nï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï‚ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý‹ÖŽ~ï¿½ÌŽï¿½
 //	}
 //}

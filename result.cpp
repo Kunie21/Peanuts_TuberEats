@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒŠƒTƒ‹ƒg‰æ–Êˆ— [result.cpp]
-// Author : æ ˜è‰m
+// ï¿½ï¿½ï¿½Tï¿½ï¿½ï¿½gï¿½ï¿½Êï¿½ï¿½ï¿½ [result.cpp]
+// Author : ï¿½ ï¿½ï¿½m
 //
 //=============================================================================
 #include "main.h"
@@ -13,38 +13,38 @@
 #include "ui_game.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ”wŒiƒTƒCƒY‰¡
-#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ”wŒiƒTƒCƒYc
+#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½ï¿½
+#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½c
 
-#define STAR_MAX					(5)				// ¯‚ÌÅ‘å”
-#define STAR_WIDTH					(118.0f)		// ¯‚ÌƒTƒCƒY‰¡
-#define STAR_HEIGHT					(113.0f)		// ¯‚ÌƒTƒCƒYc
+#define STAR_MAX					(5)				// ï¿½ï¿½ï¿½ÌÅ‘å”
+#define STAR_WIDTH					(118.0f)		// ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½ï¿½
+#define STAR_HEIGHT					(113.0f)		// ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½c
 
-#define EXPRESSION_WIDTH			(190.0f)		// •\î‚ÌƒTƒCƒY‰¡
-#define EXPRESSION_HEIGHT			(190.0f)		// •\î‚ÌƒTƒCƒYc
+#define EXPRESSION_WIDTH			(190.0f)		// ï¿½\ï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½ï¿½
+#define EXPRESSION_HEIGHT			(190.0f)		// ï¿½\ï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½c
 
-#define WORD_WIDTH					(205.0f)		// €–Ú‚ÌƒTƒCƒY‰¡
-#define WORD_HEIGHT					(52.0f)			// €–Ú‚ÌƒTƒCƒYc
+#define WORD_WIDTH					(205.0f)		// ï¿½ï¿½ï¿½Ú‚ÌƒTï¿½Cï¿½Yï¿½ï¿½
+#define WORD_HEIGHT					(52.0f)			// ï¿½ï¿½ï¿½Ú‚ÌƒTï¿½Cï¿½Yï¿½c
 
-#define YEN_MAX						(4)				// ‰¿Ši€–Ú‚ÌÅ‘å”
-#define NUMBER_WIDTH				(389.0f)		// ”Žš‚Ì‰¡•
-#define TOTAL_NUMBER_WIDTH			(517.0f)		// ‘Žû‰v”Žš‚Ì‰¡•
-#define YEN_DIGIT					(4)				// ”Žš‚ÌŒ…”
-#define ZERO_DIGIT					(2)				// ¬”“_ˆÈ~‚ÌŒ…”
-#define TOTAL_YEN_DIGIT				(5)				// ‘Žû‰v”Žš‚ÌŒ…”
-#define YEN_FINAL_POS				(570.0f)		// ”Žš‚ÌÅŒã‚ÌŒ…‚ÌˆÊ’u
+#define YEN_MAX						(4)				// ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½Ú‚ÌÅ‘å”
+#define NUMBER_WIDTH				(389.0f)		// ï¿½ï¿½ï¿½ï¿½ï¿½Ì‰ï¿½ï¿½ï¿½
+#define TOTAL_NUMBER_WIDTH			(517.0f)		// ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Ì‰ï¿½ï¿½ï¿½
+#define YEN_DIGIT					(4)				// ï¿½ï¿½ï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½
+#define ZERO_DIGIT					(2)				// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½È~ï¿½ÌŒï¿½ï¿½ï¿½
+#define TOTAL_YEN_DIGIT				(5)				// ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½
+#define YEN_FINAL_POS				(570.0f)		// ï¿½ï¿½ï¿½ï¿½ï¿½ÌÅŒï¿½ÌŒï¿½ï¿½ÌˆÊ’u
 
-#define MOVE						(28.0f)			// ˆÚ“®—Ê
+#define MOVE						(28.0f)			// ï¿½Ú“ï¿½ï¿½ï¿½
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static int				g_Time = 0;
 static BOOL				g_Load = FALSE;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum
 {
 	TEXTURE_RESULT_BAR = 0,
@@ -79,7 +79,7 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/result_gamen/result_banner.png",
 	"data/TEXTURE/result_gamen/result_bg.png",
@@ -124,11 +124,11 @@ static int TotalAmount = 0;
 
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitResult(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(),
@@ -139,19 +139,19 @@ HRESULT InitResult(void)
 			NULL);
 	}
 
-	// Ú×Ý’è
-	//ˆê”Ôã‚Ìƒo[
+	// ï¿½Ú×Ý’ï¿½
+	//ï¿½ï¿½Ôï¿½Ìƒoï¿½[
 	g_td[TEXTURE_RESULT_BAR].size = { TEXTURE_WIDTH, 154.0f };
 	g_td[TEXTURE_RESULT_BAR].tex = &g_Texture[TEXTURE_RESULT_BAR];
 	g_td[TEXTURE_RESULT_BAR].pos = { 0.0f, (-SCREEN_HEIGHT/2 + (g_td[TEXTURE_RESULT_BAR].size.y / 2))};
 	
-	//”wŒi
+	//ï¿½wï¿½i
 	g_td[TEXTURE_RESULT_BG].size = { TEXTURE_WIDTH, 1978.0f };
 	g_td[TEXTURE_RESULT_BG].tex = &g_Texture[TEXTURE_RESULT_BG];
 	g_td[TEXTURE_RESULT_BG].pos = { 0.0f, (0.0f + g_td[TEXTURE_RESULT_BAR].size.y) };
 	g_td[TEXTURE_RESULT_BG].uv_pos = { 0.0f, 0.0f, 1.0f, 0.7f };
 
-	//¯
+	//ï¿½ï¿½
 	g_td[TEXTURE_RESULT_NO_STARS].size = { STAR_WIDTH, STAR_HEIGHT };
 	g_td[TEXTURE_RESULT_NO_STARS].tex = &g_Texture[TEXTURE_RESULT_NO_STARS];
 	g_td[TEXTURE_RESULT_NO_STARS].pos = { 0.0f, -180.0f };
@@ -160,7 +160,7 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_GREEN_STARS].tex = &g_Texture[TEXTURE_RESULT_GREEN_STARS];
 	g_td[TEXTURE_RESULT_GREEN_STARS].pos = { -(g_td[TEXTURE_RESULT_GREEN_STARS].size.x + 50.0f) * 2, -180.0f };
 
-	//•\î
+	//ï¿½\ï¿½ï¿½
 	g_td[TEXTURE_RESULT_EXPRESSION_1].size = { EXPRESSION_WIDTH, EXPRESSION_HEIGHT };
 	g_td[TEXTURE_RESULT_EXPRESSION_1].tex = &g_Texture[TEXTURE_RESULT_EXPRESSION_1];
 	g_td[TEXTURE_RESULT_EXPRESSION_1].pos = { 0.0f, 90.0f };
@@ -173,7 +173,7 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_EXPRESSION_3].tex = &g_Texture[TEXTURE_RESULT_EXPRESSION_3];
 	g_td[TEXTURE_RESULT_EXPRESSION_3].pos = { 0.0f, 90.0f };
 
-	//ƒXƒNƒ[ƒ‹
+	//ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½
 	g_td[TEXTURE_RESULT_SCROLL_BAR].size = { 35.0f, 772.0f };
 	g_td[TEXTURE_RESULT_SCROLL_BAR].tex = &g_Texture[TEXTURE_RESULT_SCROLL_BAR];
 	g_td[TEXTURE_RESULT_SCROLL_BAR].pos = { (SCREEN_WIDTH /2 - g_td[TEXTURE_RESULT_SCROLL_BAR].size.x - 50.0f), 20.0f };
@@ -182,7 +182,7 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_SCROLL].tex = &g_Texture[TEXTURE_RESULT_SCROLL];
 	g_td[TEXTURE_RESULT_SCROLL].pos = { (SCREEN_WIDTH / 2 - g_td[TEXTURE_RESULT_SCROLL_BAR].size.x - 50.0f), (0.0f - g_td[TEXTURE_RESULT_SCROLL].size.y / 2 + g_td[TEXTURE_RESULT_SCROLL_BAR].pos.y)  };
 
-	//€–Ú
+	//ï¿½ï¿½ï¿½ï¿½
 	g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].size = { WORD_WIDTH, WORD_HEIGHT };
 	g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].tex = &g_Texture[TEXTURE_RESULT_DELIVERY_DISTAMCE];
 	g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].pos = { -700.0f, 610.0f };
@@ -195,7 +195,7 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_DELIVERY_FEE].tex = &g_Texture[TEXTURE_RESULT_DELIVERY_FEE];
 	g_td[TEXTURE_RESULT_DELIVERY_FEE].pos = { -700.0f, 1010.0f };
 
-	g_td[TEXTURE_RESULT_TIP].size = { 143.0f,WORD_HEIGHT };	// ŽO•¶Žš‚È‚Ì‚Å‰¡•’²®
+	g_td[TEXTURE_RESULT_TIP].size = { 143.0f,WORD_HEIGHT };	// ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½È‚Ì‚Å‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	g_td[TEXTURE_RESULT_TIP].tex = &g_Texture[TEXTURE_RESULT_TIP];
 	g_td[TEXTURE_RESULT_TIP].pos = { -700.0f, 1210.0f };
 
@@ -207,7 +207,7 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_TOTAL_AMOUNT].tex = &g_Texture[TEXTURE_RESULT_TOTAL_AMOUNT];
 	g_td[TEXTURE_RESULT_TOTAL_AMOUNT].pos = { -700.0f , 1700.0f };
 
-	//’l’i•`‰æ
+	//ï¿½lï¿½iï¿½`ï¿½ï¿½
 	g_td[TEXTURE_RESULT_YEN].size = { 42.0f, 52.0f };
 	g_td[TEXTURE_RESULT_YEN].tex = &g_Texture[TEXTURE_RESULT_YEN];
 	g_td[TEXTURE_RESULT_YEN].pos = { 400.0f, 608.0f };
@@ -250,7 +250,7 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_TOTAL_POINT].tex = &g_Texture[TEXTURE_RESULT_TOTAL_POINT];
 	g_td[TEXTURE_RESULT_TOTAL_POINT].pos = { (YEN_FINAL_POS + 32.0f) , 1725.0f };
 
-	//‰Ô‰Î
+	//ï¿½Ô‰ï¿½
 	g_td[TEXTURE_RESULT_FIREWORK_1].size = { 664.0f, 664.0f };
 	g_td[TEXTURE_RESULT_FIREWORK_1].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_1];
 	g_td[TEXTURE_RESULT_FIREWORK_1].pos = { -600.0f , 200.0f };
@@ -295,7 +295,7 @@ HRESULT InitResult(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitResult(void)
 {
@@ -314,11 +314,11 @@ void UninitResult(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateResult(void)
 {
-	//ƒXƒNƒ[ƒ‹‚·‚é
+	//ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (GetKeyboardPress(DIK_DOWN))
 	{
 		if (g_td[TEXTURE_RESULT_BG].uv_pos.v <= 0.45f)
@@ -393,7 +393,7 @@ void UpdateResult(void)
 		}
 	}
 
-	//ŽžŠÔ‚Å¯”‚ðŒˆ’è
+	//ï¿½ï¿½ï¿½Ô‚Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (ResultTime <= 20.0f)
 	{
 		GreenStarNum = 5;
@@ -419,7 +419,7 @@ void UpdateResult(void)
 		GreenStarNum = 0;
 	}
 
-	//‰Ô‰Î
+	//ï¿½Ô‰ï¿½
 	if (g_Time > 60)
 	{
 		if (g_td[TEXTURE_RESULT_FIREWORK_1].scl.x <= 1.0f)
@@ -475,35 +475,35 @@ void UpdateResult(void)
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawResult(void)
 {
 	SetDraw2DTexture();
 
-	//”wŒi•`‰æ
+	//ï¿½wï¿½iï¿½`ï¿½ï¿½
 	DrawTexture2D(&g_td[TEXTURE_RESULT_BG], FALSE, TRUE);
 	
-	//Å‘å¯”•`‰æ
+	//ï¿½Å‘å¯ï¿½ï¿½ï¿½`ï¿½ï¿½
 	for (int i = 0; i < STAR_MAX; i++)
 	{
 		DrawTexture2D(&g_td[TEXTURE_RESULT_NO_STARS]);
 		g_td[TEXTURE_RESULT_NO_STARS].pos.x = (-(g_td[TEXTURE_RESULT_NO_STARS].size.x + 50.0f) * 2) + ((g_td[TEXTURE_RESULT_NO_STARS].size.x + 50.0f) * i);
-		//																				ª¯‚ÌŠÔŠu’²®
+		//																				ï¿½ï¿½ï¿½ï¿½ï¿½ÌŠÔŠuï¿½ï¿½ï¿½ï¿½
 	}
 
-	//Šl“¾‚µ‚½¯•`‰æ
+	//ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½
 	for (int i = 0; i < GreenStarNum; i++)
 	{
 		if (g_Time >= (i + 1) * 40)
 		{
 			DrawTexture2D(&g_td[TEXTURE_RESULT_GREEN_STARS]);
 			g_td[TEXTURE_RESULT_GREEN_STARS].pos.x = (-(g_td[TEXTURE_RESULT_GREEN_STARS].size.x + 50.0f) * 2) + ((g_td[TEXTURE_RESULT_GREEN_STARS].size.x + 50.0f) * i);
-			//																				ª¯‚ÌŠÔŠu’²®
+			//																				ï¿½ï¿½ï¿½ï¿½ï¿½ÌŠÔŠuï¿½ï¿½ï¿½ï¿½
 		}
 	}
 
-	//•\î•`‰æ
+	//ï¿½\ï¿½ï¿½`ï¿½ï¿½
 	if (ResultTime <= 30.0f)
 	{
 		DrawTexture2D(&g_td[TEXTURE_RESULT_EXPRESSION_1]);
@@ -517,11 +517,11 @@ void DrawResult(void)
 		DrawTexture2D(&g_td[TEXTURE_RESULT_EXPRESSION_3]);
 	}
 
-	//ƒXƒNƒ[ƒ‹•`‰æ
+	//ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½`ï¿½ï¿½
 	DrawTexture2D(&g_td[TEXTURE_RESULT_SCROLL_BAR]);
 	DrawTexture2D(&g_td[TEXTURE_RESULT_SCROLL]);
 
-	//€–Ú•`‰æ
+	//ï¿½ï¿½ï¿½Ú•`ï¿½ï¿½
 	DrawTexture2D(&g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE]);
 	DrawTexture2D(&g_td[TEXTURE_RESULT_DELIVERY_TIME]);
 	DrawTexture2D(&g_td[TEXTURE_RESULT_DELIVERY_FEE]);
@@ -529,7 +529,7 @@ void DrawResult(void)
 	DrawTexture2D(&g_td[TEXTURE_RESULT_DAMAGE]);
 	DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_AMOUNT]);
 
-	//‰~ƒ}[ƒN•`‰æ
+	//ï¿½~ï¿½}ï¿½[ï¿½Nï¿½`ï¿½ï¿½
 	for (int i = 0; i < YEN_MAX; i++)
 	{
 		g_td[TEXTURE_RESULT_YEN].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y);
@@ -538,7 +538,7 @@ void DrawResult(void)
 	DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_YEN]);
 	DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_YEN]);
 
-	//’l’i•`‰æ
+	//ï¿½lï¿½iï¿½`ï¿½ï¿½
 	for (int i = 0; i < YEN_MAX; i++)
 	{
 		int number[YEN_MAX] = { DeliveryDistance,DeliveryTime,DeliveryFee,Tip };
@@ -597,7 +597,7 @@ void DrawResult(void)
 
 	}
 
-	//‰Ô‰Î•`‰æ
+	//ï¿½Ô‰Î•`ï¿½ï¿½
 	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_1]);
 	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_2]);
 	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_3]);
@@ -605,7 +605,7 @@ void DrawResult(void)
 	DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_5]);
 
 
-	//ÅŒã‚Éã‚Ìƒo[•`‰æ
+	//ï¿½ÅŒï¿½Éï¿½Ìƒoï¿½[ï¿½`ï¿½ï¿½
 	DrawTexture2D(&g_td[TEXTURE_RESULT_BAR]);
 
 

@@ -1,26 +1,26 @@
 //=============================================================================
 //
-// ƒJƒƒ‰ˆ— [camera.h]
-// Author : š ] ãÄ‘¾
+// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [camera.h]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #pragma once
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define	VALUE_MOVE_CAMERA	(2.0f)			// ƒJƒƒ‰‚ÌˆÚ“®—Ê
-#define	VALUE_ROTATE_CAMERA	(XM_PI * 0.01f)	// ƒJƒƒ‰‚Ì‰ñ“]—Ê
+#define	VALUE_MOVE_CAMERA	(2.0f)			// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌˆÚ“ï¿½ï¿½ï¿½
+#define	VALUE_ROTATE_CAMERA	(XM_PI * 0.01f)	// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ì‰ï¿½]ï¿½ï¿½
 
-#define	VIEW_ANGLE		(XMConvertToRadians(45.0f))						// ƒrƒ…[•½–Ê‚ÌŽ‹–ìŠp
-#define	VIEW_ASPECT		((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)	// ƒrƒ…[•½–Ê‚ÌƒAƒXƒyƒNƒg”ä	
-#define	VIEW_NEAR_Z		(10.0f)											// ƒrƒ…[•½–Ê‚ÌNearZ’l
-#define	VIEW_FAR_Z		(20000.0f)										// ƒrƒ…[•½–Ê‚ÌFarZ’l
+#define	VIEW_ANGLE		(XMConvertToRadians(45.0f))						// ï¿½rï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ê‚ÌŽï¿½ï¿½ï¿½p
+#define	VIEW_ASPECT		((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)	// ï¿½rï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ê‚ÌƒAï¿½Xï¿½yï¿½Nï¿½gï¿½ï¿½	
+#define	VIEW_NEAR_Z		(10.0f)											// ï¿½rï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ê‚ï¿½NearZï¿½l
+#define	VIEW_FAR_Z		(20000.0f)										// ï¿½rï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ê‚ï¿½FarZï¿½l
 
 #define CAMERA_POS_Z	(-310.0f)
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 void InitCamera(void);
 void UninitCamera(void);

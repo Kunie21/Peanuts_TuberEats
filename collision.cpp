@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// “–‚½‚è”»’èˆ— [collision.cpp]
+// ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½èˆï¿½ï¿½ [collision.cpp]
 // Author : 
 //
 //=============================================================================
@@ -8,30 +8,30 @@
 #include "collision.h"
 
 //=============================================================================
-// ‹…‚É‚æ‚é“–‚½‚è”»’èˆ—
-// ‰ñ“]‚Íl—¶‚µ‚È‚¢
-// –ß‚è’lF“–‚½‚Á‚Ä‚½‚çTRUE
+// ï¿½ï¿½ï¿½É‚ï¿½é“–ï¿½ï¿½ï¿½è”»ï¿½èˆï¿½ï¿½
+// ï¿½ï¿½]ï¿½Ílï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
+// ï¿½ß‚ï¿½lï¿½Fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½TRUE
 //=============================================================================
 int CollisionSphere(XMFLOAT3 pos1, float radius1, XMFLOAT3 pos2, float radius2)
 {
-	int ans = -1;	// ŠO‚ê‚ðƒZƒbƒg‚µ‚Ä‚¨‚­
+	int ans = -1;	// ï¿½Oï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 
-	// ·‚ðŒvŽZ
+	// ï¿½ï¿½ï¿½ï¿½vï¿½Z
 	XMVECTOR v_1 = XMLoadFloat3(&pos1);
 	XMVECTOR v_2 = XMLoadFloat3(&pos2);
 	XMVECTOR v_temp = v_2 - v_1;
 
-	// ‹——£
+	// ï¿½ï¿½ï¿½ï¿½
 	float length = 0.0f;
 	float radius = radius1 + radius2;
 
-	// Ši”[
+	// ï¿½iï¿½[
 	XMStoreFloat(&length, XMVector3Length(v_temp));
 
-	// ƒoƒEƒ“ƒfƒBƒ“ƒOƒ{ƒbƒNƒX(BB)‚Ìˆ—
+	// ï¿½oï¿½Eï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Oï¿½{ï¿½bï¿½Nï¿½X(BB)ï¿½Ìï¿½ï¿½ï¿½
 	if (radius > length)
 	{
-		// “–‚½‚Á‚½Žž‚Ìˆ—
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 		ans = (int)((1.0f - (length - 7.0f) / (radius - 7.0f)) * 5.9f);
 	}
 
@@ -39,28 +39,28 @@ int CollisionSphere(XMFLOAT3 pos1, float radius1, XMFLOAT3 pos2, float radius2)
 }
 
 //=============================================================================
-// BB‚É‚æ‚é“–‚½‚è”»’èˆ—
-// ‰ñ“]‚Íl—¶‚µ‚È‚¢
-// –ß‚è’lF“–‚½‚Á‚Ä‚½‚çTRUE
+// BBï¿½É‚ï¿½é“–ï¿½ï¿½ï¿½è”»ï¿½èˆï¿½ï¿½
+// ï¿½ï¿½]ï¿½Ílï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
+// ï¿½ß‚ï¿½lï¿½Fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½TRUE
 //=============================================================================
 BOOL CollisionBB(XMFLOAT3 mpos, float mw, float mh,
 	XMFLOAT3 ypos, float yw, float yh)
 {
-	BOOL ans = FALSE;	// ŠO‚ê‚ðƒZƒbƒg‚µ‚Ä‚¨‚­
+	BOOL ans = FALSE;	// ï¿½Oï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 
-	// À•W‚ª’†S“_‚È‚Ì‚ÅŒvŽZ‚µ‚â‚·‚­”¼•ª‚É‚µ‚Ä‚¢‚é
+	// ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½_ï¿½È‚Ì‚ÅŒvï¿½Zï¿½ï¿½ï¿½â‚·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 	mw /= 2;
 	mh /= 2;
 	yw /= 2;
 	yh /= 2;
 
-	// ƒoƒEƒ“ƒfƒBƒ“ƒOƒ{ƒbƒNƒX(BB)‚Ìˆ—
+	// ï¿½oï¿½Eï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Oï¿½{ï¿½bï¿½Nï¿½X(BB)ï¿½Ìï¿½ï¿½ï¿½
 	if ((mpos.x + mw > ypos.x - yw) &&
 		(mpos.x - mw < ypos.x + yw) &&
 		(mpos.y + mh > ypos.y - yh) &&
 		(mpos.y - mh < ypos.y + yh))
 	{
-		// “–‚½‚Á‚½Žž‚Ìˆ—
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 		ans = TRUE;
 	}
 
@@ -68,24 +68,24 @@ BOOL CollisionBB(XMFLOAT3 mpos, float mw, float mh,
 }
 
 //=============================================================================
-// BC‚É‚æ‚é“–‚½‚è”»’èˆ—
-// ƒTƒCƒY‚Í”¼Œa
-// –ß‚è’lF“–‚½‚Á‚Ä‚½‚çTRUE
+// BCï¿½É‚ï¿½é“–ï¿½ï¿½ï¿½è”»ï¿½èˆï¿½ï¿½
+// ï¿½Tï¿½Cï¿½Yï¿½Í”ï¿½ï¿½a
+// ï¿½ß‚ï¿½lï¿½Fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½TRUE
 //=============================================================================
 BOOL CollisionBC(XMFLOAT3 pos1, XMFLOAT3 pos2, float r1, float r2)
 {
-	BOOL ans = FALSE;						// ŠO‚ê‚ðƒZƒbƒg‚µ‚Ä‚¨‚­
+	BOOL ans = FALSE;						// ï¿½Oï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 
-	float len = (r1 + r2) * (r1 + r2);		// ”¼Œa‚ð2æ‚µ‚½•¨
+	float len = (r1 + r2) * (r1 + r2);		// ï¿½ï¿½ï¿½aï¿½ï¿½2ï¿½æ‚µï¿½ï¿½ï¿½ï¿½
 	XMVECTOR temp = XMLoadFloat3(&pos1) - XMLoadFloat3(&pos2);
-	temp = XMVector3LengthSq(temp);			// 2“_ŠÔ‚Ì‹——£i2æ‚µ‚½•¨j
+	temp = XMVector3LengthSq(temp);			// 2ï¿½_ï¿½Ô‚Ì‹ï¿½ï¿½ï¿½ï¿½i2ï¿½æ‚µï¿½ï¿½ï¿½ï¿½ï¿½j
 	float lenSq = 0.0f;
 	XMStoreFloat(&lenSq, temp);
 
-	// ”¼Œa‚ð2æ‚µ‚½•¨‚æ‚è‹——£‚ª’Z‚¢H
+	// ï¿½ï¿½ï¿½aï¿½ï¿½2ï¿½æ‚µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è‹—ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½H
 	if (len > lenSq)
 	{
-		ans = TRUE;	// “–‚½‚Á‚Ä‚¢‚é
+		ans = TRUE;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 	}
 
 	return ans;
@@ -93,14 +93,14 @@ BOOL CollisionBC(XMFLOAT3 pos1, XMFLOAT3 pos2, float r1, float r2)
 
 
 //=============================================================================
-// “àÏ(dot)
+// ï¿½ï¿½ï¿½(dot)
 //=============================================================================
 float dotProduct(XMVECTOR *v1, XMVECTOR *v2)
 {
 #if 0
 	float ans = v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
 #else
-	// ƒ_ƒCƒŒƒNƒg‚w‚Å‚ÍAAA
+	// ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½wï¿½Å‚ÍAï¿½Aï¿½A
 	XMVECTOR temp = XMVector3Dot(*v1, *v2);
 	float ans = 0.0f;
 	XMStoreFloat(&ans, temp);
@@ -111,7 +111,7 @@ float dotProduct(XMVECTOR *v1, XMVECTOR *v2)
 
 
 //=============================================================================
-// ŠOÏ(cross)
+// ï¿½Oï¿½ï¿½(cross)
 //=============================================================================
 void crossProduct(XMVECTOR *ret, XMVECTOR *v1, XMVECTOR *v2)
 {
@@ -120,7 +120,7 @@ void crossProduct(XMVECTOR *ret, XMVECTOR *v1, XMVECTOR *v2)
 	ret->y = v1->z * v2->x - v1->x * v2->z;
 	ret->z = v1->x * v2->y - v1->y * v2->x;
 #else
-	// ƒ_ƒCƒŒƒNƒg‚w‚Å‚ÍAAA
+	// ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½wï¿½Å‚ÍAï¿½Aï¿½A
 	*ret = XMVector3Cross(*v1, *v2);
 #endif
 
@@ -128,13 +128,13 @@ void crossProduct(XMVECTOR *ret, XMVECTOR *v1, XMVECTOR *v2)
 
 
 //=============================================================================
-// ƒŒƒCƒLƒƒƒXƒg
-// p0, p1, p2@ƒ|ƒŠƒSƒ“‚Ì‚R’¸“_
-// pos0 Žn“_
-// pos1 I“_
-// hit@Œð“_‚Ì•Ô‹p—p
-// normal –@üƒxƒNƒgƒ‹‚Ì•Ô‹p—p
-// “–‚½‚Á‚Ä‚¢‚éê‡ATRUE‚ð•Ô‚·
+// ï¿½ï¿½ï¿½Cï¿½Lï¿½ï¿½ï¿½Xï¿½g
+// p0, p1, p2ï¿½@ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì‚Rï¿½ï¿½ï¿½_
+// pos0 ï¿½nï¿½_
+// pos1 ï¿½Iï¿½_
+// hitï¿½@ï¿½ï¿½_ï¿½Ì•Ô‹pï¿½p
+// normal ï¿½@ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ì•Ô‹pï¿½p
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½ATRUEï¿½ï¿½Ô‚ï¿½
 //=============================================================================
 BOOL RayCast(XMFLOAT3 xp0, XMFLOAT3 xp1, XMFLOAT3 xp2, XMFLOAT3 xpos0, XMFLOAT3 xpos1, XMFLOAT3 *hit, XMFLOAT3 *normal)
 {
@@ -144,77 +144,77 @@ BOOL RayCast(XMFLOAT3 xp0, XMFLOAT3 xp1, XMFLOAT3 xp2, XMFLOAT3 xpos0, XMFLOAT3 
 	XMVECTOR	pos0 = XMLoadFloat3(&xpos0);
 	XMVECTOR	pos1 = XMLoadFloat3(&xpos1);
 
-	XMVECTOR	nor;	// ƒ|ƒŠƒSƒ“‚Ì–@ü
+	XMVECTOR	nor;	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì–@ï¿½ï¿½
 	XMVECTOR	vec1;
 	XMVECTOR	vec2;
 	float		d1, d2;
 
-	{	// ƒ|ƒŠƒSƒ“‚ÌŠOÏ‚ð‚Æ‚Á‚Ä–@ü‚ð‹‚ß‚é(‚±‚Ìˆ—‚Í‘ÎÛ‚ªŒÅ’è•¨‚È‚ç—\‚ßInit()‚Ås‚Á‚Ä‚¨‚­‚Æ—Ç‚¢)
+	{	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ÌŠOï¿½Ï‚ï¿½Æ‚ï¿½ï¿½Ä–@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½(ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½Í‘ÎÛ‚ï¿½ï¿½Å’è•¨ï¿½È‚ï¿½\ï¿½ï¿½Init()ï¿½Åsï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½Æ—Ç‚ï¿½)
 		vec1 = p1 - p0;
 		vec2 = p2 - p0;
 		crossProduct(&nor, &vec2, &vec1);
-		nor = XMVector3Normalize(nor);		// ŒvŽZ‚µ‚â‚·‚¢‚æ‚¤‚É–@ü‚ðƒm[ƒ}ƒ‰ƒCƒY‚µ‚Ä‚¨‚­(‚±‚ÌƒxƒNƒgƒ‹‚Ì’·‚³‚ð‚P‚É‚µ‚Ä‚¢‚é)
-		XMStoreFloat3(normal, nor);			// ‹‚ß‚½–@ü‚ð“ü‚ê‚Ä‚¨‚­
+		nor = XMVector3Normalize(nor);		// ï¿½vï¿½Zï¿½ï¿½ï¿½â‚·ï¿½ï¿½ï¿½æ‚¤ï¿½É–@ï¿½ï¿½ï¿½ï¿½mï¿½[ï¿½}ï¿½ï¿½ï¿½Cï¿½Yï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½Ì’ï¿½ï¿½ï¿½ï¿½ï¿½Pï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½)
+		XMStoreFloat3(normal, nor);			// ï¿½ï¿½ï¿½ß‚ï¿½ï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 	}
 
-	// ƒ|ƒŠƒSƒ“•½–Ê‚Æü•ª‚Ì“àÏ‚Æ‚Á‚ÄÕ“Ë‚µ‚Ä‚¢‚é‰Â”\«‚ð’²‚×‚éi‰sŠp‚È‚ç{A“ÝŠp‚È‚ç[A’¼Šp‚È‚ç‚Oj
+	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½Ê‚Æï¿½ï¿½ï¿½ï¿½Ì“ï¿½Ï‚Æ‚ï¿½ï¿½ÄÕ“Ë‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Â”\ï¿½ï¿½ï¿½ð’²‚×‚ï¿½iï¿½sï¿½pï¿½È‚ï¿½{ï¿½Aï¿½ÝŠpï¿½È‚ï¿½[ï¿½Aï¿½ï¿½ï¿½pï¿½È‚ï¿½Oï¿½j
 	vec1 = pos0 - p0;
 	vec2 = pos1 - p0;
-	{	// ‹‚ß‚½ƒ|ƒŠƒSƒ“‚Ì–@ü‚Æ‚Q‚Â‚ÌƒxƒNƒgƒ‹iü•ª‚Ì—¼’[‚Æƒ|ƒŠƒSƒ“ã‚Ì”CˆÓ‚Ì“_j‚Ì“àÏ‚Æ‚Á‚ÄÕ“Ë‚µ‚Ä‚¢‚é‰Â”\«‚ð’²‚×‚é
+	{	// ï¿½ï¿½ï¿½ß‚ï¿½ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì–@ï¿½ï¿½ï¿½Æ‚Qï¿½Â‚Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½Ì—ï¿½ï¿½[ï¿½Æƒ|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½Ì”Cï¿½Ó‚Ì“_ï¿½jï¿½Ì“ï¿½Ï‚Æ‚ï¿½ï¿½ÄÕ“Ë‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Â”\ï¿½ï¿½ï¿½ð’²‚×‚ï¿½
 		d1 = dotProduct(&vec1, &nor);
 		d2 = dotProduct(&vec2, &nor);
 		if (((d1 * d2) > 0.0f) || (d1 == 0 && d2 == 0))
 		{
-			// “–‚½‚Á‚Ä‚¢‚é‰Â”\«‚Í–³‚¢
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Â”\ï¿½ï¿½ï¿½Í–ï¿½ï¿½ï¿½
 			return(FALSE);
 		}
 	}
 
 
-	{	// ƒ|ƒŠƒSƒ“‚Æü•ª‚ÌŒð“_‚ð‹‚ß‚é
-		d1 = (float)fabs(d1);	// â‘Î’l‚ð‹‚ß‚Ä‚¢‚é
-		d2 = (float)fabs(d2);	// â‘Î’l‚ð‹‚ß‚Ä‚¢‚é
-		float a = d1 / (d1 + d2);							// “à•ª”ä
+	{	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Æï¿½ï¿½ï¿½ï¿½ÌŒï¿½_ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
+		d1 = (float)fabs(d1);	// ï¿½ï¿½Î’lï¿½ï¿½ï¿½ï¿½ß‚Ä‚ï¿½ï¿½ï¿½
+		d2 = (float)fabs(d2);	// ï¿½ï¿½Î’lï¿½ï¿½ï¿½ï¿½ß‚Ä‚ï¿½ï¿½ï¿½
+		float a = d1 / (d1 + d2);							// ï¿½ï¿½ï¿½ï¿½ï¿½
 
-		XMVECTOR	vec3 = (1 - a) * vec1 + a * vec2;		// p0‚©‚çŒð“_‚Ö‚ÌƒxƒNƒgƒ‹
-		XMVECTOR	p3 = p0 + vec3;							// Œð“_
-		XMStoreFloat3(hit, p3);								// ‹‚ß‚½Œð“_‚ð“ü‚ê‚Ä‚¨‚­
+		XMVECTOR	vec3 = (1 - a) * vec1 + a * vec2;		// p0ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½
+		XMVECTOR	p3 = p0 + vec3;							// ï¿½ï¿½_
+		XMStoreFloat3(hit, p3);								// ï¿½ï¿½ï¿½ß‚ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 
-		{	// ‹‚ß‚½Œð“_‚ªƒ|ƒŠƒSƒ“‚Ì’†‚É‚ ‚é‚©’²‚×‚é
+		{	// ï¿½ï¿½ï¿½ß‚ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì’ï¿½ï¿½É‚ï¿½ï¿½é‚©ï¿½ï¿½ï¿½×‚ï¿½
 
-			// ƒ|ƒŠƒSƒ“‚ÌŠe•Ó‚ÌƒxƒNƒgƒ‹
+			// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ÌŠeï¿½Ó‚Ìƒxï¿½Nï¿½gï¿½ï¿½
 			XMVECTOR	v1 = p1 - p0;
 			XMVECTOR	v2 = p2 - p1;
 			XMVECTOR	v3 = p0 - p2;
 
-			// Še’¸“_‚ÆŒð“_‚Æ‚ÌƒxƒNƒgƒ‹
+			// ï¿½eï¿½ï¿½ï¿½_ï¿½ÆŒï¿½_ï¿½Æ‚Ìƒxï¿½Nï¿½gï¿½ï¿½
 			XMVECTOR	v4 = p3 - p1;
 			XMVECTOR	v5 = p3 - p2;
 			XMVECTOR	v6 = p3 - p0;
 
-			// ŠOÏ‚ÅŠe•Ó‚Ì–@ü‚ð‹‚ß‚ÄAƒ|ƒŠƒSƒ“‚Ì–@ü‚Æ‚Ì“àÏ‚ð‚Æ‚Á‚Ä•„†‚ðƒ`ƒFƒbƒN‚·‚é
+			// ï¿½Oï¿½Ï‚ÅŠeï¿½Ó‚Ì–@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ÄAï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì–@ï¿½ï¿½ï¿½Æ‚Ì“ï¿½Ï‚ï¿½Æ‚ï¿½ï¿½Ä•ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½
 			XMVECTOR	n1, n2, n3;
 
 			crossProduct(&n1, &v4, &v1);
-			if (dotProduct(&n1, &nor) < 0.0f) return(FALSE);	// “–‚½‚Á‚Ä‚¢‚È‚¢
+			if (dotProduct(&n1, &nor) < 0.0f) return(FALSE);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½
 
 			crossProduct(&n2, &v5, &v2);
-			if (dotProduct(&n2, &nor) < 0.0f) return(FALSE);	// “–‚½‚Á‚Ä‚¢‚È‚¢
+			if (dotProduct(&n2, &nor) < 0.0f) return(FALSE);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½
 			
 			crossProduct(&n3, &v6, &v3);
-			if (dotProduct(&n3, &nor) < 0.0f) return(FALSE);	// “–‚½‚Á‚Ä‚¢‚È‚¢
+			if (dotProduct(&n3, &nor) < 0.0f) return(FALSE);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½
 		}
 	}
 
-	return(TRUE);	// “–‚½‚Á‚Ä‚¢‚éI(hit‚É‚Í“–‚½‚Á‚Ä‚¢‚éŒð“_‚ª“ü‚Á‚Ä‚¢‚éBnormal‚É‚Í–@ü‚ª“ü‚Á‚Ä‚¢‚é)
+	return(TRUE);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½I(hitï¿½É‚Í“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Bnormalï¿½É‚Í–@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½)
 }
 
 
 int CollisionLineSegment(XMFLOAT3 pos, XMFLOAT3 start, XMFLOAT3 end, float range)
 {
-	int ans = -1;	// ŠO‚ê‚ðƒZƒbƒg‚µ‚Ä‚¨‚­
+	int ans = -1;	// ï¿½Oï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 
-	// ·‚ðŒvŽZ
+	// ï¿½ï¿½ï¿½ï¿½vï¿½Z
 	XMVECTOR v_pos = XMLoadFloat3(&pos) - XMLoadFloat3(&start);
 	XMVECTOR v_line = XMLoadFloat3(&end) - XMLoadFloat3(&start);
 
@@ -240,7 +240,7 @@ int CollisionLineSegment(XMFLOAT3 pos, XMFLOAT3 start, XMFLOAT3 end, float range
 
 	if (range > col_length)
 	{
-		// “–‚½‚Á‚½Žž‚Ìˆ—
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 		ans = (int)((1.0f - (col_length - 7.0f) / (range - 7.0f)) * 5.9f);
 	}
 

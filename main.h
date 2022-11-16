@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ƒƒCƒ“ˆ— [main.h]
+// ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [main.h]
 // Author : 
 //
 //=============================================================================
@@ -10,7 +10,7 @@
 #pragma warning(push)
 #pragma warning(disable:4005)
 
-#define _CRT_SECURE_NO_WARNINGS			// scanf ‚Ìwarning–h~
+#define _CRT_SECURE_NO_WARNINGS			// scanf ï¿½ï¿½warningï¿½hï¿½~
 #include <stdio.h>
 
 #include <d3d11.h>
@@ -24,20 +24,20 @@
 //#include <windows.h>
 
 
-// –{—ˆ‚Íƒwƒbƒ_‚É‘‚©‚È‚¢•û‚ª—Ç‚¢
+// ï¿½{ï¿½ï¿½ï¿½Íƒwï¿½bï¿½_ï¿½Éï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½
 using namespace DirectX;
 
 
-#define DIRECTINPUT_VERSION 0x0800		// Œx‘Îˆ
+#define DIRECTINPUT_VERSION 0x0800		// ï¿½xï¿½ï¿½ï¿½Îï¿½
 #include "dinput.h"
 #include "mmsystem.h"
 
-#include "Xinput.h"        // XInput—p
+#include "Xinput.h"        // XInputï¿½p
 
 #pragma warning(pop)
 
 #ifdef _DEBUG
-// ƒƒ‚ƒŠƒŠ[ƒNƒ`ƒFƒbƒN—p
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Nï¿½`ï¿½Fï¿½bï¿½Nï¿½p
 #include < cstdio >
 #include < cstdlib >
 #include < crtdbg.h >
@@ -47,7 +47,7 @@ using namespace DirectX;
 #endif
 
 //*****************************************************************************
-// ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
+// ï¿½ï¿½ï¿½Cï¿½uï¿½ï¿½ï¿½ï¿½ï¿½Ìƒï¿½ï¿½ï¿½ï¿½N
 //*****************************************************************************
 #pragma comment (lib, "d3d11.lib")		
 #pragma comment (lib, "d3dcompiler.lib")
@@ -58,20 +58,20 @@ using namespace DirectX;
 #pragma comment (lib, "dxguid.lib")
 #pragma comment (lib, "dinput8.lib")
 
-#pragma comment (lib, "xinput.lib")        // XInput—p
+#pragma comment (lib, "xinput.lib")        // XInputï¿½p
 
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define SCREEN_WIDTH	(1920)			// ƒEƒCƒ“ƒhƒE‚Ì•
-#define SCREEN_HEIGHT	(1080)			// ƒEƒCƒ“ƒhƒE‚Ì‚‚³
-//#define SCREEN_WIDTH	(1536)		// ƒEƒCƒ“ƒhƒE‚Ì•
-//#define SCREEN_HEIGHT	(864)		// ƒEƒCƒ“ƒhƒE‚Ì‚‚³
-//#define SCREEN_WIDTH	(960)			// ƒEƒCƒ“ƒhƒE‚Ì•
-//#define SCREEN_HEIGHT	(540)			// ƒEƒCƒ“ƒhƒE‚Ì‚‚³
-#define SCREEN_CENTER_X	(SCREEN_WIDTH / 2)	// ƒEƒCƒ“ƒhƒE‚Ì’†S‚wÀ•W
-#define SCREEN_CENTER_Y	(SCREEN_HEIGHT / 2)	// ƒEƒCƒ“ƒhƒE‚Ì’†S‚xÀ•W
+#define SCREEN_WIDTH	(1920)			// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì•ï¿½
+#define SCREEN_HEIGHT	(1080)			// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìï¿½ï¿½ï¿½
+//#define SCREEN_WIDTH	(1536)		// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì•ï¿½
+//#define SCREEN_HEIGHT	(864)		// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìï¿½ï¿½ï¿½
+//#define SCREEN_WIDTH	(960)			// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì•ï¿½
+//#define SCREEN_HEIGHT	(540)			// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìï¿½ï¿½ï¿½
+#define SCREEN_CENTER_X	(SCREEN_WIDTH / 2)	// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì’ï¿½ï¿½Sï¿½wï¿½ï¿½ï¿½W
+#define SCREEN_CENTER_Y	(SCREEN_HEIGHT / 2)	// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì’ï¿½ï¿½Sï¿½xï¿½ï¿½ï¿½W
 
 #define	MAP_W			(1280.0f)
 #define	MAP_H			(1280.0f)
@@ -80,19 +80,19 @@ using namespace DirectX;
 #define	MAP_LEFT		(-MAP_W/2)
 #define	MAP_RIGHT		(MAP_W/2)
 
-// •âŠÔ—p‚Ìƒf[ƒ^\‘¢‘Ì‚ğ’è‹`
+// ï¿½ï¿½Ô—pï¿½Ìƒfï¿½[ï¿½^ï¿½\ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½`
 struct INTERPOLATION_DATA
 {
-	XMFLOAT3	pos;		// ’¸“_À•W
-	XMFLOAT3	rot;		// ‰ñ“]
-	XMFLOAT3	scl;		// Šg‘åk¬
-	float		frame;		// ÀsƒtƒŒ[ƒ€” ( dt = 1.0f/frame )
+	XMFLOAT3	pos;		// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½W
+	XMFLOAT3	rot;		// ï¿½ï¿½]
+	XMFLOAT3	scl;		// ï¿½gï¿½ï¿½kï¿½ï¿½
+	float		frame;		// ï¿½ï¿½ï¿½sï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ ( dt = 1.0f/frame )
 };
 
 struct INTERPOLATION_COLOR_DATA
 {
 	XMFLOAT4	color;		// 
-	float		frame;		// ÀsƒtƒŒ[ƒ€” ( dt = 1.0f/frame )
+	float		frame;		// ï¿½ï¿½ï¿½sï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ ( dt = 1.0f/frame )
 };
 
 enum MODE_LABEL
@@ -110,7 +110,7 @@ enum MODE_LABEL
 
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 long GetMousePosX(void);
 long GetMousePosY(void);

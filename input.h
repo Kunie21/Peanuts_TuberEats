@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// “ü—Íˆ— [input.h]
-// Author : š ] ãÄ‘¾
+// ï¿½ï¿½ï¿½Íï¿½ï¿½ï¿½ [input.h]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #pragma once
@@ -9,76 +9,76 @@
 #include "main.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
 
-// ƒvƒƒOƒ‰ƒ€•ª‚¯‚·‚é‚Æ‚«‚Ég‚¤
-#define	USE_KEYBOARD				// éŒ¾‚·‚é‚ÆƒL[ƒ{[ƒh‚Å‘€ì‰Â”\‚É‚È‚é
-#define	USE_MOUSE					// éŒ¾‚·‚é‚Æƒ}ƒEƒX‚Å‘€ì‰Â”\‚É‚È‚é
-#define	USE_PAD						// éŒ¾‚·‚é‚Æƒpƒbƒh‚Å‘€ì‰Â”\‚É‚È‚é
+// ï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Égï¿½ï¿½
+#define	USE_KEYBOARD				// ï¿½éŒ¾ï¿½ï¿½ï¿½ï¿½ÆƒLï¿½[ï¿½{ï¿½[ï¿½hï¿½Å‘ï¿½ï¿½ï¿½Â”\ï¿½É‚È‚ï¿½
+#define	USE_MOUSE					// ï¿½éŒ¾ï¿½ï¿½ï¿½ï¿½Æƒ}ï¿½Eï¿½Xï¿½Å‘ï¿½ï¿½ï¿½Â”\ï¿½É‚È‚ï¿½
+#define	USE_PAD						// ï¿½éŒ¾ï¿½ï¿½ï¿½ï¿½Æƒpï¿½bï¿½hï¿½Å‘ï¿½ï¿½ï¿½Â”\ï¿½É‚È‚ï¿½
 
-/* game padî•ñ */
-//#define BUTTON_UP		0x00000001l	// •ûŒüƒL[ã(.IY<0)
-//#define BUTTON_DOWN		0x00000002l	// •ûŒüƒL[‰º(.IY>0)
-//#define BUTTON_LEFT		0x00000004l	// •ûŒüƒL[¶(.IX<0)
-//#define BUTTON_RIGHT	0x00000008l	// •ûŒüƒL[‰E(.IX>0)
-//#define BUTTON_X		0x00000010l	// ‚wƒ{ƒ^ƒ“(.rgbButtons[0]&0x80)
-//#define BUTTON_A		0x00000020l	// ‚`ƒ{ƒ^ƒ“(.rgbButtons[1]&0x80)
-//#define BUTTON_B		0x00000040l	// ‚aƒ{ƒ^ƒ“(.rgbButtons[2]&0x80)
-//#define BUTTON_Y		0x00000080l	// ‚xƒ{ƒ^ƒ“(.rgbButtons[3]&0x80)
-//#define BUTTON_L1		0x00000100l	// ‚kƒ{ƒ^ƒ“(.rgbButtons[4]&0x80)
-//#define BUTTON_R1		0x00000200l	// ‚qƒ{ƒ^ƒ“(.rgbButtons[5]&0x80)
-//#define BUTTON_L2		0x00000400l	// ‚kƒ{ƒ^ƒ“(.rgbButtons[6]&0x80)
-//#define BUTTON_R2		0x00000800l	// ‚qƒ{ƒ^ƒ“(.rgbButtons[7]&0x80)
-//#define BUTTON_SELECT	0x00001000l	// ‚yƒ{ƒ^ƒ“(.rgbButtons[8]&0x80)
-//#define BUTTON_START	0x00002000l	// ‚r‚s‚`‚q‚sƒ{ƒ^ƒ“(.rgbButtons[9]&0x80)
-//#define BUTTON_L3		0x00004000l	// L3ƒ{ƒ^ƒ“(.rgbButtons[10]&0x80)
-//#define BUTTON_R3		0x00008000l	// R3ƒ{ƒ^ƒ“(.rgbButtons[11]&0x80)
-//#define BUTTON_R_UP		0x00010000l	// •ûŒüƒL[ã(.IY<0)
-//#define BUTTON_R_DOWN	0x00020000l	// •ûŒüƒL[‰º(.IY>0)
-//#define BUTTON_R_LEFT	0x00040000l	// •ûŒüƒL[¶(.IX<0)
-//#define BUTTON_R_RIGHT	0x00080000l	// •ûŒüƒL[‰E(.IX>0)
-//#define BUTTON_L_UP		0x00100000l	// ãƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
-//#define BUTTON_L_DOWN	0x00200000l	// ‰ºƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
-//#define BUTTON_L_LEFT	0x00400000l	// ¶ƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
-//#define BUTTON_L_RIGHT	0x00800000l	// ‰Eƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
+/* game padï¿½ï¿½ï¿½ */
+//#define BUTTON_UP		0x00000001l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY<0)
+//#define BUTTON_DOWN		0x00000002l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY>0)
+//#define BUTTON_LEFT		0x00000004l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IX<0)
+//#define BUTTON_RIGHT	0x00000008l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½E(.IX>0)
+//#define BUTTON_X		0x00000010l	// ï¿½wï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[0]&0x80)
+//#define BUTTON_A		0x00000020l	// ï¿½`ï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[1]&0x80)
+//#define BUTTON_B		0x00000040l	// ï¿½aï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[2]&0x80)
+//#define BUTTON_Y		0x00000080l	// ï¿½xï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[3]&0x80)
+//#define BUTTON_L1		0x00000100l	// ï¿½kï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[4]&0x80)
+//#define BUTTON_R1		0x00000200l	// ï¿½qï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[5]&0x80)
+//#define BUTTON_L2		0x00000400l	// ï¿½kï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[6]&0x80)
+//#define BUTTON_R2		0x00000800l	// ï¿½qï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[7]&0x80)
+//#define BUTTON_SELECT	0x00001000l	// ï¿½yï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[8]&0x80)
+//#define BUTTON_START	0x00002000l	// ï¿½rï¿½sï¿½`ï¿½qï¿½sï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[9]&0x80)
+//#define BUTTON_L3		0x00004000l	// L3ï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[10]&0x80)
+//#define BUTTON_R3		0x00008000l	// R3ï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[11]&0x80)
+//#define BUTTON_R_UP		0x00010000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY<0)
+//#define BUTTON_R_DOWN	0x00020000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY>0)
+//#define BUTTON_R_LEFT	0x00040000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IX<0)
+//#define BUTTON_R_RIGHT	0x00080000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½E(.IX>0)
+//#define BUTTON_L_UP		0x00100000l	// ï¿½ï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
+//#define BUTTON_L_DOWN	0x00200000l	// ï¿½ï¿½ï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
+//#define BUTTON_L_LEFT	0x00400000l	// ï¿½ï¿½ï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
+//#define BUTTON_L_RIGHT	0x00800000l	// ï¿½Eï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
 
-#define GAMEPADMAX		4			// “¯‚ÉÚ‘±‚·‚éƒWƒ‡ƒCƒpƒbƒh‚ÌÅ‘å”‚ğƒZƒbƒg
+#define GAMEPADMAX		4			// ï¿½ï¿½ï¿½ï¿½ï¿½ÉÚ‘ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½Cï¿½pï¿½bï¿½hï¿½ÌÅ‘å”ï¿½ï¿½Zï¿½bï¿½g
 
-#define BUTTON_UP		0x00000001l	// •ûŒüƒL[ã(.IY<0)
-#define BUTTON_DOWN		0x00000002l	// •ûŒüƒL[‰º(.IY>0)
-#define BUTTON_LEFT		0x00000004l	// •ûŒüƒL[¶(.IX<0)
-#define BUTTON_RIGHT	0x00000008l	// •ûŒüƒL[‰E(.IX>0)
+#define BUTTON_UP		0x00000001l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY<0)
+#define BUTTON_DOWN		0x00000002l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY>0)
+#define BUTTON_LEFT		0x00000004l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IX<0)
+#define BUTTON_RIGHT	0x00000008l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½E(.IX>0)
 
-#define BUTTON_X		0x00000010l	// ‚wƒ{ƒ^ƒ“(.rgbButtons[0]&0x80)
-#define BUTTON_A		0x00000020l	// ‚`ƒ{ƒ^ƒ“(.rgbButtons[1]&0x80)
-#define BUTTON_B		0x00000040l	// ‚aƒ{ƒ^ƒ“(.rgbButtons[2]&0x80)
-#define BUTTON_Y		0x00000080l	// ‚xƒ{ƒ^ƒ“(.rgbButtons[3]&0x80)
+#define BUTTON_X		0x00000010l	// ï¿½wï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[0]&0x80)
+#define BUTTON_A		0x00000020l	// ï¿½`ï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[1]&0x80)
+#define BUTTON_B		0x00000040l	// ï¿½aï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[2]&0x80)
+#define BUTTON_Y		0x00000080l	// ï¿½xï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[3]&0x80)
 
-#define BUTTON_L1		0x00000100l	// ‚kƒ{ƒ^ƒ“(.rgbButtons[4]&0x80)
-#define BUTTON_R1		0x00000200l	// ‚qƒ{ƒ^ƒ“(.rgbButtons[5]&0x80)
+#define BUTTON_L1		0x00000100l	// ï¿½kï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[4]&0x80)
+#define BUTTON_R1		0x00000200l	// ï¿½qï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[5]&0x80)
 
-#define BUTTON_L2		0x00000400l	// ‚kƒ{ƒ^ƒ“(.rgbButtons[6]&0x80)
-#define BUTTON_R2		0x00000800l	// ‚qƒ{ƒ^ƒ“(.rgbButtons[7]&0x80)
-#define BUTTON_SELECT	0x00001000l	// ‚yƒ{ƒ^ƒ“(.rgbButtons[8]&0x80)
-#define BUTTON_START	0x00002000l	// ‚r‚s‚`‚q‚sƒ{ƒ^ƒ“(.rgbButtons[9]&0x80)
+#define BUTTON_L2		0x00000400l	// ï¿½kï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[6]&0x80)
+#define BUTTON_R2		0x00000800l	// ï¿½qï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[7]&0x80)
+#define BUTTON_SELECT	0x00001000l	// ï¿½yï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[8]&0x80)
+#define BUTTON_START	0x00002000l	// ï¿½rï¿½sï¿½`ï¿½qï¿½sï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[9]&0x80)
 
-#define BUTTON_L3		0x00004000l	// L3ƒ{ƒ^ƒ“(.rgbButtons[10]&0x80)
-#define BUTTON_R3		0x00008000l	// R3ƒ{ƒ^ƒ“(.rgbButtons[11]&0x80)
-
-
-#define BUTTON_R_UP		0x00010000l	// •ûŒüƒL[ã(.IY<0)
-#define BUTTON_R_DOWN	0x00020000l	// •ûŒüƒL[‰º(.IY>0)
-#define BUTTON_R_LEFT	0x00040000l	// •ûŒüƒL[¶(.IX<0)
-#define BUTTON_R_RIGHT	0x00080000l	// •ûŒüƒL[‰E(.IX>0)
-#define BUTTON_L_UP		0x00100000l	// ãƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
-#define BUTTON_L_DOWN	0x00200000l	// ‰ºƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
-#define BUTTON_L_LEFT	0x00400000l	// ¶ƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
-#define BUTTON_L_RIGHT	0x00800000l	// ‰Eƒ{ƒ^ƒ“(.rgdwPOV[0]&0x80)
+#define BUTTON_L3		0x00004000l	// L3ï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[10]&0x80)
+#define BUTTON_R3		0x00008000l	// R3ï¿½{ï¿½^ï¿½ï¿½(.rgbButtons[11]&0x80)
 
 
+#define BUTTON_R_UP		0x00010000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY<0)
+#define BUTTON_R_DOWN	0x00020000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IY>0)
+#define BUTTON_R_LEFT	0x00040000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½(.IX<0)
+#define BUTTON_R_RIGHT	0x00080000l	// ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½E(.IX>0)
+#define BUTTON_L_UP		0x00100000l	// ï¿½ï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
+#define BUTTON_L_DOWN	0x00200000l	// ï¿½ï¿½ï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
+#define BUTTON_L_LEFT	0x00400000l	// ï¿½ï¿½ï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
+#define BUTTON_L_RIGHT	0x00800000l	// ï¿½Eï¿½{ï¿½^ï¿½ï¿½(.rgdwPOV[0]&0x80)
 
-//enum {	// ƒ{ƒ^ƒ“‚É‘Î‚·‚érgbButtons[?]”z—ñ‚Ì”z—ñ”Ô†(DirectInputã‚Å‚ÌXYABƒ{ƒ^ƒ“ˆÊ’u‚É‡‚í‚¹‚½)
+
+
+//enum {	// ï¿½{ï¿½^ï¿½ï¿½ï¿½É‘Î‚ï¿½ï¿½ï¿½rgbButtons[?]ï¿½zï¿½ï¿½Ì”zï¿½ï¿½Ôï¿½(DirectInputï¿½ï¿½Å‚ï¿½XYABï¿½{ï¿½^ï¿½ï¿½ï¿½Ê’uï¿½Éï¿½ï¿½í‚¹ï¿½ï¿½)
 //	rgbButtons_X,
 //	rgbButtons_A,
 //	rgbButtons_B,
@@ -93,7 +93,7 @@
 //	rgbButtons_R3,
 //};
 
-enum {	// ƒ{ƒ^ƒ“‚É‘Î‚·‚érgbButtons[?]”z—ñ‚Ì”z—ñ”Ô†(DirectInputã‚Å‚ÌXYABƒ{ƒ^ƒ“ˆÊ’u‚É‡‚í‚¹‚½)
+enum {	// ï¿½{ï¿½^ï¿½ï¿½ï¿½É‘Î‚ï¿½ï¿½ï¿½rgbButtons[?]ï¿½zï¿½ï¿½Ì”zï¿½ï¿½Ôï¿½(DirectInputï¿½ï¿½Å‚ï¿½XYABï¿½{ï¿½^ï¿½ï¿½ï¿½Ê’uï¿½Éï¿½ï¿½í‚¹ï¿½ï¿½)
 	rgbButtons_A,
 	rgbButtons_B,
 	rgbButtons_X,
@@ -114,24 +114,24 @@ enum {
 };
 
 
-// XInput—p
-#define TRIGGER_LEFT	0		// ¶ƒgƒŠƒK[
-#define TRIGGER_RIGHT	1		// ‰EƒgƒŠƒK[
+// XInputï¿½p
+#define TRIGGER_LEFT	0		// ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Kï¿½[
+#define TRIGGER_RIGHT	1		// ï¿½Eï¿½gï¿½ï¿½ï¿½Kï¿½[
 
 enum XINPUT_STICK {
 
-	XINPUT_LEFTSTICK_X_RIGHT,	// ¶ƒXƒeƒBƒbƒN@‰E
-	XINPUT_LEFTSTICK_X_LEFT,	// ¶ƒXƒeƒBƒbƒN@¶
-	XINPUT_LEFTSTICK_Y_UP,		// ¶ƒXƒeƒBƒbƒN@ã
-	XINPUT_LEFTSTICK_Y_DOWN,	// ¶ƒXƒeƒBƒbƒN@‰º
+	XINPUT_LEFTSTICK_X_RIGHT,	// ï¿½ï¿½ï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½E
+	XINPUT_LEFTSTICK_X_LEFT,	// ï¿½ï¿½ï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½ï¿½
+	XINPUT_LEFTSTICK_Y_UP,		// ï¿½ï¿½ï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½ï¿½
+	XINPUT_LEFTSTICK_Y_DOWN,	// ï¿½ï¿½ï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½ï¿½
 
-	XINPUT_RIGHTSTICK_X_RIGHT,	// ‰EƒXƒeƒBƒbƒN@‰E
-	XINPUT_RIGHTSTICK_X_LEFT,	// ‰EƒXƒeƒBƒbƒN@¶
-	XINPUT_RIGHTSTICK_Y_UP,		// ‰EƒXƒeƒBƒbƒN@ã
-	XINPUT_RIGHTSTICK_Y_DOWN,	// ‰EƒXƒeƒBƒbƒN@‰º
+	XINPUT_RIGHTSTICK_X_RIGHT,	// ï¿½Eï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½E
+	XINPUT_RIGHTSTICK_X_LEFT,	// ï¿½Eï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½ï¿½
+	XINPUT_RIGHTSTICK_Y_UP,		// ï¿½Eï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½ï¿½
+	XINPUT_RIGHTSTICK_Y_DOWN,	// ï¿½Eï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½@ï¿½ï¿½
 
-	XINPUT_LEFTSTICK,			// ¶ƒXƒeƒBƒbƒN
-	XINPUT_RIGHTSTICK,			// ‰EƒXƒeƒBƒbƒN
+	XINPUT_LEFTSTICK,			// ï¿½ï¿½ï¿½Xï¿½eï¿½Bï¿½bï¿½N
+	XINPUT_RIGHTSTICK,			// ï¿½Eï¿½Xï¿½eï¿½Bï¿½bï¿½N
 };
 
 enum XINPUT_BUTTON {
@@ -178,41 +178,41 @@ enum XINPUT_BUTTON_STATUS {
 
 
 //*****************************************************************************
-// \‘¢‘Ì’è‹`
+// ï¿½\ï¿½ï¿½ï¿½Ì’ï¿½`
 //*****************************************************************************
 
-// XInput@ƒXƒeƒBƒbƒNî•ñ\‘¢‘Ì
+// XInputï¿½@ï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½
 struct XINPUT_STICK_STATUS
 {
-	float	radian;		// Šp“x
-	float	magnitude;	// ‹——£
+	float	radian;		// ï¿½pï¿½x
+	float	magnitude;	// ï¿½ï¿½ï¿½ï¿½
 };
 
 
 //*****************************************************************************
-// \‘¢‘Ì’è‹`
+// ï¿½\ï¿½ï¿½ï¿½Ì’ï¿½`
 //*****************************************************************************
 struct BUTTON
 {
-	XMFLOAT4		color_off;		// F
-	XMFLOAT4		color_on;		// F
-	XMFLOAT3		pos;			// À•W
-	XMFLOAT3		rot_off;		// ‰ñ“]—Ê
-	XMFLOAT3		rot_on;			// ‰ñ“]—Ê
-	float			scale_off;		// ‘å‚«‚³
-	float			scale_on;		// ‘å‚«‚³
-	float			w, h;			// •‚Æ‚‚³
-	int				texNo;			// ƒeƒNƒXƒ`ƒƒ”Ô†
-	int				texPatternX;	// ƒeƒNƒXƒ`ƒƒ“à•ªŠ„”iX)
-	int				texPatternY;	// ƒeƒNƒXƒ`ƒƒ“à•ªŠ„”iY)
-	int				animPatternMax;	// ƒAƒjƒ[ƒVƒ‡ƒ“ƒpƒ^[ƒ“”
-	int				animWait;		// ƒAƒjƒ[ƒVƒ‡ƒ“ƒpƒ^[ƒ“‚ÌØ‚è‘Ö‚¦ƒtƒŒ[ƒ€”
-	int				animCount;		// ƒAƒjƒ[ƒVƒ‡ƒ“—p‚ÌƒtƒŒ[ƒ€”‚ğƒJƒEƒ“ƒg‚·‚é
-	int				animPattern;	// ƒAƒjƒ[ƒVƒ‡ƒ“”Ô†
+	XMFLOAT4		color_off;		// ï¿½F
+	XMFLOAT4		color_on;		// ï¿½F
+	XMFLOAT3		pos;			// ï¿½ï¿½ï¿½W
+	XMFLOAT3		rot_off;		// ï¿½ï¿½]ï¿½ï¿½
+	XMFLOAT3		rot_on;			// ï¿½ï¿½]ï¿½ï¿½
+	float			scale_off;		// ï¿½å‚«ï¿½ï¿½
+	float			scale_on;		// ï¿½å‚«ï¿½ï¿½
+	float			w, h;			// ï¿½ï¿½ï¿½Æï¿½ï¿½ï¿½
+	int				texNo;			// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ôï¿½
+	int				texPatternX;	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iX)
+	int				texPatternY;	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iY)
+	int				animPatternMax;	// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½pï¿½^ï¿½[ï¿½ï¿½ï¿½ï¿½
+	int				animWait;		// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½pï¿½^ï¿½[ï¿½ï¿½ï¿½ÌØ‚ï¿½Ö‚ï¿½ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½
+	int				animCount;		// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½pï¿½Ìƒtï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½
+	int				animPattern;	// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ôï¿½
 };
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 HRESULT InitInput(HINSTANCE hInst, HWND hWnd);
 void UninitInput(void);
@@ -226,15 +226,15 @@ bool GetKeyboardRepeat(int nKey);
 bool GetKeyboardRelease(int nKey);
 
 //---------------------------- mouse
-BOOL IsMouseLeftPressed(void);      // ¶ƒNƒŠƒbƒN‚µ‚½ó‘Ô
-BOOL IsMouseLeftTriggered(void);    // ¶ƒNƒŠƒbƒN‚µ‚½uŠÔ
-BOOL IsMouseRightPressed(void);     // ‰EƒNƒŠƒbƒN‚µ‚½ó‘Ô
-BOOL IsMouseRightTriggered(void);   // ‰EƒNƒŠƒbƒN‚µ‚½uŠÔ
-BOOL IsMouseCenterPressed(void);    // ’†ƒNƒŠƒbƒN‚µ‚½ó‘Ô
-BOOL IsMouseCenterTriggered(void);  // ’†ƒNƒŠƒbƒN‚µ‚½uŠÔ
-long GetMouseX(void);               // ƒ}ƒEƒX‚ªX•ûŒü‚É“®‚¢‚½‘Š‘Î’l
-long GetMouseY(void);               // ƒ}ƒEƒX‚ªY•ûŒü‚É“®‚¢‚½‘Š‘Î’l
-long GetMouseZ(void);               // ƒ}ƒEƒXƒzƒC[ƒ‹‚ª“®‚¢‚½‘Š‘Î’l
+BOOL IsMouseLeftPressed(void);      // ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+BOOL IsMouseLeftTriggered(void);    // ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½
+BOOL IsMouseRightPressed(void);     // ï¿½Eï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+BOOL IsMouseRightTriggered(void);   // ï¿½Eï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½
+BOOL IsMouseCenterPressed(void);    // ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+BOOL IsMouseCenterTriggered(void);  // ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½
+long GetMouseX(void);               // ï¿½}ï¿½Eï¿½Xï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î’l
+long GetMouseY(void);               // ï¿½}ï¿½Eï¿½Xï¿½ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î’l
+long GetMouseZ(void);               // ï¿½}ï¿½Eï¿½Xï¿½zï¿½Cï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î’l
 BOOL GetMouseUse(void);
 void SetMouseUse(void);
 
@@ -245,10 +245,10 @@ BOOL CheckButtonWait(void);
 void SetButtonWait(void);
 
 
-//---------------------------- XInput—p
-void	InitializeXinputPad(void);		// XInputƒpƒbƒh‚Ì‰Šú‰»
-void	UninitXinputPad(void);			// XInputƒpƒbƒh‚ÌI—¹ˆ—
-void	UpdateXinputPad(void);			// XInputƒpƒbƒh‚ÌXVˆ—
+//---------------------------- XInputï¿½p
+void	InitializeXinputPad(void);		// XInputï¿½pï¿½bï¿½hï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+void	UninitXinputPad(void);			// XInputï¿½pï¿½bï¿½hï¿½ÌIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+void	UpdateXinputPad(void);			// XInputï¿½pï¿½bï¿½hï¿½ÌXï¿½Vï¿½ï¿½ï¿½ï¿½
 
 BOOL	IsButtonPressedXInput(int padNo, WORD button);
 int		IsButtonTriggerXInput(int padNo, int RorL);

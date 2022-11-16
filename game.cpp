@@ -170,15 +170,15 @@ void DrawGame(void)
 #ifdef _DEBUG
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_S); }
 #endif
-	{	// ALL 25000 ¨ 15000
-		// ƒAƒEƒgƒ‰ƒCƒ“‚ðˆø‚­ 3000
+	{	// ALL 25000 ï¿½ï¿½ 15000
+		// ï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3000
 		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
 		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
 		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		//DrawMissile(MISSILE_TYPE_01);
 		//DrawMissile(MISSILE_TYPE_02);
 
-		// ŠÂ‹«Œõ‚Å‰º“h‚è‚·‚é 3000
+		// ï¿½Â‹ï¿½ï¿½ï¿½ï¿½Å‰ï¿½ï¿½hï¿½è‚·ï¿½ï¿½ 3000
 >>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 		{
 			//SetStencilNoneAL(SHADER_TUBE);
@@ -188,7 +188,7 @@ void DrawGame(void)
 			//SetStencilNoneAL(SHADER_PLAYER);
 			//DrawPlayer();	// 900
 
-			// •“h‚è‚·‚é 3000
+			// ï¿½ï¿½ï¿½hï¿½è‚·ï¿½ï¿½ 3000
 			//SetDrawFillBlack(SHADER_TUBE);
 			//DrawTube();
 			//SetDrawFillBlack(SHADER_GIMMICK);
@@ -215,13 +215,13 @@ void DrawGame(void)
 
 			// ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½g
 =======
-		// ‰ÁŽZ‡¬ƒ‚[ƒh‚É‚·‚é
+		// ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½É‚ï¿½ï¿½ï¿½
 		//SetBlendState(BLEND_MODE_ADD);
 
 		{
-			// ƒVƒƒƒhƒEƒXƒeƒ“ƒVƒ‹‚ð•`‰æ 3000
+			// ï¿½Vï¿½ï¿½ï¿½hï¿½Eï¿½Xï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ 3000
 		{
-			// ‰e‚É‚È‚é•”•ª‚ÌƒXƒeƒ“ƒVƒ‹‚ðì¬
+			// ï¿½eï¿½É‚È‚é•”ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ì¬
 			////SetStencilWriteLL(SHADER_TUBE);
 			////DrawTube();
 			//SetStencilWriteLL(SHADER_GIMMICK);
@@ -234,8 +234,8 @@ void DrawGame(void)
 #ifdef _DEBUG
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_S); }
 #endif
-			// ƒXƒeƒ“ƒVƒ‹ƒeƒXƒg‚ðŽg‚Á‚Ä‰eˆÈŠO‚Ì•”•ª‚ð‰ÁŽZ‡¬‚Å•`‰æ
-			// ƒ‰ƒCƒ“ƒ‰ƒCƒg‚ÌŒõ 3000 ¨ 5000
+			// ï¿½Xï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½eï¿½Xï¿½gï¿½ï¿½gï¿½ï¿½ï¿½Ä‰eï¿½ÈŠOï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½Å•`ï¿½ï¿½
+			// ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½gï¿½ÌŒï¿½ 3000 ï¿½ï¿½ 5000
 >>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
@@ -272,13 +272,13 @@ void DrawGame(void)
 #ifdef _DEBUG
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
 #endif
-			// ƒXƒeƒ“ƒVƒ‹‚ð‰Šú‰»
+			// ï¿½Xï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			ClearStencil();
 
 #ifdef _DEBUG
 			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
 #endif
-			// Œõ‚é‚à‚Ì•`‰æ 3000
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ì•`ï¿½ï¿½ 3000
 >>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 			{
 				//SetDrawTubeLight();
@@ -311,37 +311,37 @@ void DrawGame(void)
 		// ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		SetBlendState(BLEND_MODE_ALPHABLEND);
 =======
-		// ‰ÁŽZ‡¬ƒ‚[ƒh‚ðI—¹‚·‚é
+		// ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		//SetBlendState(BLEND_MODE_ALPHABLEND);
 >>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 	}
 
 	//ApplyFilter(FILTER_MODE_LAPLACIAN);
-	//	FILTER_MODE_NONE,			// ƒtƒBƒ‹ƒ^‚È‚µ
-	//	FILTER_MODE_AVERAGING,		// •½‹Ï‰»ƒtƒBƒ‹ƒ^
-	//	FILTER_MODE_GAUSSIAN,		// ƒKƒEƒVƒAƒ“ƒtƒBƒ‹ƒ^
-	//	FILTER_MODE_SHARPNING,		// ‘N‰s‰»ƒtƒBƒ‹ƒ^Žã
-	//	FILTER_MODE_SHARPNING_HIGH,	// ‘N‰s‰»ƒtƒBƒ‹ƒ^‹­
-	//	FILTER_MODE_LAPLACIAN,		// ƒ‰ƒvƒ‰ƒVƒAƒ“ƒtƒBƒ‹ƒ^
-	//	FILTER_MODE_LAPLACIAN_COLOR,// ƒ‰ƒvƒ‰ƒVƒAƒ“ƒtƒBƒ‹ƒ^ƒJƒ‰[
-	//	FILTER_MODE_PREWITT_X,		// ƒvƒŠƒ…[ƒEƒBƒbƒgƒtƒBƒ‹ƒ^‰¡
-	//	FILTER_MODE_PREWITT_Y,		// ƒvƒŠƒ…[ƒEƒBƒbƒgƒtƒBƒ‹ƒ^c
-	//	FILTER_MODE_SOBEL_X,		// ƒ\[ƒxƒ‹ƒtƒBƒ‹ƒ^‰¡
-	//	FILTER_MODE_SOBEL_Y,		// ƒ\[ƒxƒ‹ƒtƒBƒ‹ƒ^c
+	//	FILTER_MODE_NONE,			// ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½È‚ï¿½
+	//	FILTER_MODE_AVERAGING,		// ï¿½ï¿½ï¿½Ï‰ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^
+	//	FILTER_MODE_GAUSSIAN,		// ï¿½Kï¿½Eï¿½Vï¿½Aï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^
+	//	FILTER_MODE_SHARPNING,		// ï¿½Nï¿½sï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	//	FILTER_MODE_SHARPNING_HIGH,	// ï¿½Nï¿½sï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	//	FILTER_MODE_LAPLACIAN,		// ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Vï¿½Aï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^
+	//	FILTER_MODE_LAPLACIAN_COLOR,// ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Vï¿½Aï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½Jï¿½ï¿½ï¿½[
+	//	FILTER_MODE_PREWITT_X,		// ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Eï¿½Bï¿½bï¿½gï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	//	FILTER_MODE_PREWITT_Y,		// ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Eï¿½Bï¿½bï¿½gï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½c
+	//	FILTER_MODE_SOBEL_X,		// ï¿½\ï¿½[ï¿½xï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½
+	//	FILTER_MODE_SOBEL_Y,		// ï¿½\ï¿½[ï¿½xï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½c
 
 <<<<<<< HEAD
 	// ï¿½oï¿½bï¿½Nï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½É‚ï¿½ï¿½Ä•`ï¿½ï¿½
 	DrawTarget();
 =======
-	//// UI•`‰æ 15000 ¨ 150iƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒOŽg—pj
+	//// UIï¿½`ï¿½ï¿½ 15000 ï¿½ï¿½ 150ï¿½iï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½gï¿½pï¿½j
 	//SetDraw2DTexture();
 	//DrawGameUI();
 >>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 
-	//// ƒoƒbƒNƒoƒbƒtƒ@‚ðƒ^[ƒQƒbƒg‚É‚µ‚Ä•`‰æ 1000
+	//// ï¿½oï¿½bï¿½Nï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½É‚ï¿½ï¿½Ä•`ï¿½ï¿½ 1000
 	//DrawTarget();
 
-	// UI•`‰æ 15000 ¨ 150iƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒOŽg—pj
+	// UIï¿½`ï¿½ï¿½ 15000 ï¿½ï¿½ 150ï¿½iï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½gï¿½pï¿½j
 	//SetDraw2DTexture();
 	DrawGameUI();
 	//DrawTexture2DAll();

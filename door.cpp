@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒhƒAˆ— [door.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½hï¿½Aï¿½ï¿½ï¿½ï¿½ [door.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -18,29 +18,29 @@
 #include "player.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define DOOR_SPD	(20.0f)		// ŠJ‚­‘¬“x
-#define DOOR_OPN	(110.0f)	// ‚Ç‚±‚Ü‚ÅŠJ‚­‚©
-#define DOOR_SCL	(20.0f)		// ‘å‚«‚³
-#define DOOR_POS	(250.0f)	// ZÀ•W
-#define DOOR_OFX	(0.3f)		// XÀ•W‚Ì‰ŠúˆÊ’u’²®
-#define DOOR_ROT	(0.0f)		// Î‚ß‚É‚·‚éH
-#define DOOR_SHK	(0.0f)		// ƒKƒ^ƒKƒ^‚³‚¹‚éH
+#define DOOR_SPD	(20.0f)		// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½x
+#define DOOR_OPN	(110.0f)	// ï¿½Ç‚ï¿½ï¿½Ü‚ÅŠJï¿½ï¿½ï¿½ï¿½
+#define DOOR_SCL	(20.0f)		// ï¿½å‚«ï¿½ï¿½
+#define DOOR_POS	(250.0f)	// Zï¿½ï¿½ï¿½W
+#define DOOR_OFX	(0.3f)		// Xï¿½ï¿½ï¿½Wï¿½Ìï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½ï¿½
+#define DOOR_ROT	(0.0f)		// ï¿½Î‚ß‚É‚ï¿½ï¿½ï¿½H
+#define DOOR_SHK	(0.0f)		// ï¿½Kï¿½^ï¿½Kï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½H
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static BOOL				g_Load = FALSE;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum {
 	TEXTURE_TEAMLOGO = 0,
 	//TEXTURE_STAR,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/blueberry_.png",
 	//"data/MODEL/star1.jpg",
@@ -51,22 +51,22 @@ enum {
 	MODEL_DOOR_RIGHT,
 	MODEL_MAX,
 };
-static MODEL_DATA	g_Model[MODEL_MAX];	// ƒvƒŒƒCƒ„[‚Ìƒ‚ƒfƒ‹ŠÇ—
+static MODEL_DATA	g_Model[MODEL_MAX];	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Ç—ï¿½
 
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitDoor(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 		g_td[i].tex = &g_Texture[i];
 	}
 
-	// ƒ‚ƒfƒ‹“Ç‚İ‚İ
+	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
 	{
 		LoadModel("data/MODEL/door_left.obj", &g_Model[MODEL_DOOR_LEFT].model);
 		LoadModel("data/MODEL/door_right.obj", &g_Model[MODEL_DOOR_RIGHT].model);
@@ -79,7 +79,7 @@ HRESULT InitDoor(void)
 		g_Model[MODEL_DOOR_RIGHT].srt.scl = { DOOR_SCL, DOOR_SCL, DOOR_SCL };
 	}
 
-	// Ú×İ’è
+	// ï¿½Ú×İ’ï¿½
 	//g_td[TEXTURE_TEAMLOGO].tex = &g_Texture[TEXTURE_TEAMLOGO];
 
 	g_Load = TRUE;
@@ -87,7 +87,7 @@ HRESULT InitDoor(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitDoor(void)
 {
@@ -106,7 +106,7 @@ void UninitDoor(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateDoor(void)
 {
@@ -119,10 +119,10 @@ void UpdateDoor(void)
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawDoor(void) {
 	MATERIAL material;
-	DrawModel(&g_Model[MODEL_DOOR_LEFT].model, &g_Model[MODEL_DOOR_LEFT].srt, NULL, &material);	// ƒ‚ƒfƒ‹•`‰æ
-	DrawModel(&g_Model[MODEL_DOOR_RIGHT].model, &g_Model[MODEL_DOOR_RIGHT].srt, NULL, &material);	// ƒ‚ƒfƒ‹•`‰æ
+	DrawModel(&g_Model[MODEL_DOOR_LEFT].model, &g_Model[MODEL_DOOR_LEFT].srt, NULL, &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
+	DrawModel(&g_Model[MODEL_DOOR_RIGHT].model, &g_Model[MODEL_DOOR_RIGHT].srt, NULL, &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
 }

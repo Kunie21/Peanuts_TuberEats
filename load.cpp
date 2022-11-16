@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒ[ƒhˆ— [load.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ [load.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -16,7 +16,7 @@
 #include "light.h"
 #include "load.h"
 
-#define LOAD_SUM 122	// ƒ[ƒh‚·‚éƒ‚ƒm‚Ì”
+#define LOAD_SUM 122	// ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½éƒ‚ï¿½mï¿½Ìï¿½
 
 #define LOAD_Y					(110.0f)	// 
 #define LOADMAP_Y				(0.0f)	// 
@@ -26,7 +26,7 @@
 #define LOAD_ANIM_SPAN	(6)
 
 /*******************************************************************************
-* ƒOƒ[ƒoƒ‹•Ï”
+* ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 *******************************************************************************/
 static int		g_LoadSum = 0;
 static int		g_LoadPoint = 0;
@@ -34,7 +34,7 @@ static float	g_LoadPalam = 0.0f;
 static int		g_LoadAnimTime = 0;
 static HANDLE	g_hThread = NULL;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum
 {
 	TEXTURE_NOWLOADING = 0,
@@ -46,7 +46,7 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/nowloading.png",
 	"data/TEXTURE/nowloading2.png",
@@ -56,7 +56,7 @@ static char*	g_TextureName[TEXTURE_MAX] = {
 	"data/TEXTURE/loadbg.png",
 };
 
-// ƒ[ƒh—pƒXƒŒƒbƒh
+// ï¿½ï¿½ï¿½[ï¿½hï¿½pï¿½Xï¿½ï¿½ï¿½bï¿½h
 DWORD WINAPI ThreadFuncLoad(LPVOID pParam)
 {
 	while (TRUE) UpdateLoad();
@@ -65,14 +65,14 @@ DWORD WINAPI ThreadFuncLoad(LPVOID pParam)
 
 void InitLoad(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 		g_td[i].tex = &g_Texture[i];
 	}
 
-	// Ú×İ’è
+	// ï¿½Ú×İ’ï¿½
 	g_td[TEXTURE_LOAD_ANIM].size = { 175.0f * 0.5f, 300.0f * 0.5f };
 	g_td[TEXTURE_LOAD_ANIM].pos.y = LOAD_Y - 190.0f;
 	g_td[TEXTURE_LOAD_ANIM].uv_pos = { 0.0f, 0.0f, 1.0f / (float)LOAD_ANIM_NUM };
@@ -87,10 +87,10 @@ void InitLoad(void)
 	g_td[TEXTURE_BAR_FULL].pos.y = LOAD_Y;
 
 
-	// Œy‚¢‚à‚Ì‚Íæ‚É“Ç‚İ‚ñ‚¶‚á‚¤
+	// ï¿½yï¿½ï¿½ï¿½ï¿½Ì‚Íï¿½É“Ç‚İï¿½ï¿½ñ‚¶‚á‚¤
 	//InitMap();
 
-	// •Ê‚ÌƒXƒŒƒbƒh‚ğì¬
+	// ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ì¬
 	g_hThread = CreateThread(NULL, 0, ThreadFuncLoad, NULL, 0, NULL);
 }
 
@@ -101,7 +101,7 @@ void UpdateLoad(void)
 		if (LoadingNow()) g_LoadPoint++;
 		if (g_LoadPoint == LOAD_MAX)
 		{
-			CloseHandle(g_hThread);	// ƒXƒŒƒbƒh‚ğ•Â‚¶‚é
+			CloseHandle(g_hThread);	// ï¿½Xï¿½ï¿½ï¿½bï¿½hï¿½ï¿½Â‚ï¿½ï¿½ï¿½
 			SetFade(FADE_OUT, MODE_GAME);
 		}
 	}
@@ -160,7 +160,7 @@ BOOL LoadingNow(void)
 
 void DrawLoad(void)
 {
-	// ”wŒi
+	// ï¿½wï¿½i
 	{
 		DrawTexture2D(&g_td[TEXTURE_BG]);
 	}
@@ -181,7 +181,7 @@ void DrawLoad(void)
 		DrawTexture2D(&g_td[TEXTURE_NOWLOADING2], TRUE, TRUE);
 	}
 
-	// ƒo[
+	// ï¿½oï¿½[
 	{
 		DrawTexture2D(&g_td[TEXTURE_BAR_EMPTY], TRUE);
 
@@ -192,7 +192,7 @@ void DrawLoad(void)
 		DrawTexture2D(&g_td[TEXTURE_BAR_FULL], FALSE, TRUE);
 	}
 
-#ifdef _DEBUG	// ƒfƒoƒbƒOî•ñ‚ğ•\¦‚·‚é
+#ifdef _DEBUG	// ï¿½fï¿½oï¿½bï¿½Oï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	PrintDebugProc("LoadPoint:%f\n", (float)g_LoadPoint + g_LoadPalam);
 	PrintDebugProc("LoadRate:%f\n", (float)g_LoadSum / (float)LOAD_SUM);
 #endif

@@ -162,7 +162,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	QueryPerformanceCounter(&DrawEnd);
 	QueryPerformanceCounter(&DrawStart);
 
-	// ƒƒ‚ƒŠƒŠ[ƒNƒ`ƒFƒbƒN—p
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Nï¿½`ï¿½Fï¿½bï¿½Nï¿½p
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
 #endif
 
@@ -218,7 +218,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				wsprintf(&g_DebugStr[strlen(g_DebugStr)], " MX:%d MY:%d", GetMousePosX(), GetMousePosY());
 				SetWindowText(hWnd, g_DebugStr);
 				
-				// ƒƒ‚ƒŠƒŠ[ƒNƒ`ƒFƒbƒN—p ¦–ˆƒtƒŒ[ƒ€ŒÄ‚Ô‚Æd‚¢
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Nï¿½`ï¿½Fï¿½bï¿½Nï¿½p ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ä‚Ô‚Ædï¿½ï¿½
 				//_CrtDumpMemoryLeaks();
 #endif
 				dwFrameCount++;
@@ -230,7 +230,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ß‚ï¿½
 =======
 
-	// •ª‰ð”\‚ð–ß‚·
+	// ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ß‚ï¿½
 >>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 	timeEndPeriod(1);
 
@@ -356,12 +356,12 @@ void Draw(void)
 <<<<<<< HEAD
 	DrawFade();	// ï¿½tï¿½Fï¿½[ï¿½hï¿½`ï¿½ï¿½
 =======
-	DrawTarget();	// ƒoƒbƒNƒoƒbƒtƒ@‚ðƒ^[ƒQƒbƒg‚É‚µ‚Ä¡•`‰æ‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ð•`‰æ
+	DrawTarget();	// ï¿½oï¿½bï¿½Nï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½É‚ï¿½ï¿½Äï¿½ï¿½`ï¿½æ‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½`ï¿½ï¿½
 
-	DrawFade();	// ƒtƒF[ƒh•`‰æ
+	DrawFade();	// ï¿½tï¿½Fï¿½[ï¿½hï¿½`ï¿½ï¿½
 >>>>>>> 0c9843ec89b09e54e6e9db2a49eaa9ffee69c53e
 
-	DrawTexture2DAll();	// 2D‚Ì‰æ‘œ‚ð‚Ü‚Æ‚ß‚Ä•`‰æ
+	DrawTexture2DAll();	// 2Dï¿½Ì‰æ‘œï¿½ï¿½Ü‚Æ‚ß‚Ä•`ï¿½ï¿½
 
 #ifdef _DEBUG
 <<<<<<< HEAD
@@ -375,10 +375,10 @@ void Draw(void)
 	nowTime++;
 	PrintDebugProc("PresentTime:%d\n", e.QuadPart - s.QuadPart);
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&s); }
-	DrawDebugProc();	// ƒfƒoƒbƒO•\Ž¦
+	DrawDebugProc();	// ï¿½fï¿½oï¿½bï¿½Oï¿½\ï¿½ï¿½
 #endif
 
-	Present();	// ƒoƒbƒNƒoƒbƒtƒ@Aƒtƒƒ“ƒgƒoƒbƒtƒ@“ü‚ê‘Ö‚¦
+	Present();	// ï¿½oï¿½bï¿½Nï¿½oï¿½bï¿½tï¿½@ï¿½Aï¿½tï¿½ï¿½ï¿½ï¿½ï¿½gï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½Ö‚ï¿½
 
 #ifdef _DEBUG
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&e); oldTime = nowTime; }

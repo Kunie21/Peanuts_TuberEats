@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// 2D‰æ‘œ•`‰æˆ— [2Dtexture.cpp]
-// Author : š ] ãÄ‘¾
+// 2Dï¿½æ‘œï¿½`ï¿½æˆï¿½ï¿½ [2Dtexture.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -10,23 +10,23 @@
 #include "camera.h"
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
-static ID3D11Buffer*				g_VertexBuffer = NULL;		// ’¸“_î•ñ
+static ID3D11Buffer*				g_VertexBuffer = NULL;		// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½
 static BOOL							g_Load = FALSE;
 
 static INSTANCE						g_Instance;
 static int							g_InstenceCount = 0;
-static ID3D11ShaderResourceView**	g_pTexture[INSTANCE_MAX];	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView**	g_pTexture[INSTANCE_MAX];	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 
-//#define NO_INSTANCING	// ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO‚µ‚È‚¢ƒo[ƒWƒ‡ƒ“
+//#define NO_INSTANCING	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½È‚ï¿½ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitTexture2D(void)
 {
-	// ’¸“_ƒoƒbƒtƒ@¶¬
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DYNAMIC;
@@ -36,31 +36,31 @@ HRESULT InitTexture2D(void)
 
 	GetDevice()->CreateBuffer(&bd, NULL, &g_VertexBuffer);
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
+	//ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½Ì’ï¿½ï¿½gï¿½ğ–„‚ß‚ï¿½
 	D3D11_MAPPED_SUBRESOURCE msr;
 	GetDeviceContext()->Map(g_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 	VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
-	// ’¸“_À•W‚Ìİ’è
+	// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	vertex[0].Position = XMFLOAT3(-0.5f, -0.5f, 0.0f);
 	vertex[1].Position = XMFLOAT3(0.5f, -0.5f, 0.0f);
 	vertex[2].Position = XMFLOAT3(-0.5f, 0.5f, 0.0f);
 	vertex[3].Position = XMFLOAT3(0.5f, 0.5f, 0.0f);
 
-	// –@ü‚Ìİ’è
+	// ï¿½@ï¿½ï¿½ï¿½Ìİ’ï¿½
 	vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	// ”½ËŒõ‚Ìİ’è
+	// ï¿½ï¿½ï¿½ËŒï¿½ï¿½Ìİ’ï¿½
 	vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	vertex[0].TexCoord = { 0.0f, 0.0f };
 	vertex[1].TexCoord = { 1.0f, 0.0f };
 	vertex[2].TexCoord = { 0.0f, 1.0f };
@@ -79,25 +79,25 @@ void SetUVTexture2D(UV_POSITION* uv)
 
 	VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
-	// ’¸“_À•W‚Ìİ’è
+	// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	vertex[0].Position = XMFLOAT3(-0.5f, -0.5f, 0.0f);
 	vertex[1].Position = XMFLOAT3(0.5f, -0.5f, 0.0f);
 	vertex[2].Position = XMFLOAT3(-0.5f, 0.5f, 0.0f);
 	vertex[3].Position = XMFLOAT3(0.5f, 0.5f, 0.0f);
 
-	// –@ü‚Ìİ’è
+	// ï¿½@ï¿½ï¿½ï¿½Ìİ’ï¿½
 	vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	// ”½ËŒõ‚Ìİ’è
+	// ï¿½ï¿½ï¿½ËŒï¿½ï¿½Ìİ’ï¿½
 	vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	vertex[0].TexCoord = { uv->u, uv->v };
 	vertex[1].TexCoord = { uv->u + uv->uw, uv->v };
 	vertex[2].TexCoord = { uv->u, uv->v + uv->vh };
@@ -112,25 +112,25 @@ void ResetUVTexture2D(void)
 
 	VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
-	// ’¸“_À•W‚Ìİ’è
+	// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	vertex[0].Position = XMFLOAT3(-0.5f, -0.5f, 0.0f);
 	vertex[1].Position = XMFLOAT3(0.5f, -0.5f, 0.0f);
 	vertex[2].Position = XMFLOAT3(-0.5f, 0.5f, 0.0f);
 	vertex[3].Position = XMFLOAT3(0.5f, 0.5f, 0.0f);
 
-	// –@ü‚Ìİ’è
+	// ï¿½@ï¿½ï¿½ï¿½Ìİ’ï¿½
 	vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[1].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[2].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertex[3].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	// ”½ËŒõ‚Ìİ’è
+	// ï¿½ï¿½ï¿½ËŒï¿½ï¿½Ìİ’ï¿½
 	vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 	vertex[0].TexCoord = { 0.0f, 0.0f };
 	vertex[1].TexCoord = { 1.0f, 0.0f };
 	vertex[2].TexCoord = { 0.0f, 1.0f };
@@ -140,7 +140,7 @@ void ResetUVTexture2D(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitTexture2D(void)
 {
@@ -156,7 +156,7 @@ void UninitTexture2D(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateTexture2D(void)
 {
@@ -164,16 +164,16 @@ void UpdateTexture2D(void)
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 {
 #ifdef NO_INSTANCING
-	// UVÀ•W‚ÌÄİ’è
+	// UVï¿½ï¿½ï¿½Wï¿½ÌÄİ’ï¿½
 	if (bUV) { SetUVTexture2D(&td->uv_pos); };
 #endif
 
-	// ˆÊ’u‚ÌŒvZ
+	// ï¿½Ê’uï¿½ÌŒvï¿½Z
 	XMFLOAT2 pos = td->pos;
 	if (td->posType == POSITION_RELATIVE)
 	{
@@ -186,11 +186,11 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 		pos.y += td->size.y * 0.5f;
 	}
 
-	// ƒ}ƒeƒŠƒAƒ‹İ’è
+	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½İ’ï¿½
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
 	material.Diffuse = td->col;
-	// ‰e‚ªİ’è‚³‚ê‚Ä‚¢‚éê‡
+	// ï¿½eï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 	if (bShadow)
 	{
 		pos.x += td->sd_pos.x;
@@ -204,76 +204,76 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 #ifdef NO_INSTANCING
 	SetMaterialBuffer(&material);
 
-	// ƒeƒNƒXƒ`ƒƒİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½İ’ï¿½
 	GetDeviceContext()->PSSetShaderResources(0, 1, td->tex);
 
 	SetDepthEnable(FALSE);
 
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½İ’ï¿½
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-	// ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWİ’è
+	// ï¿½vï¿½ï¿½ï¿½~ï¿½eï¿½Bï¿½uï¿½gï¿½|ï¿½ï¿½ï¿½Wï¿½İ’ï¿½
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	// 2Dƒ}ƒgƒŠƒNƒXİ’è
+	// 2Dï¿½}ï¿½gï¿½ï¿½ï¿½Nï¿½Xï¿½İ’ï¿½
 	SetViewBuffer(&XMMatrixIdentity());
 	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
 
 
-	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒNƒX‚Ì‰Šú‰»
+	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
 	XMMATRIX mtxWorld = XMMatrixIdentity();
 
-	// ‡@SŠg‘å—¦‚Ì”½‰f
+	// ï¿½@Sï¿½gï¿½å—¦ï¿½Ì”ï¿½ï¿½f
 	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixScaling(
 		td->size.x * td->scl.x,
 		td->size.y * td->scl.y,
 		1.0f
 	));
 
-	// ‡AR‰ñ“]‚Ì”½‰f
+	// ï¿½ARï¿½ï¿½]ï¿½Ì”ï¿½ï¿½f
 	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixRotationRollPitchYaw(
 		0.0f,
 		0.0f,
 		td->rot
 	));
 
-	// ‡BTˆÊ’u‚Ì”½‰f
+	// ï¿½BTï¿½Ê’uï¿½Ì”ï¿½ï¿½f
 	mtxWorld = XMMatrixMultiply(mtxWorld, XMMatrixTranslation(
 		pos.x,
 		pos.y,
 		0.0f
 	));
 
-	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒNƒX‚ğƒZƒbƒg
+	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½Nï¿½Xï¿½ï¿½Zï¿½bï¿½g
 	SetWorldBuffer(&mtxWorld);
 
-	// ƒ|ƒŠƒSƒ“‚Ì•`‰æ
+	// ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Ì•`ï¿½ï¿½
 	GetDeviceContext()->Draw(4, 0);
 
 	SetDepthEnable(TRUE);
 
 #else
-	// ƒeƒNƒXƒ`ƒƒİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½İ’ï¿½
 	g_pTexture[g_InstenceCount] = td->tex;
 
-	// ƒCƒ“ƒXƒ^ƒ“ƒXî•ñ‚ğ“o˜^
+	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½oï¿½^
 	g_Instance.scl[g_InstenceCount] = { td->size.x * td->scl.x, td->size.y * td->scl.y, 1.0f , 0.0f };
 	g_Instance.rot[g_InstenceCount] = { 0.0f, 0.0f, td->rot, 0.0f };
 	g_Instance.pos[g_InstenceCount] = { pos.x, pos.y, 0.0f, 0.0f };
 	g_Instance.col[g_InstenceCount] = material.Diffuse;
 	g_Instance.txc[g_InstenceCount] = { td->uv_pos.u, td->uv_pos.v, td->uv_pos.uw, td->uv_pos.vh };
 
-	// ƒCƒ“ƒXƒ^ƒ“ƒX”‚ğXV
+	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½Xï¿½V
 	g_InstenceCount++;
 #endif
 
-	// ‰e‚ªİ’è‚³‚ê‚Ä‚¢‚éê‡
-	if (bShadow) { DrawTexture2D(td); }	// –{‘Ì‚ğ•`‰æ‚·‚é
+	// ï¿½eï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
+	if (bShadow) { DrawTexture2D(td); }	// ï¿½{ï¿½Ì‚ï¿½`ï¿½æ‚·ï¿½ï¿½
 
 #ifdef NO_INSTANCING
-	// UVÀ•W‚ÌƒŠƒZƒbƒg
+	// UVï¿½ï¿½ï¿½Wï¿½Ìƒï¿½ï¿½Zï¿½bï¿½g
 	if (bUV) { ResetUVTexture2D(); };
 #endif
 }
@@ -281,38 +281,38 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 
 void DrawTexture2DAll(BOOL bInterrupt)
 {
-	// ƒCƒ“ƒXƒ^ƒ“ƒXî•ñ‚ğ“o˜^
+	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½oï¿½^
 	D3D11_MAPPED_SUBRESOURCE msr;
 	GetDeviceContext()->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	*(INSTANCE*)msr.pData = g_Instance;
 	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
 	
-	// ƒeƒNƒXƒ`ƒƒİ’è
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½İ’ï¿½
 	for (int i = 0; i < g_InstenceCount; i++) { GetDeviceContext()->PSSetShaderResources(i + 1, 1, g_pTexture[i]); }
 
-	// ’¸“_ƒoƒbƒtƒ@İ’è
+	// ï¿½ï¿½ï¿½_ï¿½oï¿½bï¿½tï¿½@ï¿½İ’ï¿½
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-	// ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒWİ’è
+	// ï¿½vï¿½ï¿½ï¿½~ï¿½eï¿½Bï¿½uï¿½gï¿½|ï¿½ï¿½ï¿½Wï¿½İ’ï¿½
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	// 2Dƒ}ƒgƒŠƒNƒXİ’è
+	// 2Dï¿½}ï¿½gï¿½ï¿½ï¿½Nï¿½Xï¿½İ’ï¿½
 	SetViewBuffer(&XMMatrixIdentity());
 	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
 	SetWorldBuffer(&XMMatrixIdentity());
 
-	// ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æİ’è
+	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½`ï¿½ï¿½İ’ï¿½
 	SetShaderInstanceingOnlyTex(bInterrupt);
 	
-	// ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æ
+	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Oï¿½`ï¿½ï¿½
 	GetDeviceContext()->DrawInstanced(4, g_InstenceCount, 0, 0);
 
-	// ƒCƒ“ƒXƒ^ƒ“ƒX”‚ğXV
+	// ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½Xï¿½V
 	g_InstenceCount = 0;
 
-	// ƒrƒ…[EƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒNƒX‚ğŒ³‚É–ß‚·
+	// ï¿½rï¿½ï¿½ï¿½[ï¿½Eï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½}ï¿½gï¿½ï¿½ï¿½Nï¿½Xï¿½ï¿½ï¿½ï¿½É–ß‚ï¿½
 	SetCamera();
 }
 

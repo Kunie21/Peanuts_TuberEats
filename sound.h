@@ -1,93 +1,93 @@
 //=============================================================================
 //
-// ƒTƒEƒ“ƒhˆ— [sound.h]
-// Author : •“¡ éD‘¾
+// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½ [sound.h]
+// Author : ï¿½ï¿½ï¿½ï¿½ ï¿½Dï¿½ï¿½
 //
 //=============================================================================
 #pragma once
 
 #include <windows.h>
-#include "xaudio2.h"			// ƒTƒEƒ“ƒhˆ—‚Å•K—v
-#include "xaudio2fx.h"			// ƒTƒEƒ“ƒh‚ÌƒGƒtƒFƒNƒgˆ—‚Å•K—v
-#include <XAPOFX.h>				// ƒTƒEƒ“ƒh‚ÌƒGƒtƒFƒNƒgˆ—‚Å•K—v
+#include "xaudio2.h"			// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½Å•Kï¿½v
+#include "xaudio2fx.h"			// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ÌƒGï¿½tï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Å•Kï¿½v
+#include <XAPOFX.h>				// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ÌƒGï¿½tï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Å•Kï¿½v
 
 #pragma comment (lib, "xapofx.lib")
 
 
 //*****************************************************************************
-// ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹
+// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½tï¿½@ï¿½Cï¿½ï¿½
 //*****************************************************************************
 enum 
 {
-	SOUND_LABEL_BGM_TITLE,			// ƒ^ƒCƒgƒ‹
-	SOUND_LABEL_BGM_START,			// ƒXƒ^[ƒg
-	SOUND_LABEL_BGM_HOME,			// ƒz[ƒ€
-	SOUND_LABEL_BGM_STAGE_SELECT,	// ƒXƒe[ƒWƒZƒŒƒNƒg
-	SOUND_LABEL_BGM_STAGE_1_1,		// ƒXƒe[ƒW1-1
-	//SOUND_LABEL_BGM_STAGE_1_2,		// ƒXƒe[ƒW1-2
-	//SOUND_LABEL_BGM_STAGE_1_3,		// ƒXƒe[ƒW1-3
-	//SOUND_LABEL_BGM_STAGE_2_1,		// ƒXƒe[ƒW2-1
-	//SOUND_LABEL_BGM_STAGE_2_2,		// ƒXƒe[ƒW2-2
-	//SOUND_LABEL_BGM_STAGE_2_3,		// ƒXƒe[ƒW2-3
-	//SOUND_LABEL_BGM_STAGE_3_1,		// ƒXƒe[ƒW3-1
-	//SOUND_LABEL_BGM_STAGE_3_2,		// ƒXƒe[ƒW3-2
-	//SOUND_LABEL_BGM_STAGE_3_3,		// ƒXƒe[ƒW3-3
-	//SOUND_LABEL_BGM_STAGE_4_1,		// ƒXƒe[ƒW4-1
-	//SOUND_LABEL_BGM_STAGE_4_2,		// ƒXƒe[ƒW4-2
-	//SOUND_LABEL_BGM_STAGE_4_3,		// ƒXƒe[ƒW4-3
-	SOUND_LABEL_BGM_RESULT,			// ƒŠƒUƒ‹ƒg
-	SOUND_LABEL_BGM_ENDING,			// ƒGƒ“ƒfƒBƒ“ƒO
-	SOUND_LABEL_SE_SELECT,			// ‘I‘ð‰¹
-	SOUND_LABEL_SE_DECIDE,			// Œˆ’è‰¹
-	SOUND_LABEL_SE_OPENING,			// ƒI[ƒvƒjƒ“ƒOSE?
-	SOUND_LABEL_SE_ENGINE,			// ƒGƒ“ƒWƒ“‰¹
-	SOUND_LABEL_SE_COLLISION,		// Õ“Ë‰¹
-	//SOUND_LABEL_SE_PLAYERVOICE,		// ƒvƒŒƒCƒ„[ƒ{ƒCƒX
-	SOUND_LABEL_SE_AIRLEAK,			// ‹ó‹C˜R‚ê‰¹
-	SOUND_LABEL_SE_DOOR_OPEN,		// ƒhƒA‚ªŠJ‚­‰¹
-	SOUND_LABEL_SE_ACROSS_RING,		// ƒŠƒ“ƒO’Ê‰ß‰¹
-	SOUND_LABEL_SE_STAR,			// ¯‚Ì‰¹
-	SOUND_LABEL_SE_POINT_ADD,		// ƒ|ƒCƒ“ƒg‰ÁŽZ
+	SOUND_LABEL_BGM_TITLE,			// ï¿½^ï¿½Cï¿½gï¿½ï¿½
+	SOUND_LABEL_BGM_START,			// ï¿½Xï¿½^ï¿½[ï¿½g
+	SOUND_LABEL_BGM_HOME,			// ï¿½zï¿½[ï¿½ï¿½
+	SOUND_LABEL_BGM_STAGE_SELECT,	// ï¿½Xï¿½eï¿½[ï¿½Wï¿½Zï¿½ï¿½ï¿½Nï¿½g
+	SOUND_LABEL_BGM_STAGE_1_1,		// ï¿½Xï¿½eï¿½[ï¿½W1-1
+	//SOUND_LABEL_BGM_STAGE_1_2,		// ï¿½Xï¿½eï¿½[ï¿½W1-2
+	//SOUND_LABEL_BGM_STAGE_1_3,		// ï¿½Xï¿½eï¿½[ï¿½W1-3
+	//SOUND_LABEL_BGM_STAGE_2_1,		// ï¿½Xï¿½eï¿½[ï¿½W2-1
+	//SOUND_LABEL_BGM_STAGE_2_2,		// ï¿½Xï¿½eï¿½[ï¿½W2-2
+	//SOUND_LABEL_BGM_STAGE_2_3,		// ï¿½Xï¿½eï¿½[ï¿½W2-3
+	//SOUND_LABEL_BGM_STAGE_3_1,		// ï¿½Xï¿½eï¿½[ï¿½W3-1
+	//SOUND_LABEL_BGM_STAGE_3_2,		// ï¿½Xï¿½eï¿½[ï¿½W3-2
+	//SOUND_LABEL_BGM_STAGE_3_3,		// ï¿½Xï¿½eï¿½[ï¿½W3-3
+	//SOUND_LABEL_BGM_STAGE_4_1,		// ï¿½Xï¿½eï¿½[ï¿½W4-1
+	//SOUND_LABEL_BGM_STAGE_4_2,		// ï¿½Xï¿½eï¿½[ï¿½W4-2
+	//SOUND_LABEL_BGM_STAGE_4_3,		// ï¿½Xï¿½eï¿½[ï¿½W4-3
+	SOUND_LABEL_BGM_RESULT,			// ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½g
+	SOUND_LABEL_BGM_ENDING,			// ï¿½Gï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½O
+	SOUND_LABEL_SE_SELECT,			// ï¿½Iï¿½ï¿½ï¿½
+	SOUND_LABEL_SE_DECIDE,			// ï¿½ï¿½ï¿½è‰¹
+	SOUND_LABEL_SE_OPENING,			// ï¿½Iï¿½[ï¿½vï¿½jï¿½ï¿½ï¿½OSE?
+	SOUND_LABEL_SE_ENGINE,			// ï¿½Gï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½
+	SOUND_LABEL_SE_COLLISION,		// ï¿½Õ“Ë‰ï¿½
+	//SOUND_LABEL_SE_PLAYERVOICE,		// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½{ï¿½Cï¿½X
+	SOUND_LABEL_SE_AIRLEAK,			// ï¿½ï¿½Cï¿½Rï¿½ê‰¹
+	SOUND_LABEL_SE_DOOR_OPEN,		// ï¿½hï¿½Aï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½
+	SOUND_LABEL_SE_ACROSS_RING,		// ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Ê‰ß‰ï¿½
+	SOUND_LABEL_SE_STAR,			// ï¿½ï¿½ï¿½Ì‰ï¿½
+	SOUND_LABEL_SE_POINT_ADD,		// ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Z
 
 	SOUND_LABEL_MAX,
 };
 
 
-// ƒtƒF[ƒh‚Ìó‘Ô
+// ï¿½tï¿½Fï¿½[ï¿½hï¿½Ìï¿½ï¿½
 typedef enum
 {
-	AUDIOFADE_NONE = 0,				// ‰½‚à‚È‚¢ó‘Ô
-	AUDIOFADE_IN,					// ƒtƒF[ƒhƒCƒ“ˆ—
-	AUDIOFADE_OUT,					// ƒtƒF[ƒhƒAƒEƒgˆ—
+	AUDIOFADE_NONE = 0,				// ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½
+	AUDIOFADE_IN,					// ï¿½tï¿½Fï¿½[ï¿½hï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	AUDIOFADE_OUT,					// ï¿½tï¿½Fï¿½[ï¿½hï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½ï¿½
 	AUDIOFADE_MAX
 } AUDIOFADE;
 
 
-// Žg—p‚·‚éƒTƒEƒ“ƒh‚ÌŽí—Þ
+// ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ÌŽï¿½ï¿½
 enum {
 	MASTER,
 	BGM,
 	SE,
 	VOICE,
-	SOUND_TYPE_MAX,				// ƒTƒEƒ“ƒhŽí—Þ‚ÌMAX”
+	SOUND_TYPE_MAX,				// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ï¿½Þ‚ï¿½MAXï¿½ï¿½
 };
 
-// Žg—p‚·‚éƒGƒtƒFƒNƒg
+// ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½Gï¿½tï¿½Fï¿½Nï¿½g
 typedef enum
 {
-	REVERB = 0,		// ƒŠƒo[ƒu
-	ECHO,			// ƒGƒR[
-	EQ,				// ƒCƒRƒ‰ƒCƒU[
-	SOUND_EFFECT_MAX,				// ƒGƒtƒFƒNƒg‚ÌMAX”
+	REVERB = 0,		// ï¿½ï¿½ï¿½oï¿½[ï¿½u
+	ECHO,			// ï¿½Gï¿½Rï¿½[
+	EQ,				// ï¿½Cï¿½Rï¿½ï¿½ï¿½Cï¿½Uï¿½[
+	SOUND_EFFECT_MAX,				// ï¿½Gï¿½tï¿½Fï¿½Nï¿½gï¿½ï¿½MAXï¿½ï¿½
 } SOUND_EFFECT;
 
 
-#define BGM_VOLUME (0.7f)			//BGM‚Ì‰¹—Ê
-#define MAX_VOLUME (1.6f)			//BGM‚ÌMAX‰¹—Ê
-#define MIN_VOLUME (0.0f)			//BGM‚ÌMIN‰¹—Ê
+#define BGM_VOLUME (0.7f)			//BGMï¿½Ì‰ï¿½ï¿½ï¿½
+#define MAX_VOLUME (1.6f)			//BGMï¿½ï¿½MAXï¿½ï¿½ï¿½ï¿½
+#define MIN_VOLUME (0.0f)			//BGMï¿½ï¿½MINï¿½ï¿½ï¿½ï¿½
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
 //*****************************************************************************
 BOOL InitSound(HWND hWnd);
 void UninitSound(void);
@@ -101,19 +101,19 @@ BOOL LoadSoundKernel(float* loadPalam, int* loadSum);
 BOOL LoadSound(void);
 
 //*****************************************************************************
-// ‰¹—Ê‚ÌƒtƒF[ƒhƒCƒ“EƒAƒEƒgˆ—
-// ‘æˆêˆø”:AUDIOFADE_OUT or AUDIOFADE_IN ‚ðŽw’è
-// ‘æ“ñˆø”:ƒtƒF[ƒh‚ð‚©‚¯‚½‚¢ƒ‰ƒxƒ‹‚ðŽw’è‚·‚é GetAudioLabel()‚Å‚¢‚¢‚ÆŽv‚¢‚Ü‚·B
+// ï¿½ï¿½ï¿½Ê‚Ìƒtï¿½Fï¿½[ï¿½hï¿½Cï¿½ï¿½ï¿½Eï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:AUDIOFADE_OUT or AUDIOFADE_IN ï¿½ï¿½wï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½tï¿½Fï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½wï¿½è‚·ï¿½ï¿½ GetAudioLabel()ï¿½Å‚ï¿½ï¿½ï¿½ï¿½ÆŽvï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 //*****************************************************************************
 void SetAudioFade(AUDIOFADE audiofade,int label);
 
-// Œ»Ý–Â‚Á‚Ä‚¢‚éƒI[ƒfƒBƒIƒ‰ƒxƒ‹”Ô†‚ðŽæ“¾
+// ï¿½ï¿½ï¿½Ý–Â‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Iï¿½[ï¿½fï¿½Bï¿½Iï¿½ï¿½ï¿½xï¿½ï¿½ï¿½Ôï¿½ï¿½ï¿½æ“¾
 int GetSoundLabel(void);
-// ƒ\[ƒXƒ{ƒCƒX‚Ì‰¹—Ê’²®
+// ï¿½\ï¿½[ï¿½Xï¿½{ï¿½Cï¿½Xï¿½Ì‰ï¿½ï¿½Ê’ï¿½ï¿½ï¿½
 void SetSourceVolume(int label, float volume);
-// ƒ\[ƒXƒ{ƒCƒX‚Ìƒ{ƒCƒX‚ÌÄ¶ƒsƒbƒ`’²®
+// ï¿½\ï¿½[ï¿½Xï¿½{ï¿½Cï¿½Xï¿½Ìƒ{ï¿½Cï¿½Xï¿½ÌÄï¿½ï¿½sï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½
 void SetFrequencyRatio(int label, float pitch);
-// ƒ\[ƒXƒ{ƒCƒX‚ÌˆêŽž’âŽ~
+// ï¿½\ï¿½[ï¿½Xï¿½{ï¿½Cï¿½Xï¿½ÌˆêŽžï¿½ï¿½~
 void PauseSound(int label);
-// ƒ\[ƒXƒ{ƒCƒX‚ÌÄŠJ
+// ï¿½\ï¿½[ï¿½Xï¿½{ï¿½Cï¿½Xï¿½ÌÄŠJ
 void ReStartSound(int label);
