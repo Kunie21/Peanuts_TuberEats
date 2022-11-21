@@ -21,4 +21,6 @@ float GetPlayerPosition(void);
 float GetPlayerRotation(void);
 void SetPlayerThroughRing(void);
 void SetPlayerCollisionIce(void);
+void DrawPlayerResult(void);
+void DrawFireResult(void);
 

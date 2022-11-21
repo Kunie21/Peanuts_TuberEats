@@ -589,6 +589,36 @@ void DrawTube(void)
 	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
 }
 
+void DrawTubeResult(void)
+{
+	MATERIAL g_MeshTubeResult;
+	g_MeshTubeResult.Diffuse.w = 0.6f;
+
+	// 頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_MeshTube.vertexBuffer, &stride, &offset);
+
+	// インデックスバッファ設定
+	GetDeviceContext()->IASetIndexBuffer(g_MeshTube.indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+	// プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// マテリアル設定
+	SetMaterialBuffer(&g_MeshTubeResult);
+
+	// テクスチャ設定
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[testNo]);
+
+	// ワールドマトリックスの設定
+	SetWorldBuffer(&XMMatrixIdentity());
+
+	// ポリゴンの描画
+	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
+}
+
+
 void DrawTubeLight(void)
 {
 	// 頂点バッファ設定

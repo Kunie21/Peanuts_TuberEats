@@ -33,3 +33,5 @@ float GetTubeRotation(void);
 //void TestCurveTube(float move);
 //void PresentTube(void);
 //void SetNextTube(void);
+
+void DrawTubeResult(void);

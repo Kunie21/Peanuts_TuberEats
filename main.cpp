@@ -37,6 +37,8 @@
 // result
 #include "result.h"
 #include "result_event.h"
+#include "tube.h"
+#include "player.h"
 
 
 
@@ -386,6 +388,9 @@ void SetMode(MODE_LABEL mode)
 	UninitTeamLogo();
 	UninitResult();
 	UninitResultEvent();
+	UninitTube();
+	UninitPlayer();
+
 
 	g_Mode = mode;	// 次のモードをセット
 
@@ -408,6 +413,9 @@ void SetMode(MODE_LABEL mode)
 		InitGame();
 		break;
 	case MODE_RESULT:
+		InitLight();
+		InitTube();
+		InitPlayer();
 		InitResult();
 		InitResultEvent();
 		break;

@@ -10,6 +10,8 @@
 #include "teamlogo.h"
 #include "texture2d.h"
 #include "model.h"
+#include "player.h"
+#include "tube.h"
 
 
 //*****************************************************************************
@@ -19,7 +21,7 @@
 #define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// 背景サイズ縦
 
 #define ROCKET_MAX					(6)
-#define ROCKET_SPEED				(2)
+#define ROCKET_SPEED				(10)
 
 //*****************************************************************************
 // グローバル変数
@@ -46,21 +48,8 @@ static char*	g_TextureName[TEXTURE_MAX] = {
 
 };
 
-enum {
-	MODEL_ROCKET1 = 0,
-	MODEL_ROCKET2,
-	MODEL_ROCKET3,
-	MODEL_ROCKET4,
-	MODEL_ROCKET5,
-	MODEL_FIRE,
-	MODEL_OOSAKA,
-	MODEL_TUBE,
-	MODEL_MAX,
-};
 
-static MODEL_DATA	g_Model[MODEL_MAX];	// プレイヤーのモデル管理
-
-static int testNo = 0;
+XMFLOAT3 g_CameraPos, g_CameraAt, g_CameraUp;
 
 
 //=============================================================================
@@ -93,30 +82,10 @@ HRESULT InitResultEvent(void)
 	g_td[TEXTURE_NEWYORK].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
 	g_td[TEXTURE_NEWYORK].tex = &g_Texture[TEXTURE_NEWYORK];
 
-	LoadModel("data/MODEL/rocket01.obj", &g_Model[0].model);
-	LoadModel("data/MODEL/rocket02.obj", &g_Model[1].model);
-	LoadModel("data/MODEL/rocket03.obj", &g_Model[2].model);
-	LoadModel("data/MODEL/rocket04.obj", &g_Model[3].model);
-	LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
-	LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
-	LoadModel("data/MODEL/oosaka.obj", &g_Model[6].model);
-	LoadModel("data/MODEL/tube.obj", &g_Model[7].model);
 
-
-	for (int i = 0; i < ROCKET_MAX; i++) {
-		g_Model[i].srt.pos = { -300.0f, 50.0f, 0.0f };
-		g_Model[i].srt.rot = { 0.0f, -XM_PIDIV2, 0.0f };
-		g_Model[i].srt.scl = { 0.2f, 0.2f, 0.2f };
-	}
-	g_Model[MODEL_FIRE].srt.pos.x -= 20.0f;
-
-	g_Model[MODEL_OOSAKA].srt.pos = { 0.0f, 0.0f, 100.0f };
-	g_Model[MODEL_OOSAKA].srt.scl = { 5.0f, 5.0f, 5.0f };
-	g_Model[MODEL_OOSAKA].srt.rot = { 0.0f, 0.0f, XM_PI };
-
-	g_Model[MODEL_TUBE].srt.pos = { 0.0f, 50.0f, 0.0f };
-	g_Model[MODEL_TUBE].srt.scl = { 0.03f, 0.03f, 0.03f };
-	g_Model[MODEL_TUBE].srt.rot = { 0.0f, XM_PIDIV2, 0.0f };
+	g_CameraPos = { 2500.0f, -500.0f, 2000.0f };
+	g_CameraAt = { 0.0f, -500.0f, 2000.0f };
+	g_CameraUp = { 0.0f, 1.0f, 0.0f };
 
 
 	g_Time = 0;
@@ -141,7 +110,6 @@ void UninitResultEvent(void)
 		}
 	}
 
-	for (int i = 0; i < MODEL_MAX; i++) { UnloadModel(&g_Model[i].model); }
 
 	g_Load = FALSE;
 }
@@ -151,10 +119,8 @@ void UninitResultEvent(void)
 //=============================================================================
 void UpdateResultEvent(void)
 {
-	for (int i = 0; i < ROCKET_MAX; i++)
-	{
-		g_Model[i].srt.pos.x += ROCKET_SPEED;
-	}
+	g_CameraPos.z -= ROCKET_SPEED;
+	g_CameraAt.z -= ROCKET_SPEED;
 }
 
 //=============================================================================
@@ -162,33 +128,29 @@ void UpdateResultEvent(void)
 //=============================================================================
 void DrawResultEvent(void)
 {
-	SetDraw2DTexture();
+	//SetDraw2DTexture();
 	
 	//後でステージに分けて描画する
 	DrawTexture2D(&g_td[TEXTURE_OOSAKA]);
-	DrawTexture2D(&g_td[TEXTURE_SHANGHAI]);
-	DrawTexture2D(&g_td[TEXTURE_PARIS]);
-	DrawTexture2D(&g_td[TEXTURE_NEWYORK]);
+	//DrawTexture2D(&g_td[TEXTURE_SHANGHAI]);
+	//DrawTexture2D(&g_td[TEXTURE_PARIS]);
+	//DrawTexture2D(&g_td[TEXTURE_NEWYORK]);
 
-	//SetDrawNoLighting();
+	DrawTexture2DAll(TRUE);
+	
+	//チューブの描画
+	static CURVE_BUFFER curve;
+	SetCurveBuffer(&curve);
+	SetAfterRotation(&XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f));
 
-	//SetCullingMode(CULL_MODE_NONE);
-	//MATERIAL material;
-	//DrawModel(&g_Model[MODEL_OOSAKA].model, &g_Model[MODEL_OOSAKA].srt, NULL, &material);	// モデル描画
-	//
+	SetViewBuffer(&XMMatrixLookAtLH(XMLoadFloat3(&g_CameraPos), XMLoadFloat3(&g_CameraAt), XMLoadFloat3(&g_CameraUp)));
 
-	//DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, NULL, &material);	// モデル描画
-	//
-	//g_Model[MODEL_FIRE].srt.scl.x = (float)(rand() % 10) * 0.003f + 0.2f;
-	//g_Model[MODEL_FIRE].srt.scl.y = (float)(rand() % 10) * 0.003f + 0.2f;
-	//g_Model[MODEL_FIRE].srt.scl.z = (float)(rand() % 10) * 0.003f + 0.2f;
-	//material.Shininess = 1.0f;
-	//material.Diffuse.w = 1.0f;
-	//DrawModel(&g_Model[MODEL_FIRE].model, &g_Model[MODEL_FIRE].srt, NULL, &material);	// モデル描画
-	//SetCullingMode(CULL_MODE_BACK);
+	SetStencilReadLL(SHADER_TUBE);
+	DrawTubeResult();
 
-	//material.Diffuse.w = 0.6f;
-	//DrawModel(&g_Model[MODEL_TUBE].model, &g_Model[MODEL_TUBE].srt, NULL, &material);	// モデル描画
-
+	//ロケットの描画
+	SetStencilReadLL(SHADER_PLAYER);
+	DrawPlayerResult();
+	DrawFireResult();
 
 }
