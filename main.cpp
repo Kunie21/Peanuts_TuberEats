@@ -411,6 +411,7 @@ void SetMode(MODE_LABEL mode)
 	{
 	case MODE_OPENING:
 		InitTeamLogo();
+
 		break;
 	case MODE_LOADING:
 		break;
@@ -433,6 +434,10 @@ void SetMode(MODE_LABEL mode)
 	default:
 		break;
 	}
+
+	//// BGMの管理（再生）
+	//SetBGM(g_Mode);		// Load系通るまでコメントアウトしたままで！エラー出ます！
+
 }
 
 // システム情報の取得関数

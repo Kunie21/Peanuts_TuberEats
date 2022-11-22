@@ -14,7 +14,9 @@
 #define	AUDIO_FADEOUT_SPEED		(0.01f)			// オーディオフェードインスピード
 #define	AUDIO_FADEIN_SPEED		(0.01f)			// オーディオフェードアウトスピード
 
-#define NO_AUDIO	// サウンド無し(これ消せばロードはいる)
+#define AUDIO_INITIAL_VOLUME	(0.7f)			// 初期音量
+
+//#define NO_AUDIO	// サウンド無し(これ消せばロードはいる)
 
 //*****************************************************************************
 // パラメータ構造体定義
@@ -23,8 +25,8 @@ typedef struct
 {
 	char *pFilename;	// ファイル名
 	int nCntLoop;		// ループカウント
+	int type;			// サウンドの種類
 	//BOOL UseFilter;		// エフェクト使うか使わないか？？
-	//int type;			// サウンドの種類
 
 } SOUNDPARAM;
 
@@ -41,10 +43,12 @@ HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwB
 IXAudio2 *g_pXAudio2 = NULL;								// XAudio2オブジェクトへのインターフェイス
 IXAudio2MasteringVoice *g_pMasteringVoice = NULL;			// マスターボイス
 
+IXAudio2SubmixVoice *g_apSubmixVoice;				//サブミックスボイス
 
-// サブミックスボイスの作成
-IXAudio2SubmixVoice *g_apDrySubmixVoice;					//サブミックスボイス(エフェクトなし)
-IXAudio2SubmixVoice *g_apWetSubmixVoice;					//サブミックスボイス(エフェクトあり)
+
+//// サブミックスボイスの作成
+//IXAudio2SubmixVoice *g_apDrySubmixVoice;					//サブミックスボイス(エフェクトなし)
+//IXAudio2SubmixVoice *g_apWetSubmixVoice;					//サブミックスボイス(エフェクトあり)
 
 IXAudio2SourceVoice *g_apSourceVoice[SOUND_LABEL_MAX] = {};	// ソースボイス
 BYTE *g_apDataAudio[SOUND_LABEL_MAX] = {};					// オーディオデータ
@@ -53,6 +57,8 @@ DWORD g_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
 AUDIOFADE g_AudioFade = AUDIOFADE_IN;						// フェードの状態
 float g_VolumeSound = 1.0f;									// 音量
 int g_Label = 0;											// オーディオラベル番号の初期化
+
+int g_NowBGMLabel = 0;											// オーディオラベル番号の初期化
 
 //音量管理
 float				g_VolParam[SOUND_TYPE_MAX];
@@ -65,35 +71,35 @@ static int	g_LoadPoint = 0;
 //*****************************************************************************
 SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 {
-	{ (char*)"data/BGM/title.wav", -1 },			// タイトル
-	{ (char*)"data/BGM/STAGESELECT.wav", -1 },		// スタート
-	{ (char*)"data/BGM/home.wav", -1 },				// ホーム
-	{ (char*)"data/BGM/stage_select.wav", -1 },		// ステージセレクト
-	{ (char*)"data/BGM/stage_1_1.wav", -1 },		// ステージ1-1
-	//{ (char*)"data/BGM/stage_1_2.wav", -1 },		// ステージ1-2
-	//{ (char*)"data/BGM/stage_1_3.wav", -1 },		// ステージ1-3
-	//{ (char*)"data/BGM/stage_2_1.wav", -1 },		// ステージ2-1
-	//{ (char*)"data/BGM/stage_2_2.wav", -1 },		// ステージ2-2
-	//{ (char*)"data/BGM/stage_2_3.wav", -1 },		// ステージ2-3
-	//{ (char*)"data/BGM/stage_3_1.wav", -1 },		// ステージ3-1
-	//{ (char*)"data/BGM/stage_3_2.wav", -1 },		// ステージ3-2
-	//{ (char*)"data/BGM/stage_3_3.wav", -1 },		// ステージ3-3
-	//{ (char*)"data/BGM/stage_4_1.wav", -1 },		// ステージ4-1
-	//{ (char*)"data/BGM/stage_4_2.wav", -1 },		// ステージ4-2
-	//{ (char*)"data/BGM/stage_4_3.wav", -1 },		// ステージ4-3
-	{ (char*)"data/BGM/result.wav", 0 },			// リザルト
-	{ (char*)"data/BGM/ending.wav", 0 },			// エンディング
-	{ (char*)"data/SE/select.wav", 0 },			// 選択音
-	{ (char*)"data/SE/decide.wav", 0 },			// 決定音
-	{ (char*)"data/SE/decide.wav", 0 },			// オープニングSE?
-	{ (char*)"data/SE/engine.wav", 0 },			// エンジン音
-	{ (char*)"data/SE/collision.wav", 0 },		// 衝突音
-	//{ (char*)"data/SE/INTOMAGMA.wav", 0 },		// プレイヤーボイス
-	{ (char*)"data/SE/airleak.wav", 0 },		// 空気漏れ音
-	{ (char*)"data/SE/door_open.wav", 0 },		// ドアが開く音
-	{ (char*)"data/SE/across_ring.wav", 0 },	// リング通過音
-	{ (char*)"data/SE/star.wav", 0 },			// 星の音
-	{ (char*)"data/SE/point_add.wav", 0 },		// ポイント加算
+	{ (char*)"data/BGM/title.wav", -1, BGM },			// タイトル
+	{ (char*)"data/BGM/STAGESELECT.wav", -1, BGM },		// スタート
+	{ (char*)"data/BGM/home.wav", -1, BGM },				// ホーム
+	{ (char*)"data/BGM/stage_select.wav", -1, BGM },		// ステージセレクト
+	{ (char*)"data/BGM/stage_1_1.wav", -1, BGM },		// ステージ1-1
+	//{ (char*)"data/BGM/stage_1_3.wav", -1, BGM },		// ステージ1-3
+	//{ (char*)"data/BGM/stage_2_1.wav", -1, BGM },		// ステージ2-1
+	//{ (char*)"data/BGM/stage_2_2.wav", -1, BGM },		// ステージ2-2
+	//{ (char*)"data/BGM/stage_2_3.wav", -1, BGM },		// ステージ2-3
+	//{ (char*)"data/BGM/stage_1_2.wav", -1, BGM },		// ステージ1-2
+	//{ (char*)"data/BGM/stage_3_1.wav", -1, BGM },		// ステージ3-1
+	//{ (char*)"data/BGM/stage_3_2.wav", -1, BGM },		// ステージ3-2
+	//{ (char*)"data/BGM/stage_3_3.wav", -1, BGM },		// ステージ3-3
+	//{ (char*)"data/BGM/stage_4_1.wav", -1, BGM },		// ステージ4-1
+	//{ (char*)"data/BGM/stage_4_2.wav", -1, BGM },		// ステージ4-2
+	//{ (char*)"data/BGM/stage_4_3.wav", -1, BGM },		// ステージ4-3
+	{ (char*)"data/BGM/result.wav", -1, BGM },			// リザルト
+	{ (char*)"data/BGM/ending.wav", -1, BGM },			// エンディング
+	{ (char*)"data/SE/select.wav", 0, SE },			// 選択音
+	{ (char*)"data/SE/decide.wav", 0, SE },			// 決定音
+	{ (char*)"data/SE/decide.wav", 0, SE },			// オープニングSE?
+	{ (char*)"data/SE/engine.wav", 0, SE },			// エンジン音
+	{ (char*)"data/SE/collision.wav", 0, SE },		// 衝突音
+	//{ (char*)"data/SE/p_voice.wav", 0, SE },		// プレイヤーボイス
+	{ (char*)"data/SE/airleak.wav", 0, SE },		// 空気漏れ音
+	{ (char*)"data/SE/door_open.wav", 0, SE },		// ドアが開く音
+	{ (char*)"data/SE/across_ring.wav", 0, SE },	// リング通過音
+	{ (char*)"data/SE/star.wav", 0, SE },			// 星の音
+	{ (char*)"data/SE/point_add.wav", 0, SE },		// ポイント加算
 };
 
 //*****************************************************************************
@@ -125,6 +131,9 @@ FXEQ_PARAMETERS g_EQParam;
 //XAUDIO2_FILTER_PARAMETERS FilterParams;
 
 // マスタリングリミッターつくる
+
+
+
 
 //=============================================================================
 // 初期化処理
@@ -171,21 +180,30 @@ BOOL InitSound(HWND hWnd)
 		return FALSE;
 	}
 
-	//サブミックスボイス（エフェクトあり）の作成
-	hr = g_pXAudio2->CreateSubmixVoice(&g_apWetSubmixVoice, 2, 48000);
+	//サブミックスボイスの作成
+	hr = g_pXAudio2->CreateSubmixVoice(&g_apSubmixVoice, 2, 44800);
 	if (FAILED(hr))
 	{
-		MessageBox(hWnd, "サブミックス（エフェクトあり）の生成に失敗！", "警告！", MB_ICONWARNING);
+		MessageBox(hWnd, "サブミックスの生成に失敗！", "警告！", MB_ICONWARNING);
 		return FALSE;
 	}
 
-	//サブミックスボイス（エフェクトなし）の作成
-	hr = g_pXAudio2->CreateSubmixVoice(&g_apDrySubmixVoice, 2, 48000);
-	if (FAILED(hr))
-	{
-		MessageBox(hWnd, "サブミックス（エフェクトなし）の生成に失敗！", "警告！", MB_ICONWARNING);
-		return FALSE;
-	}
+
+	////サブミックスボイス（エフェクトあり）の作成
+	//hr = g_pXAudio2->CreateSubmixVoice(&g_apWetSubmixVoice, 2, 48000);
+	//if (FAILED(hr))
+	//{
+	//	MessageBox(hWnd, "サブミックス（エフェクトあり）の生成に失敗！", "警告！", MB_ICONWARNING);
+	//	return FALSE;
+	//}
+
+	////サブミックスボイス（エフェクトなし）の作成
+	//hr = g_pXAudio2->CreateSubmixVoice(&g_apDrySubmixVoice, 2, 48000);
+	//if (FAILED(hr))
+	//{
+	//	MessageBox(hWnd, "サブミックス（エフェクトなし）の生成に失敗！", "警告！", MB_ICONWARNING);
+	//	return FALSE;
+	//}
 
 	g_LoadPoint = 0;
 
@@ -401,13 +419,13 @@ BOOL LoadSound(void)
 	//}
 
 
-	////音量の初期化
-	//{
-	//	g_VolParam[MASTER] = 1.0f;
-	//	g_VolParam[BGM] = 1.0f;
-	//	g_VolParam[SE] = 1.0f;
-	//	g_VolParam[VOICE] = 1.0f;
-	//}
+	//音量の初期化
+	{
+		g_VolParam[MASTER]	= AUDIO_INITIAL_VOLUME;
+		g_VolParam[BGM]		= AUDIO_INITIAL_VOLUME;
+		g_VolParam[SE]		= AUDIO_INITIAL_VOLUME;
+		g_VolParam[VOICE]	= AUDIO_INITIAL_VOLUME;
+	}
 
 
 
@@ -478,9 +496,11 @@ void UninitSound(void)
 		}
 	}
 
-	// サブミックスボイスの破棄
-	g_apWetSubmixVoice->DestroyVoice();
-	g_apDrySubmixVoice->DestroyVoice();
+	//// サブミックスボイスの破棄
+
+	g_apSubmixVoice->DestroyVoice();
+	//g_apWetSubmixVoice->DestroyVoice();
+	//g_apDrySubmixVoice->DestroyVoice();
 
 	// マスターボイスの破棄
 	g_pMasteringVoice->DestroyVoice();
@@ -500,15 +520,15 @@ void UninitSound(void)
 //=============================================================================
 // セグメント再生(再生中なら停止)
 //=============================================================================
-void PlaySound(int label, float volume)
+void PlaySound(int label)
 {
 #ifdef NO_AUDIO
 	return;
 #endif
 
-	//if (g_aParam[label].type == BGM)
+	if (g_aParam[label].type == BGM)
 	{
-		g_Label = label;					// 現在鳴らしているBGMラベル番号を保存
+		g_NowBGMLabel = label;					// 現在鳴らしているBGMラベル番号を保存
 	}
 
 	XAUDIO2_VOICE_STATE xa2state;
@@ -532,22 +552,28 @@ void PlaySound(int label, float volume)
 		g_apSourceVoice[label]->FlushSourceBuffers();
 	}
 
-	//if (g_aParam[label].UseFilter == TRUE)
-	{
-		//サブミックスボイスに送信
-		XAUDIO2_SEND_DESCRIPTOR Send[2] = { 0, g_apWetSubmixVoice,
-											0, g_apDrySubmixVoice };
-		XAUDIO2_VOICE_SENDS SendList = { 2, Send };
-		g_apSourceVoice[label]->SetOutputVoices(&SendList);
-	}
+	////if (g_aParam[label].UseFilter == TRUE)
+	//{
+	//	//サブミックスボイスに送信
+	//	XAUDIO2_SEND_DESCRIPTOR Send[2] = { 0, g_apWetSubmixVoice,
+	//										0, g_apDrySubmixVoice };
+	//	XAUDIO2_VOICE_SENDS SendList = { 2, Send };
+	//	g_apSourceVoice[label]->SetOutputVoices(&SendList);
+	//}
+
+	////ソースボイスの出力をサブミックスボイスに切り替え
+	//XAUDIO2_SEND_DESCRIPTOR send = { 0, g_apSubmixVoice };
+	//XAUDIO2_VOICE_SENDS sendlist = { 1, &send };
+	//g_apSourceVoice[label]->SetOutputVoices(&sendlist);
+
 	// オーディオバッファの登録
 	g_apSourceVoice[label]->SubmitSourceBuffer(&buffer);
 
-	// 再生
-	g_apSourceVoice[label]->Start(0);
+	// 音量調整
+	g_apSourceVoice[label]->SetVolume(g_VolParam[g_aParam[label].type]);
 
 	// 再生
-	//g_apSourceVoice[label]->SetVolume(g_VolParam[g_aParam[label].type]);}
+	g_apSourceVoice[label]->Start(0);
 }
 
 //=============================================================================
@@ -764,3 +790,50 @@ void ReStartSound(int label)
 	return;
 }
 
+
+//=============================================================================
+// BGMの管理
+//=============================================================================
+void SetBGM(MODE_LABEL mode)
+{
+	switch (mode)
+	{
+	case MODE_OPENING:
+	case MODE_LOADING:
+		break;
+
+	case MODE_TITLE:
+		SOUND_LABEL_BGM_TITLE,			// タイトル
+			PlaySound(SOUND_LABEL_BGM_TITLE);
+		break;
+
+	case MODE_START:
+		PlaySound(SOUND_LABEL_BGM_START);
+		break;
+
+	case MODE_HOME:
+		PlaySound(SOUND_LABEL_BGM_HOME);
+		break;
+
+	case MODE_STAGESELECT:
+		PlaySound(SOUND_LABEL_BGM_STAGE_SELECT);
+		break;
+
+	case MODE_GAME:
+		PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
+		break;
+
+	case MODE_RESULT:
+		PlaySound(SOUND_LABEL_BGM_RESULT);
+		break;
+
+	case MODE_END:
+		PlaySound(SOUND_LABEL_BGM_ENDING);
+		break;
+
+
+	default:
+		break;
+	}
+	return;
+}

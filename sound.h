@@ -11,6 +11,8 @@
 #include "xaudio2fx.h"			// サウンドのエフェクト処理で必要
 #include <XAPOFX.h>				// サウンドのエフェクト処理で必要
 
+#include "main.h"
+
 #pragma comment (lib, "xapofx.lib")
 
 
@@ -91,7 +93,7 @@ typedef enum
 //*****************************************************************************
 BOOL InitSound(HWND hWnd);
 void UninitSound(void);
-void PlaySound(int label, float volume = -1.0f);
+void PlaySound(int label);
 void StopSound(int label);
 void StopSound(void);
 
@@ -117,3 +119,5 @@ void SetFrequencyRatio(int label, float pitch);
 void PauseSound(int label);
 // ソースボイスの再開
 void ReStartSound(int label);
+// BGMの管理
+void SetBGM(MODE_LABEL mode);
