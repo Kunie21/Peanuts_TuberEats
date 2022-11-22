@@ -21,4 +21,8 @@ float GetPlayerPosition(void);
 float GetPlayerRotation(void);
 void SetPlayerThroughRing(void);
 void SetPlayerCollisionIce(void);
+void SetPlayerCollisionBlast(float rotAddSpd);
 
+void SetRocketStart(void);
+
+CURVE_BUFFER GetCurveTestStatus(void);

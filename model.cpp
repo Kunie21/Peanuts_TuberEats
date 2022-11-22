@@ -171,16 +171,20 @@ void DrawModel(DX11_MODEL *Model, SRT* srt, ID3D11ShaderResourceView** pTexture,
 }
 void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
 {
+	// デバイス取得
+	ID3D11DeviceContext* device = GetDeviceContext();
+
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
-	GetDeviceContext()->IASetVertexBuffers(0, 1, &Model->VertexBuffer, &stride, &offset);
+	device->IASetVertexBuffers(0, 1, &Model->VertexBuffer, &stride, &offset);
 
 	// インデックスバッファ設定
-	GetDeviceContext()->IASetIndexBuffer(Model->IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	device->IASetIndexBuffer(Model->IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 	// プリミティブトポロジ設定
-	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	device->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ);
 
 	for (unsigned short i = 0; i < Model->SubsetNum; i++) {
 		// マテリアル設定
@@ -193,30 +197,33 @@ void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL*
 
 		// テクスチャ設定
 		if (Model->SubsetArray[i].Material.Material.noTexSampling == 0) {
-			GetDeviceContext()->PSSetShaderResources(0, 1, &Model->SubsetArray[i].Material.Texture);
+			device->PSSetShaderResources(0, 1, &Model->SubsetArray[i].Material.Texture);
 		}
 
 		if (pTexture) {
-			GetDeviceContext()->PSSetShaderResources(0, 1, pTexture);
+			device->PSSetShaderResources(0, 1, pTexture);
 		}
 
 		// ポリゴン描画
-		GetDeviceContext()->DrawIndexed(Model->SubsetArray[i].IndexNum, Model->SubsetArray[i].StartIndex, 0);
+		device->DrawIndexed(Model->SubsetArray[i].IndexNum, Model->SubsetArray[i].StartIndex, 0);
 		//GetDeviceContext()->DrawIndexedInstanced(Model->SubsetArray[i].IndexNum, 1, Model->SubsetArray[i].StartIndex, 0, 0);
 	}
 }
 void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMaterial)
 {
+	// デバイス取得
+	ID3D11DeviceContext* device = GetDeviceContext();
+
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
-	GetDeviceContext()->IASetVertexBuffers(0, 1, &Model->VertexBuffer, &stride, &offset);
+	device->IASetVertexBuffers(0, 1, &Model->VertexBuffer, &stride, &offset);
 
 	// インデックスバッファ設定
-	GetDeviceContext()->IASetIndexBuffer(Model->IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	device->IASetIndexBuffer(Model->IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 	// プリミティブトポロジ設定
-	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	device->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	for (unsigned short i = 0; i < Model->SubsetNum; i++)
 	{
@@ -231,11 +238,11 @@ void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMateria
 		// テクスチャ設定
 		if (Model->SubsetArray[i].Material.Material.noTexSampling == 0)
 		{
-			GetDeviceContext()->PSSetShaderResources(0, 1, &Model->SubsetArray[i].Material.Texture);
+			device->PSSetShaderResources(0, 1, &Model->SubsetArray[i].Material.Texture);
 		}
 
 		// ポリゴン描画
-		GetDeviceContext()->DrawIndexedInstanced(Model->SubsetArray[i].IndexNum, instanceCount, Model->SubsetArray[i].StartIndex, 0, 0);
+		device->DrawIndexedInstanced(Model->SubsetArray[i].IndexNum, instanceCount, Model->SubsetArray[i].StartIndex, 0, 0);
 	}
 }
 
@@ -247,13 +254,20 @@ void LoadObj( char *FileName, MODEL *Model )
 	XMFLOAT3	*normalArray;
 	XMFLOAT2	*texcoordArray;
 
-	unsigned short	positionNum = 0;
-	unsigned short	normalNum = 0;
-	unsigned short	texcoordNum = 0;
-	unsigned short	vertexNum = 0;
-	unsigned short	indexNum = 0;
-	unsigned short	in = 0;
-	unsigned short	subsetNum = 0;
+	//unsigned short	positionNum = 0;
+	//unsigned short	normalNum = 0;
+	//unsigned short	texcoordNum = 0;
+	//unsigned short	vertexNum = 0;
+	//unsigned short	indexNum = 0;
+	//unsigned short	in = 0;
+	//unsigned short	subsetNum = 0;
+	int	positionNum = 0;
+	int	normalNum = 0;
+	int	texcoordNum = 0;
+	int	vertexNum = 0;
+	int	indexNum = 0;
+	int	in = 0;
+	int	subsetNum = 0;
 
 	MODEL_MATERIAL	*materialArray = NULL;
 	unsigned short	materialNum = 0;
@@ -342,9 +356,12 @@ void LoadObj( char *FileName, MODEL *Model )
 	XMFLOAT3 *normal = normalArray;
 	XMFLOAT2 *texcoord = texcoordArray;
 
-	unsigned short vc = 0;
-	unsigned short ic = 0;
-	unsigned short sc = 0;
+	//unsigned short vc = 0;
+	//unsigned short ic = 0;
+	//unsigned short sc = 0;
+	int vc = 0;
+	int ic = 0;
+	int sc = 0;
 
 
 	fseek( file, 0, SEEK_SET );

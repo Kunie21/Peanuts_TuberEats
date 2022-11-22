@@ -188,7 +188,7 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 
 	// マテリアル設定
 	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
+	//ZeroMemory(&material, sizeof(material));
 	material.Diffuse = td->col;
 	// 影が設定されている場合
 	if (bShadow)
@@ -281,33 +281,43 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 
 void DrawTexture2DAll(BOOL bInterrupt)
 {
+	if (g_InstenceCount <= 0) return;
+
+	// デバイス取得
+	ID3D11DeviceContext* device = GetDeviceContext();
+
 	// インスタンス情報を登録
 	D3D11_MAPPED_SUBRESOURCE msr;
-	GetDeviceContext()->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	device->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	*(INSTANCE*)msr.pData = g_Instance;
-	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
+	device->Unmap(GetInstanceBuffer(), 0);
 	
 	// テクスチャ設定
-	for (int i = 0; i < g_InstenceCount; i++) { GetDeviceContext()->PSSetShaderResources(i + 1, 1, g_pTexture[i]); }
+	for (int i = 0; i < g_InstenceCount; i++) { device->PSSetShaderResources(i + 2, 1, g_pTexture[i]); }
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
-	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+	device->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
 	// プリミティブトポロジ設定
-	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	device->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	// 2Dマトリクス設定
 	SetViewBuffer(&XMMatrixIdentity());
 	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
 	SetWorldBuffer(&XMMatrixIdentity());
 
+	//// マテリアル設定
+	//MATERIAL material;
+	//material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//SetMaterialBuffer(&material);
+
 	// インスタンシング描画設定
 	SetShaderInstanceingOnlyTex(bInterrupt);
 	
 	// インスタンシング描画
-	GetDeviceContext()->DrawInstanced(4, g_InstenceCount, 0, 0);
+	device->DrawInstanced(4, g_InstenceCount, 0, 0);
 
 	// インスタンス数を更新
 	g_InstenceCount = 0;

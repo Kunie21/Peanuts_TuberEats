@@ -12,6 +12,8 @@
 // シェーダーデバッグ設定を有効にする
 //#define DEBUG_SHADER
 
+//#define MB
+
 //*****************************************************************************
 // 構造体
 //*****************************************************************************
@@ -106,6 +108,8 @@ static ID3D11PixelShader*		g_PSDepthMap = NULL;
 static ID3D11VertexShader*		g_VSFilter = NULL;
 static ID3D11PixelShader*		g_PSFilter = NULL;
 static ID3D11PixelShader*		g_PSOnlyTex = NULL;
+static ID3D11PixelShader*		g_PSTest = NULL;
+static ID3D11PixelShader*		g_PSMotionBlur = NULL;
 static ID3D11PixelShader*		g_PSMosaic = NULL;
 static ID3D11PixelShader*		g_PSCA = NULL;
 static ID3D11PixelShader*		g_PSMonitoring = NULL;
@@ -116,6 +120,7 @@ static ID3D11RenderTargetView*	g_RenderTargetViewWrite[2] = { NULL, NULL };
 static ID3D11ShaderResourceView*g_WrittenTexture[2] = { NULL, NULL };
 static int						g_CurrentTarget = 0;
 static int						g_CurrentResource = 0;
+static ID3D11RenderTargetView* g_RenderTargetViewOld = NULL;
 
 // ライト用レンダーターゲット
 static ID3D11RenderTargetView*	g_RenderTargetViewLight[2] = { NULL, NULL };
@@ -126,10 +131,11 @@ static int						g_CurrentResourceLight = 0;
 // その他シェーダー
 static ID3D11VertexShader*		g_VS = NULL;
 static ID3D11VertexShader*		g_VSOutline = NULL;
-static ID3D11VertexShader*		g_VSOutlineInstancing = NULL;
+static ID3D11VertexShader*		g_VSOutlineInst = NULL;
 static ID3D11VertexShader*		g_VSTube = NULL;
 static ID3D11VertexShader*		g_VSGimmick = NULL;
 static ID3D11VertexShader*		g_VSPlayer = NULL;
+static ID3D11VertexShader*		g_VSPlayerSV = NULL;
 static ID3D11VertexShader*		g_VSEX = NULL;
 static ID3D11PixelShader*		g_PS = NULL;
 static ID3D11PixelShader*		g_PSOutline = NULL;
@@ -193,11 +199,12 @@ static ID3D11RasterizerState*	g_RasterStateCullCW;
 static ID3D11RasterizerState*	g_RasterStateCullCCW;
 
 // インスタンシング描画用
-static ID3D11VertexShader*		g_VSInstancing = NULL;
-static ID3D11VertexShader*		g_VSInstancingTexture = NULL;
-static ID3D11PixelShader*		g_PSInstancingOnlyTex = NULL;
+static ID3D11VertexShader*		g_VSInst = NULL;
+static ID3D11VertexShader*		g_VSInstTexture = NULL;
+static ID3D11VertexShader*		g_VSInstBillboard = NULL;
+static ID3D11PixelShader*		g_PSInstOnlyTex = NULL;
 static ID3D11Buffer*			g_InstanceBuffer = NULL;
-static ID3D11Buffer*			g_BillboardBuffer = NULL;
+//static ID3D11Buffer*			g_BillboardBuffer = NULL;
 
 //*****************************************************************************
 // 終了処理
@@ -220,6 +227,8 @@ void UninitRenderer(void)
 	if (g_VSFilter)				g_VSFilter->Release();
 	if (g_PSFilter)				g_PSFilter->Release();
 	if (g_PSOnlyTex)			g_PSOnlyTex->Release();
+	if (g_PSTest)				g_PSTest->Release();
+	if (g_PSMotionBlur)			g_PSMotionBlur->Release();
 	if (g_PSMosaic)				g_PSMosaic->Release();
 	if (g_PSCA)					g_PSCA->Release();
 	if (g_PSMonitoring)			g_PSMonitoring->Release();
@@ -230,6 +239,7 @@ void UninitRenderer(void)
 	if (g_RenderTargetViewWrite[1])	g_RenderTargetViewWrite[1]->Release();
 	if (g_WrittenTexture[0])	g_WrittenTexture[0]->Release();
 	if (g_WrittenTexture[1])	g_WrittenTexture[1]->Release();
+	if (g_RenderTargetViewOld)	g_RenderTargetViewOld->Release();
 
 	// ライト用レンダーターゲット
 	if (g_RenderTargetViewLight[0]) g_RenderTargetViewLight[0]->Release();
@@ -240,10 +250,11 @@ void UninitRenderer(void)
 	// その他シェーダー
 	if (g_VS)					g_VS->Release();
 	if (g_VSOutline)			g_VSOutline->Release();
-	if (g_VSOutlineInstancing)	g_VSOutlineInstancing->Release();
+	if (g_VSOutlineInst)		g_VSOutlineInst->Release();
 	if (g_VSTube)				g_VSTube->Release();
 	if (g_VSGimmick)			g_VSGimmick->Release();
 	if (g_VSPlayer)				g_VSPlayer->Release();
+	if (g_VSPlayerSV)			g_VSPlayerSV->Release();
 	if (g_VSEX)					g_VSEX->Release();
 	if (g_PS)					g_PS->Release();
 	if (g_PSOutline)			g_PSOutline->Release();
@@ -299,11 +310,12 @@ void UninitRenderer(void)
 	if (g_RasterStateCullCCW)	g_RasterStateCullCCW->Release();
 
 	// インスタンシング描画関連
-	if (g_VSInstancing)			g_VSInstancing->Release();
-	if (g_VSInstancingTexture)	g_VSInstancingTexture->Release();
-	if (g_PSInstancingOnlyTex)	g_PSInstancingOnlyTex->Release();
+	if (g_VSInst)			g_VSInst->Release();
+	if (g_VSInstTexture)	g_VSInstTexture->Release();
+	if (g_VSInstBillboard)	g_VSInstBillboard->Release();
+	if (g_PSInstOnlyTex)	g_PSInstOnlyTex->Release();
 	if (g_InstanceBuffer)		g_InstanceBuffer->Release();
-	if (g_BillboardBuffer)		g_BillboardBuffer->Release();
+	//if (g_BillboardBuffer)		g_BillboardBuffer->Release();
 
 	// 基本装置
 	if (g_ImmediateContext)		g_ImmediateContext->ClearState();
@@ -563,9 +575,12 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	{
 		D3D11_BLEND_DESC blendDesc;
 		ZeroMemory(&blendDesc, sizeof(blendDesc));
-		blendDesc.AlphaToCoverageEnable = FALSE;
+		//blendDesc.AlphaToCoverageEnable = TRUE;
 		blendDesc.IndependentBlendEnable = FALSE;
 		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+
+		blendDesc.AlphaToCoverageEnable = FALSE;
+		//blendDesc.AlphaToCoverageEnable = TRUE;
 		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
@@ -575,15 +590,6 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		g_D3DDevice->CreateBlendState(&blendDesc, &g_BlendStateAlphaBlend);
 
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		g_D3DDevice->CreateBlendState(&blendDesc, &g_BlendStateNone);
-
 		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
 		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
@@ -592,6 +598,16 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		g_D3DDevice->CreateBlendState(&blendDesc, &g_BlendStateAdd);
+
+		blendDesc.AlphaToCoverageEnable = FALSE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		g_D3DDevice->CreateBlendState(&blendDesc, &g_BlendStateNone);
 
 		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
@@ -720,10 +736,11 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 		// その他の頂点シェーダコンパイル・生成
 		CreateShader("shader.hlsl", "VSOutline", &g_VSOutline, shFlag);
-		CreateShader("shader.hlsl", "VSOutlineInstancing", &g_VSOutlineInstancing, shFlag);
+		CreateShader("shader.hlsl", "VSOutlineInst", &g_VSOutlineInst, shFlag);
 		CreateShader("shader.hlsl", "VSTube", &g_VSTube, shFlag);
 		CreateShader("shader.hlsl", "VSGimmick", &g_VSGimmick, shFlag);
 		CreateShader("shader.hlsl", "VSPlayer", &g_VSPlayer, shFlag);
+		CreateShader("shader.hlsl", "VSPlayerSV", &g_VSPlayerSV, shFlag);
 		CreateShader("shader.hlsl", "VSEX", &g_VSEX, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VSFilter", &g_VSFilter, shFlag);
 		CreateShader("shader_postEffect.hlsl", "VSNormalMap", &g_VSNormalMap, shFlag);
@@ -748,6 +765,8 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateShader("shader_postEffect.hlsl", "PSFilter", &g_PSFilter, shFlag);
 		CreateShader("shader_postEffect.hlsl", "PSLight", &g_PSLight, shFlag);
 		CreateShader("shader_postEffect.hlsl", "PSOnlyTex", &g_PSOnlyTex, shFlag);
+		CreateShader("shader_postEffect.hlsl", "PSTest", &g_PSTest, shFlag);
+		CreateShader("shader_postEffect.hlsl", "PSMotionBlur", &g_PSMotionBlur, shFlag);
 		CreateShader("shader_postEffect.hlsl", "PSMosaic", &g_PSMosaic, shFlag);
 		CreateShader("shader_postEffect.hlsl", "PSNormalMap", &g_PSNormalMap, shFlag);
 		CreateShader("shader_postEffect.hlsl", "PSDepthMap", &g_PSDepthMap, shFlag);
@@ -756,9 +775,10 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		CreateShader("shader_postEffect.hlsl", "PSOldGame", &g_PSOldGame, shFlag);
 
 		// インスタンシング描画用シェーダコンパイル・生成
-		CreateShader("shader.hlsl", "VSInstancing", &g_VSInstancing, shFlag);
-		CreateShader("shader.hlsl", "VSInstancingTexture", &g_VSInstancingTexture, shFlag);
-		CreateShader("shader.hlsl", "PSInstancingOnlyTex", &g_PSInstancingOnlyTex, shFlag);
+		CreateShader("shader.hlsl", "VSInst", &g_VSInst, shFlag);
+			CreateShader("shader.hlsl", "VSInstTexture", &g_VSInstTexture, shFlag);
+		CreateShader("shader.hlsl", "VSInstBillboard", &g_VSInstBillboard, shFlag);
+		CreateShader("shader.hlsl", "PSInstOnlyTex", &g_PSInstOnlyTex, shFlag);
 
 		// 初期設定
 		g_ImmediateContext->VSSetShader(g_VS, NULL, 0);
@@ -920,13 +940,29 @@ void SetWorldBuffer(XMMATRIX* WorldMatrix) {
 	MATRIX matrix;
 	XMStoreFloat4x4(&matrix.World, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.World)));
 	XMStoreFloat4x4(&matrix.View, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.View)));
+	XMStoreFloat4x4(&matrix.InvView, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.InvView)));
 	XMStoreFloat4x4(&matrix.Projection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.Projection)));
 	XMStoreFloat4x4(&matrix.ViewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.ViewProjection)));
 	XMStoreFloat4x4(&matrix.WorldViewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.WorldViewProjection)));
 	XMStoreFloat4x4(&matrix.AfterRotation, XMMatrixTranspose(XMLoadFloat4x4(&g_Matrix.AfterRotation)));
 	GetDeviceContext()->UpdateSubresource(g_MatrixBuffer, 0, NULL, &matrix, 0, 0);
 }
-void SetViewBuffer(XMMATRIX* ViewMatrix) { XMStoreFloat4x4(&g_Matrix.View, *ViewMatrix); }
+void SetViewBuffer(XMMATRIX* ViewMatrix) {
+	XMStoreFloat4x4(&g_Matrix.View, *ViewMatrix);
+
+	XMMATRIX invView = XMMatrixIdentity();
+	invView.r[0].m128_f32[0] = g_Matrix.View.m[0][0];
+	invView.r[0].m128_f32[1] = g_Matrix.View.m[1][0];
+	invView.r[0].m128_f32[2] = g_Matrix.View.m[2][0];
+	invView.r[1].m128_f32[0] = g_Matrix.View.m[0][1];
+	invView.r[1].m128_f32[1] = g_Matrix.View.m[1][1];
+	invView.r[1].m128_f32[2] = g_Matrix.View.m[2][1];
+	invView.r[2].m128_f32[0] = g_Matrix.View.m[0][2];
+	invView.r[2].m128_f32[1] = g_Matrix.View.m[1][2];
+	invView.r[2].m128_f32[2] = g_Matrix.View.m[2][2];
+	//invView = XMMatrixTranspose(invView);
+	XMStoreFloat4x4(&g_Matrix.InvView, invView);
+}
 void SetProjectionBuffer(XMMATRIX* ProjectionMatrix) { XMStoreFloat4x4(&g_Matrix.Projection, *ProjectionMatrix); }
 void SetAfterRotation(XMMATRIX* AfterRotationMatrix) { XMStoreFloat4x4(&g_Matrix.AfterRotation, *AfterRotationMatrix); }
 
@@ -965,35 +1001,23 @@ void SetCurveBuffer(CURVE_BUFFER* curve) {
 ID3D11Buffer* GetInstanceBuffer(void) { return g_InstanceBuffer; }
 void SetShaderInstanceingOnlyTex(BOOL bInterrupt) {
 	//SetBlendState(BLEND_MODE_ALPHABLEND);
-	g_ImmediateContext->VSSetShader(g_VSInstancingTexture, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VSInstTexture, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
-	g_ImmediateContext->PSSetShader(g_PSInstancingOnlyTex, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSInstOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
 	if(bInterrupt) g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
 	else g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, NULL);
 }
-//void SetShaderInstanceingBillbooard(XMFLOAT4X4 mtxView) {
-//	XMMATRIX invView = XMMatrixIdentity();
-//
-//	invView.r[0].m128_f32[0] = mtxView.m[0][0];
-//	invView.r[0].m128_f32[1] = mtxView.m[1][0];
-//	invView.r[0].m128_f32[2] = mtxView.m[2][0];
-//
-//	invView.r[1].m128_f32[0] = mtxView.m[0][1];
-//	invView.r[1].m128_f32[1] = mtxView.m[1][1];
-//	invView.r[1].m128_f32[2] = mtxView.m[2][1];
-//
-//	invView.r[2].m128_f32[0] = mtxView.m[0][2];
-//	invView.r[2].m128_f32[1] = mtxView.m[1][2];
-//	invView.r[2].m128_f32[2] = mtxView.m[2][2];
-//
-//	invView = XMMatrixTranspose(invView);
-//
-//	GetDeviceContext()->UpdateSubresource(g_BillboardBuffer, 0, NULL, &invView, 0, 0);
-//
-//	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
-//	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
-//}
+void SetShaderInstanceingBillboard(void) {
+	g_ImmediateContext->VSSetShader(g_VSInstBillboard, NULL, 0);
+	//g_ImmediateContext->VSSetShader(g_VSInst, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PSTest, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+
+}
 
 // バッファ作成
 void CreateBuffer(D3D11_BUFFER_DESC* pDesc, int slot, ID3D11Buffer** pBuffer, UINT size)
@@ -1100,6 +1124,8 @@ void SetStencilWriteLL(SHADER_TYPE shader)
 	case SHADER_PLAYER:
 		g_ImmediateContext->VSSetShader(g_VSPlayer, NULL, 0);
 		g_ImmediateContext->GSSetShader(g_GSLLPlayer, NULL, 0);
+		//g_ImmediateContext->VSSetShader(g_VSPlayerSV, NULL, 0);
+		//g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 		break;
 	}
 	//g_ImmediateContext->GSSetShader(g_GSLLPlayer, NULL, 0);
@@ -1108,7 +1134,7 @@ void SetStencilWriteLL(SHADER_TYPE shader)
 	g_ImmediateContext->OMSetRenderTargets(0, NULL, g_DepthStencilView);
 
 	// シャドウボリュームも描画してみる
-	//g_ImmediateContext->PSSetShader(g_PS, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
@@ -1174,7 +1200,7 @@ void SetStencilReadLL(SHADER_TYPE shader)
 void SetStencilReadLLGimmick(void)
 {
 	SetCullingMode(CULL_MODE_BACK);
-	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VSInst, NULL, 0);
 	//g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	//g_ImmediateContext->VSSetShader(g_VSEX, NULL, 0);
 	g_ImmediateContext->GSSetShader(g_GSEX, NULL, 0);
@@ -1183,6 +1209,17 @@ void SetStencilReadLLGimmick(void)
 	//g_ImmediateContext->OMSetDepthStencilState(g_StencilRead, NULL);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+}
+
+void SetDrawMonitor(void)
+{
+	g_ImmediateContext->VSSetShader(g_VSTube, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PSLL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
+	//g_ImmediateContext->OMSetDepthStencilState(g_StencilRead, NULL);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTarget], g_DepthStencilView);
 }
 
 void SetStencilNone(void)
@@ -1232,7 +1269,7 @@ void SetDrawOutline(float Scale, XMFLOAT4 Color)
 	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
 	SetCullingMode(CULL_MODE_FRONT);
-	g_ImmediateContext->VSSetShader(g_VSOutlineInstancing, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VSOutlineInst, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOutline, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
@@ -1346,7 +1383,7 @@ void SetDrawFire(void)
 void SetDrawMissileFire(void)
 {
 	SetCullingMode(CULL_MODE_BACK);
-	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VSInst, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
@@ -1365,7 +1402,7 @@ void SetDrawLight(void)
 void SetDrawInstancingOnlyTex(void)
 {
 	SetCullingMode(CULL_MODE_BACK);
-	g_ImmediateContext->VSSetShader(g_VSInstancing, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VSInst, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
@@ -1514,20 +1551,73 @@ void ApplyOldGame(void)
 	// リソースの切り替え
 	g_CurrentResource = g_CurrentResource ? 0 : 1;
 }
-void DrawTarget(void)
+void ApplyMotionBlur(void)
 {
-	SetBlendState(BLEND_MODE_ALPHABLEND);
+	// ターゲットの切り替え
+	g_CurrentTarget = g_CurrentTarget ? 0 : 1;
+
 	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VSFilter, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSMotionBlur, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+
+	DrawScreen(&g_WrittenTexture[g_CurrentResource]);
+
+	// リソースの切り替え
+	g_CurrentResource = g_CurrentResource ? 0 : 1;
+}
+void DrawTarget(void)
+{
+	// マテリアル設定
+	MATERIAL material;
+	SetMaterialBuffer(&material);
+
+	SetBlendState(BLEND_MODE_ALPHABLEND);
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VSFilter, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0); 
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateDisable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, NULL);
 
+#ifdef MB
+	g_ImmediateContext->PSSetShader(g_PSMotionBlur, NULL, 0);
+
+	// マトリクス設定
+	MATRIX matrix;
+	XMMATRIX worldViewProjection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	XMStoreFloat4x4(&matrix.WorldViewProjection, XMMatrixTranspose(worldViewProjection));
+	GetDeviceContext()->UpdateSubresource(g_MatrixBuffer, 0, NULL, &matrix, 0, 0);
+
+	// 頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_ScreenVertexBuffer, &stride, &offset);
+
+	// プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// テクスチャ設定
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_WrittenTexture[g_CurrentResource]);
+	GetDeviceContext()->PSSetShaderResources(1, 1, &g_WrittenTexture[g_CurrentResource ? 0 : 1]);
+
+	// ポリゴン描画
+	GetDeviceContext()->Draw(4, 0);
+
+	// ターゲットの切り替え
+	g_CurrentTarget = g_CurrentTarget ? 0 : 1;
+	// リソースの切り替え
+	g_CurrentResource = g_CurrentResource ? 0 : 1;
+
+#else
 	DrawScreen(&g_WrittenTexture[g_CurrentResource]);
 
 	g_CurrentTarget = 0;
 	g_CurrentResource = 0;
+#endif
+
 }
 
 void DrawScreen(ID3D11ShaderResourceView** pTexture)
@@ -1661,6 +1751,11 @@ void SetBackGroundColor(XMFLOAT4 color)
 	g_BackGroundColor = color;
 }
 
+MATERIAL* GetDefaultMaterial(void) {
+	static MATERIAL material;
+	return &material;
+}
+
 //=============================================================================
 // バックバッファクリア
 //=============================================================================
@@ -1675,8 +1770,14 @@ void Clear(void)
 	};
 	//float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetView, ClearColor);
+
+#ifdef MB
+	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewWrite[g_CurrentTarget], ClearColor);
+#else
 	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewWrite[0], ClearColor);
 	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewWrite[1], ClearColor);
+#endif
+
 	//g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight, ClearColor);
 	//g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight[0], ClearColor);
 	//g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight[1], ClearColor);

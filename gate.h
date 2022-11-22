@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ゲーム画面処理 [game.h]
+// ゲート処理 [gate.h]
 // Author : 國江 翔太
 //
 //=============================================================================
@@ -9,13 +9,9 @@
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitGame(void);
-void UninitGame(void);
-void UpdateGame(void);
-void DrawGame(void);
-
-BOOL LoadGameTextureKernel(float* loadPalam, int* loadSum);
-BOOL LoadGameTexture(void);
-
+HRESULT InitGate(void);
+void UninitGate(void);
+void UpdateGate(void);
+void DrawGate(void);
 
 void SetStartGate(void);

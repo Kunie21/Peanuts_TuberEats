@@ -14,8 +14,8 @@
 #include "tube.h"
 #include "player.h"
 #include "ui_game.h"
-#include "gimmick.h"
 #include "stage.h"
+#include "particle.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -45,10 +45,15 @@ HRESULT InitStage(void)
 
 	for (int i = 0; i < GIMMICK_OSAKA; i++)
 	{
-		g_Gmk_Osaka[i].rotPosNo = (i * 5) % 8;	// 角度番号
+		g_Gmk_Osaka[i].rotPosNo = (i * 8) % MESH_NUM_X;	// 角度番号
 		if (g_Gmk_Osaka[i].rotPosNo % MESH_NUM_X == 0) g_Gmk_Osaka[i].rotPosNo++;	// ライトとかぶるとき
 		g_Gmk_Osaka[i].zPosNo = i * 20 + 20;			// 位置番号
-		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 2);	// ギミック番号
+		g_Gmk_Osaka[i].type = (GIMMICK_TYPE)(i % 3);	// ギミック番号
+		if (g_Gmk_Osaka[i].type == GIMMICK_MAX)
+		{
+			g_Gmk_Osaka[i].type = GIMMICK_CRACK;
+			SetEmitter(g_Gmk_Osaka[i].zPosNo, g_Gmk_Osaka[i].rotPosNo);
+		}
 	}
 
 	g_Crv_Osaka[0].angle = { 0.0f, 0.0f };
@@ -121,4 +126,13 @@ void UpdateStage(void)
 void DrawStage(void)
 {
 	
+}
+
+float GetZPos(int zPosNo)
+{
+	return MESH_SIZE_Z * zPosNo - GetPlayerPosition();
+}
+float GetRotPos(int rotPosNo)
+{
+	return XM_2PI * (float)rotPosNo / (float)MESH_NUM_X + GetTubeRotation() + XM_PIDIV2;
 }

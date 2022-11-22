@@ -22,8 +22,9 @@
 #include "teamlogo.h"
 #include "missile.h"
 #include "texture2d.h"
-#include "door.h"
+#include "gate.h"
 #include "anim_start.h"
+#include "particle.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -47,12 +48,13 @@ HRESULT InitGame(void)
 	//LoadData();
 
 	InitTube();
+	InitParticle();
 	InitGimmick();
 	InitPlayer();
 	InitGameUI();
 	InitStage();
 	InitMissile();
-	InitDoor();
+	InitGate();
 	InitAnimStart();
 
 	g_Load = TRUE;
@@ -94,12 +96,13 @@ void UninitGame(void)
 	if (g_Load == FALSE) return;
 
 	UninitAnimStart();
-	UninitDoor();
+	UninitGate();
 	UninitMissile();
 	UninitStage();
 	UninitGameUI();
 	UninitPlayer();
 	UninitGimmick();
+	UninitParticle();
 	UninitTube();
 
 	g_Load = FALSE;
@@ -110,6 +113,12 @@ void UninitGame(void)
 //=============================================================================
 void UpdateGame(void)
 {
+#ifdef _DEBUG
+	static LARGE_INTEGER Shadow_S, Shadow_E;
+	static int oldTime, nowTime;
+	nowTime++;
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
+#endif
 #ifdef _DEBUG
 	
 	// ポーズ切り替え
@@ -125,12 +134,21 @@ void UpdateGame(void)
 
 	UpdateTube();
 	UpdateGimmick();
+	UpdateParticle();
+
 	UpdatePlayer();
 	UpdateGameUI();
 	UpdateStage();
 	UpdateMissile();
-	UpdateDoor();
+	UpdateGate();
 	UpdateAnimStart();
+
+	if (GetKeyboardPress(DIK_K)) { SetStartGate(); }
+#ifdef _DEBUG
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
+	if (nowTime - oldTime >= 20) oldTime = nowTime;
+	PrintDebugProc("UpdateTimeB:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
+#endif
 
 }
 
@@ -166,9 +184,10 @@ void DrawGame(void)
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_S); }
 #endif
 	{	// ALL 25000 → 15000
-		// アウトラインを引く 3000
-		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
-		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
+		//// アウトラインを引く 3000
+		//SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
+		//DrawGimmickInstancing(GIMMICK_ICE, TRUE);
+
 		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		//DrawMissile(MISSILE_TYPE_01);
 		//DrawMissile(MISSILE_TYPE_02);
@@ -203,8 +222,8 @@ void DrawGame(void)
 			//SetStencilWriteLL(SHADER_GIMMICK);
 			//DrawGimmick(GIMMICK_ICE);
 			////SetStencilWritePL();
-			//SetStencilWriteLL(SHADER_PLAYER);
-			//DrawPlayer();
+			SetStencilWriteLL(SHADER_PLAYER);
+			DrawPlayer();
 		}
 
 #ifdef _DEBUG
@@ -214,7 +233,7 @@ void DrawGame(void)
 			// ラインライトの光 3000 → 5000
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
-			DrawDoor();
+			//DrawDoor();
 			SetStencilReadLLGimmick();
 			//SetStencilReadLL(SHADER_GIMMICK);
 			DrawGimmickInstancing(GIMMICK_ICE);
@@ -227,16 +246,17 @@ void DrawGame(void)
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
 #endif
 			// ステンシルを初期化
-			ClearStencil();
+			//ClearStencil();
 
 #ifdef _DEBUG
 			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
 #endif
 			// 光るもの描画 3000
 			{
-				//SetDrawTubeLight();
-
 				SetBlendState(BLEND_MODE_ADD);
+
+				DrawParticle();
+				//SetDrawTubeLight();
 
 				SetDrawInstancingOnlyTex();
 				DrawGimmickInstancing(GIMMICK_RING);
@@ -252,7 +272,15 @@ void DrawGame(void)
 				SetDrawMissileFire();
 				DrawMissileFire();
 
+				DrawGate();
+
 				SetBlendState(BLEND_MODE_ALPHABLEND);
+
+
+				// アウトラインを引く 3000
+				SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
+				DrawGimmickInstancing(GIMMICK_ICE, TRUE);
+
 			}
 #ifdef _DEBUG
 			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
@@ -263,6 +291,13 @@ void DrawGame(void)
 		// 加算合成モードを終了する
 		//SetBlendState(BLEND_MODE_ALPHABLEND);
 	}
+
+#ifdef _DEBUG
+	static bool blur = true;
+	if (GetKeyboardTrigger(DIK_F1)) blur = blur ? false : true;
+	if (blur)
+#endif
+	ApplyMotionBlur();
 
 	//ApplyFilter(FILTER_MODE_LAPLACIAN);
 	//	FILTER_MODE_NONE,			// フィルタなし
@@ -296,9 +331,9 @@ void DrawGame(void)
 
 #ifdef _DEBUG
 	if (nowTime - oldTime >= 20) oldTime = nowTime;
-	PrintDebugProc("LightDrawTime:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
-	PrintDebugProc("ShadingDrawTime:%d\n", Shade_E.QuadPart - Shade_S.QuadPart);
-	PrintDebugProc("ALLDrawTime:%d\n", Light_E.QuadPart - Light_S.QuadPart);
+	PrintDebugProc("DrawTimeLight:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
+	PrintDebugProc("DrawTimeMain:%d\n", Shade_E.QuadPart - Shade_S.QuadPart);
+	PrintDebugProc("DrawTimeALL:%d\n", Light_E.QuadPart - Light_S.QuadPart);
 #endif
 
 

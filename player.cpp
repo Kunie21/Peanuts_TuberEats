@@ -21,9 +21,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define DEFAULT_SPEED	(40.0f)
+#define DEFAULT_SPEED	(50.0f)
 //#define DEFAULT_POS		(310.0f)
-#define MAX_SPEED		(70.0f)
+#define MAX_SPEED		(150.0f)
 
 //*****************************************************************************
 // グローバル変数
@@ -67,6 +67,7 @@ private:
 
 	float m_rot = 0.0f;
 	float m_rotSpd = 0.0f;
+	float m_rotAddSpd = 0.0f;
 	const float c_rotSpdMax = 0.05f;
 
 	float m_fuel = 5000.0f;
@@ -98,19 +99,23 @@ public:
 		if (m_rotSpd > c_rotSpdMax) m_rotSpd = c_rotSpdMax;
 		if (m_rotSpd < -c_rotSpdMax) m_rotSpd = -c_rotSpdMax;
 	}
+	void Blast(float rotAddSpd) {
+		m_rotAddSpd += rotAddSpd;
+	}
 	void Accel(float posSpd) { m_posSpd += posSpd; }
 	void Boost(float addSpd) { m_addSpd += addSpd; }
 	void Brake(float posSpd) { m_posSpd -= posSpd; }
 	float Drive(void) {
 		m_pos += m_posSpd + m_addSpd;
-		m_rot += m_rotSpd;
+		m_rot += m_rotSpd + m_rotAddSpd;
 		while (m_rot < 0.0f) m_rot += XM_2PI;
 		while (m_rot > XM_2PI) m_rot -= XM_2PI;
 		m_rotSpd *= 0.98f;
+		m_rotAddSpd *= 0.98f;
 		m_addSpd *= 0.98f;
 		m_invTime *= 0.98f;
 		m_fuel -= m_posSpd / MAX_SPEED;
-		return -m_rotSpd / c_rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
+		return -(m_rotSpd + m_rotAddSpd) / c_rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
 	}
 	void LostFuel(float lostFuel) { m_fuel -= lostFuel; }
 	void Collision(void) { m_invTime = 1.5f; }
@@ -118,7 +123,10 @@ public:
 	bool AbleToCollision(void) const { if (m_invTime < 1.0f) return true; return false; }
 	float GetPos(void) const { return m_pos; }
 	float GetSpeed(void) const { return m_posSpd + m_addSpd; }
-	float GetSpeedRate(void) const { return GetSpeed() / MAX_SPEED; }
+	float GetSpeedRate(void) const {
+		if (GetSpeed() > 0.0f) return sqrtf(GetSpeed() / MAX_SPEED);
+		return 0.0f;
+	}
 	float GetRotate(void) const { return m_rot; }
 	float GetFuel(void) const { return m_fuel; }
 	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
@@ -130,6 +138,8 @@ public:
 
 static ROCKET g_Rocket;
 static int testNo = 0;
+
+static CURVE_BUFFER curveTest;
 
 //=============================================================================
 // 初期化処理
@@ -145,7 +155,9 @@ HRESULT InitPlayer(void)
 
 	//for (int i = 0; i < MODEL_MAX; i++)
 	{
-		//LoadModel("data/MODEL/earth01.obj", &g_Model[0].model);
+		//LoadModel("data/MODEL/earth01_sv.obj", &g_Model[0].model);
+		//LoadModel("data/MODEL/earth01_adj.obj", &g_Model[0].model);
+		//LoadModel("data/MODEL/square2.obj", &g_Model[0].model);
 		LoadModel("data/MODEL/rocket01.obj", &g_Model[0].model);
 		LoadModel("data/MODEL/rocket02.obj", &g_Model[1].model);
 		LoadModel("data/MODEL/rocket03.obj", &g_Model[2].model);
@@ -156,6 +168,7 @@ HRESULT InitPlayer(void)
 			g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
 			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
 			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
+			//g_Model[i].srt.scl = { 3.3f, 3.3f, 3.3f };
 		}
 		g_Model[MODEL_FIRE].srt.pos.z = -30.0f;
 	}
@@ -224,15 +237,14 @@ void UpdatePlayer(void)
 		//SetDamageEffect();
 	}
 
-
 	// パイプ曲げ（手動）
-	static CURVE_BUFFER curve;
-	if (GetKeyboardPress(DIK_F)) { curve.Angle.y += 0.005f; }
-	if (GetKeyboardPress(DIK_G)) { curve.Angle.y -= 0.005f; }
-	if (GetKeyboardPress(DIK_H)) { curve.Angle.x += 0.005f; }
-	if (GetKeyboardPress(DIK_J)) { curve.Angle.x -= 0.005f; }
-	curve.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
-	SetCurveBuffer(&curve);
+	if (GetKeyboardPress(DIK_F)) { curveTest.Angle.y += 0.005f; }
+	if (GetKeyboardPress(DIK_G)) { curveTest.Angle.y -= 0.005f; }
+	if (GetKeyboardPress(DIK_H)) { curveTest.Angle.x += 0.005f; }
+	if (GetKeyboardPress(DIK_J)) { curveTest.Angle.x -= 0.005f; }
+	curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
+	curveTest.Spd = g_Rocket.GetSpeed();
+	SetCurveBuffer(&curveTest);
 	
 	// パイプ曲げ（ステージ設定に従って自動で曲げる）
 	//SetStageCurve(0, g_Rocket.GetPos());
@@ -244,13 +256,26 @@ void UpdatePlayer(void)
 	SetSpeedMeter(g_Rocket.GetSpeedRate());
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
+//#ifdef _DEBUG
+//	static LARGE_INTEGER Shadow_S, Shadow_E;
+//	static int oldTime, nowTime;
+//	nowTime++;
+//	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
+//#endif
+//
+//#ifdef _DEBUG
+//	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
+//	if (nowTime - oldTime >= 20) oldTime = nowTime;
+//	PrintDebugProc("GameUpdateTime:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
+//#endif
+
 #ifdef _DEBUG	// デバッグ情報を表示する
-	PrintDebugProc("ThroughMeshs:%d\n", g_Rocket.GetPos() / (int)MESH_SIZE_Z);
-	PrintDebugProc("ThroughTubes:%d\n", g_Rocket.GetPos() / (int)TUBE_SIZE);
-	PrintDebugProc("Time(sec):%f\n", GetTime());
-	PrintDebugProc("RocketSpeed:%f\n", g_Rocket.GetSpeed());
-	PrintDebugProc("CurveAngleX:%f\n", curve.Angle.x);
-	PrintDebugProc("CurveAngleY:%f\n", curve.Angle.y);
+	//PrintDebugProc("ThroughMeshs:%d\n", g_Rocket.GetPos() / (int)MESH_SIZE_Z);
+	//PrintDebugProc("ThroughTubes:%d\n", g_Rocket.GetPos() / (int)TUBE_SIZE);
+	//PrintDebugProc("Time(sec):%f\n", GetTime());
+	//PrintDebugProc("RocketSpeed:%f\n", g_Rocket.GetSpeed());
+	//PrintDebugProc("CurveAngleX:%f\n", curveTest.Angle.x);
+	//PrintDebugProc("CurveAngleY:%f\n", curveTest.Angle.y);
 #endif
 }
 
@@ -290,4 +315,18 @@ void SetPlayerCollisionIce(void) {
 	g_Rocket.LostFuel(500.0f);
 	g_Rocket.Boost(-60.0f);
 	g_Rocket.Collision();
+}
+void SetPlayerCollisionBlast(float rotAddSpd) {
+	g_Rocket.Blast(rotAddSpd * 0.1f);
+	g_Rocket.Collision();
+}
+
+void SetRocketStart(void) {
+	g_Rocket.Accel(DEFAULT_SPEED);
+	g_Rocket.Boost(DEFAULT_SPEED);
+	SetBoostEffect();
+}
+
+CURVE_BUFFER GetCurveTestStatus(void) {
+	return curveTest;
 }

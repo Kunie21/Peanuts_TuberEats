@@ -51,8 +51,73 @@ float4 PSLight(VS_OUTPUT input) : SV_Target{
 }
 
 // テクスチャを参照するだけ（変換画像を画面に出力するときに使う）
-float4 PSOnlyTex(VS_OUTPUT input) : SV_Target {
+float4 PSOnlyTex(VS_OUTPUT input) : SV_Target{
 	return input.Diffuse * g_Texture.Sample(g_SamplerState, input.TexCoord);
+}
+
+float4 PSTest(VS_OUTPUT input) : SV_Target{
+	return float4(0.0f, 1.0f, 0.0f, 1.0f);
+}
+
+// モーションブラー用
+//float4 PSMotionBlur(VS_OUTPUT input) : SV_Target{
+//	return input.Diffuse * (
+//		(g_Texture.Sample(g_SamplerState, input.TexCoord) * 0.5f) +
+//		(g_OldScreen.Sample(g_SamplerState, input.TexCoord) * 0.5f)
+//	);
+//}
+#define MBNUM 10.0f
+//float4 PSMotionBlur(VS_OUTPUT input) : SV_Target{
+//	float4 outDiffuse;
+//
+//	float2 pos = input.TexCoord;
+//	float2 vec = pos - float2(0.5f, 0.5f);
+//
+//	//if (length(vec) > 0.8f)
+//	{
+//		float3 color = float3(0.0f, 0.0f, 0.0f);
+//		float rand = GetRandom(input.TexCoord, 0);
+//		float weightSum = 0.0f;
+//		for (float i = 0.0f; i < MBNUM; i += 1.0f)
+//		{
+//			float rate = (i + rand) / MBNUM;
+//			float weight = rate - rate * rate;
+//			float2 at = pos - vec * rate * 1.0f / MBNUM;
+//			color += g_Texture.Sample(g_SamplerState, at).rgb * weight;
+//			weightSum += weight;
+//		}
+//		outDiffuse = float4(color / weightSum, 1.0f);
+//	}
+//	//else
+//	//{
+//	//	outDiffuse = input.Diffuse * g_Texture.Sample(g_SamplerState, input.TexCoord);
+//	//}
+//	return outDiffuse;
+//}
+float4 PSMotionBlur(VS_OUTPUT input) : SV_Target{
+
+	float4 color[10];
+
+	//方向ベクトルの取得
+	float2 dir = float2(0.5f, 0.5f) - input.TexCoord;
+	//長さの取得
+	float len = length(dir);
+	//オフセットの取得
+	float2 offset = normalize(dir) * 0.0001f;
+	offset *= (Curve.Spd * Curve.Spd  *  0.015f * len);
+
+	color[0] = g_Texture.Sample(g_SamplerState, input.TexCoord) * 0.19f;
+	color[1] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset) * 0.17f;
+	color[2] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 2.0f) * 0.15f;
+	color[3] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 3.0f) * 0.13f;
+	color[4] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 4.0f) * 0.11f;
+	color[5] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 5.0f) * 0.09f;
+	color[6] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 6.0f) * 0.07f;
+	color[7] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 7.0f) * 0.05f;
+	color[8] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 8.0f) * 0.03f;
+	color[9] = g_Texture.Sample(g_SamplerState, input.TexCoord + offset * 9.0f) * 0.01f;
+
+	return color[0] + color[1] + color[2] + color[3] + color[4] + color[5] + color[6] + color[7] + color[8] + color[9];
 }
 
 // モザイク ///////////////////////////////////////////////////

@@ -79,10 +79,13 @@
     <ClCompile Include="missile.cpp">
       <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="door.cpp">
+    <ClCompile Include="anim_start.cpp">
       <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="anim_start.cpp">
+    <ClCompile Include="gate.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="particle.cpp">
       <Filter>game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -166,10 +169,13 @@
     <ClInclude Include="missile.h">
       <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="door.h">
+    <ClInclude Include="anim_start.h">
       <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="anim_start.h">
+    <ClInclude Include="gate.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
       <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>

@@ -75,15 +75,6 @@ enum
 };
 // static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static char*	g_TextureName[TEXTURE_MAX] = {
-	//"data/TEXTURE/metal.jpg",
-	"data/TEXTURE/r.tif",
-	"data/TEXTURE/Line.png",
-	"data/TEXTURE/Line2.png",
-	"data/TEXTURE/Line3.png",
-	"data/TEXTURE/Line4.png",
-	"data/TEXTURE/white.png",
-};
 
 static BOOL		g_Load = FALSE;
 static float	g_time;
@@ -97,16 +88,20 @@ static int testNo = 0;
 //=============================================================================
 HRESULT InitTube(void)
 {
-	//for (int i = 0; i < 8; i++)
-	//{
-	//	//testTubeArr[i] = (TUBE_TYPE)(i % 2);
-	//	testTubeArr[i] = TUBE_TYPE_STRAIGHT;
-	//}
+	char* texFile[TEXTURE_MAX] = {
+		//"data/TEXTURE/metal.jpg",
+		"data/TEXTURE/r.tif",
+		"data/TEXTURE/Line.png",
+		"data/TEXTURE/Line2.png",
+		"data/TEXTURE/Line3.png",
+		"data/TEXTURE/Line4.png",
+		"data/TEXTURE/white.png",
+	};
 
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+		D3DX11CreateShaderResourceViewFromFile(GetDevice(), texFile[i], NULL, NULL, &g_Texture[i], NULL);
 	}
 
 	// 直線パイプ
@@ -553,11 +548,11 @@ void UninitTube(void)
 //=============================================================================
 void UpdateTube(void)
 {
-	if (GetKeyboardPress(DIK_6)) { testNo = 0; }
-	if (GetKeyboardPress(DIK_7)) { testNo = 1; }
-	if (GetKeyboardPress(DIK_8)) { testNo = 2; }
-	if (GetKeyboardPress(DIK_9)) { testNo = 3; }
-	if (GetKeyboardPress(DIK_0)) { testNo = 4; }
+	//if (GetKeyboardPress(DIK_6)) { testNo = 0; }
+	//if (GetKeyboardPress(DIK_7)) { testNo = 1; }
+	//if (GetKeyboardPress(DIK_8)) { testNo = 2; }
+	//if (GetKeyboardPress(DIK_9)) { testNo = 3; }
+	//if (GetKeyboardPress(DIK_0)) { testNo = 4; }
 }
 
 //=============================================================================

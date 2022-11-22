@@ -19,6 +19,15 @@
 
 #define CAMERA_POS_Z	(-310.0f)
 
+struct CAMERA_DESC
+{
+	XMFLOAT3 pos;
+	XMFLOAT3 rot;
+	XMFLOAT3 at;
+	XMFLOAT3 up;
+	float len;
+};
+
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -26,3 +35,4 @@ void InitCamera(void);
 void UninitCamera(void);
 void UpdateCamera(void);
 void SetCamera(void);
+CAMERA_DESC* GetCamera(void);

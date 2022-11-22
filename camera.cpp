@@ -18,17 +18,10 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static XMMATRIX				g_CameraViewMatrix;
-static XMMATRIX				g_CameraInvViewMatrix;
-static XMMATRIX				g_CameraProjectionMatrix;
-struct CAMERA_DESC
-{
-	XMFLOAT3 pos;
-	XMFLOAT3 rot;
-	XMFLOAT3 at;
-	XMFLOAT3 up;
-	float len;
-};
+static XMFLOAT4X4		g_CameraViewMatrix;
+static XMFLOAT4X4		g_CameraInvViewMatrix;
+static XMFLOAT4X4		g_CameraProjectionMatrix;
+
 static CAMERA_DESC			g_Camera;
 
 //=============================================================================
@@ -187,10 +180,14 @@ void UpdateCamera(void)
 void SetCamera(void) 
 {
 	// ビュー行列設定
-	g_CameraViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&g_Camera.pos), XMLoadFloat3(&g_Camera.at), XMLoadFloat3(&g_Camera.up));
-	SetViewBuffer(&g_CameraViewMatrix);
+	XMMATRIX ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&g_Camera.pos), XMLoadFloat3(&g_Camera.at), XMLoadFloat3(&g_Camera.up));
+	SetViewBuffer(&ViewMatrix);
 
 	// プロジェクション行列設定
-	g_CameraProjectionMatrix = XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT, VIEW_NEAR_Z, VIEW_FAR_Z);
-	SetProjectionBuffer(&g_CameraProjectionMatrix);
+	SetProjectionBuffer(&XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT, VIEW_NEAR_Z, VIEW_FAR_Z));
+
+}
+
+CAMERA_DESC* GetCamera(void) {
+	return &g_Camera;
 }

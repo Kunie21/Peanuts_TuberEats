@@ -92,6 +92,7 @@ struct VERTEX_3D {		// 頂点バッファ用構造体
 struct MATRIX {		// マトリクスバッファ用構造体
 	XMFLOAT4X4	World;
 	XMFLOAT4X4	View;
+	XMFLOAT4X4	InvView;
 	XMFLOAT4X4	Projection;
 	XMFLOAT4X4	WorldViewProjection;
 	XMFLOAT4X4	ViewProjection;
@@ -100,6 +101,8 @@ struct MATRIX {		// マトリクスバッファ用構造体
 struct CAMERA {			// カメラバッファ用構造体
 	XMFLOAT4	Position;
 	XMFLOAT4	ViewVolume;
+	float		Time;
+	float		Dummy[3];
 };
 struct MATERIAL {		// マテリアルバッファ用構造体
 	XMFLOAT4	Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -165,7 +168,7 @@ struct MOSAIC {			// モザイク処理バッファ用構造体
 struct CURVE_BUFFER {			// カーブ処理バッファ用構造体
 	XMFLOAT2	Angle = { 0.0f, 0.0f };
 	float		TexPos = 0.0f;
-	float		Dummy;
+	float		Spd = 0.0f;
 };
 struct CONSTANT {		// 定数バッファ用構造体
 	int			Time;
@@ -235,6 +238,8 @@ void SetStencilReadLLGimmick(void);
 void SetStencilNone(void);
 void SetStencilNoneAL(SHADER_TYPE shader);
 void SetStencilNoneOnlyDepth(void);
+
+void SetDrawMonitor(void);
 void SetDrawOutline(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f });
 void SetDrawFillBlack(SHADER_TYPE shader);
 void SetDrawFillBlackPlayer(void);
@@ -257,6 +262,8 @@ void ClearWriteView(void);
 
 void SetDrawLight(void);
 void SetDrawInstancingOnlyTex(void);
+void SetShaderInstanceingOnlyTex(BOOL bInterrupt);
+void SetShaderInstanceingBillboard(void);
 void ApplyLightToTarget(void);
 
 void ApplyFilter(FILTER_MODE filter);
@@ -264,6 +271,7 @@ void ApplyMosaic(int pixel_size);
 void ApplyChromaticAberration(void);
 void ApplyMonitoring(void);
 void ApplyOldGame(void);
+void ApplyMotionBlur(void);
 
 void DrawTarget(void);
 void DrawScreen(ID3D11ShaderResourceView** pTexture);
@@ -289,6 +297,8 @@ void SetShaderInstanceingOnlyTex(BOOL bInterrupt = FALSE);
 void SetShaderDefault(void);
 
 XMFLOAT4 Float4(XMFLOAT3& f3);
+
+MATERIAL* GetDefaultMaterial(void);
 
 void MulMtxScl(XMMATRIX& mtxWorld, XMFLOAT3& scl);
 void MulMtxScl(XMMATRIX& mtxWorld, float x, float y, float z);

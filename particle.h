@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ドア処理 [door.h]
-// Author : 國江 翔太
+// パーティクル処理 [particle.h]
+// Author : 國江翔太
 //
 //=============================================================================
 #pragma once
@@ -9,8 +9,9 @@
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitDoor(void);
-void UninitDoor(void);
-void UpdateDoor(void);
-void DrawDoor(void);
+HRESULT InitParticle(void);
+void UninitParticle(void);
+void UpdateParticle(void);
+void DrawParticle(void);
 
+BOOL SetEmitter(int zPosNo, int rotPosNo);

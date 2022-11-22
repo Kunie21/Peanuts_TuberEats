@@ -6,6 +6,8 @@
 //=============================================================================
 #pragma once
 
+#include "gimmick.h"
+
 //*****************************************************************************
 // ç\ë¢ëÃíËã`
 //*****************************************************************************
@@ -44,3 +46,6 @@ void DrawStage(void);
 
 STAGE* GetStage(int stageNo);
 void SetStageCurve(int stageNo, float zPos);
+
+float GetZPos(int zPosNo);
+float GetRotPos(int rotPosNo);

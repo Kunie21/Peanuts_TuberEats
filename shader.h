@@ -18,6 +18,7 @@
 cbuffer MatrixBuffer : register(b0) {
 	matrix World;		// ワールド変換
 	matrix View;		// ビュー変換
+	matrix InvView;		// インバースビュー変換
 	matrix Projection;	// プロジェクション変換
 	matrix WVP;			// WVP変換
 	matrix VP;			// VP変換
@@ -28,6 +29,8 @@ cbuffer MatrixBuffer : register(b0) {
 struct CAMERA {
 	float4	Position;	// 位置
 	float4	ViewVolume;	// スクリーン幅、スクリーン高さ、前方クリップ面、後方クリップ面
+	int		Time;
+	float3 	Dummy;
 };
 cbuffer CameraBuffer : register(b1) {
 	CAMERA Camera;
@@ -136,7 +139,7 @@ cbuffer FilterBuffer : register(b9) {
 struct CURVE {
 	float2		Angle;
 	float		TexPos;
-	float 		Dummy;
+	float 		Spd;
 };
 cbuffer MosaicBuffer : register(b10) {
 	CURVE		Curve;
@@ -173,7 +176,8 @@ cbuffer InstanceBuffer : register(b11) {
 // テクスチャ
 //*****************************************************************************
 Texture2D		g_Texture : register(t0);
-Texture2D		g_TextureArray[INSTANCE_MAX] : register(t1);
+Texture2D		g_OldScreen : register(t1);
+Texture2D		g_TextureArray[INSTANCE_MAX] : register(t2);
 
 //*****************************************************************************
 // サンプラーステート
@@ -222,6 +226,10 @@ struct IS_OUTPUT {
 //*****************************************************************************
 // 関数
 //*****************************************************************************
+float GetRandom(float2 texCoord, int Seed)
+{
+	return frac(sin(dot(texCoord.xy, float2(12.9898, 78.233)) + Seed) * 43758.5453);
+}
 
 float4 GetTubeCurvePos(float4 worldPos)
 {

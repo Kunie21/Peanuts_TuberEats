@@ -110,7 +110,7 @@ void DrawMissile(MISSILE_TYPE gimmick)
 		if (!g_Ms[i].use) continue;
 		if (g_Ms[i].type != gimmick) continue;
 		if (g_Ms[i].zPos < -500.0f || 10000.0f < g_Ms[i].zPos) continue;
-		
+
 		zPos = g_Ms[i].zPos;
 		rot = g_Ms[i].zRot + GetTubeRotation() + XM_PIDIV2;
 
@@ -118,14 +118,17 @@ void DrawMissile(MISSILE_TYPE gimmick)
 		b_pInstance->rot[instCount] = { 0.0f, XM_PIDIV2, rot, 0.0f };
 		b_pInstance->pos[instCount] = { (TUBE_RADIUS - 120.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 120.0f) * 0.8f * sinf(rot), zPos, 0.0f };
 		b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		
+
 		instCount++;	// インスタンス数を更新
 	}
 	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
 
-	SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
-	static MATERIAL material;
-	DrawModelInstanced(&g_Model[gimmick], instCount, &material);	// モデル描画
+	if (instCount > 0)
+	{
+		SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
+		static MATERIAL material;
+		DrawModelInstanced(&g_Model[gimmick], instCount, &material);	// モデル描画
+	}
 }
 void DrawMissileFire(void) {
 	// インスタンス情報を登録
@@ -152,9 +155,12 @@ void DrawMissileFire(void) {
 	}
 	GetDeviceContext()->Unmap(GetInstanceBuffer(), 0);
 
-	SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
-	static MATERIAL material;
-	DrawModelInstanced(&g_Model[MISSILE_TYPE_FIRE], instCount, &material);	// モデル描画
+	if (instCount > 0)
+	{
+		SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
+		static MATERIAL material;
+		DrawModelInstanced(&g_Model[MISSILE_TYPE_FIRE], instCount, &material);	// モデル描画
+	}
 }
 
 BOOL LaunchMissile(MISSILE_TYPE type, float zPos, float zSpd, float zRot, float zRotSpd)

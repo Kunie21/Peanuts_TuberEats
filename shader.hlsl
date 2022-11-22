@@ -71,6 +71,28 @@ VS_OUTPUT VSPlayer(VS_INPUT input) {
 	return output;
 }
 
+// プレイヤー用頂点シェーダ
+VS_OUTPUT VSPlayerSV(VS_INPUT input) {
+	VS_OUTPUT output;
+	//input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * 0.1f;
+	output.Position = mul(input.Position, WVP);
+	output.WorldPos = mul(mul(input.Position, World), transpose(AfterRot));
+	output.Normal = normalize(mul(mul(float4(input.Normal.xyz, 0.0f), World), transpose(AfterRot)));
+
+	float4 LineLightPos = { 0.0f, LL_POS, World._43, 1.0f };
+	float3 lightDir = { output.WorldPos.xyz - LineLightPos.xyz };
+
+	if (dot(-lightDir, output.Normal.xyz) <= 0.0f)	// 陰になる角度
+	{
+		output.WorldPos = float4(output.WorldPos.xyz + lightDir * 0.5f, 1.0f);	// wは1.0f
+		output.Position = mul(mul(output.WorldPos, AfterRot), VP);
+	}
+
+	output.TexCoord = input.TexCoord;
+	output.Diffuse = input.Diffuse * Material.Diffuse;
+	return output;
+}
+
 // アウトライン用
 VS_OUTPUT VSOutline(VS_INPUT input) {	// 法線方向に膨らませる
 	VS_OUTPUT output;
@@ -78,7 +100,7 @@ VS_OUTPUT VSOutline(VS_INPUT input) {	// 法線方向に膨らませる
 	output.Position = GetTubeCurvePos(mul(input.Position, World));
 	return output;
 }
-VS_OUTPUT VSOutlineInstancing(VS_INPUT input, uint instID : SV_InstanceID) {	// 法線方向に膨らませる
+VS_OUTPUT VSOutlineInst(VS_INPUT input, uint instID : SV_InstanceID) {	// 法線方向に膨らませる
 	VS_OUTPUT output;
 	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
 	input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * Outline.Scale.x;
@@ -93,7 +115,7 @@ float4 PSOutline(VS_OUTPUT input) : SV_Target{
 //=============================================================================
 // インスタンシング描画用
 //=============================================================================
-VS_OUTPUT VSInstancing(VS_INPUT input, uint instID : SV_InstanceID) {
+VS_OUTPUT VSInst(VS_INPUT input, uint instID : SV_InstanceID) {
 	VS_OUTPUT output;
 	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
 	output.WorldPos = mul(input.Position, mtxWorld);
@@ -116,7 +138,7 @@ IS_OUTPUT VSEX(VS_INPUT input, uint instID : SV_InstanceID) {
 	return output;
 }
 
-IS_OUTPUT VSInstancingTexture(VS_INPUT input, uint instID : SV_InstanceID) {
+IS_OUTPUT VSInstTexture(VS_INPUT input, uint instID : SV_InstanceID) {
 	IS_OUTPUT output;
 	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
 	output.Position = mul(input.Position, mul(mtxWorld, VP));
@@ -132,39 +154,36 @@ IS_OUTPUT VSInstancingTexture(VS_INPUT input, uint instID : SV_InstanceID) {
 	output.Id = instID;
 	return output;
  }
-float4 PSInstancingOnlyTex(IS_OUTPUT input) : SV_Target{
+float4 PSInstOnlyTex(IS_OUTPUT input) : SV_Target{
 	return input.Diffuse * GetColorFromTextureArray(input.Id, input.TexCoord);
 }
 
-// void VSInstancingBillboard(in  float4 inPosition		: POSITION0,
-// 	in  float4 inNormal : NORMAL0,
-// 	in  float4 inDiffuse : COLOR0,
-// 	in  float2 inTexCoord : TEXCOORD0,
+//float4 ps = Instance.pos[instID];
+//float4 sc = Instance.scl[instID];
+//matrix mtxScaleTranslation = {
+//	sc.x, 0.0f, 0.0f, 0.0f,
+//	0.0f, sc.y, 0.0f, 0.0f,
+//	0.0f, 0.0f, sc.z, 0.0f,
+//	ps.x, ps.y, ps.z, 1.0f,
+//};
+//matrix mtxWorld = mul(InvView, mtxScaleTranslation);
+//matrix mtxWVP = mul(mtxWorld, VP);
 
-// 	out float4 outPosition : SV_POSITION,
-// 	out float4 outNormal : NORMAL0,
-// 	out float2 outTexCoord : TEXCOORD0,
-// 	out float4 outDiffuse : COLOR0,
-// 	out float4 outWorldPos : POSITION0,
-// 	uint instID : SV_InstanceID)
-// {
-// 	float4 ps = Instance.pos[instID];
-// 	float4 sc = Instance.scl[instID];
-// 	//ps = float4( -100.0f, 143.0f, 68.5f, 0.0f );
-// 	//sc = float4(1.0f, 1.0f, 1.0f, 0.0f );
-// 	matrix mtxScaleTranslation = {
-// 		sc.x, 0.0f, 0.0f, 0.0f,
-// 		0.0f, sc.y, 0.0f, 0.0f,
-// 		0.0f, 0.0f, sc.z, 0.0f,
-// 		ps.x, ps.y, ps.z, 1.0f,
-// 	};
-// 	matrix mtxWorld = mul(Billboard, mtxScaleTranslation);
-// 	matrix mtxWVP = mul(mtxWorld, VP);
+//outPosition = mul(inPosition, mtxWVP);
+//outTexCoord = inTexCoord;
+//outDiffuse = Instance.col[instID];
 
-// 	outPosition = mul(inPosition, mtxWVP);
-// 	outTexCoord = inTexCoord;
-// 	outDiffuse = Instance.col[instID];
-// }
+
+VS_OUTPUT VSInstBillboard(VS_INPUT input, uint instID : SV_InstanceID) {
+	VS_OUTPUT output;
+	matrix mtxWorld = mul(InvView, GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]));
+	output.WorldPos = mul(input.Position, mtxWorld);
+	output.Position = GetTubeCurvePos(output.WorldPos);
+	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), mtxWorld));
+	output.TexCoord = input.TexCoord;
+	output.Diffuse = input.Diffuse * Instance.col[instID] * Material.Diffuse;
+	return output;
+}
 
 //=============================================================================
 // ピクセルシェーダ
@@ -527,7 +546,7 @@ void PSPolygon(in  float4 inPosition		: SV_Position,
 //=====================================
 // ジオメトリシェーダー
 //=====================================
-#define SHADOW_LENGTH 1000.0f	// 影を伸ばす距離
+#define SHADOW_LENGTH 10.0f	// 影を伸ばす距離
 // 平行光源のシャドウボリューム作成
 [MaxVertexCount(18)]	// 3edge*1square(=2triangle)*3vertex
 void GSDL(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Output)
@@ -828,6 +847,93 @@ void GSLLPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Outpu
 		}
 	}
 }
+//[MaxVertexCount(6)]	// 3edge*1square(=2triangle)*3vertex
+//void GSLLPlayer(triangleadj GS_INPUT Input[6], inout TriangleStream<PS_INPUT> Output)
+//{
+//	float4 LineLightPos = { 0.0f, LL_POS, World._43, 1.0f };
+//	float3 lightDir[6] = {
+//		Input[0].WorldPos.xyz - LineLightPos.xyz,
+//		Input[1].WorldPos.xyz - LineLightPos.xyz,
+//		Input[2].WorldPos.xyz - LineLightPos.xyz,
+//		Input[3].WorldPos.xyz - LineLightPos.xyz,
+//		Input[4].WorldPos.xyz - LineLightPos.xyz,
+//		Input[5].WorldPos.xyz - LineLightPos.xyz
+//	};
+//
+//	//float3 normalDirAVE = (Input[0].Normal.xyz
+//	//	+ Input[1].Normal.xyz
+//	//	+ Input[2].Normal.xyz
+//	//	+ Input[3].Normal.xyz
+//	//	+ Input[4].Normal.xyz
+//	//	+ Input[5].Normal.xyz
+//	//	) * 0.16666666f;
+//
+//	uint vd, vn, vtx0, vtx1;
+//
+//	for (int v = 0; v < 3; v++)
+//	{
+//		vd = v * 2;			// 陰判定に使う頂点番号
+//		vn = (vd + 3) % 6;	// 反対側の隣接頂点番号
+//
+//		// 陰＆陽になる角度
+//		if (dot(-lightDir[vd], Input[vd].Normal.xyz) < 0.0f &&	// 陰判定
+//			dot(-lightDir[vn], Input[vn].Normal.xyz) >= 0.0f)	// 陽判定
+//		{
+//			PS_INPUT NewVtx;
+//			float4 newWorldPos0, newWorldPos1, newNormal;
+//
+//			// 他の2頂点から陰陽の境界の線分を作る
+//			vtx0 = (vd + 2) % 6;
+//			vtx1 = (vd + 4) % 6;
+//
+//			newWorldPos0 = float4(Input[vtx0].WorldPos.xyz + lightDir[vtx0] * SHADOW_LENGTH, 1.0f);	// wは1.0f
+//			newWorldPos1 = float4(Input[vtx1].WorldPos.xyz + lightDir[vtx1] * SHADOW_LENGTH, 1.0f);
+//			//newNormal = float4(cross(newWorldPos1.xyz - newWorldPos0.xyz, lightDir[vtx0]), 1.0f);
+//
+//			// 1つ目の三角形
+//			NewVtx.Position = Input[vtx0].Position;
+//			NewVtx.WorldPos = Input[vtx0].WorldPos;
+//			NewVtx.Normal = Input[vtx0].Normal;
+//			NewVtx.TexCoord = Input[vtx0].TexCoord;
+//			NewVtx.Diffuse = Input[vtx0].Diffuse;
+//			Output.Append(NewVtx);
+//			NewVtx.Position = Input[vtx1].Position;
+//			NewVtx.WorldPos = Input[vtx1].WorldPos;
+//			NewVtx.Normal = Input[vtx1].Normal;
+//			NewVtx.TexCoord = Input[vtx1].TexCoord;
+//			NewVtx.Diffuse = Input[vtx1].Diffuse;
+//			Output.Append(NewVtx);
+//			NewVtx.Position = mul(mul(newWorldPos0, AfterRot), VP);
+//			NewVtx.WorldPos = newWorldPos0;
+//			NewVtx.Normal = Input[vtx0].Normal;
+//			NewVtx.TexCoord = Input[vtx0].TexCoord;
+//			NewVtx.Diffuse = Input[vtx0].Diffuse;
+//			Output.Append(NewVtx);
+//			Output.RestartStrip();
+//
+//			// 2つ目の三角形
+//			NewVtx.Position = Input[vtx1].Position;
+//			NewVtx.WorldPos = Input[vtx1].WorldPos;
+//			NewVtx.Normal = Input[vtx1].Normal;
+//			NewVtx.TexCoord = Input[vtx1].TexCoord;
+//			NewVtx.Diffuse = Input[vtx1].Diffuse;
+//			Output.Append(NewVtx);
+//			NewVtx.Position = mul(mul(newWorldPos1, AfterRot), VP);
+//			NewVtx.WorldPos = newWorldPos1;
+//			NewVtx.Normal = Input[vtx1].Normal;
+//			NewVtx.TexCoord = Input[vtx1].TexCoord;
+//			NewVtx.Diffuse = Input[vtx1].Diffuse;
+//			Output.Append(NewVtx);
+//			NewVtx.Position = mul(mul(newWorldPos0, AfterRot), VP);
+//			NewVtx.WorldPos = newWorldPos0;
+//			NewVtx.Normal = Input[vtx0].Normal;
+//			NewVtx.TexCoord = Input[vtx0].TexCoord;
+//			NewVtx.Diffuse = Input[vtx0].Diffuse;
+//			Output.Append(NewVtx);
+//			Output.RestartStrip();
+//		}
+//	}
+//}
 [MaxVertexCount(18)]	// 3edge*1square(=2triangle)*3vertex
 void GSLLNonPlayer(triangle GS_INPUT Input[3], inout TriangleStream<PS_INPUT> Output)
 {

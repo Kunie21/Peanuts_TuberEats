@@ -218,8 +218,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				wsprintf(&g_DebugStr[strlen(g_DebugStr)], " MX:%d MY:%d", GetMousePosX(), GetMousePosY());
 				SetWindowText(hWnd, g_DebugStr);
 				
-				// メモリリークチェック用 ※毎フレーム呼ぶと重い
-				//_CrtDumpMemoryLeaks();
 #endif
 				dwFrameCount++;
 			}
@@ -297,7 +295,18 @@ void Update(void)
 	case MODE_STAGESELECT:
 		break;
 	case MODE_GAME:
+	#ifdef _DEBUG
+		static LARGE_INTEGER Shadow_S, Shadow_E;
+		static int oldTime, nowTime;
+		nowTime++;
+		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
+	#endif
 		UpdateGame();
+	#ifdef _DEBUG
+		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
+		if (nowTime - oldTime >= 20) oldTime = nowTime;
+		PrintDebugProc("UpdateTimeA:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
+	#endif
 		break;
 	case MODE_RESULT:
 		UpdateResult();
@@ -319,8 +328,20 @@ void Update(void)
 //=============================================================================
 void Draw(void)
 {
+#ifdef _DEBUG
+	static LARGE_INTEGER s1, e1;
+	static int oldTime1, nowTime1;
+	nowTime1++;
+	PrintDebugProc("DrawTimeClear:%d\n", e1.QuadPart - s1.QuadPart);
+	if (nowTime1 - oldTime1 >= 20) { QueryPerformanceCounter(&s1); }
+#endif
+
 	Clear();
 	SetCamera();
+	
+#ifdef _DEBUG
+	if (nowTime1 - oldTime1 >= 20) { QueryPerformanceCounter(&e1); oldTime1 = nowTime1; }
+#endif
 
 	switch (g_Mode)
 	{
@@ -349,6 +370,14 @@ void Draw(void)
 		break;
 	}
 
+#ifdef _DEBUG
+	static LARGE_INTEGER s, e;
+	static int oldTime, nowTime;
+	nowTime++;
+	PrintDebugProc("DrawTimeElse:%d\n", e.QuadPart - s.QuadPart);
+	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&s); }
+#endif
+
 	DrawTarget();	// バックバッファをターゲットにして今描画されているものを描画
 
 	DrawFade();	// フェード描画
@@ -356,11 +385,6 @@ void Draw(void)
 	DrawTexture2DAll();	// 2Dの画像をまとめて描画
 
 #ifdef _DEBUG
-	static LARGE_INTEGER s, e;
-	static int oldTime, nowTime;
-	nowTime++;
-	PrintDebugProc("PresentTime:%d\n", e.QuadPart - s.QuadPart);
-	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&s); }
 	DrawDebugProc();	// デバッグ表示
 #endif
 
@@ -439,6 +463,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case VK_ESCAPE:	// エスケープキー
 			DestroyWindow(hWnd);
+
+			// メモリリークチェック用
+			_CrtDumpMemoryLeaks();
 			break;
 		}
 		break;

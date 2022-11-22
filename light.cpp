@@ -80,26 +80,26 @@ void InitLight(void)
 //=============================================================================
 void UpdateLight(void)
 {
-	if (GetKeyboardPress(DIK_6)) {
-		g_Point[0].Position.y += 10.0f;
-		SetPointLight(g_Point);
-	}
-	if (GetKeyboardPress(DIK_7)) {
-		g_Point[0].Position.y -= 10.0f;
-		SetPointLight(g_Point);
-	}
-	if (GetKeyboardPress(DIK_8)) {
-		g_Point[0].Position.x += 10.0f;
-		SetPointLight(g_Point);
-	}
-	if (GetKeyboardPress(DIK_9)) {
-		g_Point[0].Position.x -= 10.0f;
-		SetPointLight(g_Point);
-	}
-#ifdef _DEBUG
-	PrintDebugProc("lightposy:%f\n", g_Point[0].Position.y);
-	PrintDebugProc("lightposx:%f\n", g_Point[0].Position.x);
-#endif
+	//if (GetKeyboardPress(DIK_6)) {
+	//	g_Point[0].Position.y += 10.0f;
+	//	SetPointLight(g_Point);
+	//}
+	//if (GetKeyboardPress(DIK_7)) {
+	//	g_Point[0].Position.y -= 10.0f;
+	//	SetPointLight(g_Point);
+	//}
+	//if (GetKeyboardPress(DIK_8)) {
+	//	g_Point[0].Position.x += 10.0f;
+	//	SetPointLight(g_Point);
+	//}
+	//if (GetKeyboardPress(DIK_9)) {
+	//	g_Point[0].Position.x -= 10.0f;
+	//	SetPointLight(g_Point);
+	//}
+//#ifdef _DEBUG
+//	PrintDebugProc("lightposy:%f\n", g_Point[0].Position.y);
+//	PrintDebugProc("lightposx:%f\n", g_Point[0].Position.x);
+//#endif
 }
 
 //=============================================================================
