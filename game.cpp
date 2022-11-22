@@ -222,8 +222,8 @@ void DrawGame(void)
 			//SetStencilWriteLL(SHADER_GIMMICK);
 			//DrawGimmick(GIMMICK_ICE);
 			////SetStencilWritePL();
-			SetStencilWriteLL(SHADER_PLAYER);
-			DrawPlayer();
+			//SetStencilWriteLL(SHADER_PLAYER);
+			//DrawPlayer();
 		}
 
 #ifdef _DEBUG

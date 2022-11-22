@@ -288,6 +288,19 @@ void DrawPlayer(void) {
 	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, NULL, &material);	// ƒ‚ƒfƒ‹•`‰æ
 	SetCullingMode(CULL_MODE_BACK);
 }
+
+void DrawPlayerResult(void) {
+	SetCullingMode(CULL_MODE_NONE);
+	MATERIAL material;
+	SRT srt;
+	srt.scl = { 1.0f, 1.0f ,1.0f };
+	srt.pos = { 0.0f, 0.0f ,0.0f };
+	srt.rot = g_Model[testNo].srt.rot;
+
+	DrawModel(&g_Model[testNo].model, &srt, NULL, &material);	// ƒ‚ƒfƒ‹•`‰æ
+	SetCullingMode(CULL_MODE_BACK);
+}
+
 void DrawFire(void) {
 	g_Model[MODEL_FIRE].srt.scl.x = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
 	g_Model[MODEL_FIRE].srt.scl.y = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
@@ -296,6 +309,19 @@ void DrawFire(void) {
 	material.Shininess = 1.0f;
 	material.Diffuse.w = 1.0f;
 	DrawModel(&g_Model[MODEL_FIRE].model, &g_Model[MODEL_FIRE].srt, NULL, &material);	// ƒ‚ƒfƒ‹•`‰æ
+}
+
+void DrawFireResult(void) {
+	MATERIAL material;
+	material.Shininess = 1.0f;
+	material.Diffuse.w = 1.0f;
+	SRT srt;
+	srt.scl.x = (float)(rand() % 10) * 0.01f + 1.0f;
+	srt.scl.y = (float)(rand() % 10) * 0.01f + 1.0f;
+	srt.scl.z = (float)(rand() % 10) * 0.01f + 1.0f;
+	srt.pos = { 0.0f, 0.0f , -70.0f };
+	srt.rot = g_Model[testNo].srt.rot;
+	DrawModel(&g_Model[MODEL_FIRE].model, &srt, NULL, &material);	// ƒ‚ƒfƒ‹•`‰æ
 }
 
 float GetPlayerSpeed(void) {

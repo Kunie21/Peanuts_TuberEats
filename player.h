@@ -22,6 +22,8 @@ float GetPlayerRotation(void);
 void SetPlayerThroughRing(void);
 void SetPlayerCollisionIce(void);
 void SetPlayerCollisionBlast(float rotAddSpd);
+void DrawPlayerResult(void);
+void DrawFireResult(void);
 
 void SetRocketStart(void);
 

@@ -143,6 +143,7 @@
     <ClInclude Include="particle.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="result.h" />
+    <ClInclude Include="result_event.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="stage_select.h" />
     <ClInclude Include="start.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="result.cpp" />
+    <ClCompile Include="result_event.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="stage_select.cpp" />
     <ClCompile Include="start.cpp" />

@@ -36,6 +36,10 @@
 
 // result
 #include "result.h"
+#include "result_event.h"
+#include "tube.h"
+#include "player.h"
+
 
 
 //*****************************************************************************
@@ -310,6 +314,7 @@ void Update(void)
 		break;
 	case MODE_RESULT:
 		UpdateResult();
+		UpdateResultEvent();
 		break;
 	case MODE_END:
 		break;
@@ -362,7 +367,9 @@ void Draw(void)
 		DrawGame();
 		break;
 	case MODE_RESULT:
-		DrawResult();
+		//DrawResult();
+		DrawResultEvent();
+		
 		break;
 	case MODE_END:
 		break;
@@ -404,7 +411,11 @@ void SetMode(MODE_LABEL mode)
 	// モードを変える前に全部メモリを解放しちゃう
 	UninitTeamLogo();
 	UninitResult();
-	
+	UninitResultEvent();
+	UninitTube();
+	UninitPlayer();
+
+
 	g_Mode = mode;	// 次のモードをセット
 
 	switch (g_Mode)
@@ -427,7 +438,11 @@ void SetMode(MODE_LABEL mode)
 		InitGame();
 		break;
 	case MODE_RESULT:
+		InitLight();
+		InitTube();
+		InitPlayer();
 		InitResult();
+		InitResultEvent();
 		break;
 	case MODE_END:
 		break;
