@@ -22,4 +22,5 @@ void UninitResult(void);
 void UpdateResult(void);
 void DrawResult(void);
 
+void SetEventFinish(void);
 
