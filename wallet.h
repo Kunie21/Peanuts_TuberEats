@@ -1,24 +1,32 @@
 //=============================================================================
 //
-// ï¿½^ï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½Êï¿½ï¿½ï¿½ [TeamLogo.h]
-// Author : 
+// ƒLƒƒƒ‰‘I‘ğ‰æ–Êˆ— [wallet_select.h]
+// Author : —tu¬
 //
 //=============================================================================
 #pragma once
 
 
 //*****************************************************************************
-// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
+// ƒ}ƒNƒ’è‹`
 //*****************************************************************************
 
 
 
 
 //*****************************************************************************
-// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 //*****************************************************************************
-HRESULT InitTeamLogo(void);
-void UninitTeamLogo(void);
-void UpdateTeamLogo(void);
-void DrawTeamLogo(void);
-#pragma once
+HRESULT InitWallet(void);
+void UninitWallet(void);
+void UpdateWallet(void);
+void DrawWallet(void);
+
+void SetPriceRocket(const ULONG64& price);
+void StartTransaction(void);
+BOOL InTransaction(void);
+BOOL SuccessfulTransaction(void);
+
+ULONG64& GetMoney(void);
+void GainMoney(ULONG64& gain);
+

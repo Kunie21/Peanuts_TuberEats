@@ -1,24 +1,28 @@
 //=============================================================================
 //
-// ï¿½^ï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½Êï¿½ï¿½ï¿½ [TeamLogo.h]
-// Author : 
+// ƒLƒƒƒ‰‘I‘ğ‰æ–Êˆ— [rocket_select.h]
+// Author : —tu¬
 //
 //=============================================================================
 #pragma once
 
 
 //*****************************************************************************
-// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
+// ƒ}ƒNƒ’è‹`
 //*****************************************************************************
 
 
 
 
 //*****************************************************************************
-// ï¿½vï¿½ï¿½ï¿½gï¿½^ï¿½Cï¿½vï¿½éŒ¾
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 //*****************************************************************************
-HRESULT InitTeamLogo(void);
-void UninitTeamLogo(void);
-void UpdateTeamLogo(void);
-void DrawTeamLogo(void);
-#pragma once
+HRESULT InitRocketSelect(void);
+void UninitRocketSelect(void);
+void UpdateRocketSelect(void);
+void DrawRocketSelect(void);
+
+BOOL IsRocketSelectFinished(void);
+int GetRocketSelected(void);
+
+

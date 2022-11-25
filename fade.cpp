@@ -25,7 +25,7 @@ static ID3D11ShaderResourceView*	g_Texture = NULL;	// テクスチャ情報
 static char*	g_TextureName = "data/TEXTURE/white.png";
 
 FADE			g_Fade = FADE_IN;	// フェードの状態
-int				g_ModeNext;			// 次のモード
+MODE_LABEL		g_ModeNext;			// 次のモード
 
 static BOOL		g_Load = FALSE;
 
@@ -73,9 +73,15 @@ void UpdateFade(void)
 			g_td.col.w += FADE_RATE;		// α値を加算して画面を消していく
 			if (g_td.col.w >= 1.0f)
 			{
+				// 鳴っている曲を全部止める
+				//StopSound();
+
 				// フェードイン処理に切り替え
 				g_td.col.w = 1.0f;
 				SetFade(FADE_IN, g_ModeNext);
+
+				// モードを設定
+				SetMode(g_ModeNext);
 			}
 		}
 		else if (g_Fade == FADE_IN)
@@ -118,7 +124,7 @@ void DrawFade(void)
 //=============================================================================
 // フェードの状態設定
 //=============================================================================
-void SetFade(FADE fade, int modeNext)
+void SetFade(FADE fade, MODE_LABEL modeNext)
 {
 	g_Fade = fade;
 	g_ModeNext = modeNext;

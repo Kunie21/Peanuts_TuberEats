@@ -24,10 +24,13 @@
 #include "load.h"
 
 // title
+#include "title.h"
 
 // start
+#include "start.h"
 
 // home
+#include "home.h"
 
 // stage_select
 
@@ -71,7 +74,7 @@ int		g_CountFPS;							// FPSカウンタ
 char	g_DebugStr[2048] = WINDOW_NAME;		// デバッグ文字表示用
 #endif
 
-MODE_LABEL	g_Mode = MODE_GAME;	// 起動時の画面を設定
+MODE_LABEL	g_Mode = MODE_OPENING;	// 起動時の画面を設定
 
 //=============================================================================
 // メイン関数
@@ -291,10 +294,13 @@ void Update(void)
 	case MODE_LOADING:
 		break;
 	case MODE_TITLE:
+		UpdateTitle();
 		break;
 	case MODE_START:
+		UpdateStart();
 		break;
 	case MODE_HOME:
+		UpdateHome();
 		break;
 	case MODE_STAGESELECT:
 		break;
@@ -356,10 +362,13 @@ void Draw(void)
 	case MODE_LOADING:
 		break;
 	case MODE_TITLE:
+		DrawTitle();
 		break;
 	case MODE_START:
+		DrawStart();
 		break;
 	case MODE_HOME:
+		DrawHome();
 		break;
 	case MODE_STAGESELECT:
 		break;
@@ -414,6 +423,10 @@ void SetMode(MODE_LABEL mode)
 	UninitResultEvent();
 	UninitTube();
 	UninitPlayer();
+	UninitHome();
+	UninitTitle();
+	UninitStart();
+	UninitHome();
 
 
 	g_Mode = mode;	// 次のモードをセット
@@ -427,10 +440,13 @@ void SetMode(MODE_LABEL mode)
 	case MODE_LOADING:
 		break;
 	case MODE_TITLE:
+		InitTitle();
 		break;
 	case MODE_START:
+		InitStart();
 		break;
 	case MODE_HOME:
+		InitHome();
 		break;
 	case MODE_STAGESELECT:
 		break;
@@ -486,6 +502,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// メモリリークチェック用
 			_CrtDumpMemoryLeaks();
+			break;
+
+		default:
+			if (g_Mode == MODE_TITLE) SetFade(FADE_OUT, MODE_START);
 			break;
 		}
 		break;

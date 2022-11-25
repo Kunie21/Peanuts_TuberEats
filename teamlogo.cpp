@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// ƒ`[ƒ€ƒƒS‰æ–Êˆ— [teamlogo.cpp]
-// Author : š ] ãÄ‘¾
+// ï¿½`ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½ï¿½Êï¿½ï¿½ï¿½ [teamlogo.cpp]
+// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
 //
 //=============================================================================
 #include "main.h"
@@ -12,41 +12,34 @@
 #include "model.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
 //*****************************************************************************
-#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ”wŒiƒTƒCƒY‰¡
-#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ”wŒiƒTƒCƒYc
+#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½ï¿½
+#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½c
 
-//#define TEXTURE_WIDTH_LOGO			(1154)			// ƒƒSƒTƒCƒY‰¡
-//#define TEXTURE_HEIGHT_LOGO			(693)			// ƒƒSƒTƒCƒYc
-#define TEXTURE_WIDTH_LOGO			(984)			// ƒƒSƒTƒCƒY‰¡
-#define TEXTURE_HEIGHT_LOGO			(590)			// ƒƒSƒTƒCƒYc
+//#define TEXTURE_WIDTH_LOGO			(1154)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
+//#define TEXTURE_HEIGHT_LOGO			(693)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
 
-#define TEAMLOGO_TIME				(100)			// ƒƒS•\¦ŠÔ
+#define TEAMLOGO_TIME				(100)			// ï¿½ï¿½ï¿½Sï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 //*****************************************************************************
-// ƒOƒ[ƒoƒ‹•Ï”
+// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 //*****************************************************************************
 static int				g_Time = 0;
 static BOOL				g_Load = FALSE;
 
-// ƒeƒNƒXƒ`ƒƒŠÇ—
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
 enum
 {
 	TEXTURE_BG = 0,
-	TEXTURE_TEAMLOGO,
-	TEXTURE_STAR,
+	//TEXTURE_TEAMLOGO,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ƒeƒNƒXƒ`ƒƒî•ñ
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
 static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/white.png",
-	"data/TEXTURE/peanuts_logo_color.png",
-	"data/MODEL/star1.jpg",
-	//"data/TEXTURE/peanuts_logo_white.png",
-	//"data/TEXTURE/peanuts_bg_1.png",
-	//"data/TEXTURE/peanuts.png",
+	//"data/TEXTURE/white.png",
+	"data/TEXTURE/peanuts_bg_1.png",
 };
 
 
@@ -56,38 +49,23 @@ enum {
 	MODEL_ROCKET,
 	MODEL_MAX,
 };
-static MODEL_DATA	g_Model[MODEL_MAX];	// ƒvƒŒƒCƒ„[‚Ìƒ‚ƒfƒ‹ŠÇ—
+static MODEL_DATA	g_Model[MODEL_MAX];	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Ç—ï¿½
 
 //=============================================================================
-// ‰Šú‰»ˆ—
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 HRESULT InitTeamLogo(void)
 {
-	// ƒeƒNƒXƒ`ƒƒ¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 		g_td[i].tex = &g_Texture[i];
 	}
 
-	// Ú×İ’è
+	// ï¿½Ú×İ’ï¿½
 	g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//g_td[TEXTURE_BG].col = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	g_td[TEXTURE_TEAMLOGO].size = { TEXTURE_WIDTH_LOGO, TEXTURE_HEIGHT_LOGO };
-	g_td[TEXTURE_TEAMLOGO].scl = { 0.5f, 0.5f };
-	//g_td[TEXTURE_TEAMLOGO].scl = { 1.0f, 1.0f };
-
-	LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_STAR].model);
-	//LoadModel("data/MODEL/skydome.obj", &g_Model[MODEL_EARTH].model);
-	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
-	LoadModel("data/MODEL/rocket01.obj", &g_Model[MODEL_ROCKET].model);
-
-	g_Model[MODEL_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_EARTH].srt.pos = { 25.0f, 0.0f, 100.0f };
-	g_Model[MODEL_STAR].srt.scl = { 20.3f, 20.3f, 20.3f };
-	g_Model[MODEL_EARTH].srt.scl = { 0.3f, 0.3f, 0.3f };
-	g_Model[MODEL_ROCKET].srt.scl = { 0.01f, 0.01f, 0.01f };
 
 	g_Time = 0;
 
@@ -96,7 +74,7 @@ HRESULT InitTeamLogo(void)
 }
 
 //=============================================================================
-// I—¹ˆ—
+// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UninitTeamLogo(void)
 {
@@ -115,64 +93,62 @@ void UninitTeamLogo(void)
 }
 
 //=============================================================================
-// XVˆ—
+// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
 //=============================================================================
 void UpdateTeamLogo(void)
 {
-	g_Model[MODEL_EARTH].srt.rot.y -= 0.01f;
-	//if (g_Time++ > TEAMLOGO_TIME) { g_Time = 0; SetFade(FADE_OUT, MODE_GAME); }
+	if (g_Time++ > TEAMLOGO_TIME) { g_Time = 0; SetFade(FADE_OUT, MODE_TITLE); }
 }
 
 //=============================================================================
-// •`‰æˆ—
+// ï¿½`ï¿½æˆï¿½ï¿½
 //=============================================================================
 void DrawTeamLogo(void)
 {
 	SetDraw2DTexture();
 	DrawTexture2D(&g_td[TEXTURE_BG]);
-	DrawTexture2D(&g_td[TEXTURE_TEAMLOGO]);
 
 	SetDrawNoLighting();
 
 	SetCullingMode(CULL_MODE_NONE);
 
-	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
+	//XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
 
-	for (int testNo = 0; testNo < MODEL_MAX; testNo++)
-	{
-		// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
-		mtxWorld = XMMatrixIdentity();
+	//for (int testNo = 0; testNo < MODEL_MAX; testNo++)
+	//{
+	//	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+	//	mtxWorld = XMMatrixIdentity();
 
-		// ƒXƒP[ƒ‹‚ğ”½‰f
-		mtxScl = XMMatrixScaling(g_Model[testNo].srt.scl.x, g_Model[testNo].srt.scl.y, g_Model[testNo].srt.scl.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
+	//	// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ”½‰f
+	//	mtxScl = XMMatrixScaling(g_Model[testNo].srt.scl.x, g_Model[testNo].srt.scl.y, g_Model[testNo].srt.scl.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-		// ‰ñ“]‚ğ”½‰fF‘S‘Ì‚ÌŠp“x
-		mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].srt.rot.x, g_Model[testNo].srt.rot.y, g_Model[testNo].srt.rot.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
+	//	// ï¿½ï¿½]ï¿½ğ”½‰fï¿½Fï¿½Sï¿½Ì‚ÌŠpï¿½x	
+	//	mtxRot = XMMatrixRotationRollPitchYaw(g_Model[testNo].srt.rot.x, g_Model[testNo].srt.rot.y, g_Model[testNo].srt.rot.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
-		// ˆÚ“®‚ğ”½‰f
-		mtxTranslate = XMMatrixTranslation(g_Model[testNo].srt.pos.x, g_Model[testNo].srt.pos.y, g_Model[testNo].srt.pos.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+	//	// ï¿½Ú“ï¿½ï¿½ğ”½‰f
+	//	mtxTranslate = XMMatrixTranslation(g_Model[testNo].srt.pos.x, g_Model[testNo].srt.pos.y, g_Model[testNo].srt.pos.z);
+	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
-		// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
-		SetWorldBuffer(&mtxWorld);
+	//	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½}ï¿½gï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Ìİ’ï¿½
+	//	SetWorldBuffer(&mtxWorld);
 
-		// ƒ}ƒeƒŠƒAƒ‹İ’è
-		MATERIAL material;
-		ZeroMemory(&material, sizeof(material));
-		material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½İ’ï¿½
+	//	MATERIAL material;
+	//	ZeroMemory(&material, sizeof(material));
+	//	material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		// ƒ‚ƒfƒ‹•`‰æ
-		if (testNo != MODEL_STAR)
-		{
-			DrawModel(&g_Model[testNo].model, NULL, &material);
-		}
-		else
-		{
-			DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
-		}
-	}
+	//	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
+	//	if (testNo != MODEL_STAR)
+	//	{
+	//		DrawModel(&g_Model[testNo].model, NULL, &material);
+	//	}
+	//	else
+	//	{
+	//		DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
+	//	}
+	//}
 
 	SetCullingMode(CULL_MODE_BACK);
 }

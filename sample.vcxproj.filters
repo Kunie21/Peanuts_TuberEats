@@ -91,6 +91,15 @@
     <ClCompile Include="result_event.cpp">
       <Filter>result</Filter>
     </ClCompile>
+    <ClCompile Include="rocket_select.cpp">
+      <Filter>home</Filter>
+    </ClCompile>
+    <ClCompile Include="character_select.cpp">
+      <Filter>home</Filter>
+    </ClCompile>
+    <ClCompile Include="wallet.cpp">
+      <Filter>home</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -183,6 +192,15 @@
     </ClInclude>
     <ClInclude Include="result_event.h">
       <Filter>result</Filter>
+    </ClInclude>
+    <ClInclude Include="rocket_select.h">
+      <Filter>home</Filter>
+    </ClInclude>
+    <ClInclude Include="character_select.h">
+      <Filter>home</Filter>
+    </ClInclude>
+    <ClInclude Include="wallet.h">
+      <Filter>home</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
