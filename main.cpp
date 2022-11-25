@@ -346,9 +346,8 @@ void Draw(void)
 		DrawGame();
 		break;
 	case MODE_RESULT:
-		//DrawResult();
 		DrawResultEvent();
-		
+		DrawResult();	
 		break;
 	case MODE_END:
 		break;

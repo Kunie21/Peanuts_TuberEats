@@ -12,6 +12,7 @@
 #include "model.h"
 #include "player.h"
 #include "tube.h"
+#include "result.h"
 
 
 //*****************************************************************************
@@ -21,7 +22,7 @@
 #define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// 背景サイズ縦
 
 #define ROCKET_MAX					(6)
-#define ROCKET_SPEED				(10)
+#define ROCKET_SPEED				(20)
 
 //*****************************************************************************
 // グローバル変数
@@ -121,6 +122,11 @@ void UpdateResultEvent(void)
 {
 	g_CameraPos.z -= ROCKET_SPEED;
 	g_CameraAt.z -= ROCKET_SPEED;
+
+	if (g_CameraPos.z < (-2500))
+	{
+		SetEventFinish();
+	}
 }
 
 //=============================================================================
