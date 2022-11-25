@@ -452,7 +452,7 @@ void UpdateStart(void)
 		switch (MenuPannelNum)
 		{
 		case TEXTURE_MENU_PANNEL_01:
-			SetMode(MODE_GAME); // game
+			SetFade(FADE_OUT, MODE_GAME); // game
 			break;
 		case TEXTURE_MENU_PANNEL_02:
 			//SetMode(); //option
