@@ -1,9 +1,9 @@
-////=============================================================================
-////
-//// ï¿½`ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½ï¿½Êï¿½ï¿½ï¿½ [title.cpp]
-//// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
-////
-////=============================================================================
+//=============================================================================
+//
+// ƒ^ƒCƒgƒ‹‰æ–Ê [title.cpp]
+// Author : ƒTƒ“
+//
+//=============================================================================
 #include "main.h"
 #include "renderer.h"
 #include "texture2d.h"
@@ -12,164 +12,116 @@
 #include "model.h"
 #include "input.h"
 
-
-//
-////*****************************************************************************
-//// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
-////*****************************************************************************
-#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½c
-
-//#define TEXTURE_WIDTH_LOGO			(1154)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-//#define TEXTURE_HEIGHT_LOGO			(693)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
-#define TEXTURE_WIDTH_TITLE			(577)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT_TITLE		(345)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
-
-#define TEXTURE_WIDTH_BUTTON		(739)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT_BUTTON		(67)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
-
-#define TEXTURE_WIDTH_COPYR		(547)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT_COPYR		(43)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
-
+//*****************************************************************************
+// ƒ}ƒNƒ’è‹`
+//*****************************************************************************
 #define TITLE_X					(150.0f)
 #define TITLE_Y					(120.0f)
-
-#define BUTTON_X				(80.0f)
-#define BUTTON_Y				(510.0f)
-
+#define TITLE_BUTTON_X			(80.0f)
+#define TITLE_BUTTON_Y			(510.0f)
 #define COPYR_X					(1300.0f)
 #define COPYR_Y					(954.0f)
 
-#define BUTTONLOGO_TIME			(100)			// ï¿½ï¿½ï¿½Sï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-#define ALPHASPEED				(0.03f)	
+#define OBJ_DIST				(200)
 
-#define ROCKET_PARTS_MAX	(1)								// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒpï¿½[ï¿½cï¿½Ìï¿½
+#define BUTTONLOGO_TIME			(100)
+#define ALPHASPEED				(0.03f)
 
-//
-////*****************************************************************************
-//// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
-////*****************************************************************************
-static int				g_Time = 0;
-static BOOL				g_Load = FALSE;
-static bool				g_Fade = true;
-static float			rotater;
-//
-//// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
-enum
-{
-	TEXTURE_BG = 0,
-	TEXTURE_TITLE,
-	TEXTURE_STAR,
+#define ROCKET_PARTS_MAX	(1)
+
+// ƒeƒNƒXƒ`ƒƒ–¼
+enum {
+	TEXTURE_TITLE = 0,
 	TEXTURE_BUTTON,
 	TEXTURE_COPYR,
+	TEXTURE_STAR,
 	TEXTURE_MAX,
-
-};
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
-static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/white.png",
-	"data/TEXTURE/title_menu_gamen/title_logo.png",
-	"data/MODEL/star1.jpg",
-	"data/TEXTURE/title_menu_gamen/press_button.png",
-	"data/TEXTURE/title_menu_gamen/peanuts_copyright.png",
-
 };
 
+// ƒ‚ƒfƒ‹–¼
 enum {
-	MODEL_STAR = 0,
-	MODEL_EARTH,
-	MODEL_ROCKET,
-	MODEL_MAX,
+	MODEL_TITLE_STAR = 0,
+	MODEL_TITLE_EARTH,
+	MODEL_TITLE_ROCKET,
+	MODEL_TITLE_FIRE,
+	MODEL_TITLE_MAX,
 };
-static MODEL_DATA	g_Model[MODEL_MAX];	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Ç—ï¿½
 
+//*****************************************************************************
+// ƒOƒ[ƒoƒ‹•Ï”
+//*****************************************************************************
+static BOOL				g_Load = FALSE;
+static bool				g_Fade = true;
+static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static MODEL_DATA		g_Model[MODEL_TITLE_MAX];
 
-////=============================================================================
-//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//=============================================================================
+// ‰Šú‰»ˆ—
+//=============================================================================
 HRESULT InitTitle(void)
 {
-	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-		g_td[i].tex = &g_Texture[i];
+	// ƒeƒNƒXƒ`ƒƒİ’è
+	for (int i = 0; i < TEXTURE_STAR; i++) {
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_TITLE + i);
+		g_td[i].ctrType = CENTER_LEFTTOP;
+		g_td[i].posType = POSITION_ABSOLUTE;
 	}
+	g_td[TEXTURE_STAR].tex = TEXTURE_LABEL_STAR;
 
-	// ï¿½Ú×İ’ï¿½
-	//g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-	g_td[TEXTURE_TITLE].size = { TEXTURE_WIDTH_TITLE, TEXTURE_HEIGHT_TITLE };
-	g_td[TEXTURE_TITLE].scl = { 1.0f, 1.0f };
+	g_td[TEXTURE_TITLE].size = { 577.0f, 345.0f };
 	g_td[TEXTURE_TITLE].pos = { TITLE_X, TITLE_Y };
-	g_td[TEXTURE_TITLE].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_TITLE].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_TITLE].posType = POSITION_ABSOLUTE;
 
+	g_td[TEXTURE_BUTTON].size = { 739.0f, 67.0f };
+	g_td[TEXTURE_BUTTON].pos = { TITLE_BUTTON_X, TITLE_BUTTON_Y };
 
-	g_td[TEXTURE_BUTTON].size = { TEXTURE_WIDTH_BUTTON, TEXTURE_HEIGHT_BUTTON };
-	g_td[TEXTURE_BUTTON].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_BUTTON].pos = { BUTTON_X, BUTTON_Y };
-	g_td[TEXTURE_BUTTON].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_BUTTON].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_BUTTON].posType = POSITION_ABSOLUTE;
-
-
-	g_td[TEXTURE_COPYR].size = { TEXTURE_WIDTH_COPYR, TEXTURE_HEIGHT_COPYR };
-	g_td[TEXTURE_COPYR].scl = { 1.0f, 1.0f };
+	g_td[TEXTURE_COPYR].size = { 547.0f, 43.0f };
 	g_td[TEXTURE_COPYR].pos = { COPYR_X, COPYR_Y };
-	g_td[TEXTURE_COPYR].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_COPYR].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_COPYR].posType = POSITION_ABSOLUTE;
 
+	// ƒ‚ƒfƒ‹İ’è
+	g_Model[MODEL_TITLE_STAR].model = MODEL_EARTH;
+	g_Model[MODEL_TITLE_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
+	g_Model[MODEL_TITLE_STAR].srt.scl = { 80.0f, 80.0f, 80.0f };
 
-	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_STAR].model);
-	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
-	LoadModel("data/MODEL/titleRocket01.obj", &g_Model[MODEL_ROCKET].model);
+	g_Model[MODEL_TITLE_EARTH].model = MODEL_EARTH;
+	g_Model[MODEL_TITLE_EARTH].srt.pos = { 0.0f, 0.0f, OBJ_DIST };
+	g_Model[MODEL_TITLE_EARTH].srt.scl = { 20.0f, 20.0f, 20.0f };
 
-	g_Model[MODEL_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_EARTH].srt.pos = { 0.0f, 0.0f, 100.0f };
-	g_Model[MODEL_STAR].srt.scl = { 100.0f, 100.0f, 100.0f };
-	g_Model[MODEL_EARTH].srt.scl = { 18.0f, 18.0f, 18.0f };
-	g_Model[MODEL_ROCKET].srt.pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_ROCKET].srt.scl = { 1.1f, 1.1f, 1.1f };
+	g_Model[MODEL_TITLE_ROCKET].model = MODEL_ROCKET1;
+	g_Model[MODEL_TITLE_ROCKET].srt.pos = { 0.0f, 0.0f, OBJ_DIST };
+	g_Model[MODEL_TITLE_ROCKET].srt.scl = { 0.15f, 0.15f, 0.15f };
+	g_Model[MODEL_TITLE_ROCKET].srt.rot.y = XM_PI;
 
-	g_Time = 0;
+	g_Model[MODEL_TITLE_FIRE].model = MODEL_FIRE;
+	g_Model[MODEL_TITLE_FIRE].srt.pos.z = -15.0f;
 
 	g_Load = TRUE;
 	return S_OK;
 }
 
-////=============================================================================
-//// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-////=============================================================================
+//=============================================================================
+// I—¹ˆ—
+//=============================================================================
 void UninitTitle(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
-
 	g_Load = FALSE;
 }
 
-////=============================================================================
-//// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
-////=============================================================================
+//=============================================================================
+// XVˆ—
+//=============================================================================
 void UpdateTitle(void)
 {
+	g_Model[MODEL_TITLE_EARTH].srt.rot.y -= 0.001f;
+	g_Model[MODEL_TITLE_STAR].srt.rot.y += 0.0001f;
+	if (g_Model[MODEL_TITLE_EARTH].srt.rot.y < -XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y += XM_2PI;
+	if (g_Model[MODEL_TITLE_STAR].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y -= XM_2PI;
 
-
-	g_Model[MODEL_EARTH].srt.rot.y -= 0.01f;
-	g_Model[MODEL_ROCKET].srt.rot.y += 0.03f;
-
-
+	g_Model[MODEL_TITLE_ROCKET].srt.rot.y += 0.03f;
+	g_Model[MODEL_TITLE_ROCKET].srt.rot.z -= 0.0002f;
+	if (g_Model[MODEL_TITLE_ROCKET].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y -= XM_2PI;
+	if (g_Model[MODEL_TITLE_ROCKET].srt.rot.z < -XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.z += XM_2PI;
 
 	if (g_Fade)
 	{
@@ -183,48 +135,69 @@ void UpdateTitle(void)
 		if (g_td[TEXTURE_BUTTON].col.w >= 1.0f)
 			g_Fade = true;
 	}
-
-
 }
 
-////=============================================================================
-//// ï¿½`ï¿½æˆï¿½ï¿½
-////=============================================================================
+//=============================================================================
+// •`‰æˆ—
+//=============================================================================
 void DrawTitle(void)
 {
+	XMMATRIX mtxWorld;
+	SRT srt;
+
 	SetDrawNoLighting();
 
-	//SetDrawNoLighting();
+	// ƒƒPƒbƒg
+	mtxWorld = XMMatrixIdentity();
+	srt = g_Model[MODEL_TITLE_ROCKET].srt;
+	MulMtxScl(mtxWorld, srt.scl.x, srt.scl.y, srt.scl.z);	// ƒXƒP[ƒ‹‚ğ”½‰f
+	MulMtxRot(mtxWorld, XM_PI, 0.0f, XM_PI);				// ‰ñ“]‚ğ”½‰f
+	MulMtxPos(mtxWorld, -225.0f, 0.0f, 0.0f);				// ˆÚ“®‚ğ”½‰f
+	MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// ‰ñ“]‚ğ”½‰f
+	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// ˆÚ“®‚ğ”½‰f
+	MulMtxRot(mtxWorld, 0.0f, 0.0f, XM_PIDIV4 * 0.5f + srt.rot.z);		// ‰ñ“]‚ğ”½‰f
+	DrawModel(&g_Model[MODEL_TITLE_ROCKET].model, &mtxWorld);
 
+	// ’n‹…
+	DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &g_Model[MODEL_TITLE_EARTH].srt);
+
+	// ¯
 	SetCullingMode(CULL_MODE_NONE);
-
-	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
-
-	for (int testNo = 0; testNo < MODEL_MAX; testNo++)
-	{
-
-		MATERIAL material;
-
-
-		// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
-		if (testNo != MODEL_STAR)
-		{
-			//DrawModel(&g_Model[testNo].model, NULL, &material);
-			DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, NULL, &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
-		}
-		else
-		{
-			//DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
-			DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, &g_Texture[TEXTURE_STAR], &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
-		}
-	}
-
+	DrawModel(&g_Model[MODEL_TITLE_STAR].model, &g_Model[MODEL_TITLE_STAR].srt, TEXTURE_LABEL_STAR);
 	SetCullingMode(CULL_MODE_BACK);
-	//SetDraw2DTexture();
-	DrawTexture2D(&g_td[TEXTURE_TITLE], FALSE, TRUE);
 
-	DrawTexture2D(&g_td[TEXTURE_BUTTON], FALSE, TRUE);
+	// ƒtƒ@ƒCƒ„[
+	SetBlendState(BLEND_MODE_ADD);
+	SetDrawFire();
+	g_Model[MODEL_TITLE_FIRE].srt.scl.x = (float)(rand() % 10) * 0.003f + 0.1f;
+	g_Model[MODEL_TITLE_FIRE].srt.scl.y = (float)(rand() % 10) * 0.003f + 0.1f;
+	g_Model[MODEL_TITLE_FIRE].srt.scl.z = (float)(rand() % 10) * 0.003f + 0.1f;
+	mtxWorld = XMMatrixIdentity();
+	srt = g_Model[MODEL_TITLE_ROCKET].srt;
+	srt.scl = g_Model[MODEL_TITLE_FIRE].srt.scl;
+	MulMtxScl(mtxWorld, srt.scl.x, srt.scl.y, srt.scl.z);	// ƒXƒP[ƒ‹‚ğ”½‰f
+	MulMtxRot(mtxWorld, XM_PI, 0.0f, XM_PI);				// ‰ñ“]‚ğ”½‰f
+	MulMtxPos(mtxWorld, -225.0f, 0.0f, g_Model[MODEL_TITLE_FIRE].srt.pos.z);	// ˆÚ“®‚ğ”½‰f
+	MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// ‰ñ“]‚ğ”½‰f
+	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// ˆÚ“®‚ğ”½‰f
+	MulMtxRot(mtxWorld, 0.0f, 0.0f, XM_PIDIV4 * 0.5f + srt.rot.z);		// ‰ñ“]‚ğ”½‰f
+	DrawModel(&g_Model[MODEL_TITLE_FIRE].model, &mtxWorld);	// ƒ‚ƒfƒ‹•`‰æ
+	SetBlendState(BLEND_MODE_ALPHABLEND);
 
+	// ƒ^ƒCƒgƒ‹ƒƒS‚È‚Ç
+	DrawTexture2D(&g_td[TEXTURE_TITLE], TRUE, TRUE);
+	DrawTexture2D(&g_td[TEXTURE_BUTTON], TRUE, TRUE);
 	DrawTexture2D(&g_td[TEXTURE_COPYR], FALSE, TRUE);
+}
 
+void SetTitleAlpha(float rate) {
+	g_td[TEXTURE_TITLE].col.w = rate;
+	g_td[TEXTURE_BUTTON].col.w = rate;
+	g_td[TEXTURE_COPYR].col.w = rate;
+
+	float dist = (1.0f - rate) * OBJ_DIST;
+	g_Model[MODEL_TITLE_EARTH].srt.pos.x = dist;
+	g_Model[MODEL_TITLE_ROCKET].srt.pos.x = dist;
+	g_Model[MODEL_TITLE_EARTH].srt.pos.z = OBJ_DIST + dist * 0.5f;
+	g_Model[MODEL_TITLE_ROCKET].srt.pos.z = OBJ_DIST + dist * 0.5f;
 }

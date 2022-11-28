@@ -33,7 +33,8 @@ static BOOL			g_Load = FALSE;
 
 static MISSILE		g_Ms[MISSILE_NUM];
 
-static DX11_MODEL	g_Model[MISSILE_TYPE_MAX];	// プレイヤーのモデル管理
+//static DX11_MODEL	g_Model[MISSILE_TYPE_MAX];	// プレイヤーのモデル管理
+static MODEL_LABEL	g_Model[MISSILE_TYPE_MAX];	// プレイヤーのモデル管理
 
 
 static float		g_Rotation = 0.0f;
@@ -43,9 +44,12 @@ static float		g_Rotation = 0.0f;
 //=============================================================================
 HRESULT InitMissile(void)
 {
-	LoadModel("data/MODEL/missile01.obj", &g_Model[MISSILE_TYPE_01]);
-	LoadModel("data/MODEL/missile02.obj", &g_Model[MISSILE_TYPE_02]);
-	LoadModel("data/MODEL/fire01.obj", &g_Model[MISSILE_TYPE_FIRE]);
+	//LoadModel("data/MODEL/missile01.obj", &g_Model[MISSILE_TYPE_01]);
+	//LoadModel("data/MODEL/missile02.obj", &g_Model[MISSILE_TYPE_02]);
+	//LoadModel("data/MODEL/fire01.obj", &g_Model[MISSILE_TYPE_FIRE]);
+	g_Model[MISSILE_TYPE_01] = MODEL_MISSILE1;
+	g_Model[MISSILE_TYPE_02] = MODEL_MISSILE2;
+	g_Model[MISSILE_TYPE_FIRE] = MODEL_FIRE;
 
 	g_Load = TRUE;
 	return S_OK;
@@ -58,10 +62,10 @@ void UninitMissile(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < MISSILE_TYPE_MAX; i++)
-	{
-		UnloadModel(&g_Model[i]);
-	}
+	//for (int i = 0; i < MISSILE_TYPE_MAX; i++)
+	//{
+	//	UnloadModel(&g_Model[i]);
+	//}
 
 	g_Load = FALSE;
 }
@@ -158,8 +162,7 @@ void DrawMissileFire(void) {
 	if (instCount > 0)
 	{
 		SetWorldBuffer(&XMMatrixIdentity());	// ワールドマトリックスの設定
-		static MATERIAL material;
-		DrawModelInstanced(&g_Model[MISSILE_TYPE_FIRE], instCount, &material);	// モデル描画
+		DrawModelInstanced(&g_Model[MISSILE_TYPE_FIRE], instCount);	// モデル描画
 	}
 }
 

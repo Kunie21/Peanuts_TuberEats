@@ -6,6 +6,7 @@
 //=============================================================================
 #include "main.h"
 #include "renderer.h"
+#include "texture2d.h"
 #include "tube.h"
 #include "input.h"
 
@@ -62,19 +63,20 @@ static MESH_TUBE g_MeshTube;
 static MESH_TUBE g_MeshLight;
 static TUBE g_Tube;
 
-// テクスチャ管理
-enum
-{
-	TEXTURE_NOMAL = 0,
-	TEXTURE_LINE1,
-	TEXTURE_LINE2,
-	TEXTURE_LINE3,
-	TEXTURE_LINE4,
-	TEXTURE_WHITE,
-	TEXTURE_MAX,
-};
-// static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+//// テクスチャ管理
+//enum
+//{
+//	TEXTURE_NOMAL = 0,
+//	TEXTURE_LINE1,
+//	TEXTURE_LINE2,
+//	TEXTURE_LINE3,
+//	TEXTURE_LINE4,
+//	TEXTURE_WHITE,
+//	TEXTURE_MAX,
+//};
+//// static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+
 
 static BOOL		g_Load = FALSE;
 static float	g_time;
@@ -88,21 +90,23 @@ static int testNo = 0;
 //=============================================================================
 HRESULT InitTube(void)
 {
-	char* texFile[TEXTURE_MAX] = {
-		//"data/TEXTURE/metal.jpg",
-		"data/TEXTURE/r.tif",
-		"data/TEXTURE/Line.png",
-		"data/TEXTURE/Line2.png",
-		"data/TEXTURE/Line3.png",
-		"data/TEXTURE/Line4.png",
-		"data/TEXTURE/white.png",
-	};
+	//char* texFile[TEXTURE_MAX] = {
+	//	//"data/TEXTURE/metal.jpg",
+	//	"data/TEXTURE/tube21.jpg",
+	//	"data/TEXTURE/r.tif",
+	//	"data/TEXTURE/chocolate.png",
+	//	"data/TEXTURE/Line.png",
+	//	"data/TEXTURE/Line2.png",
+	//	//"data/TEXTURE/Line3.png",
+	//	//"data/TEXTURE/Line4.png",
+	//	"data/TEXTURE/white.png",
+	//};
 
-	// テクスチャ生成
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), texFile[i], NULL, NULL, &g_Texture[i], NULL);
-	}
+	//// テクスチャ生成
+	//for (int i = 0; i < TEXTURE_MAX; i++)
+	//{
+	//	D3DX11CreateShaderResourceViewFromFile(GetDevice(), texFile[i], NULL, NULL, &g_Texture[i], NULL);
+	//}
 
 	// 直線パイプ
 	{
@@ -149,7 +153,7 @@ HRESULT InitTube(void)
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshTube.indexBuffer);
 
 		{//頂点バッファの中身を埋める
-#if 1
+#if 0
 			const float texSizeX = 1.0f / g_MeshTube.nX;
 			const float texSizeZ = 1.0f / g_MeshTube.nZ;
 #else
@@ -530,15 +534,15 @@ void UninitTube(void)
 		g_MeshTube.indexBuffer = NULL;
 	}
 
-	// テクスチャの解放
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
+	//// テクスチャの解放
+	//for (int i = 0; i < TEXTURE_MAX; i++)
+	//{
+	//	if (g_Texture[i])
+	//	{
+	//		g_Texture[i]->Release();
+	//		g_Texture[i] = NULL;
+	//	}
+	//}
 
 	g_Load = FALSE;
 }
@@ -575,7 +579,7 @@ void DrawTube(void)
 	SetMaterialBuffer(&g_MeshTube.material);
 
 	// テクスチャ設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[testNo]);
+	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_TUBE_WAFER));
 
 	// ワールドマトリックスの設定
 	SetWorldBuffer(&XMMatrixIdentity());
@@ -604,7 +608,7 @@ void DrawTubeResult(void)
 	SetMaterialBuffer(&g_MeshTubeResult);
 
 	// テクスチャ設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[testNo]);
+	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_TUBE_WAFER));
 
 	// ワールドマトリックスの設定
 	SetWorldBuffer(&XMMatrixIdentity());
@@ -631,7 +635,7 @@ void DrawTubeLight(void)
 	SetMaterialBuffer(&g_MeshLight.material);
 
 	// テクスチャ設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_WHITE]);
+	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_WHITE));
 
 	XMMATRIX mtxWorld = XMMatrixIdentity();			// ワールドマトリックスの初期化
 	MulMtxScl(mtxWorld, 0.05f, 0.05f, 1.0f);		// スケールを反映

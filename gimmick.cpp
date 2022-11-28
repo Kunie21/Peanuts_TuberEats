@@ -36,7 +36,7 @@ static BOOL			g_Load = FALSE;
 //static GIMMICK		g_GmIce[ICE_NUM];
 //static GIMMICK		g_GmRing[RING_NUM];
 
-static DX11_MODEL	g_Model[GIMMICK_MAX];	// プレイヤーのモデル管理
+static MODEL_LABEL	g_Model[GIMMICK_MAX];	// プレイヤーのモデル管理
 
 
 static float		g_Rotation = 0.0f;
@@ -46,9 +46,10 @@ static float		g_Rotation = 0.0f;
 //=============================================================================
 HRESULT InitGimmick(void)
 {
-	LoadModel("data/MODEL/ice_1.obj", &g_Model[GIMMICK_ICE]);
-	LoadModel("data/MODEL/ring_1.obj", &g_Model[GIMMICK_RING]);
-
+	//LoadModel("data/MODEL/ice_1.obj", &g_Model[GIMMICK_ICE]);
+	//LoadModel("data/MODEL/ring_1.obj", &g_Model[GIMMICK_RING]);
+	g_Model[GIMMICK_ICE] = MODEL_ICE;
+	g_Model[GIMMICK_RING] = MODEL_RING;
 	//for (int i = 0; i < ICE_NUM; i++)
 	//{
 	//	g_GmIce[i].rotPosNo = (i * 5) % 8;
@@ -73,10 +74,10 @@ void UninitGimmick(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < GIMMICK_MAX; i++)
-	{
-		UnloadModel(&g_Model[i]);
-	}
+	//for (int i = 0; i < GIMMICK_MAX; i++)
+	//{
+	//	UnloadModel(&g_Model[i]);
+	//}
 
 	g_Load = FALSE;
 }
@@ -133,7 +134,7 @@ void DrawGimmick(GIMMICK_TYPE gimmick)
 			MulMtxPos(mtxWorld, TUBE_RADIUS * 0.8f * cosf(rot), TUBE_RADIUS * 0.8f * sinf(rot), zPos);	// 移動を反映
 			break;
 		}
-		DrawModel(&g_Model[pStage->arrGmk[i].type], &mtxWorld, NULL, &material);	// モデル描画
+		DrawModel(&g_Model[pStage->arrGmk[i].type], &mtxWorld, &material);	// モデル描画
 	}
 }
 void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)

@@ -9,6 +9,7 @@
 #include "input.h"
 #include "camera.h"
 #include "model.h"
+#include "texture2d.h"
 #include "particle.h"
 #include "player.h"
 #include "game.h"
@@ -37,15 +38,17 @@ HRESULT MakeVertexParticle(void);
 static ID3D11Buffer		*g_VertexBuffer = NULL;		// 頂点バッファ
 
 // テクスチャ管理
-enum {
-	TEXTURE_NOMAL = 0,
-	TEXTURE_MAX,
-};
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-char* g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/particle.jpg",
-	//"data/TEXTURE/Line4.jpg",
-};
+//enum {
+//	TEXTURE_NOMAL = 0,
+//	TEXTURE_MAX,
+//};
+//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+//char* g_TextureName[TEXTURE_MAX] = {
+//	"data/TEXTURE/particle.jpg",
+//	//"data/TEXTURE/Line4.jpg",
+//};
+
+static TEXTURE_LABEL g_Texture = TEXTURE_LABEL_PARTICLE;
 
 static BOOL		g_Load = FALSE;
 
@@ -256,7 +259,7 @@ public:
 		device->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 		// テクスチャ設定
-		device->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_NOMAL]);
+		device->PSSetShaderResources(0, 1, GetTexture(g_Texture));
 		
 		// ワールドマトリックスの設定
 		SetWorldBuffer(&XMMatrixIdentity());
@@ -348,9 +351,9 @@ HRESULT InitParticle(void)
 	MakeVertexParticle();
 
 	// テクスチャ生成
-	for (int i = 0; i < TEXTURE_MAX; i++) {
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-	}
+	//for (int i = 0; i < TEXTURE_MAX; i++) {
+	//	D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+	//}
 
 	g_Load = TRUE;
 	return S_OK;
@@ -364,14 +367,14 @@ void UninitParticle(void)
 	if (g_Load == FALSE) return;
 
 	// テクスチャの解放
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
+	//for (int i = 0; i < TEXTURE_MAX; i++)
+	//{
+	//	if (g_Texture[i])
+	//	{
+	//		g_Texture[i]->Release();
+	//		g_Texture[i] = NULL;
+	//	}
+	//}
 
 	// 頂点バッファの解放
 	if (g_VertexBuffer != NULL)

@@ -8,6 +8,7 @@
 
 #include "main.h"
 #include "renderer.h"
+#include "texture2d.h"
 
 //*********************************************************
 // 構造体
@@ -40,23 +41,56 @@ struct DX11_MODEL
 	unsigned short	SubsetNum;
 };
 
+enum MODEL_LABEL {
+	MODEL_GATE = 0,
+	MODEL_ICE,
+	MODEL_RING,
+	MODEL_MISSILE1,
+	MODEL_MISSILE2,
+	MODEL_FIRE,
+	MODEL_ROCKET1,
+	MODEL_ROCKET2,
+	MODEL_ROCKET3,
+	MODEL_ROCKET4,
+	MODEL_ROCKET5,
+	MODEL_STAGE,
+	MODEL_EARTH,
+	MODEL_TITLEROCKET,
+	MODEL_MAX,
+};
+void InitModel(void);
+void UninitModel(void);
+
 struct MODEL_DATA
 {
-	DX11_MODEL	model;
+	MODEL_LABEL	model;
+	//DX11_MODEL	model;
 	SRT			srt;
 };
-
-
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-void LoadModel( char *FileName, DX11_MODEL *Model );
-void UnloadModel( DX11_MODEL *Model );
-void DrawModel(DX11_MODEL *Model, XMMATRIX* mtx, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
-void DrawModel(DX11_MODEL *Model, SRT* srt, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
-void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** Texture = NULL, MATERIAL* pMaterial = NULL);
-void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMaterial = NULL);
+void LoadModel(char *FileName, DX11_MODEL *Model);
+void UnloadModel(DX11_MODEL *Model);
+
+void DrawModel(MODEL_LABEL* model, XMMATRIX* mtx, MATERIAL* pMaterial = NULL);
+void DrawModel(MODEL_LABEL* model, SRT* srt, MATERIAL* pMaterial = NULL);
+void DrawModel(MODEL_LABEL* model, MATERIAL* pMaterial = NULL);
+
+void DrawModel(MODEL_LABEL* model, XMMATRIX* mtx, TEXTURE_LABEL pTexture, MATERIAL* pMaterial = NULL);
+void DrawModel(MODEL_LABEL* model, SRT* srt, TEXTURE_LABEL pTexture, MATERIAL* pMaterial = NULL);
+void DrawModel(MODEL_LABEL* model, TEXTURE_LABEL pTexture, MATERIAL* pMaterial = NULL);
+
+//void DrawModel(MODEL_LABEL *model, XMMATRIX* mtx, ID3D11ShaderResourceView** pTexture = NULL, MATERIAL* pMaterial = NULL);
+//void DrawModel(MODEL_LABEL *model, SRT* srt, ID3D11ShaderResourceView** pTexture = NULL, MATERIAL* pMaterial = NULL);
+//void DrawModel(MODEL_LABEL *model, ID3D11ShaderResourceView** pTexture = NULL, MATERIAL* pMaterial = NULL);
+void DrawModelInstanced(MODEL_LABEL* model, int instanceCount, MATERIAL* pMaterial = NULL);
+
+void DrawModel(DX11_MODEL *Model, XMMATRIX* mtx, ID3D11ShaderResourceView** Texture, MATERIAL* pMaterial);
+void DrawModel(DX11_MODEL *Model, SRT* srt, ID3D11ShaderResourceView** Texture, MATERIAL* pMaterial);
+void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** Texture, MATERIAL* pMaterial);
+void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMaterial);
 
 // モデルのマテリアルのディフューズを取得する。Max16個分にしてある
 void GetModelDiffuse(DX11_MODEL *Model, XMFLOAT4 *diffuse);

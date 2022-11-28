@@ -1,520 +1,342 @@
-////=============================================================================
-////
-//// ï¿½`ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½ï¿½Êï¿½ï¿½ï¿½ [start.cpp]
-//// Author : ï¿½ï¿½ï¿½] ï¿½Ä‘ï¿½
-////
-////=============================================================================
+//=============================================================================
+//
+// ƒXƒ^[ƒg‰æ–Ê [start.cpp]
+// Author : ƒTƒ“
+//
+//=============================================================================
 #include "main.h"
 #include "renderer.h"
 #include "texture2d.h"
 #include "start.h"
 #include "fade.h"
 #include "input.h"
-#include "model.h"
-//
-////*****************************************************************************
-//// ï¿½}ï¿½Nï¿½ï¿½ï¿½ï¿½`
-////*****************************************************************************
-#define TEXTURE_WIDTH				(SCREEN_WIDTH)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// ï¿½wï¿½iï¿½Tï¿½Cï¿½Yï¿½c
+#include "sound.h"
+#include "title.h"
 
-#define TEXTURE_WIDTH_MENU			(1340)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT_MENU			(1080)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
+//*****************************************************************************
+// ƒ}ƒNƒ’è‹`
+//*****************************************************************************
+#define MENU_H			(111)		// ƒƒjƒ…[•¶š‚‚³
+#define TEXT_H			( 61)		// ƒƒjƒ…[Ú×•¶‚‚³
+#define MENU_BW			(150)		// ƒƒjƒ…[sŠÔ
+//#define ANIM_SMALL		(0.05f)		// ƒƒjƒ…[‚ª‘å‚«‚­‚È‚é”{—¦
+#define ANIM_SCALING	(0.1f)		// ƒƒjƒ…[‚ª‘å‚«‚­‚È‚é”{—¦
+#define ANIM_ALPHA		(0.1f)		// ƒƒjƒ…[‚ªF‚Ã‚­ƒXƒs[ƒh
+#define ANIM_SLIDE		(80.0f)		// ƒƒjƒ…[‚ªƒXƒ‰ƒCƒh‚µ‚Ä‚­‚éƒXƒs[ƒh
 
-#define TEXTURE_WIDTH_MENU_LINE		(601)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT_MENU_LINE	(1080)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
+// ƒƒjƒ…[‚Ìí—Ş
+enum {
+	MENU_START = 0,
+	MENU_OPTION,
+	MENU_GALLERY,
+	MENU_CREDIT,
+	MENU_QUIT,
 
-#define TEXTURE_WIDTH_START			(282)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_WIDTH_START_JP		(217)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
+	MENU_NUM,
+};
 
-#define TEXTURE_HEIGHT_MENUALL		(111)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
-#define TEXTURE_HEIGHT_MENUALL_JP	( 61)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½c
+// ƒƒjƒ…[•”•i‚Ìí—Ş
+enum {
+	MENU_TEX_WHITE = 0,
+	MENU_TEX_GREEN,
+	MENU_TEX_TEXT,
+	MENU_TEX_PANNEL,
 
-#define TEXTURE_WIDTH_OPTION		(368)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_WIDTH_OPTION_JP		(293)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
+	MENU_TEX_NUM,
+};
 
-#define TEXTURE_WIDTH_GALLERY		(416)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_WIDTH_GALLERY_JP	(399)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-
-#define TEXTURE_WIDTH_CREDIT		(335)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_WIDTH_CREDIT_JP		(335)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-
-#define TEXTURE_WIDTH_QUIT			(227)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_WIDTH_QUIT_JP		(121)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-
-#define TEXTURE_WIDTH_MENUPANNEL	(1273)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-#define TEXTURE_HEIGHT_MENUPANNEL	(1080)			// ï¿½ï¿½ï¿½Sï¿½Tï¿½Cï¿½Yï¿½ï¿½
-
-#define MENU_Y						(150.0f)
-
-#define TEAMLOGO_TIME				(100)			// ï¿½ï¿½ï¿½Sï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-//
-////*****************************************************************************
-//// ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
-////*****************************************************************************
-static int				g_Time = 0;
-static BOOL				g_Load = FALSE;
-static BOOL				IsMenuMove = FALSE;
-static int MenuPannelNum;
-static int MenuNum;
-static int MenuJp;
-
-
-//// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç—ï¿½
-enum
-{
-	TEXTURE_BG = 0,
+// ƒƒjƒ…[ƒeƒNƒXƒ`ƒƒ–¼
+enum {
+	TEXTURE_STAR = 0,
 	TEXTURE_MENUBOARD,
 	TEXTURE_MENU_LINE,
-	TEXTURE_STAR,
+
 	TEXTURE_START,
-	TEXTURE_OPTION,
-	TEXTURE_GALLERY,
-	TEXTURE_CREDIT,
-	TEXTURE_QUIT,
 	TEXTURE_START_01,
-	TEXTURE_OPTION_01,
-	TEXTURE_GALLERY_01,
-	TEXTURE_CREDIT_01,
-	TEXTURE_QUIT_01,
 	TEXTURE_START_JP,
-	TEXTURE_OPTION_JP,
-	TEXTURE_GALLERY_JP,
-	TEXTURE_CREDIT_JP,
-	TEXTURE_QUIT_JP,
 	TEXTURE_MENU_PANNEL_01,
+
+	TEXTURE_OPTION,
+	TEXTURE_OPTION_01,
+	TEXTURE_OPTION_JP,
 	TEXTURE_MENU_PANNEL_02,
+
+	TEXTURE_GALLERY,
+	TEXTURE_GALLERY_01,
+	TEXTURE_GALLERY_JP,
 	TEXTURE_MENU_PANNEL_03,
+
+	TEXTURE_CREDIT,
+	TEXTURE_CREDIT_01,
+	TEXTURE_CREDIT_JP,
 	TEXTURE_MENU_PANNEL_04,
+
+	TEXTURE_QUIT,
+	TEXTURE_QUIT_01,
+	TEXTURE_QUIT_JP,
 	TEXTURE_MENU_PANNEL_05,
-	TEXTURE_MENU_DISPLAY,
-	TEXTURE_MENU_JP,
+
+	TEXTURE_BG,
 	TEXTURE_MAX,
-
-};
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½
-static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/white.png",
-	"data/TEXTURE/title_menu_gamen/menu_board.png",
-	"data/TEXTURE/title_menu_gamen/menu_line.png",
-	"data/MODEL/star1.jpg",
-	"data/TEXTURE/title_menu_gamen/start_1.png",
-	"data/TEXTURE/title_menu_gamen/option_1.png",
-	"data/TEXTURE/title_menu_gamen/gallery_1.png",
-	"data/TEXTURE/title_menu_gamen/credit_1.png",
-	"data/TEXTURE/title_menu_gamen/quit_1.png",
-	"data/TEXTURE/title_menu_gamen/start_2.png",
-	"data/TEXTURE/title_menu_gamen/option_2.png",
-	"data/TEXTURE/title_menu_gamen/gallery_2.png",
-	"data/TEXTURE/title_menu_gamen/credit_2.png",
-	"data/TEXTURE/title_menu_gamen/quit_2.png",
-	"data/TEXTURE/title_menu_gamen/start_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/option_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/gallery_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/credit_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/quit_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/menupannel_1.png",
-	"data/TEXTURE/title_menu_gamen/menupannel_2.png",
-	"data/TEXTURE/title_menu_gamen/menupannel_3.png",
-	"data/TEXTURE/title_menu_gamen/menupannel_4.png",
-	"data/TEXTURE/title_menu_gamen/menupannel_5.png",
 };
 
-enum {
-	MODEL_STAR = 0,
-	MODEL_EARTH,
-	MODEL_ROCKET,
-	MODEL_MAX,
-};
+//*****************************************************************************
+// ƒOƒ[ƒoƒ‹•Ï”
+//*****************************************************************************
+static int				g_Menu = MENU_START;			// ‘I‘ğ‚³‚ê‚Ä‚¢‚éƒƒjƒ…[ŠÇ——p
+static TEXTURE2D_DESC	g_td[TEXTURE_MAX];				// UIŠÇ——p
+static float			g_AnimScl = 0.0f;				// ƒAƒjƒ[ƒVƒ‡ƒ“ŠÇ——p
+static float			g_AnimAlpha = 0.0f;				// ƒAƒjƒ[ƒVƒ‡ƒ“ŠÇ——p
+static float			g_AnimSlide = -SCREEN_WIDTH;	// ƒAƒjƒ[ƒVƒ‡ƒ“ŠÇ——p
+static BOOL				g_Load = FALSE;
+static BOOL				g_bStartOn = FALSE;
+static BOOL				g_bStartFlg = FALSE;
+static BOOL				g_bStartOffFlg = FALSE;
 
-static MODEL_DATA	g_Model[MODEL_MAX];	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Ç—ï¿½
-////=============================================================================
-//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-////=============================================================================
+//*****************************************************************************
+// ƒ[ƒJƒ‹ŠÖ”
+//*****************************************************************************
+// ƒƒjƒ…[‚Ìí—Ş‚Æ•”•i–¼‚©‚çƒeƒNƒXƒ`ƒƒ–¼‚ğæ“¾
+int GetTexNo(int menu_tex) {
+	return TEXTURE_START + MENU_TEX_NUM * g_Menu + menu_tex;
+}
+// ƒpƒlƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+void PannelAnim(void) {
+	g_td[GetTexNo(MENU_TEX_PANNEL)].scl.y = g_AnimScl;
+	g_td[GetTexNo(MENU_TEX_PANNEL)].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
+	g_td[GetTexNo(MENU_TEX_PANNEL)].uv_pos.vh = g_AnimScl;
+
+	g_td[GetTexNo(MENU_TEX_GREEN)].scl.y = g_AnimScl;
+	g_td[GetTexNo(MENU_TEX_GREEN)].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
+	g_td[GetTexNo(MENU_TEX_GREEN)].uv_pos.vh = g_AnimScl;
+}
+
+//=============================================================================
+// ‰Šú‰»ˆ—
+//=============================================================================
 HRESULT InitStart(void)
 {
-	MenuPannelNum = TEXTURE_MENU_PANNEL_01;
-	MenuNum = TEXTURE_START_01;
-	MenuJp = TEXTURE_START_JP;
+	// UIİ’è ///////////////////////
 
-	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-		g_td[i].tex = &g_Texture[i];
+	// ˆêŠ‡İ’è
+	for (int i = 0; i < TEXTURE_MAX; i++) {
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_STAR + i);
+		g_td[i].ctrType = CENTER_LEFTTOP;
+		g_td[i].posType = POSITION_ABSOLUTE;
 	}
+	g_td[TEXTURE_BG].tex = TEXTURE_LABEL_WHITE;
+
+	// ƒƒjƒ…[‚Ì“y‘ä
+	g_td[TEXTURE_MENUBOARD].size = { 1340.0f, SCREEN_HEIGHT };
+	g_td[TEXTURE_MENUBOARD].pos = { 0.0f, 0.0f };
+
+	// ƒƒjƒ…[ü‚è
+	g_td[TEXTURE_MENU_LINE].size = { 601.0f, SCREEN_HEIGHT };
+	g_td[TEXTURE_MENU_LINE].pos = { 677.5f, 0.0f };
+
+	// ƒƒjƒ…[
+	for (int i = 0; i < MENU_NUM; i++) {
+		g_td[i * MENU_TEX_NUM + TEXTURE_START_01].pos = g_td[i * MENU_TEX_NUM + TEXTURE_START].pos = { 200.0f, MENU_BW * (float)(i + 1) };
+
+		g_td[i * MENU_TEX_NUM + TEXTURE_MENU_PANNEL_01].pos = { 0.0f, MENU_BW * (float)(i + 1) - 8.0f };
+		g_td[i * MENU_TEX_NUM + TEXTURE_MENU_PANNEL_01].size = { 1273.0f, 125.0f };
+
+		g_td[i * MENU_TEX_NUM + TEXTURE_START_JP].posType = POSITION_RELATIVE;
+		g_td[i * MENU_TEX_NUM + TEXTURE_START_JP].pos = { -SCREEN_CENTER_X + 200.0f, SCREEN_CENTER_Y - TEXT_H * 1.75f };
+	}
+	g_td[TEXTURE_START_01].size = g_td[TEXTURE_START].size = { 282.0f, MENU_H };
+	g_td[TEXTURE_OPTION_01].size = g_td[TEXTURE_OPTION].size = { 368.0f, MENU_H };
+	g_td[TEXTURE_GALLERY_01].size = g_td[TEXTURE_GALLERY].size = { 416.0f, MENU_H };
+	g_td[TEXTURE_CREDIT_01].size = g_td[TEXTURE_CREDIT].size = { 335.0f, MENU_H };
+	g_td[TEXTURE_QUIT_01].size = g_td[TEXTURE_QUIT].size = { 227.0f, MENU_H };
+
+	g_td[TEXTURE_START_JP].size = { 217.0f, TEXT_H };
+	g_td[TEXTURE_OPTION_JP].size = { 293.0f, TEXT_H };
+	g_td[TEXTURE_GALLERY_JP].size = { 399.0f, TEXT_H };
+	g_td[TEXTURE_CREDIT_JP].size = { 600.0f, TEXT_H };
+	g_td[TEXTURE_QUIT_JP].size = { 121.0f, TEXT_H };
 
 
-	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_STAR].model);
-	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH].model);
-	LoadModel("data/MODEL/titleRocket01.obj", &g_Model[MODEL_ROCKET].model);
-
-	g_td[TEXTURE_MENUBOARD].size = { TEXTURE_WIDTH_MENU, TEXTURE_HEIGHT_MENU };
-	g_td[TEXTURE_MENUBOARD].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENUBOARD].pos = { -TEXTURE_WIDTH_MENU, 0.0f };
-	g_td[TEXTURE_MENUBOARD].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_MENUBOARD].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENUBOARD].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_MENU_LINE].size = { TEXTURE_WIDTH_MENU_LINE, TEXTURE_HEIGHT_MENU_LINE };
-	g_td[TEXTURE_MENU_LINE].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_LINE].pos = { 680.0f, 0.0f };
-	g_td[TEXTURE_MENU_LINE].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_MENU_LINE].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_LINE].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_START].size = { TEXTURE_WIDTH_START, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_START].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_START].pos = { 200.0f, 160.0f };
-	g_td[TEXTURE_START].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_START].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_START].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_START_01].size = { TEXTURE_WIDTH_START, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_START_01].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_START_01].pos = { 200.0f, 160.0f };
-	g_td[TEXTURE_START_01].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_START_01].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_START_01].posType = POSITION_ABSOLUTE;
-
-
-	g_td[TEXTURE_OPTION].size = { TEXTURE_WIDTH_OPTION, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_OPTION].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_OPTION].pos = { 200.0f, 310.0f };
-	g_td[TEXTURE_OPTION].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_OPTION].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_OPTION].posType = POSITION_ABSOLUTE;
-
-
-
-	g_td[TEXTURE_GALLERY].size = { TEXTURE_WIDTH_GALLERY, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_GALLERY].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_GALLERY].pos = { 200.0f, 460.0f };
-	g_td[TEXTURE_GALLERY].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_GALLERY].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_GALLERY].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_CREDIT].size = { TEXTURE_WIDTH_CREDIT, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_CREDIT].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_CREDIT].pos = { 200.0f, 610.0f };
-	g_td[TEXTURE_CREDIT].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_CREDIT].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_CREDIT].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_QUIT].size = { TEXTURE_WIDTH_QUIT, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_QUIT].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_QUIT].pos = { 200.0f, 760.0f };
-	g_td[TEXTURE_QUIT].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_QUIT].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_QUIT].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_OPTION_01].size = { TEXTURE_WIDTH_OPTION, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_OPTION_01].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_OPTION_01].pos = { 200.0f, 310.0f };
-
-	g_td[TEXTURE_GALLERY_01].size = { TEXTURE_WIDTH_GALLERY, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_GALLERY_01].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_GALLERY_01].pos = { 200.0f, 460.0f };
-
-	g_td[TEXTURE_CREDIT_01].size = { TEXTURE_WIDTH_CREDIT, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_CREDIT_01].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_CREDIT_01].pos = { 200.0f, 610.0f };
-
-	g_td[TEXTURE_QUIT_01].size = { TEXTURE_WIDTH_QUIT, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_QUIT_01].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_QUIT_01].pos = { 200.0f, 760.0f };
-
-	g_td[TEXTURE_START_JP].size = { TEXTURE_WIDTH_START_JP, TEXTURE_HEIGHT_MENUALL_JP };
-	g_td[TEXTURE_START_JP].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_START_JP].pos = { 200.0f, 1000.0f };
-	g_td[TEXTURE_START_JP].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_START_JP].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_START_JP].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_OPTION_JP].size = { TEXTURE_WIDTH_OPTION_JP, TEXTURE_HEIGHT_MENUALL_JP };
-	g_td[TEXTURE_OPTION_JP].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_OPTION_JP].pos = { 200.0f, 1000.0f };
-
-
-	g_td[TEXTURE_GALLERY_JP].size = { TEXTURE_WIDTH_GALLERY_JP, TEXTURE_HEIGHT_MENUALL_JP };
-	g_td[TEXTURE_GALLERY_JP].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_GALLERY_JP].pos = { 200.0f, 1000.0f };
-
-
-	g_td[TEXTURE_CREDIT_JP].size = { TEXTURE_WIDTH_CREDIT_JP, TEXTURE_HEIGHT_MENUALL_JP };
-	g_td[TEXTURE_CREDIT_JP].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_CREDIT_JP].pos = { 200.0f, 1000.0f };
-
-
-	g_td[TEXTURE_QUIT_JP].size = { TEXTURE_WIDTH_QUIT_JP, TEXTURE_HEIGHT_MENUALL_JP };
-	g_td[TEXTURE_QUIT_JP].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_QUIT_JP].pos = { 200.0f, 1000.0f };
-
-
-
-	g_td[TEXTURE_MENU_PANNEL_01].size = { TEXTURE_WIDTH_MENUPANNEL, TEXTURE_HEIGHT_MENUPANNEL };
-	g_td[TEXTURE_MENU_PANNEL_01].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_01].pos = { 0.0f, 0.0f };
-	g_td[TEXTURE_MENU_PANNEL_01].tex = &g_Texture[19];
-	g_td[TEXTURE_MENU_PANNEL_01].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_MENU_PANNEL_01].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_PANNEL_01].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_MENU_PANNEL_02].size = { TEXTURE_WIDTH_MENUPANNEL, TEXTURE_HEIGHT_MENUPANNEL };
-	g_td[TEXTURE_MENU_PANNEL_02].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_02].pos = { 0.0f, 0.0f };
-	g_td[TEXTURE_MENU_PANNEL_02].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_02].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_PANNEL_02].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_MENU_PANNEL_03].size = { TEXTURE_WIDTH_MENUPANNEL, TEXTURE_HEIGHT_MENUPANNEL };
-	g_td[TEXTURE_MENU_PANNEL_03].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_03].pos = { 0.0f, 0.0f };
-	g_td[TEXTURE_MENU_PANNEL_03].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_03].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_PANNEL_03].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_MENU_PANNEL_04].size = { TEXTURE_WIDTH_MENUPANNEL, TEXTURE_HEIGHT_MENUPANNEL };
-	g_td[TEXTURE_MENU_PANNEL_04].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_04].pos = { 0.0f, 0.0f };
-	g_td[TEXTURE_MENU_PANNEL_04].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_04].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_PANNEL_04].posType = POSITION_ABSOLUTE;
-
-	g_td[TEXTURE_MENU_PANNEL_05].size = { TEXTURE_WIDTH_MENUPANNEL, TEXTURE_HEIGHT_MENUPANNEL };
-	g_td[TEXTURE_MENU_PANNEL_05].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_05].pos = { 0.0f, 0.0f };
-	g_td[TEXTURE_MENU_PANNEL_05].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_PANNEL_05].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_PANNEL_05].posType = POSITION_ABSOLUTE;
-
-
-	g_td[TEXTURE_MENU_DISPLAY].tex = g_td[MenuNum].tex;
-	g_td[TEXTURE_MENU_DISPLAY].size = { TEXTURE_WIDTH_START, TEXTURE_HEIGHT_MENUALL };
-	g_td[TEXTURE_MENU_DISPLAY].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_DISPLAY].pos = { 200.0f, 150.0f };
-	g_td[TEXTURE_MENU_DISPLAY].col = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_td[TEXTURE_MENU_DISPLAY].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_DISPLAY].posType = POSITION_ABSOLUTE;
-
-
-	g_td[TEXTURE_MENU_JP].tex = g_td[MenuJp].tex;
-	g_td[TEXTURE_MENU_JP].size = { TEXTURE_WIDTH_START_JP, TEXTURE_HEIGHT_MENUALL_JP };
-	g_td[TEXTURE_MENU_JP].scl = { 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_JP].pos = { 200.0f, 1000.0f };
-	g_td[TEXTURE_MENU_JP].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td[TEXTURE_MENU_JP].ctrType = CENTER_LEFTTOP;
-	g_td[TEXTURE_MENU_JP].posType = POSITION_ABSOLUTE;
-
-
-	g_Model[MODEL_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_EARTH].srt.pos = { 0.0f, 0.0f, 100.0f };
-	g_Model[MODEL_STAR].srt.scl = { 100.0f, 100.0f, 100.0f };
-	g_Model[MODEL_EARTH].srt.scl = { 20.3f, 20.3f, 20.3f };
-	g_Model[MODEL_ROCKET].srt.pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_ROCKET].srt.scl = { 1.1f, 1.1f, 1.1f };
-
-
-	g_Time = 0;
+	// ƒAƒjƒ[ƒVƒ‡ƒ“‰Šúİ’è
+	for (int i = 0; i < TEXTURE_MAX; i++) {
+		g_td[i].pos.x -= SCREEN_WIDTH;
+	}
+	for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) {
+		g_td[i].col.w = g_AnimAlpha;
+	}
+#ifdef ANIM_SMALL
+	g_td[TEXTURE_MENUBOARD].scl = {
+		1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f),
+		1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f)
+	};
+#endif
+	PannelAnim();
 
 	g_Load = TRUE;
 	return S_OK;
 }
 
-////=============================================================================
-//// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-////=============================================================================
+//=============================================================================
+// I—¹ˆ—
+//=============================================================================
 void UninitStart(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
-
 	g_Load = FALSE;
 }
-//
-////=============================================================================
-//// ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½
-////=============================================================================
+
+//=============================================================================
+// XVˆ—
+//=============================================================================
 void UpdateStart(void)
 {
-	static int Timer = TEXTURE_MENU_LINE;
-	static float EndTime = 0.0f;
-
-	if (!IsMenuMove)
+	if (!g_bStartOn)
 	{
-		g_td[TEXTURE_MENUBOARD].pos.x += 40;
-
-		if (g_td[TEXTURE_MENUBOARD].pos.x >= 0)
+		if (g_bStartFlg)
 		{
-			EndTime += 0.2f;
-
-			g_td[TEXTURE_MENUBOARD].pos.x = 0.0f;
-			g_td[TEXTURE_MENU_LINE].col.w = 1.0f;
-
-
-			if (EndTime >= 1.0f)
-			{
-				if (g_td[Timer].col.w == 1.0f)
-				{
-					Timer++;
-				}
-				else
-				{
-					g_td[Timer].col.w = 1.0f;
-					if (Timer == TEXTURE_QUIT)
-					{
-						g_td[TEXTURE_MENU_PANNEL_01].col.w = 1.0f;
-						g_td[TEXTURE_MENU_DISPLAY].col.w = 1.0f;
-
-						IsMenuMove = TRUE;
-					}
-				}
-
-				EndTime = 0.0f;
-
-			}
+			g_bStartFlg = FALSE;
+			g_bStartOn = TRUE;
 		}
+		return;
 	}
 
-	if (GetKeyboardTrigger(DIK_UPARROW))
+	// ‚Ğ‚Á‚±‚İƒAƒjƒ[ƒVƒ‡ƒ“
+	if (g_bStartOffFlg)
 	{
-		if (MenuPannelNum > TEXTURE_MENU_PANNEL_01)
+		if (g_AnimAlpha > 0.0f)
 		{
-			g_td[TEXTURE_MENU_PANNEL_01].tex = &g_Texture[--MenuPannelNum];
-			g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[--MenuNum];
-			g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
-			g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
-			g_td[TEXTURE_MENU_JP].tex = &g_Texture[--MenuJp];
-			g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
-			g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
+			g_AnimAlpha -= ANIM_SCALING;
+			for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) g_td[i].col.w = g_AnimAlpha;
 
-
+#ifdef ANIM_SMALL
+			g_td[TEXTURE_MENUBOARD].scl = {
+				1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f),
+				1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f)
+			};
+#endif
+		}
+		else if (g_AnimSlide > -SCREEN_WIDTH)
+		{
+			g_AnimSlide -= ANIM_SLIDE;
+			for (int i = 0; i < TEXTURE_MAX; i++) g_td[i].pos.x -= ANIM_SLIDE;
+			PannelAnim();
+			SetTitleAlpha(-g_AnimSlide / SCREEN_WIDTH);
 		}
 		else
 		{
-			MenuPannelNum = TEXTURE_MENU_PANNEL_05;
-			MenuNum = TEXTURE_QUIT_01;
-			MenuJp = TEXTURE_QUIT_JP;
-			g_td[TEXTURE_MENU_PANNEL_01].tex = &g_Texture[MenuPannelNum];
-			g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[MenuNum];
-			g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
-			g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
-			g_td[TEXTURE_MENU_JP].tex = &g_Texture[MenuJp];
-			g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
-			g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
-
-
+			g_bStartOn = FALSE;
+			g_bStartOffFlg = FALSE;
 		}
-
-
+		return;
 	}
-	else if (GetKeyboardTrigger(DIK_DOWNARROW))
+
+	// ‚Æ‚Ñ‚¾‚µƒAƒjƒ[ƒVƒ‡ƒ“
+	if (g_AnimSlide < 0.0f)
 	{
-		if (MenuPannelNum < TEXTURE_MENU_PANNEL_05)
-		{
-			g_td[TEXTURE_MENU_PANNEL_01].tex = &g_Texture[++MenuPannelNum];
-			g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[++MenuNum];
-			g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
-			g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
-			g_td[TEXTURE_MENU_JP].tex = &g_Texture[++MenuJp];
-			g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
-			g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
-
+		g_AnimSlide += ANIM_SLIDE;
+		for (int i = 0; i < TEXTURE_MAX; i++) {
+			g_td[i].pos.x += ANIM_SLIDE;
 		}
-		else
-		{
-			MenuPannelNum = TEXTURE_MENU_PANNEL_01;
-			MenuNum = TEXTURE_START_01;
-			MenuJp = TEXTURE_START_JP;
-			g_td[TEXTURE_MENU_PANNEL_01].tex = &g_Texture[MenuPannelNum];
-			g_td[TEXTURE_MENU_DISPLAY].tex = &g_Texture[MenuNum];
-			g_td[TEXTURE_MENU_DISPLAY].size = g_td[MenuNum].size;
-			g_td[TEXTURE_MENU_DISPLAY].pos = g_td[MenuNum].pos;
-			g_td[TEXTURE_MENU_JP].tex = &g_Texture[MenuJp];
-			g_td[TEXTURE_MENU_JP].size = g_td[MenuJp].size;
-			g_td[TEXTURE_MENU_JP].pos = g_td[MenuJp].pos;
-
-		}
-
+		PannelAnim();
+		SetTitleAlpha(-g_AnimSlide / SCREEN_WIDTH);
 	}
+	else if (g_AnimAlpha < 1.0f)
+	{
+		g_AnimAlpha += ANIM_ALPHA;
+		for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) g_td[i].col.w = g_AnimAlpha;
+
+#ifdef ANIM_SMALL
+		g_td[TEXTURE_MENUBOARD].scl = {
+			1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f),
+			1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f)
+		};
+#endif
+		// ƒoƒ‰ƒoƒ‰‚ÉF‚ª•t‚­
+		//g_td[TEXTURE_MENU_LINE].col.w = g_AnimAlpha;
+		//for (int i = 0; i < MENU_NUM; i++) {
+		//	g_td[i * MENU_TEX_NUM + TEXTURE_START].col.w = g_AnimAlpha - (float)i * 0.25f;
+		//}
+	}
+	else if (g_AnimScl < 1.0f)
+	{
+		g_AnimScl += ANIM_SCALING;
+		PannelAnim();
+	}
+
+	if (GetKeyboardTrigger(DIK_BACK)) {
+		g_bStartOffFlg = TRUE;
+	}
+
+	if (GetKeyboardTrigger(DIK_UPARROW)) {
+		g_Menu = (g_Menu + MENU_NUM - 1) % MENU_NUM;
+		g_AnimScl = 0.0f;
+		PannelAnim();
+	}
+	if (GetKeyboardTrigger(DIK_DOWNARROW)) {
+		g_Menu = (g_Menu + 1) % MENU_NUM;
+		g_AnimScl = 0.0f;
+		PannelAnim();
+	}
+
 
 	if (GetKeyboardTrigger(DIK_RETURN))
 	{
-		switch (MenuPannelNum)
+		switch (g_Menu)
 		{
-		case TEXTURE_MENU_PANNEL_01:
+		case MENU_START:
 			SetFade(FADE_OUT, MODE_GAME); // game
 			break;
-		case TEXTURE_MENU_PANNEL_02:
+
+		case MENU_OPTION:
 			//SetMode(); //option
 			break;
-		case TEXTURE_MENU_PANNEL_03:
+
+		case MENU_GALLERY:
 			//SetMode(); //gallary
 			break;
-		case TEXTURE_MENU_PANNEL_04:
+
+		case MENU_CREDIT:
 			//SetMode(); //credit
 			break;
-		case TEXTURE_MENU_PANNEL_05:
+
+		case MENU_QUIT:
 			exit(-1); //quit
 			break;
 		}
 	}
-
-
-	g_Model[MODEL_EARTH].srt.rot.y -= 0.01f;
-	g_Model[MODEL_ROCKET].srt.rot.y += 0.03f;
-
 }
-////=============================================================================
-//// ï¿½`ï¿½æˆï¿½ï¿½
-////=============================================================================
+
+//=============================================================================
+// 
+//=============================================================================
 void DrawStart(void)
 {
-	SetDrawNoLighting();
+	if (!g_bStartOn) return;
 
-	SetCullingMode(CULL_MODE_NONE);
+	DrawTexture2D(&g_td[TEXTURE_MENUBOARD], FALSE);	// ƒƒjƒ…[”wŒi
+	DrawTexture2D(&g_td[TEXTURE_MENU_LINE], FALSE);	// ƒƒjƒ…[Ú×”wŒi
 
-	XMMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
+	DrawTexture2D(&g_td[TEXTURE_START], FALSE);		// ƒXƒ^[ƒg
+	DrawTexture2D(&g_td[TEXTURE_OPTION], FALSE);	// ƒIƒvƒVƒ‡ƒ“
+	DrawTexture2D(&g_td[TEXTURE_GALLERY], FALSE);	// ƒMƒƒƒ‰ƒŠ[
+	DrawTexture2D(&g_td[TEXTURE_CREDIT], FALSE);	// ƒNƒŒƒWƒbƒg
+	DrawTexture2D(&g_td[TEXTURE_QUIT], FALSE);		// ‘Şo
 
-	for (int testNo = 0; testNo < MODEL_MAX; testNo++)
-	{
+	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_PANNEL)], FALSE, TRUE);	// ƒƒjƒ…[ƒpƒlƒ‹
+	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_GREEN)], TRUE, TRUE);		// ƒƒjƒ…[–¼
+	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_TEXT)], TRUE);			// ƒƒjƒ…[Ú×
+}
 
-		MATERIAL material;
+void PressedAnyButton(void) {
+	if (g_bStartOn) return;
 
-		// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
-		if (testNo != MODEL_STAR)
-		{
-			//DrawModel(&g_Model[testNo].model, NULL, &material);
-			DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, NULL, &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
-		}
-		else
-		{
-			//DrawModel(&g_Model[testNo].model, &g_Texture[TEXTURE_STAR], &material);
-			DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, &g_Texture[TEXTURE_STAR], &material);	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
-		}
-	}
+	g_bStartFlg = TRUE;
+	g_AnimScl = 0.0f;
+	g_AnimAlpha = 0.0f;
+	g_AnimSlide = -SCREEN_WIDTH;
 
-	SetCullingMode(CULL_MODE_BACK);
-	//SetDraw2DTexture();
-	DrawTexture2D(&g_td[TEXTURE_MENUBOARD], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_MENU_LINE], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_START], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_OPTION], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_GALLERY], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_CREDIT], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_QUIT], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_MENU_PANNEL_01], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_MENU_DISPLAY], FALSE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_MENU_JP], FALSE, TRUE);
-
-
+	for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) g_td[i].col.w = g_AnimAlpha;
+	//StopSound();
+	//PlaySound(SOUND_LABEL_BGM_START);
 }

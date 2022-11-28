@@ -181,9 +181,9 @@ struct UV_POSITION {	// UVç¿ïWç\ë¢ëÃ
 	float vh = 1.0f;
 };
 struct SRT {	// ScaleRotTransç\ë¢ëÃ
-	XMFLOAT3 pos = { 1.0f, 1.0f, 1.0f };
+	XMFLOAT3 scl = { 1.0f, 1.0f, 1.0f };
 	XMFLOAT3 rot = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT3 scl = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
 };
 
 //*****************************************************************************

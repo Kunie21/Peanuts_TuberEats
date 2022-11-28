@@ -46,15 +46,15 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/nowloading.png",
-	"data/TEXTURE/nowloading2.png",
-	"data/TEXTURE/frog_jump_animation.png",
-	"data/TEXTURE/empty_bar.png",
-	"data/TEXTURE/full_bar.png",
-	"data/TEXTURE/loadbg.png",
-};
+//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+//static char*	g_TextureName[TEXTURE_MAX] = {
+//	"data/TEXTURE/nowloading.png",
+//	"data/TEXTURE/nowloading2.png",
+//	"data/TEXTURE/frog_jump_animation.png",
+//	"data/TEXTURE/empty_bar.png",
+//	"data/TEXTURE/full_bar.png",
+//	"data/TEXTURE/loadbg.png",
+//};
 
 // ロード用スレッド
 DWORD WINAPI ThreadFuncLoad(LPVOID pParam)
@@ -68,8 +68,8 @@ void InitLoad(void)
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-		g_td[i].tex = &g_Texture[i];
+		//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_NOWLOADING + i);
 	}
 
 	// 詳細設定

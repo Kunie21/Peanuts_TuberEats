@@ -49,7 +49,8 @@ class GATE
 {
 private:
 	GATE_STATUS					m_Status = GATE_STATUS_OFF;
-	ID3D11ShaderResourceView*	m_Texture[GATE_TEX_MAX] = { NULL };
+	//ID3D11ShaderResourceView*	m_Texture[GATE_TEX_MAX] = { NULL };
+	TEXTURE_LABEL				m_Texture[GATE_TEX_MAX];
 	MODEL_DATA					m_Model;
 	MATERIAL					m_MaterialMonitor;
 	MATERIAL					m_MaterialImage;
@@ -127,22 +128,26 @@ void DrawGate(void)
 // コンストラクタ
 GATE::GATE()
 {
-	char* TextureName[GATE_TEX_MAX] = {
-		"data/TEXTURE/game_UI/countdown_3_2.png",
-		"data/TEXTURE/game_UI/countdown_2_2.png",
-		"data/TEXTURE/game_UI/countdown_1_2.png",
-		"data/TEXTURE/game_UI/go_2.png",
-		"data/TEXTURE/game_UI/go_2.png",
-	};
+	//char* TextureName[GATE_TEX_MAX] = {
+	//	"data/TEXTURE/game_UI/countdown_3_2.png",
+	//	"data/TEXTURE/game_UI/countdown_2_2.png",
+	//	"data/TEXTURE/game_UI/countdown_1_2.png",
+	//	"data/TEXTURE/game_UI/go_2.png",
+	//	"data/TEXTURE/game_UI/go_2.png",
+	//};
 
 	// テクスチャ生成
+	//for (int i = 0; i < GATE_TEX_MAX; i++) {
+	//	D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[i], NULL, NULL, &m_Texture[i], NULL);
+	//}
 	for (int i = 0; i < GATE_TEX_MAX; i++) {
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[i], NULL, NULL, &m_Texture[i], NULL);
+		m_Texture[i] = (TEXTURE_LABEL)(i + TEXTURE_LABEL_COUNTDOWN3);
 	}
 
 	// モデル読み込み
 	{
-		LoadModel("data/MODEL/wall.obj", &m_Model.model);
+		//LoadModel("data/MODEL/wall.obj", &m_Model.model);
+		m_Model.model = MODEL_GATE;
 
 		m_Model.srt.pos = { 0.0f, 0.0f, m_Pos };
 		m_Model.srt.rot = { 0.0f, 0.0f, 0.0f };
@@ -159,14 +164,14 @@ GATE::GATE()
 
 GATE::~GATE()
 {
-	for (int i = 0; i < GATE_TEX_MAX; i++) {
-		if (m_Texture[i]) {
-			m_Texture[i]->Release();
-			m_Texture[i] = NULL;
-		}
-	}
+	//for (int i = 0; i < GATE_TEX_MAX; i++) {
+	//	if (m_Texture[i]) {
+	//		m_Texture[i]->Release();
+	//		m_Texture[i] = NULL;
+	//	}
+	//}
 	
-	UnloadModel(&m_Model.model);
+	//UnloadModel(&m_Model.model);
 }
 
 void GATE::Update(void)
@@ -222,13 +227,13 @@ void GATE::Draw(void)
 	// 文字表示
 	if (m_Status != GATE_STATUS_ON) {
 		SetDrawLight();
-		DrawModel(&m_Model.model, &m_ImageSRT, &m_Texture[m_ImageNo], &m_MaterialImage);
+		DrawModel(&m_Model.model, &m_ImageSRT, m_Texture[m_ImageNo], &m_MaterialImage);
 	}
 
 	// モニター風エフェクト描画
 	SetCurveBuffer(&m_bCurve);
 	SetDrawMonitor();
-	DrawModel(&m_Model.model, &m_Model.srt, NULL, &m_MaterialMonitor);
+	DrawModel(&m_Model.model, &m_Model.srt, &m_MaterialMonitor);
 
 	SetCullingMode(CULL_MODE_BACK);
 }

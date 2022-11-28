@@ -8,6 +8,7 @@
 #include "main.h"
 #include "model.h"
 #include "camera.h"
+#include "texture2d.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -55,7 +56,32 @@ struct MODEL
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
+DX11_MODEL	g_Model[MODEL_MAX];
+MATERIAL	g_Material;
 
+void InitModel(void)
+{
+	LoadModel("data/MODEL/wall.obj", &g_Model[MODEL_GATE]);
+	LoadModel("data/MODEL/ice_1.obj", &g_Model[MODEL_ICE]);
+	LoadModel("data/MODEL/ring_1.obj", &g_Model[MODEL_RING]);
+	LoadModel("data/MODEL/missile01.obj", &g_Model[MODEL_MISSILE1]);
+	LoadModel("data/MODEL/missile02.obj", &g_Model[MODEL_MISSILE2]);
+	LoadModel("data/MODEL/fire01.obj", &g_Model[MODEL_FIRE]);
+	LoadModel("data/MODEL/rocket01.obj", &g_Model[MODEL_ROCKET1]);
+	LoadModel("data/MODEL/rocket02.obj", &g_Model[MODEL_ROCKET2]);
+	LoadModel("data/MODEL/rocket03.obj", &g_Model[MODEL_ROCKET3]);
+	LoadModel("data/MODEL/rocket04.obj", &g_Model[MODEL_ROCKET4]);
+	LoadModel("data/MODEL/rocket05.obj", &g_Model[MODEL_ROCKET5]);
+	LoadModel("data/MODEL/stage.obj", &g_Model[MODEL_STAGE]);
+	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH]);
+	LoadModel("data/MODEL/titleRocket01.obj", &g_Model[MODEL_TITLEROCKET]);
+}
+void UninitModel(void)
+{
+	for (int i = 0; i < MODEL_MAX; i++) {
+		UnloadModel(&g_Model[i]);
+	}
+}
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -169,6 +195,50 @@ void DrawModel(DX11_MODEL *Model, SRT* srt, ID3D11ShaderResourceView** pTexture,
 	if (srt) { SetWorldBuffer(*srt); }	// ワールドバッファの設定
 	DrawModel(Model, pTexture, pMaterial);
 }
+
+void DrawModel(MODEL_LABEL* model, XMMATRIX* mtx, MATERIAL* pMaterial)
+{
+	DrawModel(&g_Model[*model], mtx, NULL, pMaterial);
+}
+void DrawModel(MODEL_LABEL* model, SRT* srt, MATERIAL* pMaterial)
+{
+	DrawModel(&g_Model[*model], srt, NULL, pMaterial);
+}
+void DrawModel(MODEL_LABEL * model, MATERIAL* pMaterial)
+{
+	DrawModel(&g_Model[*model], NULL, pMaterial);
+}
+
+void DrawModel(MODEL_LABEL* model, XMMATRIX* mtx, TEXTURE_LABEL pTexture, MATERIAL* pMaterial)
+{
+	DrawModel(&g_Model[*model], mtx, GetTexture(pTexture), pMaterial);
+}
+void DrawModel(MODEL_LABEL* model, SRT* srt, TEXTURE_LABEL pTexture, MATERIAL* pMaterial)
+{
+	DrawModel(&g_Model[*model], srt, GetTexture(pTexture), pMaterial);
+}
+void DrawModel(MODEL_LABEL* model, TEXTURE_LABEL pTexture, MATERIAL* pMaterial)
+{
+	DrawModel(&g_Model[*model], GetTexture(pTexture), pMaterial);
+}
+
+//void DrawModel(MODEL_LABEL* model, XMMATRIX* mtx, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
+//{
+//	DrawModel(&g_Model[*model], mtx, pTexture, pMaterial);
+//}
+//void DrawModel(MODEL_LABEL* model, SRT* srt, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
+//{
+//	DrawModel(&g_Model[*model], srt, pTexture, pMaterial);
+//}
+//void DrawModel(MODEL_LABEL* model, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
+//{
+//	DrawModel(&g_Model[*model], pTexture, pMaterial);
+//}
+void DrawModelInstanced(MODEL_LABEL* model, int instanceCount, MATERIAL* pMaterial)
+{
+	DrawModelInstanced(&g_Model[*model], instanceCount, pMaterial);
+}
+
 void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL* pMaterial)
 {
 	// デバイス取得
@@ -192,7 +262,8 @@ void DrawModel(DX11_MODEL *Model, ID3D11ShaderResourceView** pTexture, MATERIAL*
 			SetMaterialBuffer(pMaterial);
 		}
 		else {
-			SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
+			SetMaterialBuffer(&g_Material);
+			//SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
 		}
 
 		// テクスチャ設定
@@ -232,7 +303,8 @@ void DrawModelInstanced(DX11_MODEL *Model, int instanceCount, MATERIAL* pMateria
 			SetMaterialBuffer(pMaterial);
 		}
 		else {
-			SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
+			SetMaterialBuffer(&g_Material);
+			//SetMaterialBuffer(&Model->SubsetArray[i].Material.Material);
 		}
 
 		// テクスチャ設定
@@ -643,8 +715,6 @@ void SetModelDiffuse(DX11_MODEL *Model, int mno, XMFLOAT4 diffuse)
 	// ディフューズ設定
 	Model->SubsetArray[mno].Material.Material.Diffuse = diffuse;
 }
-
-
 
 
 

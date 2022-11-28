@@ -802,14 +802,14 @@ void SetBGM(MODE_LABEL mode)
 	case MODE_LOADING:
 		break;
 
-	case MODE_TITLE:
+	case MODE_TITLE_START:
 		SOUND_LABEL_BGM_TITLE,			// ƒ^ƒCƒgƒ‹
 			PlaySound(SOUND_LABEL_BGM_TITLE);
 		break;
 
-	case MODE_START:
-		PlaySound(SOUND_LABEL_BGM_START);
-		break;
+	//case MODE_START:
+	//	PlaySound(SOUND_LABEL_BGM_START);
+	//	break;
 
 	case MODE_HOME:
 		PlaySound(SOUND_LABEL_BGM_HOME);

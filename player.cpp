@@ -30,29 +30,16 @@
 //*****************************************************************************
 static BOOL				g_Load = FALSE;
 
-// テクスチャ管理
 enum {
-	TEXTURE_TEAMLOGO = 0,
-	//TEXTURE_STAR,
-	TEXTURE_MAX,
+	MODEL_PLAYER_ROCKET1 = 0,
+	MODEL_PLAYER_ROCKET2,
+	MODEL_PLAYER_ROCKET3,
+	MODEL_PLAYER_ROCKET4,
+	MODEL_PLAYER_ROCKET5,
+	MODEL_PLAYER_FIRE,
+	MODEL_PLAYER_MAX,
 };
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/blueberry_.png",
-	//"data/MODEL/star1.jpg",
-};
-
-enum {
-	MODEL_ROCKET1 = 0,
-	MODEL_ROCKET2,
-	MODEL_ROCKET3,
-	MODEL_ROCKET4,
-	MODEL_ROCKET5,
-	MODEL_FIRE,
-	MODEL_MAX,
-};
-static MODEL_DATA	g_Model[MODEL_MAX];	// プレイヤーのモデル管理
+static MODEL_DATA	g_Model[MODEL_PLAYER_MAX];	// プレイヤーのモデル管理
 
 
 static float		g_Rotation = 0.0f;
@@ -146,35 +133,32 @@ static CURVE_BUFFER curveTest;
 //=============================================================================
 HRESULT InitPlayer(void)
 {
-	// テクスチャ生成
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-		g_td[i].tex = &g_Texture[i];
-	}
 
 	//for (int i = 0; i < MODEL_MAX; i++)
 	{
 		//LoadModel("data/MODEL/earth01_sv.obj", &g_Model[0].model);
 		//LoadModel("data/MODEL/earth01_adj.obj", &g_Model[0].model);
 		//LoadModel("data/MODEL/square2.obj", &g_Model[0].model);
-		LoadModel("data/MODEL/rocket01.obj", &g_Model[0].model);
-		LoadModel("data/MODEL/rocket02.obj", &g_Model[1].model);
-		LoadModel("data/MODEL/rocket03.obj", &g_Model[2].model);
-		LoadModel("data/MODEL/rocket04.obj", &g_Model[3].model);
-		LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
-		LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
-		for (int i = 0; i < MODEL_MAX; i++) {
+
+		//LoadModel("data/MODEL/rocket01.obj", &g_Model[0].model);
+		//LoadModel("data/MODEL/rocket02.obj", &g_Model[1].model);
+		//LoadModel("data/MODEL/rocket03.obj", &g_Model[2].model);
+		//LoadModel("data/MODEL/rocket04.obj", &g_Model[3].model);
+		//LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
+		//LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
+		g_Model[0].model = MODEL_ROCKET1;
+		g_Model[1].model = MODEL_ROCKET2;
+		g_Model[2].model = MODEL_ROCKET3;
+		g_Model[3].model = MODEL_ROCKET4;
+		g_Model[4].model = MODEL_ROCKET5;
+		g_Model[5].model = MODEL_FIRE;
+		for (int i = 0; i < MODEL_PLAYER_MAX; i++) {
 			g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
 			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
 			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
-			//g_Model[i].srt.scl = { 3.3f, 3.3f, 3.3f };
 		}
-		g_Model[MODEL_FIRE].srt.pos.z = -30.0f;
+		g_Model[MODEL_PLAYER_FIRE].srt.pos.z = -30.0f;
 	}
-
-	// 詳細設定
-	//g_td[TEXTURE_TEAMLOGO].tex = &g_Texture[TEXTURE_TEAMLOGO];
 
 	g_Load = TRUE;
 	return S_OK;
@@ -187,14 +171,8 @@ void UninitPlayer(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < TEXTURE_MAX; i++) {
-		if (g_Texture[i]) {
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
 
-	for (int i = 0; i < MODEL_MAX; i++) { UnloadModel(&g_Model[i].model); }
+	//for (int i = 0; i < MODEL_MAX; i++) { UnloadModel(&g_Model[i].model); }
 
 	g_Load = FALSE;
 }
@@ -242,7 +220,8 @@ void UpdatePlayer(void)
 	if (GetKeyboardPress(DIK_G)) { curveTest.Angle.y -= 0.005f; }
 	if (GetKeyboardPress(DIK_H)) { curveTest.Angle.x += 0.005f; }
 	if (GetKeyboardPress(DIK_J)) { curveTest.Angle.x -= 0.005f; }
-	curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
+	//curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
+	curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z;
 	curveTest.Spd = g_Rocket.GetSpeed();
 	SetCurveBuffer(&curveTest);
 	
@@ -284,8 +263,7 @@ void UpdatePlayer(void)
 //=============================================================================
 void DrawPlayer(void) {
 	SetCullingMode(CULL_MODE_NONE);
-	MATERIAL material;
-	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, NULL, &material);	// モデル描画
+	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt);	// モデル描画
 	SetCullingMode(CULL_MODE_BACK);
 }
 
@@ -297,31 +275,25 @@ void DrawPlayerResult(void) {
 	srt.pos = { 0.0f, 0.0f ,0.0f };
 	srt.rot = g_Model[testNo].srt.rot;
 
-	DrawModel(&g_Model[testNo].model, &srt, NULL, &material);	// モデル描画
+	DrawModel(&g_Model[testNo].model, &srt, &material);	// モデル描画
 	SetCullingMode(CULL_MODE_BACK);
 }
 
 void DrawFire(void) {
-	g_Model[MODEL_FIRE].srt.scl.x = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
-	g_Model[MODEL_FIRE].srt.scl.y = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
-	g_Model[MODEL_FIRE].srt.scl.z = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
-	MATERIAL material;
-	material.Shininess = 1.0f;
-	material.Diffuse.w = 1.0f;
-	DrawModel(&g_Model[MODEL_FIRE].model, &g_Model[MODEL_FIRE].srt, NULL, &material);	// モデル描画
+	g_Model[MODEL_PLAYER_FIRE].srt.scl.x = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
+	g_Model[MODEL_PLAYER_FIRE].srt.scl.y = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
+	g_Model[MODEL_PLAYER_FIRE].srt.scl.z = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
+	DrawModel(&g_Model[MODEL_PLAYER_FIRE].model, &g_Model[MODEL_PLAYER_FIRE].srt);	// モデル描画
 }
 
 void DrawFireResult(void) {
-	MATERIAL material;
-	material.Shininess = 1.0f;
-	material.Diffuse.w = 1.0f;
 	SRT srt;
 	srt.scl.x = (float)(rand() % 10) * 0.01f + 1.0f;
 	srt.scl.y = (float)(rand() % 10) * 0.01f + 1.0f;
 	srt.scl.z = (float)(rand() % 10) * 0.01f + 1.0f;
 	srt.pos = { 0.0f, 0.0f , -70.0f };
 	srt.rot = g_Model[testNo].srt.rot;
-	DrawModel(&g_Model[MODEL_FIRE].model, &srt, NULL, &material);	// モデル描画
+	DrawModel(&g_Model[MODEL_PLAYER_FIRE].model, &srt);	// モデル描画
 }
 
 float GetPlayerSpeed(void) {

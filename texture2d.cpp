@@ -17,9 +17,150 @@ static BOOL							g_Load = FALSE;
 
 static INSTANCE						g_Instance;
 static int							g_InstenceCount = 0;
-static ID3D11ShaderResourceView**	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
-
+//static ID3D11ShaderResourceView**	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
+static TEXTURE_LABEL	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_LABEL_MAX];
 //#define NO_INSTANCING	// インスタンシングしないバージョン
+
+static char* TextureName[TEXTURE_LABEL_MAX] = {
+
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/peanuts_bg_1.png",
+
+	"data/TEXTURE/nowloading.png",
+	"data/TEXTURE/nowloading2.png",
+	"data/TEXTURE/frog_jump_animation.png",
+	"data/TEXTURE/empty_bar.png",
+	"data/TEXTURE/full_bar.png",
+	"data/TEXTURE/loadbg.png",
+
+	"data/TEXTURE/game_UI/countdown_3_2.png",
+	"data/TEXTURE/game_UI/countdown_2_2.png",
+	"data/TEXTURE/game_UI/countdown_1_2.png",
+	"data/TEXTURE/game_UI/go_2.png",
+	"data/TEXTURE/game_UI/go_2.png",
+	"data/TEXTURE/particle.jpg",
+
+	"data/TEXTURE/tube21.jpg",
+
+	"data/TEXTURE/game_UI/fuel_empty.png",
+	"data/TEXTURE/game_UI/fuel_font.png",
+	"data/TEXTURE/game_UI/fuel_full.png",
+	"data/TEXTURE/game_UI/goalpin_UI.png",
+	"data/TEXTURE/game_UI/icon_UI.png",
+	"data/TEXTURE/game_UI/map_UI.png",
+	"data/TEXTURE/game_UI/rocket_map.png",
+	"data/TEXTURE/game_UI/speed_empty.png",
+	"data/TEXTURE/game_UI/speed_font.png",
+	"data/TEXTURE/game_UI/speed_gauge.png",
+	"data/TEXTURE/game_UI/timer_backdrop.png",
+	"data/TEXTURE/game_UI/timer_UI.png",
+	"data/TEXTURE/game_UI/timer_semicolon.png",
+
+	"data/TEXTURE/home_menu_gamen/character.png",
+	"data/TEXTURE/home_menu_gamen/character01.png",
+	"data/TEXTURE/home_menu_gamen/character02.png",
+	"data/TEXTURE/home_menu_gamen/character03.png",
+	"data/TEXTURE/home_menu_gamen/delivery_start_button_1.png",
+	"data/TEXTURE/home_menu_gamen/delivery_start_button_2.png",
+	"data/TEXTURE/home_menu_gamen/delivery_start_button_3.png",
+
+	"data/TEXTURE/home_menu_gamen/customize_bg.png",
+	"data/TEXTURE/home_menu_gamen/shop_menu.png",
+	"data/TEXTURE/home_menu_gamen/statusbar_0.png",
+	"data/TEXTURE/home_menu_gamen/statusbar_point.png",
+	"data/TEXTURE/home_menu_gamen/rocket_icon_lock.png",
+	"data/TEXTURE/home_menu_gamen/rocket_icon_new.png",
+	"data/TEXTURE/home_menu_gamen/rocket_icon.png",
+	"data/TEXTURE/home_menu_gamen/rocket_icon_equip.png",
+	"data/TEXTURE/home_menu_gamen/rocket_1.png",
+	"data/TEXTURE/home_menu_gamen/rocket_2.png",
+	"data/TEXTURE/home_menu_gamen/rocket_3.png",
+	"data/TEXTURE/home_menu_gamen/rocket_4.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_1.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_2.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_3.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_4.png",
+
+	"data/TEXTURE/home_menu_gamen/player_wallet.png",
+	"data/TEXTURE/home_menu_gamen/player_wallet_total.png",
+	"data/TEXTURE/home_menu_gamen/player_wallet_dot.png",
+	"data/TEXTURE/home_menu_gamen/player_wallet_comma.png",
+	"data/TEXTURE/home_menu_gamen/yen_wallet.png",
+	"data/TEXTURE/home_menu_gamen/minus_wallet_total.png",
+	"data/TEXTURE/home_menu_gamen/minus_wallet_dot.png",
+	"data/TEXTURE/home_menu_gamen/minus_wallet_comma.png",
+	"data/TEXTURE/home_menu_gamen/minus_wallet.png",
+	"data/TEXTURE/home_menu_gamen/shop_menu_opacity.png",
+	"data/TEXTURE/home_menu_gamen/buy_menu.png",
+	"data/TEXTURE/home_menu_gamen/buy_menu_selection.png",
+	"data/TEXTURE/home_menu_gamen/no_select_ui.png",
+	"data/TEXTURE/home_menu_gamen/buy_select_ui.png",
+
+	"data/TEXTURE/result_gamen/result_banner.png",
+	"data/TEXTURE/result_gamen/result_bg.png",
+	"data/TEXTURE/result_gamen/no_star.png",
+	"data/TEXTURE/result_gamen/green_star.png",
+	"data/TEXTURE/result_gamen/expression_1.png",
+	"data/TEXTURE/result_gamen/expression_2.png",
+	"data/TEXTURE/result_gamen/expression_3.png",
+	"data/TEXTURE/result_gamen/scrollbar.png",
+	"data/TEXTURE/result_gamen/scroll.png",
+	"data/TEXTURE/result_gamen/delivery_distance.png",
+	"data/TEXTURE/result_gamen/delivery_time.png",
+	"data/TEXTURE/result_gamen/delivery_fee.png",
+	"data/TEXTURE/result_gamen/tip.png",
+	"data/TEXTURE/result_gamen/damage.png",
+	"data/TEXTURE/result_gamen/total_amount.png",
+	"data/TEXTURE/result_gamen/yen.png",
+	"data/TEXTURE/result_gamen/minus_yen.png",
+	"data/TEXTURE/result_gamen/total_yen.png",
+	"data/TEXTURE/result_gamen/result_number.png",
+	"data/TEXTURE/result_gamen/minus_result_number.png",
+	"data/TEXTURE/result_gamen/total_result_number.png",
+	"data/TEXTURE/result_gamen/point.png",
+	"data/TEXTURE/result_gamen/minus_point.png",
+	"data/TEXTURE/result_gamen/total_point.png",
+	"data/TEXTURE/result_gamen/firework1.png",
+	"data/TEXTURE/result_gamen/firework2.png",
+	"data/TEXTURE/result_gamen/firework3.png",
+	"data/TEXTURE/result_gamen/firework4.png",
+	"data/TEXTURE/result_gamen/firework5.png",
+
+	"data/TEXTURE/result_country/oosaka.jpg",
+	"data/TEXTURE/result_country/shanghai.jpg",
+	"data/TEXTURE/result_country/France.jpg",
+	"data/TEXTURE/result_country/America.jpg",
+
+	"data/MODEL/star1.jpg",
+
+	"data/TEXTURE/title_menu_gamen/menu_board.png",
+	"data/TEXTURE/title_menu_gamen/menu_line.png",
+	"data/TEXTURE/title_menu_gamen/start_1.png",
+	"data/TEXTURE/title_menu_gamen/start_2.png",
+	"data/TEXTURE/title_menu_gamen/start_setsumei.png",
+	"data/TEXTURE/title_menu_gamen/menupannel2_1.png",
+	"data/TEXTURE/title_menu_gamen/option_1.png",
+	"data/TEXTURE/title_menu_gamen/option_2.png",
+	"data/TEXTURE/title_menu_gamen/option_setsumei.png",
+	"data/TEXTURE/title_menu_gamen/menupannel2_2.png",
+	"data/TEXTURE/title_menu_gamen/gallery_1.png",
+	"data/TEXTURE/title_menu_gamen/gallery_2.png",
+	"data/TEXTURE/title_menu_gamen/gallery_setsumei.png",
+	"data/TEXTURE/title_menu_gamen/menupannel2_3.png",
+	"data/TEXTURE/title_menu_gamen/credit_1.png",
+	"data/TEXTURE/title_menu_gamen/credit_2.png",
+	"data/TEXTURE/title_menu_gamen/credit_setsumei.png",
+	"data/TEXTURE/title_menu_gamen/menupannel2_4.png",
+	"data/TEXTURE/title_menu_gamen/quit_1.png",
+	"data/TEXTURE/title_menu_gamen/quit_2.png",
+	"data/TEXTURE/title_menu_gamen/quit_setsumei.png",
+	"data/TEXTURE/title_menu_gamen/menupannel2_5.png",
+
+	"data/TEXTURE/title_menu_gamen/title_logo.png",
+	"data/TEXTURE/title_menu_gamen/press_button.png",
+	"data/TEXTURE/title_menu_gamen/peanuts_copyright.png",
+};
 
 //=============================================================================
 // 初期化処理
@@ -67,9 +208,29 @@ HRESULT InitTexture2D(void)
 	vertex[3].TexCoord = { 1.0f, 1.0f };
 
 	GetDeviceContext()->Unmap(g_VertexBuffer, 0);
+	
+	// テクスチャ生成
+	for (int i = 0; i < TEXTURE_LABEL_COUNTDOWN3; i++) {
+		D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+	}
+
+	LoadTexture2D();
 
 	g_Load = TRUE;
 	return S_OK;
+}
+HRESULT LoadTexture2D(void)
+{
+	// テクスチャ生成
+	for (int i = TEXTURE_LABEL_COUNTDOWN3; i < TEXTURE_LABEL_MAX; i++) {
+		D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+	}
+
+	return S_OK;
+}
+
+ID3D11ShaderResourceView** GetTexture(TEXTURE_LABEL texture) {
+	return &g_Texture[texture];
 }
 
 void SetUVTexture2D(UV_POSITION* uv)
@@ -173,6 +334,8 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 	if (bUV) { SetUVTexture2D(&td->uv_pos); };
 #endif
 
+	if (g_InstenceCount > 100) return;
+
 	// 位置の計算
 	XMFLOAT2 pos = td->pos;
 	if (td->posType == POSITION_RELATIVE)
@@ -267,6 +430,7 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 
 	// インスタンス数を更新
 	g_InstenceCount++;
+
 #endif
 
 	// 影が設定されている場合
@@ -293,7 +457,7 @@ void DrawTexture2DAll(BOOL bInterrupt)
 	device->Unmap(GetInstanceBuffer(), 0);
 	
 	// テクスチャ設定
-	for (int i = 0; i < g_InstenceCount; i++) { device->PSSetShaderResources(i + 2, 1, g_pTexture[i]); }
+	for (int i = 0; i < g_InstenceCount; i++) { device->PSSetShaderResources(i + 2, 1, GetTexture(g_pTexture[i])); }
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);

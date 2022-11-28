@@ -40,14 +40,14 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/result_country/oosaka.jpg",
-	"data/TEXTURE/result_country/shanghai.jpg",
-	"data/TEXTURE/result_country/France.jpg",
-	"data/TEXTURE/result_country/America.jpg",
-
-};
+//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+//static char*	g_TextureName[TEXTURE_MAX] = {
+//	"data/TEXTURE/result_country/oosaka.jpg",
+//	"data/TEXTURE/result_country/shanghai.jpg",
+//	"data/TEXTURE/result_country/France.jpg",
+//	"data/TEXTURE/result_country/America.jpg",
+//
+//};
 
 
 XMFLOAT3 g_CameraPos, g_CameraAt, g_CameraUp;
@@ -59,29 +59,19 @@ XMFLOAT3 g_CameraPos, g_CameraAt, g_CameraUp;
 HRESULT InitResultEvent(void)
 {
 	// テクスチャ生成
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(),
-			g_TextureName[i],
-			NULL,
-			NULL,
-			&g_Texture[i],
-			NULL);
+	for (int i = 0; i < TEXTURE_MAX; i++) {
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_OOSAKA + i);
 	}
 
 	// 詳細設定
 	g_td[TEXTURE_OOSAKA].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
-	g_td[TEXTURE_OOSAKA].tex = &g_Texture[TEXTURE_OOSAKA];
 
 	g_td[TEXTURE_SHANGHAI].size = { 900, 600 };
 	g_td[TEXTURE_SHANGHAI].scl = { 2.2f, 2.2f };
-	g_td[TEXTURE_SHANGHAI].tex = &g_Texture[TEXTURE_SHANGHAI];
 
 	g_td[TEXTURE_PARIS].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
-	g_td[TEXTURE_PARIS].tex = &g_Texture[TEXTURE_PARIS];
 
 	g_td[TEXTURE_NEWYORK].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
-	g_td[TEXTURE_NEWYORK].tex = &g_Texture[TEXTURE_NEWYORK];
 
 
 	g_CameraPos = { 2500.0f, -500.0f, 2000.0f };
@@ -101,15 +91,6 @@ HRESULT InitResultEvent(void)
 void UninitResultEvent(void)
 {
 	if (g_Load == FALSE) return;
-
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
 
 
 	g_Load = FALSE;

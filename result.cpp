@@ -79,39 +79,39 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/result_gamen/result_banner.png",
-	"data/TEXTURE/result_gamen/result_bg.png",
-	"data/TEXTURE/result_gamen/no_star.png",
-	"data/TEXTURE/result_gamen/green_star.png",
-	"data/TEXTURE/result_gamen/expression_1.png",
-	"data/TEXTURE/result_gamen/expression_2.png",
-	"data/TEXTURE/result_gamen/expression_3.png",
-	"data/TEXTURE/result_gamen/scrollbar.png",
-	"data/TEXTURE/result_gamen/scroll.png",
-	"data/TEXTURE/result_gamen/delivery_distance.png",
-	"data/TEXTURE/result_gamen/delivery_time.png",
-	"data/TEXTURE/result_gamen/delivery_fee.png",
-	"data/TEXTURE/result_gamen/tip.png",
-	"data/TEXTURE/result_gamen/damage.png",
-	"data/TEXTURE/result_gamen/total_amount.png",
-	"data/TEXTURE/result_gamen/yen.png",
-	"data/TEXTURE/result_gamen/minus_yen.png",
-	"data/TEXTURE/result_gamen/total_yen.png",
-	"data/TEXTURE/result_gamen/result_number.png",
-	"data/TEXTURE/result_gamen/minus_result_number.png",
-	"data/TEXTURE/result_gamen/total_result_number.png",
-	"data/TEXTURE/result_gamen/point.png",
-	"data/TEXTURE/result_gamen/minus_point.png",
-	"data/TEXTURE/result_gamen/total_point.png",
-	"data/TEXTURE/result_gamen/firework1.png",
-	"data/TEXTURE/result_gamen/firework2.png",
-	"data/TEXTURE/result_gamen/firework3.png",
-	"data/TEXTURE/result_gamen/firework4.png",
-	"data/TEXTURE/result_gamen/firework5.png",
-
-};
+//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+//static char*	g_TextureName[TEXTURE_MAX] = {
+//	"data/TEXTURE/result_gamen/result_banner.png",
+//	"data/TEXTURE/result_gamen/result_bg.png",
+//	"data/TEXTURE/result_gamen/no_star.png",
+//	"data/TEXTURE/result_gamen/green_star.png",
+//	"data/TEXTURE/result_gamen/expression_1.png",
+//	"data/TEXTURE/result_gamen/expression_2.png",
+//	"data/TEXTURE/result_gamen/expression_3.png",
+//	"data/TEXTURE/result_gamen/scrollbar.png",
+//	"data/TEXTURE/result_gamen/scroll.png",
+//	"data/TEXTURE/result_gamen/delivery_distance.png",
+//	"data/TEXTURE/result_gamen/delivery_time.png",
+//	"data/TEXTURE/result_gamen/delivery_fee.png",
+//	"data/TEXTURE/result_gamen/tip.png",
+//	"data/TEXTURE/result_gamen/damage.png",
+//	"data/TEXTURE/result_gamen/total_amount.png",
+//	"data/TEXTURE/result_gamen/yen.png",
+//	"data/TEXTURE/result_gamen/minus_yen.png",
+//	"data/TEXTURE/result_gamen/total_yen.png",
+//	"data/TEXTURE/result_gamen/result_number.png",
+//	"data/TEXTURE/result_gamen/minus_result_number.png",
+//	"data/TEXTURE/result_gamen/total_result_number.png",
+//	"data/TEXTURE/result_gamen/point.png",
+//	"data/TEXTURE/result_gamen/minus_point.png",
+//	"data/TEXTURE/result_gamen/total_point.png",
+//	"data/TEXTURE/result_gamen/firework1.png",
+//	"data/TEXTURE/result_gamen/firework2.png",
+//	"data/TEXTURE/result_gamen/firework3.png",
+//	"data/TEXTURE/result_gamen/firework4.png",
+//	"data/TEXTURE/result_gamen/firework5.png",
+//
+//};
 
 static float ResultTime = 0.0f;
 static int GreenStarNum = 0;
@@ -131,150 +131,115 @@ static BOOL EventFinish = FALSE;
 HRESULT InitResult(void)
 {
 	// テクスチャ生成
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(),
-			g_TextureName[i],
-			NULL,
-			NULL,
-			&g_Texture[i],
-			NULL);
+	for (int i = 0; i < TEXTURE_MAX; i++) {
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_RESULT_BAR + i);
 	}
 
 	// 詳細設定
 	//一番上のバー
 	g_td[TEXTURE_RESULT_BAR].size = { TEXTURE_WIDTH, 154.0f };
-	g_td[TEXTURE_RESULT_BAR].tex = &g_Texture[TEXTURE_RESULT_BAR];
 	g_td[TEXTURE_RESULT_BAR].pos = { 0.0f, (-SCREEN_HEIGHT/2 + (g_td[TEXTURE_RESULT_BAR].size.y / 2))};
 	
 	//背景
 	g_td[TEXTURE_RESULT_BG].size = { TEXTURE_WIDTH, 1978.0f };
-	g_td[TEXTURE_RESULT_BG].tex = &g_Texture[TEXTURE_RESULT_BG];
 	g_td[TEXTURE_RESULT_BG].pos = { 0.0f, (0.0f + g_td[TEXTURE_RESULT_BAR].size.y) };
 	g_td[TEXTURE_RESULT_BG].uv_pos = { 0.0f, 0.0f, 1.0f, 0.7f };
 
 	//星
 	g_td[TEXTURE_RESULT_NO_STARS].size = { STAR_WIDTH, STAR_HEIGHT };
-	g_td[TEXTURE_RESULT_NO_STARS].tex = &g_Texture[TEXTURE_RESULT_NO_STARS];
 	g_td[TEXTURE_RESULT_NO_STARS].pos = { 0.0f, -180.0f };
 
 	g_td[TEXTURE_RESULT_GREEN_STARS].size = { STAR_WIDTH, STAR_HEIGHT };
-	g_td[TEXTURE_RESULT_GREEN_STARS].tex = &g_Texture[TEXTURE_RESULT_GREEN_STARS];
 	g_td[TEXTURE_RESULT_GREEN_STARS].pos = { -(g_td[TEXTURE_RESULT_GREEN_STARS].size.x + 50.0f) * 2, -180.0f };
 
 	//表情
 	g_td[TEXTURE_RESULT_EXPRESSION_1].size = { EXPRESSION_WIDTH, EXPRESSION_HEIGHT };
-	g_td[TEXTURE_RESULT_EXPRESSION_1].tex = &g_Texture[TEXTURE_RESULT_EXPRESSION_1];
 	g_td[TEXTURE_RESULT_EXPRESSION_1].pos = { 0.0f, 90.0f };
 
 	g_td[TEXTURE_RESULT_EXPRESSION_2].size = { EXPRESSION_WIDTH, EXPRESSION_HEIGHT };
-	g_td[TEXTURE_RESULT_EXPRESSION_2].tex = &g_Texture[TEXTURE_RESULT_EXPRESSION_2];
 	g_td[TEXTURE_RESULT_EXPRESSION_2].pos = { 0.0f, 90.0f };
 
 	g_td[TEXTURE_RESULT_EXPRESSION_3].size = { EXPRESSION_WIDTH, EXPRESSION_HEIGHT };
-	g_td[TEXTURE_RESULT_EXPRESSION_3].tex = &g_Texture[TEXTURE_RESULT_EXPRESSION_3];
 	g_td[TEXTURE_RESULT_EXPRESSION_3].pos = { 0.0f, 90.0f };
 
 	//スクロール
 	g_td[TEXTURE_RESULT_SCROLL_BAR].size = { 35.0f, 772.0f };
-	g_td[TEXTURE_RESULT_SCROLL_BAR].tex = &g_Texture[TEXTURE_RESULT_SCROLL_BAR];
 	g_td[TEXTURE_RESULT_SCROLL_BAR].pos = { (SCREEN_WIDTH /2 - g_td[TEXTURE_RESULT_SCROLL_BAR].size.x - 50.0f), 20.0f };
 	
 	g_td[TEXTURE_RESULT_SCROLL].size = { 35.0f, 386.0f };
-	g_td[TEXTURE_RESULT_SCROLL].tex = &g_Texture[TEXTURE_RESULT_SCROLL];
 	g_td[TEXTURE_RESULT_SCROLL].pos = { (SCREEN_WIDTH / 2 - g_td[TEXTURE_RESULT_SCROLL_BAR].size.x - 50.0f), (0.0f - g_td[TEXTURE_RESULT_SCROLL].size.y / 2 + g_td[TEXTURE_RESULT_SCROLL_BAR].pos.y)  };
 
 	//項目
 	g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].size = { WORD_WIDTH, WORD_HEIGHT };
-	g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].tex = &g_Texture[TEXTURE_RESULT_DELIVERY_DISTAMCE];
 	g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].pos = { -700.0f, 610.0f };
 
 	g_td[TEXTURE_RESULT_DELIVERY_TIME].size = { WORD_WIDTH, WORD_HEIGHT };
-	g_td[TEXTURE_RESULT_DELIVERY_TIME].tex = &g_Texture[TEXTURE_RESULT_DELIVERY_TIME];
 	g_td[TEXTURE_RESULT_DELIVERY_TIME].pos = { -700.0f, 810.0f };
 
 	g_td[TEXTURE_RESULT_DELIVERY_FEE].size = { WORD_WIDTH, WORD_HEIGHT };
-	g_td[TEXTURE_RESULT_DELIVERY_FEE].tex = &g_Texture[TEXTURE_RESULT_DELIVERY_FEE];
 	g_td[TEXTURE_RESULT_DELIVERY_FEE].pos = { -700.0f, 1010.0f };
 
 	g_td[TEXTURE_RESULT_TIP].size = { 143.0f,WORD_HEIGHT };	// 三文字なので横幅調整
-	g_td[TEXTURE_RESULT_TIP].tex = &g_Texture[TEXTURE_RESULT_TIP];
 	g_td[TEXTURE_RESULT_TIP].pos = { -700.0f, 1210.0f };
 
 	g_td[TEXTURE_RESULT_DAMAGE].size = { 195.0f, WORD_HEIGHT };
-	g_td[TEXTURE_RESULT_DAMAGE].tex = &g_Texture[TEXTURE_RESULT_DAMAGE];
 	g_td[TEXTURE_RESULT_DAMAGE].pos = { -700.0f , 1410.0f };
 
 	g_td[TEXTURE_RESULT_TOTAL_AMOUNT].size = { 217.0f, 73.0f };
-	g_td[TEXTURE_RESULT_TOTAL_AMOUNT].tex = &g_Texture[TEXTURE_RESULT_TOTAL_AMOUNT];
 	g_td[TEXTURE_RESULT_TOTAL_AMOUNT].pos = { -700.0f , 1700.0f };
 
 	//値段描画
 	g_td[TEXTURE_RESULT_YEN].size = { 42.0f, 52.0f };
-	g_td[TEXTURE_RESULT_YEN].tex = &g_Texture[TEXTURE_RESULT_YEN];
 	g_td[TEXTURE_RESULT_YEN].pos = { 400.0f, 608.0f };
 
 	g_td[TEXTURE_RESULT_MIUS_YEN].size = { 66.0f, 52.0f };
-	g_td[TEXTURE_RESULT_MIUS_YEN].tex = &g_Texture[TEXTURE_RESULT_MIUS_YEN];
 	g_td[TEXTURE_RESULT_MIUS_YEN].pos = { 380.0f , 1410.0f };
 
 	g_td[TEXTURE_RESULT_TOTAL_YEN].size = { 58.0f, 73.0f };
-	g_td[TEXTURE_RESULT_TOTAL_YEN].tex = &g_Texture[TEXTURE_RESULT_TOTAL_YEN];
 	g_td[TEXTURE_RESULT_TOTAL_YEN].pos = { 250.0f , 1700.0f };
 
 	g_td[TEXTURE_RESULT_NUMBER].size = { 389.0f, 52.0f };
-	g_td[TEXTURE_RESULT_NUMBER].tex = &g_Texture[TEXTURE_RESULT_NUMBER];
 	g_td[TEXTURE_RESULT_NUMBER].pos = { YEN_FINAL_POS, 608.0f };
 	g_td[TEXTURE_RESULT_NUMBER].scl = { 0.1f, 1.0f };
 	g_td[TEXTURE_RESULT_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
 
 	g_td[TEXTURE_RESULT_MIUS_NUMBER].size = { NUMBER_WIDTH, 52.0f };
-	g_td[TEXTURE_RESULT_MIUS_NUMBER].tex = &g_Texture[TEXTURE_RESULT_MIUS_NUMBER];
 	g_td[TEXTURE_RESULT_MIUS_NUMBER].pos = { YEN_FINAL_POS , 1410.0f };
 	g_td[TEXTURE_RESULT_MIUS_NUMBER].scl = { 0.1f, 1.0f };
 	g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
 
 	g_td[TEXTURE_RESULT_TOTAL_NUMBER].size = { TOTAL_NUMBER_WIDTH, 73.0f };
-	g_td[TEXTURE_RESULT_TOTAL_NUMBER].tex = &g_Texture[TEXTURE_RESULT_TOTAL_NUMBER];
 	g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos = { YEN_FINAL_POS , 1700.0f };
 	g_td[TEXTURE_RESULT_TOTAL_NUMBER].scl = { 0.1f, 1.0f };
 	g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
 
 	g_td[TEXTURE_RESULT_POINT].size = { 8.0f, 8.0f };
-	g_td[TEXTURE_RESULT_POINT].tex = &g_Texture[TEXTURE_RESULT_POINT];
 	g_td[TEXTURE_RESULT_POINT].pos = { (YEN_FINAL_POS + 25.0f) , 608.0f };
 
 	g_td[TEXTURE_RESULT_MIUS_POINT].size = { 8.0f, 8.0f };
-	g_td[TEXTURE_RESULT_MIUS_POINT].tex = &g_Texture[TEXTURE_RESULT_MIUS_POINT];
 	g_td[TEXTURE_RESULT_MIUS_POINT].pos = { (YEN_FINAL_POS + 25.0f) , 1428.0f };
 
 	g_td[TEXTURE_RESULT_TOTAL_POINT].size = { 13.0f, 12.0f };
-	g_td[TEXTURE_RESULT_TOTAL_POINT].tex = &g_Texture[TEXTURE_RESULT_TOTAL_POINT];
 	g_td[TEXTURE_RESULT_TOTAL_POINT].pos = { (YEN_FINAL_POS + 32.0f) , 1725.0f };
 
 	//花火
 	g_td[TEXTURE_RESULT_FIREWORK_1].size = { 664.0f, 664.0f };
-	g_td[TEXTURE_RESULT_FIREWORK_1].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_1];
 	g_td[TEXTURE_RESULT_FIREWORK_1].pos = { -600.0f , 200.0f };
 	g_td[TEXTURE_RESULT_FIREWORK_1].scl = { 0.0f, 0.0f };
 
 	g_td[TEXTURE_RESULT_FIREWORK_2].size = { 679.0f, 632.0f };
-	g_td[TEXTURE_RESULT_FIREWORK_2].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_2];
 	g_td[TEXTURE_RESULT_FIREWORK_2].pos = { 500.0f , -250.0f };
 	g_td[TEXTURE_RESULT_FIREWORK_2].scl = { 0.0f, 0.0f };
 
 	g_td[TEXTURE_RESULT_FIREWORK_3].size = { 483.0f, 471.0f };
-	g_td[TEXTURE_RESULT_FIREWORK_3].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_3];
 	g_td[TEXTURE_RESULT_FIREWORK_3].pos = {-300.0f , -100.0f };
 	g_td[TEXTURE_RESULT_FIREWORK_3].scl = { 0.0f, 0.0f };
 
 	g_td[TEXTURE_RESULT_FIREWORK_4].size = { 610.0f, 613.0f };
-	g_td[TEXTURE_RESULT_FIREWORK_4].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_4];
 	g_td[TEXTURE_RESULT_FIREWORK_4].pos = { 400.0f , 300.0f };
 	g_td[TEXTURE_RESULT_FIREWORK_4].scl = { 0.0f, 0.0f };
 
 	g_td[TEXTURE_RESULT_FIREWORK_5].size = { 368.0f, 349.0f };
-	g_td[TEXTURE_RESULT_FIREWORK_5].tex = &g_Texture[TEXTURE_RESULT_FIREWORK_5];
 	g_td[TEXTURE_RESULT_FIREWORK_5].pos = { -600.0f , -250.0f };
 	g_td[TEXTURE_RESULT_FIREWORK_5].scl = { 0.0f, 0.0f };
 
@@ -302,15 +267,6 @@ HRESULT InitResult(void)
 void UninitResult(void)
 {
 	if (g_Load == FALSE) return;
-
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
 
 	g_Load = FALSE;
 }

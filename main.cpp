@@ -23,10 +23,8 @@
 // loading
 #include "load.h"
 
-// title
+// title_start
 #include "title.h"
-
-// start
 #include "start.h"
 
 // home
@@ -257,6 +255,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitTexture2D();
 	InitFade();
 
+	InitModel();
+
 	SetMode(g_Mode);	// 最初のモードをセット
 	//SetFade(FADE_IN, MODE_OPENING);
 
@@ -269,6 +269,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 void Uninit(void)
 {
 	SetMode(MODE_END);	// 終了のモードをセット
+	
+	UninitModel();
 
 	UninitTexture2D();
 	UninitSound();
@@ -293,11 +295,9 @@ void Update(void)
 		break;
 	case MODE_LOADING:
 		break;
-	case MODE_TITLE:
-		UpdateTitle();
-		break;
-	case MODE_START:
+	case MODE_TITLE_START:
 		UpdateStart();
+		UpdateTitle();
 		break;
 	case MODE_HOME:
 		UpdateHome();
@@ -361,10 +361,8 @@ void Draw(void)
 		break;
 	case MODE_LOADING:
 		break;
-	case MODE_TITLE:
+	case MODE_TITLE_START:
 		DrawTitle();
-		break;
-	case MODE_START:
 		DrawStart();
 		break;
 	case MODE_HOME:
@@ -438,10 +436,8 @@ void SetMode(MODE_LABEL mode)
 		break;
 	case MODE_LOADING:
 		break;
-	case MODE_TITLE:
+	case MODE_TITLE_START:
 		InitTitle();
-		break;
-	case MODE_START:
 		InitStart();
 		break;
 	case MODE_HOME:
@@ -503,8 +499,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_CrtDumpMemoryLeaks();
 			break;
 
+		case VK_BACK:
+
+			break;
+
 		default:
-			if (g_Mode == MODE_TITLE) SetFade(FADE_OUT, MODE_START);
+			if (g_Mode == MODE_TITLE_START) PressedAnyButton();
 			break;
 		}
 		break;

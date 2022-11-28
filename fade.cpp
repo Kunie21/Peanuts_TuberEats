@@ -21,8 +21,8 @@
 
 // テクスチャ管理
 static TEXTURE2D_DESC	g_td;
-static ID3D11ShaderResourceView*	g_Texture = NULL;	// テクスチャ情報
-static char*	g_TextureName = "data/TEXTURE/white.png";
+//static ID3D11ShaderResourceView*	g_Texture = NULL;	// テクスチャ情報
+//static char*	g_TextureName = "data/TEXTURE/white.png";
 
 FADE			g_Fade = FADE_IN;	// フェードの状態
 MODE_LABEL		g_ModeNext;			// 次のモード
@@ -35,8 +35,8 @@ static BOOL		g_Load = FALSE;
 HRESULT InitFade(void)
 {
 	// テクスチャ生成
-	D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName, NULL, NULL, &g_Texture, NULL);
-	g_td.tex = &g_Texture;
+	//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName, NULL, NULL, &g_Texture, NULL);
+	g_td.tex = TEXTURE_LABEL_WHITE;
 	g_td.col.w = 1.0f;
 
 	g_Fade = FADE_IN;
@@ -52,11 +52,6 @@ void UninitFade(void)
 {
 	if (g_Load == FALSE) return;
 
-	if (g_Texture)
-	{
-		g_Texture->Release();
-		g_Texture = NULL;
-	}
 
 	g_Load = FALSE;
 }

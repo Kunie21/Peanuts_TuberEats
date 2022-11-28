@@ -68,32 +68,32 @@ enum
 };
 
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_DISPLAY_ICON_01] = { NULL };	// テクスチャ情報
-static char*	g_TextureName[TEXTURE_DISPLAY_ICON_01] = {
-	"data/TEXTURE/home_menu_gamen/customize_bg.png",
-	"data/TEXTURE/home_menu_gamen/shop_menu.png",
-	"data/TEXTURE/home_menu_gamen/statusbar_0.png",
-	"data/TEXTURE/home_menu_gamen/statusbar_point.png",
-	"data/TEXTURE/home_menu_gamen/rocket_icon_lock.png",
-	"data/TEXTURE/home_menu_gamen/rocket_icon_new.png",
-	"data/TEXTURE/home_menu_gamen/rocket_icon.png",
-	"data/TEXTURE/home_menu_gamen/rocket_icon_equip.png",
-	"data/TEXTURE/home_menu_gamen/rocket_1.png",
-	"data/TEXTURE/home_menu_gamen/rocket_2.png",
-	"data/TEXTURE/home_menu_gamen/rocket_3.png",
-	"data/TEXTURE/home_menu_gamen/rocket_4.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_1.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_2.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_3.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_4.png",
-};
+//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_DISPLAY_ICON_01] = { NULL };	// テクスチャ情報
+//static char*	g_TextureName[TEXTURE_DISPLAY_ICON_01] = {
+//	"data/TEXTURE/home_menu_gamen/customize_bg.png",
+//	"data/TEXTURE/home_menu_gamen/shop_menu.png",
+//	"data/TEXTURE/home_menu_gamen/statusbar_0.png",
+//	"data/TEXTURE/home_menu_gamen/statusbar_point.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_icon_lock.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_icon_new.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_icon.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_icon_equip.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_1.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_2.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_3.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_4.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_select_1.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_select_2.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_select_3.png",
+//	"data/TEXTURE/home_menu_gamen/rocket_select_4.png",
+//};
 
 enum {
-	MODEL_ROCKET_01,
-	MODEL_ROCKET_02,
-	MODEL_ROCKET_03,
-	MODEL_ROCKET_04,
-	MODEL_MAX,
+	MODEL_SELECT_ROCKET_01,
+	MODEL_SELECT_ROCKET_02,
+	MODEL_SELECT_ROCKET_03,
+	MODEL_SELECT_ROCKET_04,
+	MODEL_SELECT_MAX,
 };
 
 static MODEL_DATA	g_ModelStage;	// 表示モデルの管理
@@ -114,7 +114,8 @@ enum {
 // セレクト画面専用のロケット構造体
 struct SELECTROCKET
 {
-	DX11_MODEL model;
+	//DX11_MODEL model;
+	MODEL_LABEL model;
 	int speed;
 	int accelerate;
 	int control;
@@ -134,8 +135,8 @@ HRESULT InitRocketSelect(void)
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_DISPLAY_ICON_01; i++)
 	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-		g_td[i].tex = &g_Texture[i];
+		//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_BG + i);
 	}
 
 	// テクスチャ詳細設定
@@ -180,11 +181,16 @@ HRESULT InitRocketSelect(void)
 
 
 	// モデル生成
-	LoadModel("data/MODEL/stage.obj", &g_ModelStage.model);
-	LoadModel("data/MODEL/rocket01.obj", &g_Rocket[MODEL_ROCKET_01].model);
-	LoadModel("data/MODEL/rocket03.obj", &g_Rocket[MODEL_ROCKET_02].model);
-	LoadModel("data/MODEL/rocket04.obj", &g_Rocket[MODEL_ROCKET_03].model);
-	LoadModel("data/MODEL/rocket05.obj", &g_Rocket[MODEL_ROCKET_04].model);
+	//LoadModel("data/MODEL/stage.obj", &g_ModelStage.model);
+	g_ModelStage.model = MODEL_STAGE;
+	//LoadModel("data/MODEL/rocket01.obj", &g_Rocket[MODEL_ROCKET_01].model);
+	//LoadModel("data/MODEL/rocket03.obj", &g_Rocket[MODEL_ROCKET_02].model);
+	//LoadModel("data/MODEL/rocket04.obj", &g_Rocket[MODEL_ROCKET_03].model);
+	//LoadModel("data/MODEL/rocket05.obj", &g_Rocket[MODEL_ROCKET_04].model);
+	g_Rocket[MODEL_SELECT_ROCKET_01].model = MODEL_ROCKET1;
+	g_Rocket[MODEL_SELECT_ROCKET_02].model = MODEL_ROCKET2;
+	g_Rocket[MODEL_SELECT_ROCKET_03].model = MODEL_ROCKET3;
+	g_Rocket[MODEL_SELECT_ROCKET_04].model = MODEL_ROCKET4;
 
 	// 表示モデルの設定
 	g_ModelDisplay.srt.pos = { -100.0f, -20.0f, 0.0f };
@@ -197,33 +203,33 @@ HRESULT InitRocketSelect(void)
 	g_ModelStage.srt.scl = { 9.0f, 6.9f, 9.0f };
 
 	// ロケット情報の設定
-	g_Rocket[MODEL_ROCKET_01].speed = 3;
-	g_Rocket[MODEL_ROCKET_01].accelerate = 4;
-	g_Rocket[MODEL_ROCKET_01].control = 10;
-	g_Rocket[MODEL_ROCKET_01].fuel = 5;
-	g_Rocket[MODEL_ROCKET_01].price = 100000;
-	g_Rocket[MODEL_ROCKET_01].status = STATUS_EQUIP;// SavaDataで設定する予定
-	
-	g_Rocket[MODEL_ROCKET_02].speed = 5;
-	g_Rocket[MODEL_ROCKET_02].accelerate = 5;
-	g_Rocket[MODEL_ROCKET_02].control = 9;
-	g_Rocket[MODEL_ROCKET_02].fuel = 7;
-	g_Rocket[MODEL_ROCKET_02].price = 50;
-	g_Rocket[MODEL_ROCKET_02].status = STATUS_LOCK;
-	
-	g_Rocket[MODEL_ROCKET_03].speed = 9;
-	g_Rocket[MODEL_ROCKET_03].accelerate = 6;
-	g_Rocket[MODEL_ROCKET_03].control = 7;
-	g_Rocket[MODEL_ROCKET_03].fuel = 8;
-	g_Rocket[MODEL_ROCKET_03].price = 99999;
-	g_Rocket[MODEL_ROCKET_03].status = STATUS_LOCK;
-	
-	g_Rocket[MODEL_ROCKET_04].speed = 10;
-	g_Rocket[MODEL_ROCKET_04].accelerate = 10;
-	g_Rocket[MODEL_ROCKET_04].control = 5;
-	g_Rocket[MODEL_ROCKET_04].fuel = 10;
-	g_Rocket[MODEL_ROCKET_04].price = 20221119;
-	g_Rocket[MODEL_ROCKET_04].status = STATUS_LOCK;
+	g_Rocket[MODEL_SELECT_ROCKET_01].speed = 3;
+	g_Rocket[MODEL_SELECT_ROCKET_01].accelerate = 4;
+	g_Rocket[MODEL_SELECT_ROCKET_01].control = 10;
+	g_Rocket[MODEL_SELECT_ROCKET_01].fuel = 5;
+	g_Rocket[MODEL_SELECT_ROCKET_01].price = 100000;
+	g_Rocket[MODEL_SELECT_ROCKET_01].status = STATUS_EQUIP;// SavaDataで設定する予定
+		
+	g_Rocket[MODEL_SELECT_ROCKET_02].speed = 5;
+	g_Rocket[MODEL_SELECT_ROCKET_02].accelerate = 5;
+	g_Rocket[MODEL_SELECT_ROCKET_02].control = 9;
+	g_Rocket[MODEL_SELECT_ROCKET_02].fuel = 7;
+	g_Rocket[MODEL_SELECT_ROCKET_02].price = 50;
+	g_Rocket[MODEL_SELECT_ROCKET_02].status = STATUS_LOCK;
+			
+	g_Rocket[MODEL_SELECT_ROCKET_03].speed = 9;
+	g_Rocket[MODEL_SELECT_ROCKET_03].accelerate = 6;
+	g_Rocket[MODEL_SELECT_ROCKET_03].control = 7;
+	g_Rocket[MODEL_SELECT_ROCKET_03].fuel = 8;
+	g_Rocket[MODEL_SELECT_ROCKET_03].price = 99999;
+	g_Rocket[MODEL_SELECT_ROCKET_03].status = STATUS_LOCK;
+				
+	g_Rocket[MODEL_SELECT_ROCKET_04].speed = 10;
+	g_Rocket[MODEL_SELECT_ROCKET_04].accelerate = 10;
+	g_Rocket[MODEL_SELECT_ROCKET_04].control = 5;
+	g_Rocket[MODEL_SELECT_ROCKET_04].fuel = 10;
+	g_Rocket[MODEL_SELECT_ROCKET_04].price = 20221119;
+	g_Rocket[MODEL_SELECT_ROCKET_04].status = STATUS_LOCK;
 
 	// ロケットアイコンの設定
 	for (int i = 0; i < MODEL_MAX; i++)
@@ -268,21 +274,21 @@ void UninitRocketSelect(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < TEXTURE_DISPLAY_ICON_01; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
+	//for (int i = 0; i < TEXTURE_DISPLAY_ICON_01; i++)
+	//{
+	//	if (g_Texture[i])
+	//	{
+	//		g_Texture[i]->Release();
+	//		g_Texture[i] = NULL;
+	//	}
+	//}
 
-	for (int i = 0; i < MODEL_MAX; i++)
-	{
-		UnloadModel(&g_Rocket[i].model);
-	}
-	UnloadModel(&g_ModelStage.model);
-	UnloadModel(&g_ModelDisplay.model);
+	//for (int i = 0; i < MODEL_MAX; i++)
+	//{
+	//	UnloadModel(&g_Rocket[i].model);
+	//}
+	//UnloadModel(&g_ModelStage.model);
+	//UnloadModel(&g_ModelDisplay.model);
 
 	g_Load = FALSE;
 }
@@ -328,9 +334,9 @@ void UpdateRocketSelect(void)
 		g_SelectBar = TEXTURE_ROCKETSELECT_1 + g_ModelNo_Rocket;
 		g_td[g_SelectBar - 3].col = COL_ORIGINAL;// 元の白色の字に戻る
 		g_td[g_SelectBar - 4].col = COL_BLACK;// バールと同じ場所のロケットの名前の字を黒くする
-		if (g_ModelNo_Rocket < MODEL_ROCKET_01)
+		if (g_ModelNo_Rocket < MODEL_SELECT_ROCKET_01)
 		{
-			g_ModelNo_Rocket = MODEL_ROCKET_04;
+			g_ModelNo_Rocket = MODEL_SELECT_ROCKET_04;
 			g_SelectBar = TEXTURE_ROCKETSELECT_4;
 			g_td[TEXTURE_ROCKET_4].col = COL_BLACK;// バールと同じ場所のロケットの名前の字を黒くする
 			g_td[TEXTURE_ROCKET_ICON_EQUIP].col = COL_ORIGINAL;// バールと同じ場所のロケットの名前の字を黒くする
@@ -347,9 +353,9 @@ void UpdateRocketSelect(void)
 		g_SelectBar = TEXTURE_ROCKETSELECT_1 + g_ModelNo_Rocket;
 		g_td[g_SelectBar - 5].col = COL_ORIGINAL;
 		g_td[g_SelectBar - 4].col = COL_BLACK;
-		if (g_ModelNo_Rocket > MODEL_ROCKET_04)
+		if (g_ModelNo_Rocket > MODEL_SELECT_ROCKET_04)
 		{
-			g_ModelNo_Rocket = MODEL_ROCKET_01;
+			g_ModelNo_Rocket = MODEL_SELECT_ROCKET_01;
 			g_SelectBar = TEXTURE_ROCKETSELECT_1;
 			g_td[TEXTURE_ROCKET_1].col = COL_BLACK;// バールと同じ場所のロケットの名前の字を黒くする
 			g_td[TEXTURE_ROCKETSELECT_1].col = COL_ORIGINAL;// バールと同じ場所のロケットの名前の字を黒くする
@@ -395,8 +401,8 @@ void UpdateRocketSelect(void)
 void DrawRocketSelect(void)
 {
 	DrawTexture2D(&g_td[TEXTURE_BG]);
-
 	DrawTexture2DAll();
+
 	DrawTextureStatus();
 	if (!g_IsSelectFinished)
 	{
@@ -412,14 +418,11 @@ void DrawRocketSelect(void)
 		DrawTexture2D(&g_td[TEXTURE_ROCKET_4]);
 	}
 
+	// モデル描画
 	SetDrawNoLighting();
 	SetCullingMode(CULL_MODE_NONE);
-	
-	// マテリアル設定
-	MATERIAL material;
-	// モデル描画
-	DrawModel(&g_ModelStage.model, &g_ModelStage.srt, NULL, &material);
-	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt, NULL, &material);
+	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
+	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt);
 	SetCullingMode(CULL_MODE_BACK);
 }
 

@@ -20,10 +20,7 @@
       <Filter>opening</Filter>
     </ClCompile>
     <ClCompile Include="title.cpp">
-      <Filter>title</Filter>
-    </ClCompile>
-    <ClCompile Include="start.cpp">
-      <Filter>start</Filter>
+      <Filter>title_start</Filter>
     </ClCompile>
     <ClCompile Include="file.cpp">
       <Filter>system</Filter>
@@ -100,6 +97,9 @@
     <ClCompile Include="wallet.cpp">
       <Filter>home</Filter>
     </ClCompile>
+    <ClCompile Include="start.cpp">
+      <Filter>title_start</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -122,10 +122,7 @@
       <Filter>opening</Filter>
     </ClInclude>
     <ClInclude Include="title.h">
-      <Filter>title</Filter>
-    </ClInclude>
-    <ClInclude Include="start.h">
-      <Filter>start</Filter>
+      <Filter>title_start</Filter>
     </ClInclude>
     <ClInclude Include="file.h">
       <Filter>system</Filter>
@@ -202,6 +199,9 @@
     <ClInclude Include="wallet.h">
       <Filter>home</Filter>
     </ClInclude>
+    <ClInclude Include="start.h">
+      <Filter>title_start</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="system">
@@ -212,12 +212,6 @@
     </Filter>
     <Filter Include="opening">
       <UniqueIdentifier>{4b7c9204-4c1d-47d9-a9e2-a42df48ece91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="title">
-      <UniqueIdentifier>{44ccd366-a7b4-405d-b21a-4f8f1ee6d2b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="start">
-      <UniqueIdentifier>{12b5ab31-82ff-44ff-8adf-2b032329e3e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="home">
       <UniqueIdentifier>{3223f5f2-5f2f-44d6-8c28-395c51e4f0f1}</UniqueIdentifier>
@@ -236,6 +230,9 @@
     </Filter>
     <Filter Include="render">
       <UniqueIdentifier>{4a5786f8-4260-46dd-979b-a4c3338f3c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="title_start">
+      <UniqueIdentifier>{44ccd366-a7b4-405d-b21a-4f8f1ee6d2b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

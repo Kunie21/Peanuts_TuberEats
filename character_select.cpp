@@ -43,16 +43,16 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static char*	g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/home_menu_gamen/character.png",
-	"data/TEXTURE/home_menu_gamen/character01.png",
-	"data/TEXTURE/home_menu_gamen/character02.png",
-	"data/TEXTURE/home_menu_gamen/character03.png",
-	"data/TEXTURE/home_menu_gamen/delivery_start_button_1.png",
-	"data/TEXTURE/home_menu_gamen/delivery_start_button_2.png",
-	"data/TEXTURE/home_menu_gamen/delivery_start_button_3.png",
-};
+//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_SELECT_MAX] = { NULL };	// テクスチャ情報
+//static char*	g_TextureName[TEXTURE_SELECT_MAX] = {
+//	"data/TEXTURE/home_menu_gamen/character.png",
+//	"data/TEXTURE/home_menu_gamen/character01.png",
+//	"data/TEXTURE/home_menu_gamen/character02.png",
+//	"data/TEXTURE/home_menu_gamen/character03.png",
+//	"data/TEXTURE/home_menu_gamen/delivery_start_button_1.png",
+//	"data/TEXTURE/home_menu_gamen/delivery_start_button_2.png",
+//	"data/TEXTURE/home_menu_gamen/delivery_start_button_3.png",
+//};
 
 static int g_TexNoChar;		//キャラクターのテキスチャー番号
 static int g_TexNoButton;	//ボタンのテキスチャー番号
@@ -65,8 +65,8 @@ HRESULT InitCharacterSelect(void)
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
-		D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-		g_td[i].tex = &g_Texture[i];
+		//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_CHARACTER_01 + i);
 	}
 
 	// 詳細設定
@@ -100,14 +100,14 @@ void UninitCharacterSelect(void)
 {
 	if (g_Load == FALSE) return;
 
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		if (g_Texture[i])
-		{
-			g_Texture[i]->Release();
-			g_Texture[i] = NULL;
-		}
-	}
+	//for (int i = 0; i < TEXTURE_MAX; i++)
+	//{
+	//	if (g_Texture[i])
+	//	{
+	//		g_Texture[i]->Release();
+	//		g_Texture[i] = NULL;
+	//	}
+	//}
 
 	g_Load = FALSE;
 }
