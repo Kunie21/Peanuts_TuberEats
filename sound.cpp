@@ -7,6 +7,7 @@
 #include "main.h"
 #include "sound.h"
 #include "debugproc.h"
+#include "load.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -35,7 +36,7 @@ typedef struct
 //*****************************************************************************
 HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
 HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset);
-
+BOOL LoadSound(int loadpoint);
 
 //*****************************************************************************
 // グローバル変数
@@ -63,7 +64,6 @@ int g_NowBGMLabel = 0;											// オーディオラベル番号の初期化
 //音量管理
 float				g_VolParam[SOUND_TYPE_MAX];
 
-static int	g_LoadPoint = 0;
 
 
 //*****************************************************************************
@@ -71,11 +71,11 @@ static int	g_LoadPoint = 0;
 //*****************************************************************************
 SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 {
-	{ (char*)"data/BGM/title.wav", -1, BGM },			// タイトル
-	{ (char*)"data/BGM/STAGESELECT.wav", -1, BGM },		// スタート
-	{ (char*)"data/BGM/home.wav", -1, BGM },				// ホーム
-	{ (char*)"data/BGM/stage_select.wav", -1, BGM },		// ステージセレクト
-	{ (char*)"data/BGM/stage_1_1.wav", -1, BGM },		// ステージ1-1
+	{ (char*)"data/SOUND/BGM/title.wav", -1, BGM },			// タイトル
+	{ (char*)"data/SOUND/BGM/STAGESELECT.wav", -1, BGM },		// スタート
+	{ (char*)"data/SOUND/BGM/home.wav", -1, BGM },				// ホーム
+	{ (char*)"data/SOUND/BGM/stage_select.wav", -1, BGM },		// ステージセレクト
+	{ (char*)"data/SOUND/BGM/stage_1_1.wav", -1, BGM },		// ステージ1-1
 	//{ (char*)"data/BGM/stage_1_3.wav", -1, BGM },		// ステージ1-3
 	//{ (char*)"data/BGM/stage_2_1.wav", -1, BGM },		// ステージ2-1
 	//{ (char*)"data/BGM/stage_2_2.wav", -1, BGM },		// ステージ2-2
@@ -87,19 +87,19 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	//{ (char*)"data/BGM/stage_4_1.wav", -1, BGM },		// ステージ4-1
 	//{ (char*)"data/BGM/stage_4_2.wav", -1, BGM },		// ステージ4-2
 	//{ (char*)"data/BGM/stage_4_3.wav", -1, BGM },		// ステージ4-3
-	{ (char*)"data/BGM/result.wav", -1, BGM },			// リザルト
-	{ (char*)"data/BGM/ending.wav", -1, BGM },			// エンディング
-	{ (char*)"data/SE/select.wav", 0, SE },			// 選択音
-	{ (char*)"data/SE/decide.wav", 0, SE },			// 決定音
-	{ (char*)"data/SE/decide.wav", 0, SE },			// オープニングSE?
-	{ (char*)"data/SE/engine.wav", 0, SE },			// エンジン音
-	{ (char*)"data/SE/collision.wav", 0, SE },		// 衝突音
+	{ (char*)"data/SOUND/BGM/result.wav", -1, BGM },			// リザルト
+	{ (char*)"data/SOUND/BGM/ending.wav", -1, BGM },			// エンディング
+	{ (char*)"data/SOUND/SE/select.wav", 0, SE },			// 選択音
+	{ (char*)"data/SOUND/SE/decide.wav", 0, SE },			// 決定音
+	{ (char*)"data/SOUND/SE/decide.wav", 0, SE },			// オープニングSE?
+	{ (char*)"data/SOUND/SE/engine.wav", 0, SE },			// エンジン音
+	{ (char*)"data/SOUND/SE/collision.wav", 0, SE },		// 衝突音
 	//{ (char*)"data/SE/p_voice.wav", 0, SE },		// プレイヤーボイス
-	{ (char*)"data/SE/airleak.wav", 0, SE },		// 空気漏れ音
-	{ (char*)"data/SE/door_open.wav", 0, SE },		// ドアが開く音
-	{ (char*)"data/SE/across_ring.wav", 0, SE },	// リング通過音
-	{ (char*)"data/SE/star.wav", 0, SE },			// 星の音
-	{ (char*)"data/SE/point_add.wav", 0, SE },		// ポイント加算
+	{ (char*)"data/SOUND/SE/airleak.wav", 0, SE },		// 空気漏れ音
+	{ (char*)"data/SOUND/SE/door_open.wav", 0, SE },		// ドアが開く音
+	{ (char*)"data/SOUND/SE/across_ring.wav", 0, SE },	// リング通過音
+	{ (char*)"data/SOUND/SE/star.wav", 0, SE },			// 星の音
+	{ (char*)"data/SOUND/SE/point_add.wav", 0, SE },		// ポイント加算
 };
 
 //*****************************************************************************
@@ -205,41 +205,34 @@ BOOL InitSound(HWND hWnd)
 	//	return FALSE;
 	//}
 
-	g_LoadPoint = 0;
-
 	return TRUE;
 }
 
 //=============================================================================
 // データ処理
 //=============================================================================
-BOOL LoadSoundKernel(float* loadPalam, int* loadSum)
+BOOL LoadSoundKernel(void)
 {
-#ifdef NO_AUDIO
-	return TRUE;
-#endif
-
-	if (g_LoadPoint < SOUND_LABEL_MAX)
+	static int	loadpoint = 0;
+	if (loadpoint < SOUND_LABEL_MAX)
 	{
-		if(LoadSound())
+		if(LoadSound(loadpoint))
 		{
-			g_LoadPoint++;
-			*loadSum = *loadSum + 1;
+			loadpoint++;
+			AddLoadSum();
 		}
-		if (g_LoadPoint == SOUND_LABEL_MAX)
+		if (loadpoint == SOUND_LABEL_MAX)
 		{
-			*loadPalam = 0.0f;
 			return TRUE;
 		}
 	}
-	*loadPalam = (float)g_LoadPoint / (float)SOUND_LABEL_MAX;
 	return FALSE;
 }
 
 //=============================================================================
 // サウンドデータ処理
 //=============================================================================
-BOOL LoadSound(void)
+BOOL LoadSound(int loadpoint)
 {
 #ifdef NO_AUDIO
 	return TRUE;
@@ -263,7 +256,7 @@ BOOL LoadSound(void)
 	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
 
 	// サウンドデータファイルの生成
-	hFile = CreateFile(g_aParam[g_LoadPoint].pFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	hFile = CreateFile(g_aParam[loadpoint].pFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
 		MessageBox(hWnd, "サウンドデータファイルの生成に失敗！(1)", "警告！", MB_ICONWARNING);
@@ -309,14 +302,14 @@ BOOL LoadSound(void)
 	}
 
 	// オーディオデータ読み込み
-	hr = CheckChunk(hFile, 'atad', &g_aSizeAudio[g_LoadPoint], &dwChunkPosition);
+	hr = CheckChunk(hFile, 'atad', &g_aSizeAudio[loadpoint], &dwChunkPosition);
 	if (FAILED(hr))
 	{
 		MessageBox(hWnd, "オーディオデータ読み込みに失敗！(1)", "警告！", MB_ICONWARNING);
 		return FALSE;
 	}
-	g_apDataAudio[g_LoadPoint] = (BYTE*)malloc(g_aSizeAudio[g_LoadPoint]);
-	hr = ReadChunkData(hFile, g_apDataAudio[g_LoadPoint], g_aSizeAudio[g_LoadPoint], dwChunkPosition);
+	g_apDataAudio[loadpoint] = (BYTE*)malloc(g_aSizeAudio[loadpoint]);
+	hr = ReadChunkData(hFile, g_apDataAudio[loadpoint], g_aSizeAudio[loadpoint], dwChunkPosition);
 	if (FAILED(hr))
 	{
 		MessageBox(hWnd, "オーディオデータ読み込みに失敗！(2)", "警告！", MB_ICONWARNING);
@@ -324,7 +317,7 @@ BOOL LoadSound(void)
 	}
 
 	// ソースボイスの生成
-	hr = g_pXAudio2->CreateSourceVoice(&g_apSourceVoice[g_LoadPoint], &(wfx.Format), XAUDIO2_VOICE_USEFILTER, 16.0f);
+	hr = g_pXAudio2->CreateSourceVoice(&g_apSourceVoice[loadpoint], &(wfx.Format), XAUDIO2_VOICE_USEFILTER, 16.0f);
 	if (FAILED(hr))
 	{
 		MessageBox(hWnd, "ソースボイスの生成に失敗！", "警告！", MB_ICONWARNING);
@@ -333,13 +326,13 @@ BOOL LoadSound(void)
 
 	// バッファの値設定
 	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
-	buffer.AudioBytes = g_aSizeAudio[g_LoadPoint];
-	buffer.pAudioData = g_apDataAudio[g_LoadPoint];
+	buffer.AudioBytes = g_aSizeAudio[loadpoint];
+	buffer.pAudioData = g_apDataAudio[loadpoint];
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	buffer.LoopCount = g_aParam[g_LoadPoint].nCntLoop;
+	buffer.LoopCount = g_aParam[loadpoint].nCntLoop;
 
 	// オーディオバッファの登録
-	g_apSourceVoice[g_LoadPoint]->SubmitSourceBuffer(&buffer);
+	g_apSourceVoice[loadpoint]->SubmitSourceBuffer(&buffer);
 
 	////エフェクトの生成
 	//{

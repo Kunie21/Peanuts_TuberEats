@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // モデルの処理 [model.cpp]
-// Author : 
+// Author : 國江 翔太
 //
 //=============================================================================
 #define _CRT_SECURE_NO_WARNINGS
@@ -9,6 +9,7 @@
 #include "model.h"
 #include "camera.h"
 #include "texture2d.h"
+#include "load.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -59,6 +60,22 @@ struct MODEL
 DX11_MODEL	g_Model[MODEL_MAX];
 MATERIAL	g_Material;
 
+static char* g_ModelName[MODEL_MAX] = {
+	"data/MODEL/wall.obj",
+	"data/MODEL/ice_1.obj",
+	"data/MODEL/ring_1.obj",
+	"data/MODEL/missile01.obj",
+	"data/MODEL/missile02.obj",
+	"data/MODEL/fire01.obj",
+	"data/MODEL/rocket01.obj",
+	"data/MODEL/rocket02.obj",
+	"data/MODEL/rocket03.obj",
+	"data/MODEL/rocket04.obj",
+	"data/MODEL/rocket05.obj",
+	"data/MODEL/stage.obj",
+	"data/MODEL/earth01.obj",
+};
+
 void InitModel(void)
 {
 	LoadModel("data/MODEL/wall.obj", &g_Model[MODEL_GATE]);
@@ -74,7 +91,6 @@ void InitModel(void)
 	LoadModel("data/MODEL/rocket05.obj", &g_Model[MODEL_ROCKET5]);
 	LoadModel("data/MODEL/stage.obj", &g_Model[MODEL_STAGE]);
 	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH]);
-	LoadModel("data/MODEL/titleRocket01.obj", &g_Model[MODEL_TITLEROCKET]);
 }
 void UninitModel(void)
 {
@@ -82,6 +98,30 @@ void UninitModel(void)
 		UnloadModel(&g_Model[i]);
 	}
 }
+
+BOOL LoadModel(int loadpoint)
+{
+	LoadModel(g_ModelName[loadpoint], &g_Model[loadpoint]);
+	return TRUE;
+}
+BOOL LoadModelKernel(void)
+{
+	static int loadpoint = 0;
+	if (loadpoint < MODEL_MAX)
+	{
+		if (LoadModel(loadpoint))
+		{
+			loadpoint++;
+			AddLoadSum();
+		}
+		if (loadpoint == MODEL_MAX)
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 
 //*****************************************************************************
 // プロトタイプ宣言

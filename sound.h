@@ -99,8 +99,7 @@ void StopSound(void);
 
 void UpdateAudioFade(void);
 
-BOOL LoadSoundKernel(float* loadPalam, int* loadSum);
-BOOL LoadSound(void);
+BOOL LoadSoundKernel(void);
 
 //*****************************************************************************
 // 音量のフェードイン・アウト処理

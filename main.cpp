@@ -255,7 +255,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitTexture2D();
 	InitFade();
 
-	InitModel();
+	//InitModel();
 
 	SetMode(g_Mode);	// 最初のモードをセット
 	//SetFade(FADE_IN, MODE_OPENING);
@@ -271,7 +271,6 @@ void Uninit(void)
 	SetMode(MODE_END);	// 終了のモードをセット
 	
 	UninitModel();
-
 	UninitTexture2D();
 	UninitSound();
 	UninitCamera();
@@ -293,17 +292,22 @@ void Update(void)
 	case MODE_OPENING:
 		UpdateTeamLogo();
 		break;
+
 	case MODE_LOADING:
 		break;
+
 	case MODE_TITLE_START:
 		UpdateStart();
 		UpdateTitle();
 		break;
+
 	case MODE_HOME:
 		UpdateHome();
 		break;
+
 	case MODE_STAGESELECT:
 		break;
+
 	case MODE_GAME:
 	#ifdef _DEBUG
 		static LARGE_INTEGER Shadow_S, Shadow_E;
@@ -318,12 +322,15 @@ void Update(void)
 		PrintDebugProc("UpdateTimeA:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);
 	#endif
 		break;
+
 	case MODE_RESULT:
 		UpdateResult();
 		UpdateResultEvent();
 		break;
+
 	case MODE_END:
 		break;
+
 	default:
 		break;
 	}
@@ -359,26 +366,35 @@ void Draw(void)
 	case MODE_OPENING:
 		DrawTeamLogo();
 		break;
+
 	case MODE_LOADING:
+		DrawLoad();
 		break;
+
 	case MODE_TITLE_START:
 		DrawTitle();
 		DrawStart();
 		break;
+
 	case MODE_HOME:
 		DrawHome();
 		break;
+
 	case MODE_STAGESELECT:
 		break;
+
 	case MODE_GAME:
 		DrawGame();
 		break;
+
 	case MODE_RESULT:
 		DrawResultEvent();
 		DrawResult();	
 		break;
+
 	case MODE_END:
 		break;
+
 	default:
 		break;
 	}
@@ -424,6 +440,7 @@ void SetMode(MODE_LABEL mode)
 	UninitTitle();
 	UninitStart();
 	UninitHome();
+	UninitGame();
 
 
 	g_Mode = mode;	// 次のモードをセット
@@ -432,22 +449,28 @@ void SetMode(MODE_LABEL mode)
 	{
 	case MODE_OPENING:
 		InitTeamLogo();
+		break;
 
-		break;
 	case MODE_LOADING:
+		InitLoad();
 		break;
+
 	case MODE_TITLE_START:
 		InitTitle();
 		InitStart();
 		break;
+
 	case MODE_HOME:
 		InitHome();
 		break;
+
 	case MODE_STAGESELECT:
 		break;
+
 	case MODE_GAME:
 		InitGame();
 		break;
+
 	case MODE_RESULT:
 		InitLight();
 		InitTube();
@@ -455,8 +478,10 @@ void SetMode(MODE_LABEL mode)
 		InitResult();
 		InitResultEvent();
 		break;
+
 	case MODE_END:
 		break;
+
 	default:
 		break;
 	}

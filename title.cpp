@@ -85,6 +85,7 @@ HRESULT InitTitle(void)
 	g_Model[MODEL_TITLE_EARTH].model = MODEL_EARTH;
 	g_Model[MODEL_TITLE_EARTH].srt.pos = { 0.0f, 0.0f, OBJ_DIST };
 	g_Model[MODEL_TITLE_EARTH].srt.scl = { 20.0f, 20.0f, 20.0f };
+	g_Model[MODEL_TITLE_EARTH].srt.rot.y = -XM_PIDIV4;
 
 	g_Model[MODEL_TITLE_ROCKET].model = MODEL_ROCKET1;
 	g_Model[MODEL_TITLE_ROCKET].srt.pos = { 0.0f, 0.0f, OBJ_DIST };
@@ -154,8 +155,8 @@ void DrawTitle(void)
 	MulMtxRot(mtxWorld, XM_PI, 0.0f, XM_PI);				// ‰ñ“]‚ð”½‰f
 	MulMtxPos(mtxWorld, -225.0f, 0.0f, 0.0f);				// ˆÚ“®‚ð”½‰f
 	MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// ‰ñ“]‚ð”½‰f
-	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// ˆÚ“®‚ð”½‰f
 	MulMtxRot(mtxWorld, 0.0f, 0.0f, XM_PIDIV4 * 0.5f + srt.rot.z);		// ‰ñ“]‚ð”½‰f
+	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// ˆÚ“®‚ð”½‰f
 	DrawModel(&g_Model[MODEL_TITLE_ROCKET].model, &mtxWorld);
 
 	// ’n‹…
@@ -179,8 +180,8 @@ void DrawTitle(void)
 	MulMtxRot(mtxWorld, XM_PI, 0.0f, XM_PI);				// ‰ñ“]‚ð”½‰f
 	MulMtxPos(mtxWorld, -225.0f, 0.0f, g_Model[MODEL_TITLE_FIRE].srt.pos.z);	// ˆÚ“®‚ð”½‰f
 	MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// ‰ñ“]‚ð”½‰f
+	MulMtxRot(mtxWorld, 0.0f, 0.0f, XM_PIDIV4 * 0.5f + srt.rot.z);	// ‰ñ“]‚ð”½‰f
 	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// ˆÚ“®‚ð”½‰f
-	MulMtxRot(mtxWorld, 0.0f, 0.0f, XM_PIDIV4 * 0.5f + srt.rot.z);		// ‰ñ“]‚ð”½‰f
 	DrawModel(&g_Model[MODEL_TITLE_FIRE].model, &mtxWorld);	// ƒ‚ƒfƒ‹•`‰æ
 	SetBlendState(BLEND_MODE_ALPHABLEND);
 

@@ -14,8 +14,4 @@ void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
 
-BOOL LoadGameTextureKernel(float* loadPalam, int* loadSum);
-BOOL LoadGameTexture(void);
-
-
 void SetStartGate(void);

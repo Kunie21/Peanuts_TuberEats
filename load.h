@@ -8,18 +8,9 @@
 
 enum LOAD_LABEL
 {
-	LOAD_GAMETEXTURE = 0,
+	LOAD_TEXTURE = 0,
+	LOAD_MODEL,
 	LOAD_SOUND,
-	LOAD_OBJECT,
-	LOAD_SKYDOME,
-	LOAD_WALL,
-	LOAD_HOLD,
-	LOAD_EXHOLD,
-	LOAD_PARTICLE,
-	LOAD_STARPARTICLE,
-	LOAD_EFFECT,
-	LOAD_ARROW,
-	LOAD_PLAYER,
 	LOAD_MAX,
 };
 
@@ -31,3 +22,4 @@ void UpdateLoad(void);
 BOOL LoadingNow(void);
 void DrawLoad(void);
 DWORD WINAPI ThreadFuncLoad(LPVOID pParam);
+void AddLoadSum(void);

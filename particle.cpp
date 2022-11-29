@@ -37,17 +37,6 @@ HRESULT MakeVertexParticle(void);
 //*****************************************************************************
 static ID3D11Buffer		*g_VertexBuffer = NULL;		// 頂点バッファ
 
-// テクスチャ管理
-//enum {
-//	TEXTURE_NOMAL = 0,
-//	TEXTURE_MAX,
-//};
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-//char* g_TextureName[TEXTURE_MAX] = {
-//	"data/TEXTURE/particle.jpg",
-//	//"data/TEXTURE/Line4.jpg",
-//};
-
 static TEXTURE_LABEL g_Texture = TEXTURE_LABEL_PARTICLE;
 
 static BOOL		g_Load = FALSE;
@@ -350,11 +339,6 @@ HRESULT InitParticle(void)
 	// 頂点情報の作成
 	MakeVertexParticle();
 
-	// テクスチャ生成
-	//for (int i = 0; i < TEXTURE_MAX; i++) {
-	//	D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-	//}
-
 	g_Load = TRUE;
 	return S_OK;
 }
@@ -365,16 +349,6 @@ HRESULT InitParticle(void)
 void UninitParticle(void)
 {
 	if (g_Load == FALSE) return;
-
-	// テクスチャの解放
-	//for (int i = 0; i < TEXTURE_MAX; i++)
-	//{
-	//	if (g_Texture[i])
-	//	{
-	//		g_Texture[i]->Release();
-	//		g_Texture[i] = NULL;
-	//	}
-	//}
 
 	// 頂点バッファの解放
 	if (g_VertexBuffer != NULL)

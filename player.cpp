@@ -133,32 +133,18 @@ static CURVE_BUFFER curveTest;
 //=============================================================================
 HRESULT InitPlayer(void)
 {
-
-	//for (int i = 0; i < MODEL_MAX; i++)
-	{
-		//LoadModel("data/MODEL/earth01_sv.obj", &g_Model[0].model);
-		//LoadModel("data/MODEL/earth01_adj.obj", &g_Model[0].model);
-		//LoadModel("data/MODEL/square2.obj", &g_Model[0].model);
-
-		//LoadModel("data/MODEL/rocket01.obj", &g_Model[0].model);
-		//LoadModel("data/MODEL/rocket02.obj", &g_Model[1].model);
-		//LoadModel("data/MODEL/rocket03.obj", &g_Model[2].model);
-		//LoadModel("data/MODEL/rocket04.obj", &g_Model[3].model);
-		//LoadModel("data/MODEL/rocket05.obj", &g_Model[4].model);
-		//LoadModel("data/MODEL/fire01.obj", &g_Model[5].model);
-		g_Model[0].model = MODEL_ROCKET1;
-		g_Model[1].model = MODEL_ROCKET2;
-		g_Model[2].model = MODEL_ROCKET3;
-		g_Model[3].model = MODEL_ROCKET4;
-		g_Model[4].model = MODEL_ROCKET5;
-		g_Model[5].model = MODEL_FIRE;
-		for (int i = 0; i < MODEL_PLAYER_MAX; i++) {
-			g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
-			g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
-			g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
-		}
-		g_Model[MODEL_PLAYER_FIRE].srt.pos.z = -30.0f;
+	g_Model[0].model = MODEL_ROCKET1;
+	g_Model[1].model = MODEL_ROCKET2;
+	g_Model[2].model = MODEL_ROCKET3;
+	g_Model[3].model = MODEL_ROCKET4;
+	g_Model[4].model = MODEL_ROCKET5;
+	g_Model[5].model = MODEL_FIRE;
+	for (int i = 0; i < MODEL_PLAYER_MAX; i++) {
+		g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
+		g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
+		g_Model[i].srt.scl = { 0.3f, 0.3f, 0.3f };
 	}
+	g_Model[MODEL_PLAYER_FIRE].srt.pos.z = -30.0f;
 
 	g_Load = TRUE;
 	return S_OK;
@@ -170,9 +156,6 @@ HRESULT InitPlayer(void)
 void UninitPlayer(void)
 {
 	if (g_Load == FALSE) return;
-
-
-	//for (int i = 0; i < MODEL_MAX; i++) { UnloadModel(&g_Model[i].model); }
 
 	g_Load = FALSE;
 }

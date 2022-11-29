@@ -5,21 +5,19 @@
 //
 //=============================================================================
 #include "main.h"
-#include "game.h"
 #include "renderer.h"
 #include "texture2d.h"
-#include "debugproc.h"
-#include "camera.h"
-#include "input.h"
+#include "model.h"
 #include "sound.h"
 #include "fade.h"
-#include "light.h"
 #include "load.h"
+#include "debugproc.h"
 
-#define LOAD_SUM 122	// ロードするモノの数
+// ロードするモノの数
+#define LOAD_SUM (SOUND_LABEL_MAX + MODEL_MAX + TEXTURE_LABEL_MAX - TEXTURE_LABEL_COUNTDOWN3)
 
 #define LOAD_Y					(110.0f)	// 
-#define LOADMAP_Y				(0.0f)	// 
+#define LOADMAP_Y				(0.0f)		// 
 #define LOADMAP_ICON_SCALE		(0.18f)		// 
 
 #define LOAD_ANIM_NUM	(12)
@@ -28,11 +26,6 @@
 /*******************************************************************************
 * グローバル変数
 *******************************************************************************/
-static int		g_LoadSum = 0;
-static int		g_LoadPoint = 0;
-static float	g_LoadPalam = 0.0f;
-static int		g_LoadAnimTime = 0;
-static HANDLE	g_hThread = NULL;
 
 // テクスチャ管理
 enum
@@ -46,36 +39,30 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-//static char*	g_TextureName[TEXTURE_MAX] = {
-//	"data/TEXTURE/nowloading.png",
-//	"data/TEXTURE/nowloading2.png",
-//	"data/TEXTURE/frog_jump_animation.png",
-//	"data/TEXTURE/empty_bar.png",
-//	"data/TEXTURE/full_bar.png",
-//	"data/TEXTURE/loadbg.png",
-//};
 
 // ロード用スレッド
+static HANDLE	g_hThread = NULL;
 DWORD WINAPI ThreadFuncLoad(LPVOID pParam)
 {
 	while (TRUE) UpdateLoad();
 	return 0;
 }
 
+static int	g_LoadSum = 0;
 void InitLoad(void)
 {
 	// テクスチャ生成
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
-		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_NOWLOADING + i);
+	for (int i = 0; i < TEXTURE_MAX; i++) {
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_LOAD_TEXT + i);
 	}
 
-	// 詳細設定
+	// 詳細設定 
 	g_td[TEXTURE_LOAD_ANIM].size = { 175.0f * 0.5f, 300.0f * 0.5f };
-	g_td[TEXTURE_LOAD_ANIM].pos.y = LOAD_Y - 190.0f;
-	g_td[TEXTURE_LOAD_ANIM].uv_pos = { 0.0f, 0.0f, 1.0f / (float)LOAD_ANIM_NUM };
+	g_td[TEXTURE_LOAD_ANIM].uv_pos.uw = 1.0f / (float)LOAD_ANIM_NUM;
+	g_td[TEXTURE_LOAD_ANIM].pos.y = LOADMAP_Y - 190.0f + LOAD_Y;
+
+	g_td[TEXTURE_NOWLOADING].size = { 350.0f, 32.0f * 1.5f };
+	g_td[TEXTURE_NOWLOADING].pos.y = LOADMAP_Y + 70.0f + LOAD_Y + 32.0f * 1.5f;
 
 	g_td[TEXTURE_NOWLOADING2].size = { 150.0f, 32.0f * 1.5f };
 	g_td[TEXTURE_NOWLOADING2].pos.y = LOADMAP_Y + 70.0f + LOAD_Y;
@@ -94,68 +81,39 @@ void InitLoad(void)
 	g_hThread = CreateThread(NULL, 0, ThreadFuncLoad, NULL, 0, NULL);
 }
 
+static int	g_LoadPoint = 0;
 void UpdateLoad(void)
 {
 	if (CheckFadeIn() && g_LoadPoint < LOAD_MAX)
 	{
-		if (LoadingNow()) g_LoadPoint++;
+		if (LoadingNow())g_LoadPoint++;
 		if (g_LoadPoint == LOAD_MAX)
 		{
+			g_LoadPoint--;
 			CloseHandle(g_hThread);	// スレッドを閉じる
-			SetFade(FADE_OUT, MODE_GAME);
+			SetFade(FADE_OUT, MODE_TITLE_START);
 		}
 	}
 }
 
 BOOL LoadingNow(void)
 {
-	//switch (g_LoadPoint)
-	//{
-	//case LOAD_GAMETEXTURE:
-	//	return LoadGameTextureKernel(&g_LoadPalam, &g_LoadSum);
+	switch (g_LoadPoint)
+	{
+	case LOAD_TEXTURE:
+		return LoadTextureKernel();
 
-	//case LOAD_SOUND:
-	//	return LoadSoundKernel(&g_LoadPalam, &g_LoadSum);
+	case LOAD_SOUND:
+		return LoadSoundKernel();
 
-	//case LOAD_OBJECT:
-	//	return LoadObjectKernel(&g_LoadPalam, &g_LoadSum);
+	case LOAD_MODEL:
+		return LoadModelKernel();
+	}
+	return FALSE;
+}
 
-	//case LOAD_SKYDOME:
-	//	//return LoadSkydomeKernel(&g_LoadPalam, &g_LoadSum);
-	//	return TRUE;
-
-	//case LOAD_WALL:
-	//	InitWall();
-	//	break;
-
-	//case LOAD_HOLD:
-	//	return LoadHoldKernel(&g_LoadPalam, &g_LoadSum);
-
-	//case LOAD_EXHOLD:
-	//	InitExHold();
-	//	break;
-
-	//case LOAD_PARTICLE:
-	//	InitParticle();
-	//	break;
-
-	//case LOAD_STARPARTICLE:
-	//	InitStarParticle();
-	//	break;
-
-	//case LOAD_EFFECT:
-	//	InitEffect();
-	//	break;
-
-	//case LOAD_ARROW:
-	//	InitArrow();
-	//	break;
-
-	//case LOAD_PLAYER:
-	//	return LoadPlayerKernel(&g_LoadPalam, &g_LoadSum);
-	//}
+void AddLoadSum(void) {
 	g_LoadSum++;
-	return TRUE;
 }
 
 void DrawLoad(void)
@@ -167,18 +125,21 @@ void DrawLoad(void)
 
 	// Animation
 	{
-		float anim = (float)((int)(g_LoadAnimTime++ / LOAD_ANIM_SPAN) % LOAD_ANIM_NUM) / (float)LOAD_ANIM_NUM;
+		static int time = 0;
+		float anim = (float)((int)(time++ / LOAD_ANIM_SPAN) % LOAD_ANIM_NUM) / (float)LOAD_ANIM_NUM;
 		g_td[TEXTURE_LOAD_ANIM].uv_pos.u = anim;
 		DrawTexture2D(&g_td[TEXTURE_LOAD_ANIM], TRUE, TRUE);
 	}
 
-	// NowLoading2
+	// テキスト表示
 	{
 		static float time = 0.0f;
 		time += 0.05f;
 		g_td[TEXTURE_NOWLOADING2].uv_pos.v = (float)g_LoadPoint / (float)LOAD_MAX;
 		g_td[TEXTURE_NOWLOADING2].col.w = 1.1f + sinf(time);
+		g_td[TEXTURE_NOWLOADING].col.w = 1.1f + sinf(time);
 		DrawTexture2D(&g_td[TEXTURE_NOWLOADING2], TRUE, TRUE);
+		DrawTexture2D(&g_td[TEXTURE_NOWLOADING], TRUE);
 	}
 
 	// バー
@@ -192,8 +153,8 @@ void DrawLoad(void)
 		DrawTexture2D(&g_td[TEXTURE_BAR_FULL], FALSE, TRUE);
 	}
 
-#ifdef _DEBUG	// デバッグ情報を表示する
-	PrintDebugProc("LoadPoint:%f\n", (float)g_LoadPoint + g_LoadPalam);
-	PrintDebugProc("LoadRate:%f\n", (float)g_LoadSum / (float)LOAD_SUM);
-#endif
+//#ifdef _DEBUG	// デバッグ情報を表示する
+//	PrintDebugProc("LoadPoint:%f\n", (float)g_LoadPoint + g_LoadPalam);
+//	PrintDebugProc("LoadRate:%f\n", (float)g_LoadSum / (float)LOAD_SUM);
+//#endif
 }

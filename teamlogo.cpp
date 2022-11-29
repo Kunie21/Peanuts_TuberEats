@@ -58,7 +58,7 @@ void UninitTeamLogo(void)
 //=============================================================================
 void UpdateTeamLogo(void)
 {
-	if (g_Time++ > TEAMLOGO_TIME) { g_Time = 0; SetFade(FADE_OUT, MODE_TITLE_START); }
+	if (g_Time++ > TEAMLOGO_TIME) { g_Time = 0; SetFade(FADE_OUT, MODE_LOADING); }
 }
 
 //=============================================================================

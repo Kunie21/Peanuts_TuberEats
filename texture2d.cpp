@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "texture2d.h"
 #include "camera.h"
+#include "load.h"
 
 //*****************************************************************************
 // グローバル変数
@@ -22,17 +23,18 @@ static TEXTURE_LABEL	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
 static ID3D11ShaderResourceView*	g_Texture[TEXTURE_LABEL_MAX];
 //#define NO_INSTANCING	// インスタンシングしないバージョン
 
+
 static char* TextureName[TEXTURE_LABEL_MAX] = {
 
 	"data/TEXTURE/white.png",
 	"data/TEXTURE/peanuts_bg_1.png",
 
-	"data/TEXTURE/nowloading.png",
-	"data/TEXTURE/nowloading2.png",
-	"data/TEXTURE/frog_jump_animation.png",
-	"data/TEXTURE/empty_bar.png",
-	"data/TEXTURE/full_bar.png",
-	"data/TEXTURE/loadbg.png",
+	"data/TEXTURE/load/nowloading.png",
+	"data/TEXTURE/load/nowloading2.png",
+	"data/TEXTURE/load/frog_jump_animation.png",
+	"data/TEXTURE/load/empty_bar.png",
+	"data/TEXTURE/load/full_bar.png",
+	"data/TEXTURE/load/loadbg.png",
 
 	"data/TEXTURE/game_UI/countdown_3_2.png",
 	"data/TEXTURE/game_UI/countdown_2_2.png",
@@ -214,9 +216,10 @@ HRESULT InitTexture2D(void)
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 	}
 
-	LoadTexture2D();
+	//LoadTexture2D();
+	//g_LoadPoint = TEXTURE_LABEL_COUNTDOWN3;
 
-	g_Load = TRUE;
+	//g_Load = TRUE;
 	return S_OK;
 }
 HRESULT LoadTexture2D(void)
@@ -227,6 +230,31 @@ HRESULT LoadTexture2D(void)
 	}
 
 	return S_OK;
+}
+
+BOOL LoadTexture(int loadpoint)
+{
+	g_Texture[loadpoint] = NULL;
+	D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[loadpoint], NULL, NULL, &g_Texture[loadpoint], NULL);
+	return TRUE;
+}
+BOOL LoadTextureKernel(void)
+{
+	static int loadpoint = TEXTURE_LABEL_COUNTDOWN3;
+	if (loadpoint < TEXTURE_LABEL_MAX)
+	{
+		if (LoadTexture(loadpoint))
+		{
+			loadpoint++;
+			AddLoadSum();
+		}
+		if (loadpoint == TEXTURE_LABEL_MAX)
+		{
+			g_Load = TRUE;
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 ID3D11ShaderResourceView** GetTexture(TEXTURE_LABEL texture) {
@@ -311,6 +339,16 @@ void UninitTexture2D(void)
 	{
 		g_VertexBuffer->Release();
 		g_VertexBuffer = NULL;
+	}
+
+	// テクスチャの解放
+	for (int i = 0; i < TEXTURE_LABEL_MAX; i++)
+	{
+		if (g_Texture[i])
+		{
+			g_Texture[i]->Release();
+			g_Texture[i] = NULL;
+		}
 	}
 
 	g_Load = FALSE;

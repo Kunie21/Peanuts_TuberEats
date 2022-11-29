@@ -55,11 +55,11 @@ enum MODEL_LABEL {
 	MODEL_ROCKET5,
 	MODEL_STAGE,
 	MODEL_EARTH,
-	MODEL_TITLEROCKET,
 	MODEL_MAX,
 };
 void InitModel(void);
 void UninitModel(void);
+BOOL LoadModelKernel(void);
 
 struct MODEL_DATA
 {

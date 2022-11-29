@@ -36,17 +36,12 @@
 static BOOL		g_bPause = TRUE;		// ポーズON/OFF
 static BOOL		g_bStopTime = FALSE;	// ポーズON/OFF
 static BOOL		g_Load = FALSE;
-static int		g_LoadPoint = 0;
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT InitGame(void)
 {
-	g_LoadPoint = 0;
-
-	//LoadData();
-
 	InitTube();
 	InitParticle();
 	InitGimmick();
@@ -59,33 +54,6 @@ HRESULT InitGame(void)
 
 	g_Load = TRUE;
 	return S_OK;
-}
-
-BOOL LoadGameTextureKernel(float* loadPalam, int* loadSum)
-{
-	//if (g_LoadPoint < TEXTURE_MAX)
-	//{
-	//	if (LoadGameTexture())
-	//	{
-	//		g_LoadPoint++;
-	//		*loadSum = *loadSum + 1;
-	//	}
-	//	if (g_LoadPoint == TEXTURE_MAX)
-	//	{
-	//		*loadPalam = 0.0f;
-	//		g_Load = TRUE;
-	//		return TRUE;
-	//	}
-	//}
-	//*loadPalam = (float)g_LoadPoint / (float)TEXTURE_MAX;
-	//*loadPalam = 1;
-	return TRUE;
-}
-BOOL LoadGameTexture(void)
-{
-	//g_Texture[g_LoadPoint] = NULL;
-	//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[g_LoadPoint], NULL, NULL, &g_Texture[g_LoadPoint], NULL);
-	return TRUE;
 }
 
 //=============================================================================

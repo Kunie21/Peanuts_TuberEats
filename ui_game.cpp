@@ -46,23 +46,6 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-//static char*	g_TextureName[TEXTURE_MAX] = {
-//	"data/TEXTURE/game_UI/fuel_empty.png",
-//	"data/TEXTURE/game_UI/fuel_font.png",
-//	"data/TEXTURE/game_UI/fuel_full.png",
-//	"data/TEXTURE/game_UI/goalpin_UI.png",
-//	"data/TEXTURE/game_UI/icon_UI.png",
-//	"data/TEXTURE/game_UI/map_UI.png",
-//	"data/TEXTURE/game_UI/rocket_map.png",
-//	"data/TEXTURE/game_UI/speed_empty.png",
-//	"data/TEXTURE/game_UI/speed_font.png",
-//	"data/TEXTURE/game_UI/speed_gauge.png",
-//	"data/TEXTURE/game_UI/timer_backdrop.png",
-//	"data/TEXTURE/game_UI/timer_UI.png",
-//	"data/TEXTURE/game_UI/timer_semicolon.png",
-//	"data/TEXTURE/white.png",
-//};
 
 static float g_Timer = 0.0f;
 
@@ -131,15 +114,6 @@ HRESULT InitGameUI(void)
 void UninitGameUI(void)
 {
 	if (g_Load == FALSE) return;
-
-	//for (int i = 0; i < TEXTURE_MAX; i++)
-	//{
-	//	if (g_Texture[i])
-	//	{
-	//		g_Texture[i]->Release();
-	//		g_Texture[i] = NULL;
-	//	}
-	//}
 
 	g_Load = FALSE;
 }
