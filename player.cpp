@@ -199,22 +199,22 @@ void UpdatePlayer(void)
 	}
 
 	// パイプ曲げ（手動）
-	if (GetKeyboardPress(DIK_F)) { curveTest.Angle.y += 0.005f; }
-	if (GetKeyboardPress(DIK_G)) { curveTest.Angle.y -= 0.005f; }
-	if (GetKeyboardPress(DIK_H)) { curveTest.Angle.x += 0.005f; }
-	if (GetKeyboardPress(DIK_J)) { curveTest.Angle.x -= 0.005f; }
-	//curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
-	curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z;
-	curveTest.Spd = g_Rocket.GetSpeed();
-	SetCurveBuffer(&curveTest);
+	//if (GetKeyboardPress(DIK_F)) { curveTest.Angle.y += 0.005f; }
+	//if (GetKeyboardPress(DIK_G)) { curveTest.Angle.y -= 0.005f; }
+	//if (GetKeyboardPress(DIK_H)) { curveTest.Angle.x += 0.005f; }
+	//if (GetKeyboardPress(DIK_J)) { curveTest.Angle.x -= 0.005f; }
+	////curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z / MESH_NUM_Z;
+	//curveTest.TexPos = g_Rocket.GetPos() / MESH_SIZE_Z;
+	//curveTest.Spd = g_Rocket.GetSpeed();
+	//SetCurveBuffer(&curveTest);
 	
 	// パイプ曲げ（ステージ設定に従って自動で曲げる）
-	//SetStageCurve(0, g_Rocket.GetPos());
+	SetStageCurve(STAGE_OSAKA, g_Rocket.GetPos(), g_Rocket.GetSpeed());
 
 	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
-	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage(0)->length * MESH_SIZE_Z));
+	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage2(STAGE_OSAKA)->goal * MESH_SIZE_Z));
 	SetSpeedMeter(g_Rocket.GetSpeedRate());
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
@@ -309,5 +309,6 @@ void SetRocketStart(void) {
 }
 
 CURVE_BUFFER GetCurveTestStatus(void) {
-	return curveTest;
+	//return curveTest;
+	return *GetCurveBuffer();
 }

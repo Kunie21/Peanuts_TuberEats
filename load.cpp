@@ -91,7 +91,10 @@ void UpdateLoad(void)
 		{
 			g_LoadPoint--;
 			CloseHandle(g_hThread);	// スレッドを閉じる
+
+			// ロード完了
 			SetFade(FADE_OUT, MODE_TITLE_START);
+			//SetFade(FADE_OUT, MODE_GAME);
 		}
 	}
 }

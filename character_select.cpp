@@ -12,8 +12,6 @@
 #include "character_select.h"
 #include "rocket_select.h"
 
-
-
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
 //*****************************************************************************
@@ -103,12 +101,12 @@ void UpdateCharacterSelect(void)
 	if (GetKeyboardTrigger(DIK_A))
 	{
 		g_TexNoChar = g_TexNoChar-- > TEXTURE_CHARACTER_01 ?
-			g_TexNoChar : TEXTURE_CHARACTER_01;
+		g_TexNoChar : TEXTURE_CHARACTER_01;
 	}
 	else if (GetKeyboardTrigger(DIK_D))
 	{
 		g_TexNoChar = g_TexNoChar++ < TEXTURE_CHARACTER_LAST ?
-			g_TexNoChar : TEXTURE_CHARACTER_LAST;
+		g_TexNoChar : TEXTURE_CHARACTER_LAST;
 	}
 	else if (GetKeyboardTrigger(DIK_RETURN))
 	{

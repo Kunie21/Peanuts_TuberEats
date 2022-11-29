@@ -140,7 +140,7 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 	int instCount = 0;
 
 	float zPos, rot;
-	STAGE* pStage = GetStage(0);
+	STAGE2* pStage = GetStage2(STAGE_OSAKA);
 	for (int i = 0; i < pStage->gmkNum; i++)
 	{
 		if (!pStage->arrGmk[i].use) {
@@ -165,9 +165,9 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 		switch (gimmick)
 		{
 		case GIMMICK_ICE:
-			b_pInstance->scl[instCount] = { 4.0f, 1.8f, 4.0f, 0.0f };
+			b_pInstance->scl[instCount] = { 4.0f, 1.4f, 4.0f, 0.0f };
 			b_pInstance->rot[instCount] = { 0.0f, XM_PI - XM_PIDIV4 + 0.3f, rot + XM_PIDIV2, 0.0f };
-			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
+			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 70.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 70.0f) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
 			b_pInstance->col[instCount] = pStage->arrGmk[i].col;
 			break;
 
@@ -200,7 +200,7 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 	int newZPosNoInt = (int)newZPosNoFloat;
 	if (oldZPosNoInt == (int)newZPosNoInt) return false;
 	float length = newZPosNoFloat - oldZPosNoFloat;
-	STAGE* pStage = GetStage(stageNo);
+	STAGE2* pStage = GetStage2(stageNo);
 	while (oldZPosNoInt <= newZPosNoInt)
 	{
 		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
@@ -257,7 +257,7 @@ bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float n
 	int newZPosNoInt = (int)newZPosNoFloat;
 	if (oldZPosNoInt == (int)newZPosNoInt) return false;
 	float length = newZPosNoFloat - oldZPosNoFloat;
-	STAGE* pStage = GetStage(stageNo);
+	STAGE2* pStage = GetStage2(stageNo);
 	while (oldZPosNoInt <= newZPosNoInt)
 	{
 		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
