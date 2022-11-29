@@ -285,7 +285,7 @@ void UpdateStart(void)
 		switch (g_Menu)
 		{
 		case MENU_START:
-			SetFade(FADE_OUT, MODE_GAME); // game
+			SetMode(MODE_HOME); // game
 			break;
 
 		case MENU_OPTION:

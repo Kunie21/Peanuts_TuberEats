@@ -43,16 +43,6 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_SELECT_MAX] = { NULL };	// テクスチャ情報
-//static char*	g_TextureName[TEXTURE_SELECT_MAX] = {
-//	"data/TEXTURE/home_menu_gamen/character.png",
-//	"data/TEXTURE/home_menu_gamen/character01.png",
-//	"data/TEXTURE/home_menu_gamen/character02.png",
-//	"data/TEXTURE/home_menu_gamen/character03.png",
-//	"data/TEXTURE/home_menu_gamen/delivery_start_button_1.png",
-//	"data/TEXTURE/home_menu_gamen/delivery_start_button_2.png",
-//	"data/TEXTURE/home_menu_gamen/delivery_start_button_3.png",
-//};
 
 static int g_TexNoChar;		//キャラクターのテキスチャー番号
 static int g_TexNoButton;	//ボタンのテキスチャー番号
@@ -100,15 +90,6 @@ void UninitCharacterSelect(void)
 {
 	if (g_Load == FALSE) return;
 
-	//for (int i = 0; i < TEXTURE_MAX; i++)
-	//{
-	//	if (g_Texture[i])
-	//	{
-	//		g_Texture[i]->Release();
-	//		g_Texture[i] = NULL;
-	//	}
-	//}
-
 	g_Load = FALSE;
 }
 
@@ -136,7 +117,9 @@ void UpdateCharacterSelect(void)
 	else if (GetKeyboardRelease(DIK_RETURN))
 	{
 		g_TexNoButton = TEXTURE_START_BUTTON_2;
-		//SetMode(MODE_GAME);
+
+		SetFade(FADE_OUT, MODE_GAME); // game
+
 	}
 
 }

@@ -237,6 +237,7 @@ void SetStencilReadLL(SHADER_TYPE shader);
 void SetStencilReadLLGimmick(void);
 void SetStencilNone(void);
 void SetStencilNoneAL(SHADER_TYPE shader);
+void SetStencilNoneAL(void);
 void SetStencilNoneOnlyDepth(void);
 
 void SetDrawMonitor(void);

@@ -12,8 +12,6 @@
 #include "wallet.h"
 #include "rocket_select.h"
 
-
-
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -71,23 +69,6 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-//static char*	g_TextureName[TEXTURE_MAX] = {
-//	"data/TEXTURE/home_menu_gamen/player_wallet.png",
-//	"data/TEXTURE/home_menu_gamen/player_wallet_total.png",
-//	"data/TEXTURE/home_menu_gamen/player_wallet_dot.png",
-//	"data/TEXTURE/home_menu_gamen/player_wallet_comma.png",
-//	"data/TEXTURE/home_menu_gamen/yen_wallet.png",
-//	"data/TEXTURE/home_menu_gamen/minus_wallet_total.png",
-//	"data/TEXTURE/home_menu_gamen/minus_wallet_dot.png",
-//	"data/TEXTURE/home_menu_gamen/minus_wallet_comma.png",
-//	"data/TEXTURE/home_menu_gamen/minus_wallet.png",
-//	"data/TEXTURE/home_menu_gamen/shop_menu_opacity.png",
-//	"data/TEXTURE/home_menu_gamen/buy_menu.png",
-//	"data/TEXTURE/home_menu_gamen/buy_menu_selection.png",
-//	"data/TEXTURE/home_menu_gamen/no_select_ui.png",
-//	"data/TEXTURE/home_menu_gamen/buy_select_ui.png",
-//};
 
 
 //=============================================================================
@@ -98,7 +79,6 @@ HRESULT InitWallet(void)
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
-		//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_WALLET + i);
 		g_td[i].ctrType = CENTER_LEFTTOP;
 		g_td[i].posType = POSITION_ABSOLUTE;
@@ -157,15 +137,6 @@ HRESULT InitWallet(void)
 void UninitWallet(void)
 {
 	if (g_Load == FALSE) return;
-
-	//for (int i = 0; i < TEXTURE_MAX; i++)
-	//{
-	//	if (g_Texture[i])
-	//	{
-	//		g_Texture[i]->Release();
-	//		g_Texture[i] = NULL;
-	//	}
-	//}
 
 	g_Load = FALSE;
 }

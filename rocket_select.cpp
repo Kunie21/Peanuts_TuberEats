@@ -68,25 +68,6 @@ enum
 };
 
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_DISPLAY_ICON_01] = { NULL };	// テクスチャ情報
-//static char*	g_TextureName[TEXTURE_DISPLAY_ICON_01] = {
-//	"data/TEXTURE/home_menu_gamen/customize_bg.png",
-//	"data/TEXTURE/home_menu_gamen/shop_menu.png",
-//	"data/TEXTURE/home_menu_gamen/statusbar_0.png",
-//	"data/TEXTURE/home_menu_gamen/statusbar_point.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_icon_lock.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_icon_new.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_icon.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_icon_equip.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_1.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_2.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_3.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_4.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_select_1.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_select_2.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_select_3.png",
-//	"data/TEXTURE/home_menu_gamen/rocket_select_4.png",
-//};
 
 enum {
 	MODEL_SELECT_ROCKET_01,
@@ -125,7 +106,7 @@ struct SELECTROCKET
 
 };
 
-static SELECTROCKET   g_Rocket[MODEL_MAX];	// 全モデルの管理足すロケット情報
+static SELECTROCKET   g_Rocket[MODEL_SELECT_MAX];	// 全モデルの管理足すロケット情報
 
 //=============================================================================
 // 初期化処理
@@ -133,9 +114,7 @@ static SELECTROCKET   g_Rocket[MODEL_MAX];	// 全モデルの管理足すロケット情報
 HRESULT InitRocketSelect(void)
 {
 	// テクスチャ生成
-	for (int i = 0; i < TEXTURE_DISPLAY_ICON_01; i++)
-	{
-		//D3DX11CreateShaderResourceViewFromFile(GetDevice(), g_TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+	for (int i = 0; i < TEXTURE_DISPLAY_ICON_01; i++) {
 		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_BG + i);
 	}
 
@@ -181,12 +160,7 @@ HRESULT InitRocketSelect(void)
 
 
 	// モデル生成
-	//LoadModel("data/MODEL/stage.obj", &g_ModelStage.model);
 	g_ModelStage.model = MODEL_STAGE;
-	//LoadModel("data/MODEL/rocket01.obj", &g_Rocket[MODEL_ROCKET_01].model);
-	//LoadModel("data/MODEL/rocket03.obj", &g_Rocket[MODEL_ROCKET_02].model);
-	//LoadModel("data/MODEL/rocket04.obj", &g_Rocket[MODEL_ROCKET_03].model);
-	//LoadModel("data/MODEL/rocket05.obj", &g_Rocket[MODEL_ROCKET_04].model);
 	g_Rocket[MODEL_SELECT_ROCKET_01].model = MODEL_ROCKET1;
 	g_Rocket[MODEL_SELECT_ROCKET_02].model = MODEL_ROCKET2;
 	g_Rocket[MODEL_SELECT_ROCKET_03].model = MODEL_ROCKET3;
@@ -232,7 +206,7 @@ HRESULT InitRocketSelect(void)
 	g_Rocket[MODEL_SELECT_ROCKET_04].status = STATUS_LOCK;
 
 	// ロケットアイコンの設定
-	for (int i = 0; i < MODEL_MAX; i++)
+	for (int i = 0; i < MODEL_SELECT_MAX; i++)
 	{
 		switch(g_Rocket[i].status)
 		{
@@ -259,7 +233,7 @@ HRESULT InitRocketSelect(void)
 	// 最初の時、選択するロケットの設定
 	g_ModelNo_Rocket = g_RocketEquip - TEXTURE_DISPLAY_ICON_01;
 	g_SelectBar = g_ModelNo_Rocket + TEXTURE_ROCKETSELECT_1;
-	g_td[g_SelectBar -4].col = COL_BLACK;
+	g_td[g_SelectBar - 4].col = COL_BLACK;
 
 	g_IsSelectFinished = FALSE;
 
@@ -273,22 +247,6 @@ HRESULT InitRocketSelect(void)
 void UninitRocketSelect(void)
 {
 	if (g_Load == FALSE) return;
-
-	//for (int i = 0; i < TEXTURE_DISPLAY_ICON_01; i++)
-	//{
-	//	if (g_Texture[i])
-	//	{
-	//		g_Texture[i]->Release();
-	//		g_Texture[i] = NULL;
-	//	}
-	//}
-
-	//for (int i = 0; i < MODEL_MAX; i++)
-	//{
-	//	UnloadModel(&g_Rocket[i].model);
-	//}
-	//UnloadModel(&g_ModelStage.model);
-	//UnloadModel(&g_ModelDisplay.model);
 
 	g_Load = FALSE;
 }
@@ -419,10 +377,33 @@ void DrawRocketSelect(void)
 	}
 
 	// モデル描画
-	SetDrawNoLighting();
+
 	SetCullingMode(CULL_MODE_NONE);
+
+	// 黒塗り
+	SetDrawFillBlackPlayer();
 	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
 	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt);
+
+	// シャドウボリューム
+	SetStencilWritePL();
+	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
+	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt);
+
+	SetBlendState(BLEND_MODE_ADD);
+
+	// ポイントライト
+	SetStencilReadPL();
+	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
+	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt);
+
+	// アンビエントライト
+	SetStencilNoneAL();
+	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
+	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt);
+
+	SetBlendState(BLEND_MODE_ALPHABLEND);
+
 	SetCullingMode(CULL_MODE_BACK);
 }
 

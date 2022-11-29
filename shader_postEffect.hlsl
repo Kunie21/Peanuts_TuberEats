@@ -56,7 +56,7 @@ float4 PSOnlyTex(VS_OUTPUT input) : SV_Target{
 }
 
 float4 PSTest(VS_OUTPUT input) : SV_Target{
-	return float4(0.0f, 1.0f, 0.0f, 1.0f);
+	return float4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // モーションブラー用

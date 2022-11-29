@@ -48,7 +48,7 @@ void InitLight(void)
 		g_Point[i].Use = FALSE;
 	}
 	g_Point[0].Color = { 1.0f, 1.0f, 1.0f, 0.0f };
-	g_Point[0].Position = { 0.0f, 180.0f, 700.0f, 1.0f };
+	g_Point[0].Position = { -100.0f, 500.0f, -50.0f, 1.0f };
 	g_Point[0].Intensity = 1.0f;
 	g_Point[0].Attenuation = 2000.0f;
 	g_Point[0].Use = TRUE;
@@ -73,6 +73,8 @@ void InitLight(void)
 	//g_Spot[1].Angle = XM_PIDIV4 * 0.5f;
 	//g_Spot[1].Use = FALSE;
 	SetSpotLight(g_Spot);
+
+	SetLightNo(0);
 }
 
 //=============================================================================

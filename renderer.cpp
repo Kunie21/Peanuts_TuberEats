@@ -1089,8 +1089,8 @@ void SetStencilWriteDL(void)
 void SetStencilWritePL(void)
 {
 	SetCullingMode(CULL_MODE_NONE);
-	//g_ImmediateContext->VSSetShader(g_VS, NULL, 0);
-	g_ImmediateContext->VSSetShader(g_VSPlayer, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VS, NULL, 0);
+	//g_ImmediateContext->VSSetShader(g_VSPlayer, NULL, 0);
 	g_ImmediateContext->GSSetShader(g_GSPL, NULL, 0);
 	g_ImmediateContext->PSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_StencilWrite, NULL);
@@ -1252,6 +1252,15 @@ void SetStencilNoneAL(SHADER_TYPE shader)
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
+void SetStencilNoneAL(void)
+{
+	g_ImmediateContext->VSSetShader(g_VS, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSAL, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
+}
 
 void SetStencilNoneOnlyDepth(void)
 {
@@ -1302,13 +1311,15 @@ void SetDrawFillBlack(SHADER_TYPE shader)
 }
 void SetDrawFillBlackPlayer(void)
 {
-	OUTLINE outline = { { 0.0f, 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f} };
-	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
+	//OUTLINE outline = { { 0.0f, 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f} };
+	//GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
-	SetCullingMode(CULL_MODE_BACK);
-	g_ImmediateContext->VSSetShader(g_VSOutline, NULL, 0);
+	//SetCullingMode(CULL_MODE_BACK);
+	//g_ImmediateContext->VSSetShader(g_VSOutline, NULL, 0);
+	g_ImmediateContext->VSSetShader(g_VS, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
-	g_ImmediateContext->PSSetShader(g_PSOutline, NULL, 0);
+	//g_ImmediateContext->PSSetShader(g_PSOutline, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSTest, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
