@@ -15,7 +15,10 @@
 #define	AUDIO_FADEOUT_SPEED		(0.01f)			// オーディオフェードインスピード
 #define	AUDIO_FADEIN_SPEED		(0.01f)			// オーディオフェードアウトスピード
 
-#define AUDIO_INITIAL_VOLUME	(0.7f)			// 初期音量
+#define MASTER_INITIAL_VOLUME	(0.5f)			// 初期音量
+#define BGM_INITIAL_VOLUME		(0.1f)			// 初期音量
+#define SE_INITIAL_VOLUME		(1.0f)			// 初期音量
+#define VOICE_INITIAL_VOLUME	(0.6f)			// 初期音量
 
 //#define NO_AUDIO	// サウンド無し(これ消せばロードはいる)
 
@@ -414,10 +417,10 @@ BOOL LoadSound(int loadpoint)
 
 	//音量の初期化
 	{
-		g_VolParam[MASTER]	= AUDIO_INITIAL_VOLUME;
-		g_VolParam[BGM]		= AUDIO_INITIAL_VOLUME;
-		g_VolParam[SE]		= AUDIO_INITIAL_VOLUME;
-		g_VolParam[VOICE]	= AUDIO_INITIAL_VOLUME;
+		g_VolParam[MASTER]	= MASTER_INITIAL_VOLUME;
+		g_VolParam[BGM]		= BGM_INITIAL_VOLUME;
+		g_VolParam[SE]		= SE_INITIAL_VOLUME;
+		g_VolParam[VOICE]	= VOICE_INITIAL_VOLUME;
 	}
 
 
@@ -789,44 +792,45 @@ void ReStartSound(int label)
 //=============================================================================
 void SetBGM(MODE_LABEL mode)
 {
-	switch (mode)
+	if (GetMode() > MODE_LOADING)
 	{
-	case MODE_OPENING:
-	case MODE_LOADING:
-		break;
 
-	case MODE_TITLE_START:
-		SOUND_LABEL_BGM_TITLE,			// タイトル
+		switch (mode)
+		{
+
+		case MODE_OPENING:
+		case MODE_LOADING:
+			break;
+
+		case MODE_TITLE_START:
+			SOUND_LABEL_BGM_TITLE,			// タイトル
 			PlaySound(SOUND_LABEL_BGM_TITLE);
-		break;
+			break;
 
-	//case MODE_START:
-	//	PlaySound(SOUND_LABEL_BGM_START);
-	//	break;
+		case MODE_HOME:
+			PlaySound(SOUND_LABEL_BGM_HOME);
+			break;
 
-	case MODE_HOME:
-		PlaySound(SOUND_LABEL_BGM_HOME);
-		break;
+		case MODE_STAGESELECT:
+			PlaySound(SOUND_LABEL_BGM_STAGE_SELECT);
+			break;
 
-	case MODE_STAGESELECT:
-		PlaySound(SOUND_LABEL_BGM_STAGE_SELECT);
-		break;
+		case MODE_GAME:
+			PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
+			break;
 
-	case MODE_GAME:
-		PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
-		break;
+		case MODE_RESULT:
+			PlaySound(SOUND_LABEL_BGM_RESULT);
+			break;
 
-	case MODE_RESULT:
-		PlaySound(SOUND_LABEL_BGM_RESULT);
-		break;
-
-	case MODE_END:
-		PlaySound(SOUND_LABEL_BGM_ENDING);
-		break;
+		case MODE_END:
+			PlaySound(SOUND_LABEL_BGM_ENDING);
+			break;
 
 
-	default:
-		break;
+		default:
+			break;
+		}
 	}
 	return;
 }

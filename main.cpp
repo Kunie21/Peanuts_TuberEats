@@ -486,8 +486,8 @@ void SetMode(MODE_LABEL mode)
 		break;
 	}
 
-	//// BGMの管理（再生）
-	//SetBGM(g_Mode);		// Load系通るまでコメントアウトしたままで！エラー出ます！
+	// BGMの管理（再生）
+	SetBGM(g_Mode);		// Load系通るまでコメントアウトしたままで！エラー出ます！
 
 }
 
