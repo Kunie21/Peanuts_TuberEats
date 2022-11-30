@@ -99,7 +99,7 @@ void DrawGimmick(GIMMICK_TYPE gimmick)
 		if (pStage->arrGmk[i].type != gimmick) continue;
 
 		zPos = GetZPos(pStage->arrGmk[i].zPosNo);
-		if (zPos < -500.0f || 10000.0f < zPos)
+		if (zPos < -1000.0f || 20000.0f < zPos)
 			continue;
 		
 		rot = GetRotPos(pStage->arrGmk[i].rotPosNo);
@@ -140,7 +140,7 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 	int instCount = 0;
 
 	float zPos, rot;
-	STAGE2* pStage = GetStage2(STAGE_OSAKA);
+	STAGE2* pStage = GetStage2();
 	for (int i = 0; i < pStage->gmkNum; i++)
 	{
 		if (!pStage->arrGmk[i].use) {
@@ -157,7 +157,7 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 		if (pStage->arrGmk[i].type != gimmick) continue;
 
 		zPos = GetZPos(pStage->arrGmk[i].zPosNo);
-		if (zPos < -500.0f || 10000.0f < zPos)
+		if (zPos < -1000.0f || 20000.0f < zPos)
 			continue;
 
 		rot = GetRotPos(pStage->arrGmk[i].rotPosNo);
@@ -192,7 +192,7 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 	}
 }
 
-bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot)
+bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 {
 	float oldZPosNoFloat = oldZ / MESH_SIZE_Z;
 	float newZPosNoFloat = newZ / MESH_SIZE_Z;
@@ -200,7 +200,7 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 	int newZPosNoInt = (int)newZPosNoFloat;
 	if (oldZPosNoInt == (int)newZPosNoInt) return false;
 	float length = newZPosNoFloat - oldZPosNoFloat;
-	STAGE2* pStage = GetStage2(stageNo);
+	STAGE2* pStage = GetStage2();
 	while (oldZPosNoInt <= newZPosNoInt)
 	{
 		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;
@@ -226,13 +226,15 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 						SetDamageEffect();
 						SetPlayerCollisionIce();
 						break;
+
 					case GIMMICK_RING:
 						SetBoostEffect();
 						SetPlayerThroughRing();
 						//pStage->arrGmk[i].use = FALSE;
 						break;
+
 					case GIMMICK_CRACK:
-						SetDamageEffect();
+						//SetDamageEffect();
 						if (rot > 0.0f) {
 							SetPlayerCollisionBlast(1.0f - (rot / pStage->arrGmk[i].rotSizeHalf));
 						}
@@ -249,7 +251,7 @@ bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float n
 	}
 	return false;
 }
-bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float newRot)
+bool CollisionMissile(float oldZ, float newZ, float oldRot, float newRot)
 {
 	float oldZPosNoFloat = oldZ / MESH_SIZE_Z;
 	float newZPosNoFloat = newZ / MESH_SIZE_Z;
@@ -257,7 +259,7 @@ bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float n
 	int newZPosNoInt = (int)newZPosNoFloat;
 	if (oldZPosNoInt == (int)newZPosNoInt) return false;
 	float length = newZPosNoFloat - oldZPosNoFloat;
-	STAGE2* pStage = GetStage2(stageNo);
+	STAGE2* pStage = GetStage2();
 	while (oldZPosNoInt <= newZPosNoInt)
 	{
 		float rate = (1.0f - oldZPosNoFloat + (float)oldZPosNoInt) / length;

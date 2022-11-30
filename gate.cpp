@@ -23,7 +23,7 @@
 #define GATE_SCL		(40.0f)		// ゲートの大きさ
 #define GATE_POS		(250.0f)	// Z座標
 #define IMAGE_SCL		(30.0f)		// カウントダウン文字の大きさ
-#define IMAGE_POS		(0.1f)		// Z座標ずらす量
+#define IMAGE_POS		(1.0f)		// Z座標ずらす量
 #define CD_SPD			(0.11f)		// カウントダウンスピード
 #define MONITOR_SPD		(0.0007f)	// 走査線スピード
 
@@ -158,8 +158,10 @@ GATE::GATE()
 		m_ImageSRT.scl = { IMAGE_SCL, IMAGE_SCL, 0.0f };
 	}
 
-	m_MaterialImage.Diffuse = { 0.15f, 0.15f, 0.15f, 1.0f };
-	m_MaterialMonitor.Diffuse = { 0.0f, 0.1f, 0.08f, 1.0f };
+	//m_MaterialImage.Diffuse = { 0.15f, 0.15f, 0.15f, 1.0f };
+	//m_MaterialMonitor.Diffuse = { 0.0f, 0.1f, 0.08f, 1.0f };
+	m_MaterialImage.Diffuse = { 0.55f, 0.55f, 0.55f, 1.0f };
+	m_MaterialMonitor.Diffuse = { 0.0f, 0.3f, 0.25f, 1.0f };
 }
 
 GATE::~GATE()

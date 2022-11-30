@@ -862,6 +862,11 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		GetDeviceContext()->Unmap(g_ScreenVertexBuffer, 0);
 	}
 
+	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight[0], ClearColor);
+	g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight[1], ClearColor);
+
+
 	return S_OK;
 }
 
@@ -1219,7 +1224,8 @@ void SetDrawMonitor(void)
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	//g_ImmediateContext->OMSetDepthStencilState(g_StencilRead, NULL);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTarget], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
 
 void SetStencilNone(void)
@@ -1378,7 +1384,7 @@ void SetDrawTubeLight(void)
 	//g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTarget], g_DepthStencilView);
 }
 void SetDrawFire(void)
 {
@@ -1407,8 +1413,8 @@ void SetDrawLight(void)
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
-	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
-	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewLight[g_CurrentTargetLight], g_DepthStencilView);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
 void SetDrawInstancingOnlyTex(void)
 {
@@ -1444,7 +1450,8 @@ void ApplyLightToTarget(void)	// ‰ÁŽZ‡¬‚·‚é
 	GetDeviceContext()->UpdateSubresource(g_FilterBuffer, 0, NULL, &f, 0, 0);
 
 	SetCullingMode(CULL_MODE_BACK);
-	SetBlendState(BLEND_MODE_NONE);
+	//SetBlendState(BLEND_MODE_NONE);
+	SetBlendState(BLEND_MODE_ALPHABLEND);
 	g_ImmediateContext->VSSetShader(g_VSFilter, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSLight, NULL, 0);
@@ -1462,8 +1469,13 @@ void ApplyLightToTarget(void)	// ‰ÁŽZ‡¬‚·‚é
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
 
-	DrawScreen(&g_LightTexture[g_CurrentResourceLight]);
+	DrawScreen(&g_LightTexture[1]);
+	//DrawScreen(&g_LightTexture[g_CurrentResourceLight]);
 
+
+	//float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	//g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight[g_CurrentTargetLight], ClearColor);
+	//g_ImmediateContext->ClearRenderTargetView(g_RenderTargetViewLight[g_CurrentTargetLight ? 0 : 1], ClearColor);
 }
 void ApplyFilter(FILTER_MODE filter)
 {

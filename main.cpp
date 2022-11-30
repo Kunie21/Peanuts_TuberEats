@@ -72,7 +72,7 @@ int		g_CountFPS;							// FPSカウンタ
 char	g_DebugStr[2048] = WINDOW_NAME;		// デバッグ文字表示用
 #endif
 
-MODE_LABEL	g_Mode = MODE_OPENING;	// 起動時の画面を設定
+MODE_LABEL	g_Mode = MODE_LOADING;	// 起動時の画面を設定
 
 //=============================================================================
 // メイン関数

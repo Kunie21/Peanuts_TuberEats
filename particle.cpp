@@ -79,7 +79,7 @@ public:
 		m_desc.m_pos.y += m_desc.m_vec.y * m_desc.m_spd;
 		m_desc.m_pos.z += m_desc.m_vec.z * m_desc.m_spd;
 		m_desc.m_scl = PARTICLE_SIZE * m_desc.m_spd / m_desc.m_spdmax;
-		m_desc.m_col.w = m_desc.m_spd;
+		//m_desc.m_col.w = m_desc.m_spd;
 		m_desc.m_spd *= m_desc.m_acl;
 		if(m_desc.m_spd < 0.5f) m_bUse = FALSE;
 	}
@@ -116,7 +116,7 @@ public:
 		m_dscPtc.m_spd = PARTICLE_SPD;
 		m_dscPtc.m_spdmax = m_dscPtc.m_spd;
 		m_dscPtc.m_acl = PARTICLE_ACL;
-		m_dscPtc.m_col = { 1.0f, 1.0f, 1.0f, 1.0f };
+		m_dscPtc.m_col = { 2.7f, 2.4f, 2.7f, 1.0f };
 		m_vol = XM_PIDIV2 * 0.333f;	// 30度
 	}
 
@@ -252,6 +252,7 @@ public:
 		
 		// ワールドマトリックスの設定
 		SetWorldBuffer(&XMMatrixIdentity());
+		SetMaterialBuffer(GetDefaultMaterial());
 
 		// インスタンシング描画
 		SetShaderInstanceingBillboard();

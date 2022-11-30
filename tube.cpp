@@ -9,6 +9,7 @@
 #include "texture2d.h"
 #include "tube.h"
 #include "input.h"
+#include "player.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -67,17 +68,17 @@ HRESULT InitTube(void)
 		g_MeshTube.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 		// ブロック数の設定
-		g_MeshTube.nX = MESH_NUM_X;
+		g_MeshTube.nX = MESH_NUM_X2;
 		g_MeshTube.nZ = MESH_NUM_Z;
 
 		// 頂点数の設定
-		g_MeshTube.nVertex = (MESH_NUM_X + 1) * (MESH_NUM_Z + 1);
+		g_MeshTube.nVertex = (MESH_NUM_X2 + 1) * (MESH_NUM_Z + 1);
 
 		// インデックス数の設定
-		g_MeshTube.nVertexIndex = (MESH_NUM_X + 1) * 2 * MESH_NUM_Z + (MESH_NUM_Z - 1) * 2;
+		g_MeshTube.nVertexIndex = (MESH_NUM_X2 + 1) * 2 * MESH_NUM_Z + (MESH_NUM_Z - 1) * 2;
 
 		// ポリゴン数の設定
-		g_MeshTube.nPolygon = MESH_NUM_X * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
+		g_MeshTube.nPolygon = MESH_NUM_X2 * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
 
 		// ブロックサイズの設定
 		g_MeshTube.sizeX = MESH_SIZE_X;
@@ -103,9 +104,9 @@ HRESULT InitTube(void)
 		GetDevice()->CreateBuffer(&bd, NULL, &g_MeshTube.indexBuffer);
 
 		{//頂点バッファの中身を埋める
-#if 0
-			const float texSizeX = 1.0f / g_MeshTube.nX;
-			const float texSizeZ = 1.0f / g_MeshTube.nZ;
+#if 1
+			const float texSizeX = (1.0f / g_MeshTube.nX) * TUBE_TEX_X;
+			const float texSizeZ = (1.0f / g_MeshTube.nZ) * TUBE_TEX_Z;
 #else
 			const float texSizeX = 1.0f;
 			const float texSizeZ = 1.0f;
@@ -196,17 +197,17 @@ HRESULT InitTube(void)
 		g_MeshLight.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 		// ブロック数の設定
-		g_MeshLight.nX = MESH_NUM_X;
+		g_MeshLight.nX = MESH_NUM_X2;
 		g_MeshLight.nZ = MESH_NUM_Z;
 
 		// 頂点数の設定
-		g_MeshLight.nVertex = (MESH_NUM_X + 1) * (MESH_NUM_Z + 1);
+		g_MeshLight.nVertex = (MESH_NUM_X2 + 1) * (MESH_NUM_Z + 1);
 
 		// インデックス数の設定
-		g_MeshLight.nVertexIndex = (MESH_NUM_X + 1) * 2 * MESH_NUM_Z + (MESH_NUM_Z - 1) * 2;
+		g_MeshLight.nVertexIndex = (MESH_NUM_X2 + 1) * 2 * MESH_NUM_Z + (MESH_NUM_Z - 1) * 2;
 
 		// ポリゴン数の設定
-		g_MeshLight.nPolygon = MESH_NUM_X * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
+		g_MeshLight.nPolygon = MESH_NUM_X2 * MESH_NUM_Z * 2 + (MESH_NUM_Z - 1) * 4;
 
 		// ブロックサイズの設定
 		g_MeshLight.sizeX = MESH_SIZE_X;
@@ -360,6 +361,7 @@ void UpdateTube(void)
 //=============================================================================
 void DrawTube(void)
 {
+	SetStageCurvePlayer();
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
@@ -386,6 +388,7 @@ void DrawTube(void)
 
 void DrawTubeResult(void)
 {
+	SetStageCurvePlayer();
 	MATERIAL g_MeshTubeResult;
 	g_MeshTubeResult.Diffuse.w = 0.6f;
 
@@ -414,8 +417,58 @@ void DrawTubeResult(void)
 }
 
 
+void DrawTubeLight2(void)
+{
+	SetStageCurvePlayer();
+	// 頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_MeshTube.vertexBuffer, &stride, &offset);
+
+	// インデックスバッファ設定
+	GetDeviceContext()->IASetIndexBuffer(g_MeshTube.indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+	// プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// テクスチャ設定
+	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_TUBE_LIGHT));
+
+	// マテリアル設定
+	//SetMaterialBuffer(&g_MeshLight.material);
+	MATERIAL material;
+	material.Diffuse = { 1.0f, 0.5f, 0.25f, 1.0f };
+	//material.Diffuse = { 2.0f, 1.0f, 0.5f, 1.0f };
+	SetMaterialBuffer(&material);
+
+	//XMMATRIX mtxWorld = XMMatrixIdentity();			// ワールドマトリックスの初期化
+	//MulMtxScl(mtxWorld, 0.05f, 0.05f, 1.0f);		// スケールを反映
+	//MulMtxPos(mtxWorld, 0.0f, TUBE_RADIUS, 0.0f);	// 移動を反映
+	//SetWorldBuffer(&mtxWorld);						// ワールドマトリックスの設定
+
+	XMMATRIX mtxWorld = XMMatrixIdentity();			// ワールドマトリックスの初期化
+	MulMtxScl(mtxWorld, 0.90f, 0.90f, 1.0f);		// スケールを反映
+	SetWorldBuffer(&mtxWorld);						// ワールドマトリックスの設定
+
+	// ポリゴンの描画
+	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
+
+	material.Diffuse = { 0.25f, 1.0f, 1.0f, 1.0f };
+	//material.Diffuse = { 0.5f, 2.0f, 2.0f, 1.0f };
+	SetMaterialBuffer(&material);
+
+	mtxWorld = XMMatrixIdentity();			// ワールドマトリックスの初期化
+	MulMtxScl(mtxWorld, 0.8f, 0.8f, 1.0f);		// スケールを反映
+	MulMtxRot(mtxWorld, 0.0f, 0.0f, XM_PIDIV2);	// 移動を反映
+	SetWorldBuffer(&mtxWorld);						// ワールドマトリックスの設定
+
+	// ポリゴンの描画
+	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
+	SetMaterialBuffer(GetDefaultMaterial());
+}
 void DrawTubeLight(void)
 {
+	SetStageCurvePlayer();
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
@@ -427,11 +480,11 @@ void DrawTubeLight(void)
 	// プリミティブトポロジ設定
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	// マテリアル設定
-	SetMaterialBuffer(&g_MeshLight.material);
-
 	// テクスチャ設定
 	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_WHITE));
+
+	// マテリアル設定
+	SetMaterialBuffer(&g_MeshLight.material);
 
 	XMMATRIX mtxWorld = XMMatrixIdentity();			// ワールドマトリックスの初期化
 	MulMtxScl(mtxWorld, 0.05f, 0.05f, 1.0f);		// スケールを反映
@@ -440,6 +493,7 @@ void DrawTubeLight(void)
 
 	// ポリゴンの描画
 	GetDeviceContext()->DrawIndexed(g_MeshLight.nVertexIndex, 0, 0);
+
 }
 
 void RotateTube(float rot)

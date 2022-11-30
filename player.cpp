@@ -120,7 +120,19 @@ public:
 	bool Launch(MISSILE_TYPE type) {
 		//if (!m_missiles--)
 		//	return false;
-		return LaunchMissile(type, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd); }
+		return LaunchMissile(type, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd);
+	}
+	void Reset(void) {
+		m_pos = 0;
+		m_posSpd = 0.0f;
+		m_addSpd = 0.0f;
+		m_rot = 0.0f;
+		m_rotSpd = 0.0f;
+		m_rotAddSpd = 0.0f;
+		m_fuel = 5000.0f;
+		m_invTime = 0.0f;
+		m_missiles = 10;
+	}
 };
 
 static ROCKET g_Rocket;
@@ -193,9 +205,12 @@ void UpdatePlayer(void)
 	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_02); }
 
 	// コリジョン
-	if (g_Rocket.AbleToCollision()){
-		CollisionGimmick(0, oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
+	if (g_Rocket.AbleToCollision()) {
+		CollisionGimmick(oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
 		//SetDamageEffect();
+	}
+	if (CheckGoal(oldRocket.GetPos(), g_Rocket.GetPos())) {
+		SetFade(FADE_OUT, MODE_RESULT);
 	}
 
 	// パイプ曲げ（手動）
@@ -209,12 +224,12 @@ void UpdatePlayer(void)
 	//SetCurveBuffer(&curveTest);
 	
 	// パイプ曲げ（ステージ設定に従って自動で曲げる）
-	SetStageCurve(STAGE_OSAKA, g_Rocket.GetPos(), g_Rocket.GetSpeed());
+	//SetStageCurve(STAGE_OSAKA, g_Rocket.GetPos(), g_Rocket.GetSpeed());
 
 	// GPU_TIME
 	static int time = 0;
 	SetFrameTime(time++);
-	SetMapPosition(g_Rocket.GetPos() / ((float)GetStage2(STAGE_OSAKA)->goal * MESH_SIZE_Z));
+	SetMapPosition(g_Rocket.GetPos() / GetStage2()->goal);
 	SetSpeedMeter(g_Rocket.GetSpeedRate());
 	SetFuelMeter(g_Rocket.GetFuelRate());
 
@@ -311,4 +326,8 @@ void SetRocketStart(void) {
 CURVE_BUFFER GetCurveTestStatus(void) {
 	//return curveTest;
 	return *GetCurveBuffer();
+}
+
+void SetStageCurvePlayer(void) {
+	SetStageCurve(g_Rocket.GetPos(), g_Rocket.GetSpeed());
 }

@@ -47,7 +47,9 @@ float4 PSLight(VS_OUTPUT input) : SV_Target{
 			outDiffuse.rgb += filter[y + 1][x + 1] * g_Texture.Load(int3(pos_x + x, pos_y + y, 0)).rgb;
 		}
 	}
-	return outDiffuse * 0.7f;
+	outDiffuse.rgb *= 0.7f;
+	outDiffuse.a = 1.0f;
+	return outDiffuse;
 }
 
 // テクスチャを参照するだけ（変換画像を画面に出力するときに使う）

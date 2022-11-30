@@ -129,9 +129,14 @@ VS_OUTPUT VSInst(VS_INPUT input, uint instID : SV_InstanceID) {
 // ポリゴン爆発
 IS_OUTPUT VSEX(VS_INPUT input, uint instID : SV_InstanceID) {
 	IS_OUTPUT output;
-	output.Position = input.Position;
-	output.WorldPos = input.Position;
-	output.Normal = input.Normal;
+	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	output.WorldPos = mul(input.Position, mtxWorld);
+	output.Position = GetTubeCurvePos(output.WorldPos);
+	output.WorldPos.w = Instance.pos[instID].w;
+	output.Normal = normalize(mul(float4(input.Normal.xyz, 0.0f), mtxWorld));
+	//output.Position = input.Position;
+	//output.WorldPos = input.Position;
+	//output.Normal = input.Normal;
 	output.TexCoord = input.TexCoord;
 	output.Id = instID;
 	output.Diffuse = input.Diffuse * Instance.col[instID] * Material.Diffuse;
@@ -267,7 +272,8 @@ float4 PSLL(IS_OUTPUT input) : SV_Target {
 
 	// フォグ計算
 	float z = input.Position.z * input.Position.w;
-	float f = saturate((20000.0f - z) * 0.00005f);
+	//float f = saturate((20000.0f - z) * 0.00005f);
+	float f = saturate((10000.0f - z) * 0.00010f);
 	outDiffuse = f * outDiffuse + (1 - f) * float4(0.8f, 0.9f, 1.0f, 1.0f);
 	outDiffuse.a = color.a;
 
@@ -1023,8 +1029,11 @@ void GSEX(triangle VS_OUTPUT input[3], inout TriangleStream<PS_INPUT> output)
 
 	//int instID = input[0].Id;
 	//matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	
 	float3 normalDirAVE = normalize((input[0].Normal.xyz + input[1].Normal.xyz + input[2].Normal.xyz) * 0.33333f);
 	float length = input[0].WorldPos.w;
+
+	//float3 normalDirAVE = normalize(Instance.pos[input[0].Id].xyz - (input[0].WorldPos.xyz + input[1].WorldPos.xyz + input[2].WorldPos.xyz) * 0.33333f);
 
 	// 新しい三角形
 	for (int i = 0; i < 3; i++)

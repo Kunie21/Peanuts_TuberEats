@@ -31,7 +31,7 @@ struct STAGE2
 {
 	GIMMICK* arrGmk = NULL;	// ギミックの配列
 	int gmkNum;				// ギミック数
-	int goal;				// パイプの長さ
+	float goal;				// ゴールの位置
 };
 
 enum STAGE_LABEL
@@ -61,9 +61,14 @@ void DrawStage(void);
 
 STAGE* GetStage(int stageNo);
 STAGE2* GetStage2(int stageNo);
+STAGE2* GetStage2(void);
 STAGE_TABLE* GetStageTable(int stageNo);
-void SetStageCurve(int stageNo, float zPos, float spd);
+void SetStageCurve(float zPos, float spd);
 CURVE_BUFFER* GetCurveBuffer(void);
 
 float GetZPos(int zPosNo);
 float GetRotPos(int rotPosNo);
+
+void SetStage(int stage);
+int GetStageNo(void);
+BOOL CheckGoal(float oldZ, float newZ);

@@ -428,6 +428,11 @@ void UpdateResult(void)
 		}
 
 		g_Time++;
+
+
+		if (GetKeyboardPress(DIK_RETURN)) {
+			SetFade(FADE_OUT, MODE_HOME);
+		}
 	}
 }
 

@@ -28,6 +28,7 @@
 // グローバル変数
 //*****************************************************************************
 static BOOL		g_Load = FALSE;
+static int		g_StageNo;
 static STAGE	g_Stage[STAGE_MAX];
 static STAGE2	g_Stage2[STAGE_MAX];
 
@@ -91,7 +92,7 @@ static STAGE_TABLE g_StageTbl[STAGE_MAX][TUBE_ZPS_NUM] = {
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
+	{{ 4, 4, 4, 4, 4, 4, 4, 4 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
@@ -140,7 +141,7 @@ static STAGE_TABLE g_StageTbl[STAGE_MAX][TUBE_ZPS_NUM] = {
 	{{ 0, 0, 0, 1, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 1, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 1, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 1, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }}
+	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }}
 },
 {// 上海
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
@@ -538,7 +539,7 @@ HRESULT InitStage(void)
 					gmkCount++;
 					break;
 				case 4:
-					g_Stage2[s].goal = zPosNo;
+					g_Stage2[s].goal = zPosNo * MESH_SIZE_Z;
 					//SetGoalGate(g_Stage2[s].goal * MESH_SIZE_Z);
 					break;
 				default:
@@ -550,12 +551,16 @@ HRESULT InitStage(void)
 		}
 	}
 
+	// ステージをセット
+	SetStage(STAGE_OSAKA);
+
 	g_Load = TRUE;
 	return S_OK;
 }
 
 STAGE* GetStage(int stageNo) { return &g_Stage[stageNo]; }
 STAGE2* GetStage2(int stageNo) { return &g_Stage2[stageNo]; }
+STAGE2* GetStage2(void) { return &g_Stage2[g_StageNo]; }
 STAGE_TABLE* GetStageTable(int stageNo) { return g_StageTbl[stageNo]; }
 
 int GetStageZindex(float zPos) {
@@ -569,14 +574,14 @@ int GetStageZindex(float zPos) {
 }
 
 static CURVE_BUFFER g_CrvBuf;
-void SetStageCurve(int stageNo, float zPos, float spd)
+void SetStageCurve(float zPos, float spd)
 {
 	// テクスチャの移動スピードを設定
-	g_CrvBuf.TexPos = zPos / MESH_SIZE_Z;
+	g_CrvBuf.TexPos = zPos / (TUBE_SIZE / TUBE_TEX_Z);
 	g_CrvBuf.Spd = spd;
 
 	// チューブを曲げる
-	XMFLOAT2 rot = g_StageTbl[stageNo][GetStageZindex(zPos)].curve;
+	XMFLOAT2 rot = g_StageTbl[g_StageNo][GetStageZindex(zPos)].curve;
 	g_CrvBuf.Angle.x += (rot.x - g_CrvBuf.Angle.x) * 0.01f;
 	g_CrvBuf.Angle.y += (rot.y - g_CrvBuf.Angle.y) * 0.01f;
 
@@ -646,4 +651,19 @@ float GetZPos(int zPosNo)
 float GetRotPos(int rotPosNo)
 {
 	return XM_2PI * (float)rotPosNo / (float)MESH_NUM_X + GetTubeRotation() + XM_PIDIV2;
+}
+
+void SetStage(int stage) {
+	g_StageNo = stage;
+	SetGoalGate(g_Stage2[g_StageNo].goal);
+}
+int GetStageNo(void) {
+	return g_StageNo;
+}
+
+BOOL CheckGoal(float oldZ, float newZ) {
+	if (oldZ < g_Stage2[g_StageNo].goal &&
+		newZ > g_Stage2[g_StageNo].goal)
+		return TRUE;
+	return FALSE;
 }

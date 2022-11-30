@@ -28,3 +28,4 @@ void DrawFireResult(void);
 void SetRocketStart(void);
 
 CURVE_BUFFER GetCurveTestStatus(void);
+void SetStageCurvePlayer(void);

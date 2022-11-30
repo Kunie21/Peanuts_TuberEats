@@ -47,9 +47,9 @@ HRESULT InitGame(void)
 	InitGimmick();
 	InitPlayer();
 	InitGameUI();
+	InitGate();
 	InitStage();
 	InitMissile();
-	InitGate();
 	InitAnimStart();
 
 	g_Load = TRUE;
@@ -64,9 +64,9 @@ void UninitGame(void)
 	if (g_Load == FALSE) return;
 
 	UninitAnimStart();
+	UninitStage();
 	UninitGate();
 	UninitMissile();
-	UninitStage();
 	UninitGameUI();
 	UninitPlayer();
 	UninitGimmick();
@@ -106,9 +106,9 @@ void UpdateGame(void)
 
 	UpdatePlayer();
 	UpdateGameUI();
+	UpdateGate();
 	UpdateStage();
 	UpdateMissile();
-	UpdateGate();
 	UpdateAnimStart();
 
 	if (GetKeyboardPress(DIK_K)) { SetStartGate(); }
@@ -201,6 +201,8 @@ void DrawGame(void)
 			// ÉâÉCÉìÉâÉCÉgÇÃåı 3000 Å® 5000
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
+
+
 			//DrawDoor();
 			SetStencilReadLLGimmick();
 			//SetStencilReadLL(SHADER_GIMMICK);
@@ -223,14 +225,20 @@ void DrawGame(void)
 			{
 				SetBlendState(BLEND_MODE_ADD);
 
-				DrawParticle();
 				//SetDrawTubeLight();
 
 				SetDrawInstancingOnlyTex();
 				DrawGimmickInstancing(GIMMICK_RING);
 
-				SetDrawLight();
+				//SetDrawLight();
+				//DrawTubeLight();
+
+				//SetBlendState(BLEND_MODE_ADD);
+				SetDrawTubeLight();
 				DrawTubeLight();
+				DrawTubeLight2();
+				//SetBlendState(BLEND_MODE_ALPHABLEND);
+
 
 				ApplyLightToTarget();
 
@@ -241,6 +249,8 @@ void DrawGame(void)
 				DrawMissileFire();
 
 				DrawGate();
+
+				DrawParticle();
 
 				SetBlendState(BLEND_MODE_ALPHABLEND);
 

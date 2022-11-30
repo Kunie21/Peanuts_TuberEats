@@ -41,5 +41,5 @@ void UpdateGimmick(void);
 void DrawGimmick(GIMMICK_TYPE gimmick);
 void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline = FALSE);
 
-bool CollisionGimmick(int stageNo, float oldZ, float newZ, float oldRot, float newRot);
-bool CollisionMissile(int stageNo, float oldZ, float newZ, float oldRot, float newRot);
+bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot);
+bool CollisionMissile(float oldZ, float newZ, float oldRot, float newRot);

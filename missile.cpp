@@ -80,7 +80,7 @@ void UpdateMissile(void)
 			g_Ms[i].zRot += g_Ms[i].zRotSpd;
 
 			// ƒRƒŠƒWƒ‡ƒ“
-			if (CollisionMissile(0, GetPlayerPosition() + g_Ms[i].zPosOld, GetPlayerPosition() + g_Ms[i].zPos, -g_Ms[i].zRotOld + XM_PI, -g_Ms[i].zRot + XM_PI))
+			if (CollisionMissile(GetPlayerPosition() + g_Ms[i].zPosOld, GetPlayerPosition() + g_Ms[i].zPos, -g_Ms[i].zRotOld + XM_PI, -g_Ms[i].zRot + XM_PI))
 				g_Ms[i].use = FALSE;
 
 			g_Ms[i].zPosOld = g_Ms[i].zPos;
