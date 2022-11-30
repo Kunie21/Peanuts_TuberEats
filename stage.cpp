@@ -16,6 +16,7 @@
 #include "ui_game.h"
 #include "stage.h"
 #include "particle.h"
+#include "gate.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -538,6 +539,7 @@ HRESULT InitStage(void)
 					break;
 				case 4:
 					g_Stage2[s].goal = zPosNo;
+					//SetGoalGate(g_Stage2[s].goal * MESH_SIZE_Z);
 					break;
 				default:
 					break;

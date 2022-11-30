@@ -15,3 +15,4 @@ void UpdateGate(void);
 void DrawGate(void);
 
 void SetStartGate(void);
+void SetGoalGate(float goal_pos);

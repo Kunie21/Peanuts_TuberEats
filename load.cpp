@@ -81,12 +81,12 @@ void InitLoad(void)
 	g_hThread = CreateThread(NULL, 0, ThreadFuncLoad, NULL, 0, NULL);
 }
 
-static int	g_LoadPoint = 0;
+static int g_LoadPoint = 0;
 void UpdateLoad(void)
 {
 	if (CheckFadeIn() && g_LoadPoint < LOAD_MAX)
 	{
-		if (LoadingNow())g_LoadPoint++;
+		if (LoadingNow()) g_LoadPoint++;
 		if (g_LoadPoint == LOAD_MAX)
 		{
 			g_LoadPoint--;
