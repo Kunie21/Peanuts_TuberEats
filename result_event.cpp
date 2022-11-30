@@ -22,7 +22,7 @@
 #define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// 背景サイズ縦
 
 #define ROCKET_MAX					(6)
-#define ROCKET_SPEED				(20)
+#define ROCKET_SPEED				(15)
 
 //*****************************************************************************
 // グローバル変数
@@ -34,12 +34,21 @@ static BOOL				g_Load = FALSE;
 enum
 {
 	TEXTURE_OOSAKA = 0,
+	TEXTURE_HOKKAIDO,
+	TEXTURE_OKINAWA,
 	TEXTURE_SHANGHAI,
-	TEXTURE_PARIS,
-	TEXTURE_NEWYORK,
+	TEXTURE_KOREA,
+	TEXTURE_SINGAPORE,
+	TEXTURE_FRANCE,
+	TEXTURE_ENGLAND,
+	TEXTURE_ITALY,
+	TEXTURE_AMERICA,
+	TEXTURE_CANADA,
+	TEXTURE_MEXICO,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+<<<<<<< HEAD
 //static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 //static char*	g_TextureName[TEXTURE_MAX] = {
 //	"data/TEXTURE/result_country/oosaka.jpg",
@@ -48,6 +57,24 @@ static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 //	"data/TEXTURE/result_country/America.jpg",
 //
 //};
+=======
+static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
+static char*	g_TextureName[TEXTURE_MAX] = {
+	"data/TEXTURE/result_country/Oosaka.jpg",
+	"data/TEXTURE/result_country/Hokkaido.jpg",
+	"data/TEXTURE/result_country/Okinawa.jpg",
+	"data/TEXTURE/result_country/shanghai.jpg",
+	"data/TEXTURE/result_country/Seoul.jpg",
+	"data/TEXTURE/result_country/Singapore.jpg",
+	"data/TEXTURE/result_country/France.jpg",
+	"data/TEXTURE/result_country/London.jpg",
+	"data/TEXTURE/result_country/Italy.jpg",
+	"data/TEXTURE/result_country/america.jpg",
+	"data/TEXTURE/result_country/Canada.jpg",
+	"data/TEXTURE/result_country/Mexico.jpg",
+
+};
+>>>>>>> Peanuts_TuberEats/result
 
 
 XMFLOAT3 g_CameraPos, g_CameraAt, g_CameraUp;
@@ -64,6 +91,7 @@ HRESULT InitResultEvent(void)
 	}
 
 	// 詳細設定
+<<<<<<< HEAD
 	g_td[TEXTURE_OOSAKA].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
 
 	g_td[TEXTURE_SHANGHAI].size = { 900, 600 };
@@ -72,7 +100,55 @@ HRESULT InitResultEvent(void)
 	g_td[TEXTURE_PARIS].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
 
 	g_td[TEXTURE_NEWYORK].size = { TEXTURE_WIDTH, TEXTURE_HEIGHT };
+=======
+	g_td[TEXTURE_OOSAKA].size = { 641, 426 };
+	g_td[TEXTURE_OOSAKA].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_OOSAKA].tex = &g_Texture[TEXTURE_OOSAKA];
 
+	g_td[TEXTURE_HOKKAIDO].size = { 641, 427 };
+	g_td[TEXTURE_HOKKAIDO].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_HOKKAIDO].tex = &g_Texture[TEXTURE_HOKKAIDO];
+
+	g_td[TEXTURE_OKINAWA].size = { 641, 427 };
+	g_td[TEXTURE_OKINAWA].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_OKINAWA].tex = &g_Texture[TEXTURE_OKINAWA];
+
+	g_td[TEXTURE_SHANGHAI].size = { 641, 427 };
+	g_td[TEXTURE_SHANGHAI].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_SHANGHAI].tex = &g_Texture[TEXTURE_SHANGHAI];
+
+	g_td[TEXTURE_KOREA].size = { 641, 427 };
+	g_td[TEXTURE_KOREA].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_KOREA].tex = &g_Texture[TEXTURE_KOREA];
+
+	g_td[TEXTURE_SINGAPORE].size = { 641, 424 };
+	g_td[TEXTURE_SINGAPORE].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_SINGAPORE].tex = &g_Texture[TEXTURE_SINGAPORE];
+
+	g_td[TEXTURE_FRANCE].size = { 641, 360 };
+	g_td[TEXTURE_FRANCE].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_FRANCE].tex = &g_Texture[TEXTURE_FRANCE];
+
+	g_td[TEXTURE_ENGLAND].size = { 641, 441 };
+	g_td[TEXTURE_ENGLAND].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_ENGLAND].tex = &g_Texture[TEXTURE_ENGLAND];
+
+	g_td[TEXTURE_ITALY].size = { 641, 360 };
+	g_td[TEXTURE_ITALY].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_ITALY].tex = &g_Texture[TEXTURE_ITALY];
+>>>>>>> Peanuts_TuberEats/result
+
+	g_td[TEXTURE_AMERICA].size = { 641, 427 };
+	g_td[TEXTURE_AMERICA].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_AMERICA].tex = &g_Texture[TEXTURE_AMERICA];
+
+	g_td[TEXTURE_CANADA].size = { 640, 408 };
+	g_td[TEXTURE_CANADA].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_CANADA].tex = &g_Texture[TEXTURE_CANADA];
+
+	g_td[TEXTURE_MEXICO].size = { 640, 420 };
+	g_td[TEXTURE_MEXICO].scl = { 3.0f, 3.0f };
+	g_td[TEXTURE_MEXICO].tex = &g_Texture[TEXTURE_MEXICO];
 
 	g_CameraPos = { 2500.0f, -500.0f, 2000.0f };
 	g_CameraAt = { 0.0f, -500.0f, 2000.0f };
@@ -115,13 +191,20 @@ void UpdateResultEvent(void)
 //=============================================================================
 void DrawResultEvent(void)
 {
-	//SetDraw2DTexture();
-	
+
 	//後でステージに分けて描画する
 	DrawTexture2D(&g_td[TEXTURE_OOSAKA]);
-	//DrawTexture2D(&g_td[TEXTURE_SHANGHAI]);
-	//DrawTexture2D(&g_td[TEXTURE_PARIS]);
-	//DrawTexture2D(&g_td[TEXTURE_NEWYORK]);
+	DrawTexture2D(&g_td[TEXTURE_HOKKAIDO]);
+	DrawTexture2D(&g_td[TEXTURE_OKINAWA]);
+	DrawTexture2D(&g_td[TEXTURE_SHANGHAI]);
+	DrawTexture2D(&g_td[TEXTURE_KOREA]);
+	DrawTexture2D(&g_td[TEXTURE_SINGAPORE]);
+	DrawTexture2D(&g_td[TEXTURE_FRANCE]);
+	DrawTexture2D(&g_td[TEXTURE_ENGLAND]);
+	DrawTexture2D(&g_td[TEXTURE_ITALY]);
+	DrawTexture2D(&g_td[TEXTURE_AMERICA]);
+	DrawTexture2D(&g_td[TEXTURE_CANADA]);
+	DrawTexture2D(&g_td[TEXTURE_MEXICO]);
 
 	DrawTexture2DAll(TRUE);
 	
