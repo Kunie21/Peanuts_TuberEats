@@ -286,7 +286,7 @@ HRESULT InitResult(void)
 	DeliveryTime = 222;
 	DeliveryFee = 11;
 	Tip = 10;
-	Damage = 1000;
+	Damage = 0;
 
 	TotalAmount = (DeliveryDistance + DeliveryTime + DeliveryFee + Tip - Damage);
 
@@ -620,12 +620,18 @@ void SetEventFinish(void)
 	EventFinish = true;
 }
 
+//桁数チェック
 int Len(int num)
 {
 	int ans = 0;
 	while (num != 0) {
 		num /= 10;
 		ans++;
+	}
+	//値がゼロの場合は1桁
+	if (ans == 0)
+	{
+		ans = 1;
 	}
 	return ans;
 }
