@@ -544,11 +544,12 @@ void DrawResult(void)
 		//’l’i•`‰æ
 		for (int i = 0; i < YEN_MAX; i++)
 		{
-			int number[YEN_MAX] = { DeliveryDistance,DeliveryTime,DeliveryFee,Tip };
+			int number[YEN_MAX] = { DeliveryDistance ,DeliveryTime ,DeliveryFee ,Tip };
+			int numberlen[YEN_MAX] = { Len(DeliveryDistance) ,Len(DeliveryTime) ,Len(DeliveryFee) ,Len(Tip) };
 
 			g_td[TEXTURE_RESULT_NUMBER].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y);
 
-			for (int j = 0; j < YEN_DIGIT; j++)
+			for (int j = 0; j < numberlen[i]; j++)
 			{
 				g_td[TEXTURE_RESULT_NUMBER].uv_pos.u = (number[i] % 10 * 0.1f);
 				g_td[TEXTURE_RESULT_NUMBER].pos.x = (YEN_FINAL_POS - ((g_td[TEXTURE_RESULT_NUMBER].size.x / 10) * j));
@@ -557,7 +558,7 @@ void DrawResult(void)
 			}
 		}
 		int DamageNumber = Damage;
-		for (int i = 0; i < YEN_DIGIT; i++)
+		for (int i = 0; i < Len(Damage); i++)
 		{
 			g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos.u = (DamageNumber % 10 * 0.1f);
 			g_td[TEXTURE_RESULT_MIUS_NUMBER].pos.x = (YEN_FINAL_POS - ((g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x / 10) * i));
@@ -565,7 +566,7 @@ void DrawResult(void)
 			DamageNumber /= 10;
 		}
 		int TotalNumber = TotalAmount;
-		for (int i = 0; i < TOTAL_YEN_DIGIT; i++)
+		for (int i = 0; i < Len(TotalAmount); i++)
 		{
 			g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos.u = (TotalNumber % 10 * 0.1f);
 			g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos.x = (YEN_FINAL_POS - ((g_td[TEXTURE_RESULT_TOTAL_NUMBER].size.x / 10) * i) - 5.0f);
@@ -617,4 +618,14 @@ void DrawResult(void)
 void SetEventFinish(void)
 {
 	EventFinish = true;
+}
+
+int Len(int num)
+{
+	int ans = 0;
+	while (num != 0) {
+		num /= 10;
+		ans++;
+	}
+	return ans;
 }
