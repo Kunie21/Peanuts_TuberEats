@@ -22,7 +22,7 @@
 enum 
 {
 	SOUND_LABEL_BGM_TITLE,			// タイトル
-	SOUND_LABEL_BGM_START,			// スタート
+	//SOUND_LABEL_BGM_START,			// スタート
 	SOUND_LABEL_BGM_HOME,			// ホーム
 	SOUND_LABEL_BGM_STAGE_SELECT,	// ステージセレクト
 	SOUND_LABEL_BGM_STAGE_1_1,		// ステージ1-1
@@ -39,6 +39,7 @@ enum
 	//SOUND_LABEL_BGM_STAGE_4_3,		// ステージ4-3
 	SOUND_LABEL_BGM_RESULT,			// リザルト
 	SOUND_LABEL_BGM_ENDING,			// エンディング
+
 	SOUND_LABEL_SE_SELECT,			// 選択音
 	SOUND_LABEL_SE_DECIDE,			// 決定音
 	SOUND_LABEL_SE_OPENING,			// オープニングSE?
@@ -82,11 +83,6 @@ typedef enum
 	EQ,				// イコライザー
 	SOUND_EFFECT_MAX,				// エフェクトのMAX数
 } SOUND_EFFECT;
-
-
-#define BGM_VOLUME (0.7f)			//BGMの音量
-#define MAX_VOLUME (1.6f)			//BGMのMAX音量
-#define MIN_VOLUME (0.0f)			//BGMのMIN音量
 
 //*****************************************************************************
 // プロトタイプ宣言

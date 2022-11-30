@@ -16,7 +16,7 @@
 #define	AUDIO_FADEIN_SPEED		(0.01f)			// オーディオフェードアウトスピード
 
 #define MASTER_INITIAL_VOLUME	(0.5f)			// 初期音量
-#define BGM_INITIAL_VOLUME		(0.1f)			// 初期音量
+#define BGM_INITIAL_VOLUME		(0.9f)			// 初期音量
 #define SE_INITIAL_VOLUME		(1.0f)			// 初期音量
 #define VOICE_INITIAL_VOLUME	(0.6f)			// 初期音量
 
@@ -75,10 +75,10 @@ float				g_VolParam[SOUND_TYPE_MAX];
 SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 {
 	{ (char*)"data/SOUND/BGM/title.wav", -1, BGM },			// タイトル
-	{ (char*)"data/SOUND/BGM/STAGESELECT.wav", -1, BGM },		// スタート
+	//{ (char*)"data/SOUND/BGM/STAGESELECT.wav", -1, BGM },		// スタート
 	{ (char*)"data/SOUND/BGM/home.wav", -1, BGM },				// ホーム
 	{ (char*)"data/SOUND/BGM/stage_select.wav", -1, BGM },		// ステージセレクト
-	{ (char*)"data/SOUND/BGM/stage_1_1.wav", -1, BGM },		// ステージ1-1
+	{ (char*)"data/SOUND/BGM/stage_1_2.wav", -1, BGM },		// ステージ1-1
 	//{ (char*)"data/BGM/stage_1_3.wav", -1, BGM },		// ステージ1-3
 	//{ (char*)"data/BGM/stage_2_1.wav", -1, BGM },		// ステージ2-1
 	//{ (char*)"data/BGM/stage_2_2.wav", -1, BGM },		// ステージ2-2
@@ -794,7 +794,7 @@ void SetBGM(MODE_LABEL mode)
 {
 	if (GetMode() > MODE_LOADING)
 	{
-
+		StopSound(g_NowBGMLabel);
 		switch (mode)
 		{
 
