@@ -16,7 +16,7 @@
 #define	AUDIO_FADEIN_SPEED		(0.01f)			// オーディオフェードアウトスピード
 
 #define MASTER_INITIAL_VOLUME	(0.5f)			// 初期音量
-#define BGM_INITIAL_VOLUME		(0.1f)			// 初期音量
+#define BGM_INITIAL_VOLUME		(0.4f)			// 初期音量
 #define SE_INITIAL_VOLUME		(1.0f)			// 初期音量
 #define VOICE_INITIAL_VOLUME	(0.6f)			// 初期音量
 
