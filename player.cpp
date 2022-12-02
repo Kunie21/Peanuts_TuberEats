@@ -156,8 +156,7 @@ public:
 		return -(m_rotSpd + m_rotAddSpd) / c_rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
 	}
 	float Drive2(void) {
-		if (!m_bStart) return XM_PI;
- 		m_pos += m_posSpd + m_addSpd;
+		if (m_bStart) m_pos += m_posSpd + m_addSpd;
 		m_rot += m_rotSpd + m_rotAddSpd;
 		while (m_rot < 0.0f) m_rot += XM_2PI;
 		while (m_rot > XM_2PI) m_rot -= XM_2PI;
