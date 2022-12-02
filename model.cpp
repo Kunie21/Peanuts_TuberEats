@@ -67,13 +67,13 @@ static char* g_ModelName[MODEL_MAX] = {
 	"data/MODEL/missile01.obj",
 	"data/MODEL/missile02.obj",
 	"data/MODEL/fire01.obj",
-	"data/MODEL/rocket01.obj",
-	"data/MODEL/rocket02.obj",
-	"data/MODEL/rocket03.obj",
-	"data/MODEL/rocket04.obj",
-	"data/MODEL/rocket05.obj",
+	"data/MODEL/rocket01_2.obj",
+	"data/MODEL/rocket02_2.obj",
+	"data/MODEL/rocket03_2.obj",
+	"data/MODEL/rocket04_2.obj",
+	"data/MODEL/rocket05_2.obj",
 	"data/MODEL/stage.obj",
-	"data/MODEL/earth01.obj",
+	"data/MODEL/earth02.obj",
 };
 
 void InitModel(void)

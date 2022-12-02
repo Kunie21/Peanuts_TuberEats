@@ -10,6 +10,7 @@
 #include "anim_start.h"
 #include "camera.h"
 #include "player.h"
+#include "gate.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -67,6 +68,23 @@ void UpdateAnimStart(void)
 	static float time = 0.0f;
 	static START_ANIM_CUT_LABEL animNo = SAC_DOLLY_OUT;
 	float timeRate, timeAngle;
+
+	if (GetKeyboardTrigger(DIK_RETURN)) {
+		time = 0.0f;
+		animNo = SAC_DOLLY_OUT;
+		g_Use = FALSE;
+		SetStartGate();
+		timeRate = 1.0f;
+		timeAngle = timeRate * XM_PI;
+		g_CameraAt = { 0.0f, ROCKET_Y * (1.0f - timeRate), 0.0f };
+		g_CameraPos = {
+			-RADIUS * sinf(timeAngle),
+			(ROCKET_Y + BOTTOM_Y) * (1.0f - timeRate),
+			RADIUS * cosf(timeAngle) + ROUND_CENTER_Z
+		};
+		return;
+	}
+
 	switch (animNo)
 	{
 	case SAC_DOLLY_OUT:
@@ -83,8 +101,8 @@ void UpdateAnimStart(void)
 		break;
 
 	case SAC_ROUND_CRANE_TILT:
-		if (time > SAC_RCT_TIME) {
-			time = 0.0f; animNo = SAC_DOLLY_OUT; g_Use = FALSE; break;
+		if (time > SAC_RCT_TIME) {	// カメラワークの終了
+			time = 0.0f; animNo = SAC_DOLLY_OUT; g_Use = FALSE; SetStartGate(); break;
 		}
 		timeRate = time / SAC_RCT_TIME;
 		timeAngle = timeRate * XM_PI;

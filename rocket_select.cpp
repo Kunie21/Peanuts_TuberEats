@@ -393,6 +393,7 @@ void DrawRocketSelect(void)
 	SetBlendState(BLEND_MODE_ADD);
 
 	// ポイントライト
+	SetLightNo(0);
 	SetStencilReadPL();
 	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
 	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt);

@@ -11,6 +11,7 @@
 #include "input.h"
 #include "character_select.h"
 #include "rocket_select.h"
+#include "player.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -117,7 +118,7 @@ void UpdateCharacterSelect(void)
 		g_TexNoButton = TEXTURE_START_BUTTON_2;
 
 		SetFade(FADE_OUT, MODE_GAME); // game
-
+		ResetPlayer();
 	}
 
 }

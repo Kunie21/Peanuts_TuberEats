@@ -24,6 +24,10 @@
 #define DEFAULT_SPEED	(50.0f)
 //#define DEFAULT_POS		(310.0f)
 #define MAX_SPEED		(150.0f)
+#define DEFAULT_DECEL	(0.98f)
+#define BLAST_DECEL	(0.98f)
+#define RING_DECEL	(0.99f)
+#define RING_BOOST	(40.0f)
 
 //*****************************************************************************
 // グローバル変数
@@ -41,6 +45,27 @@ enum {
 };
 static MODEL_DATA	g_Model[MODEL_PLAYER_MAX];	// プレイヤーのモデル管理
 
+struct ROCKET_STATUS
+{
+	// 速度
+	float	posSpdMax = 60.0f;	// 最大速度
+
+	// 加速
+	float	accel = 0.4f;		// 加速度
+	float	decel = 0.98f;		// 減速率（ブレーキ）
+
+	// 操作
+	float	rotSpd = 0.002f;	// 左右移動速度
+	float	rotSpdMax = 0.05f;	// 最大左右移動速度
+	float	rotDecel = 0.98f;	// 左右移動減速率
+
+	// 燃料
+	float	fuelMax = 5000.0f;	// 燃料
+
+	// ミサイル数
+	int		missiles = 0;
+};
+ROCKET_STATUS g_RS[MODEL_PLAYER_MAX];
 
 static float		g_Rotation = 0.0f;
 static float		g_TestAddSpeed = 0.0f;
@@ -48,6 +73,8 @@ static float		g_TestAddSpeed = 0.0f;
 class ROCKET
 {
 private:
+	ROCKET_STATUS m_status;
+
 	float m_pos = 0;
 	float m_posSpd = 0.0f; // DEFAULT_SPEED;
 	float m_addSpd = 0.0f;
@@ -55,14 +82,16 @@ private:
 	float m_rot = 0.0f;
 	float m_rotSpd = 0.0f;
 	float m_rotAddSpd = 0.0f;
-	const float c_rotSpdMax = 0.05f;
+	float c_rotSpdMax = 0.05f;
 
 	float m_fuel = 5000.0f;
-	const float c_fuelMax = 5000.0f;
+	float c_fuelMax = 5000.0f;
 
 	float m_invTime = 0.0f;
 
 	int m_missiles = 10;
+
+	BOOL m_bStart = FALSE;
 
 public:
 	//ROCKET() {}
@@ -81,47 +110,90 @@ public:
 		return *this;
 	}
 
+	// 回転
 	void Rotate(float rotSpd) {
 		m_rotSpd += rotSpd;
 		if (m_rotSpd > c_rotSpdMax) m_rotSpd = c_rotSpdMax;
 		if (m_rotSpd < -c_rotSpdMax) m_rotSpd = -c_rotSpdMax;
 	}
+	void RotateLeft(void) {
+		m_rotSpd += m_status.rotSpd;
+		if (m_rotSpd > m_status.rotSpdMax) m_rotSpd = m_status.rotSpdMax;
+	}
+	void RotateRight(void) {
+		m_rotSpd -= m_status.rotSpd;
+		if (m_rotSpd < -m_status.rotSpdMax) m_rotSpd = -m_status.rotSpdMax;
+	}
+	void RotDecel(void) { m_rotSpd *= m_status.rotDecel; }
 	void Blast(float rotAddSpd) {
 		m_rotAddSpd += rotAddSpd;
 	}
+
+	// 加速
 	void Accel(float posSpd) { m_posSpd += posSpd; }
+	void Accel(void) { m_posSpd = min(m_posSpd + m_status.accel, m_status.posSpdMax); }
+	void Decel(void) { m_posSpd *= m_status.decel; }
+
+	// ブースト（リング）
 	void Boost(float addSpd) { m_addSpd += addSpd; }
+	void RingBoost(void) { m_addSpd += RING_BOOST; }
+	void Start(void) { m_bStart = TRUE; }
+
+	// ブレーキ
 	void Brake(float posSpd) { m_posSpd -= posSpd; }
+
+	// 運転（全般の処理）
 	float Drive(void) {
 		m_pos += m_posSpd + m_addSpd;
 		m_rot += m_rotSpd + m_rotAddSpd;
 		while (m_rot < 0.0f) m_rot += XM_2PI;
 		while (m_rot > XM_2PI) m_rot -= XM_2PI;
-		m_rotSpd *= 0.98f;
-		m_rotAddSpd *= 0.98f;
-		m_addSpd *= 0.98f;
-		m_invTime *= 0.98f;
+		m_rotSpd *= DEFAULT_DECEL;
+		m_rotAddSpd *= DEFAULT_DECEL;
+		m_addSpd *= RING_DECEL;
+		m_invTime *= DEFAULT_DECEL;
 		m_fuel -= m_posSpd / MAX_SPEED;
 		return -(m_rotSpd + m_rotAddSpd) / c_rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
 	}
-	void LostFuel(float lostFuel) { m_fuel -= lostFuel; }
-	void Collision(void) { m_invTime = 1.5f; }
+	float Drive2(void) {
+		if (!m_bStart) return XM_PI;
+ 		m_pos += m_posSpd + m_addSpd;
+		m_rot += m_rotSpd + m_rotAddSpd;
+		while (m_rot < 0.0f) m_rot += XM_2PI;
+		while (m_rot > XM_2PI) m_rot -= XM_2PI;
+		m_rotAddSpd *= BLAST_DECEL;
+		m_addSpd *= RING_DECEL;
+		m_invTime *= DEFAULT_DECEL;
+		m_fuel -= m_posSpd / MAX_SPEED;	// 燃料消費
+		return -(m_rotSpd + m_rotAddSpd) / m_status.rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
+	}
 
+	// 燃料ロスト
+	void LostFuel(float lostFuel) { m_fuel -= lostFuel; }
+
+	// コリジョン
+	void Collision(void) { m_invTime = 1.5f; }
 	bool AbleToCollision(void) const { if (m_invTime < 1.0f) return true; return false; }
+	
+	// データ取得
 	float GetPos(void) const { return m_pos; }
 	float GetSpeed(void) const { return m_posSpd + m_addSpd; }
 	float GetSpeedRate(void) const {
-		if (GetSpeed() > 0.0f) return sqrtf(GetSpeed() / MAX_SPEED);
+		if (GetSpeed() > 0.0f) return sqrtf(GetSpeed() / m_status.posSpdMax);
 		return 0.0f;
 	}
 	float GetRotate(void) const { return m_rot; }
 	float GetFuel(void) const { return m_fuel; }
 	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
+
+	// ミサイル発射
 	bool Launch(MISSILE_TYPE type) {
 		//if (!m_missiles--)
 		//	return false;
 		return LaunchMissile(type, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd);
 	}
+
+	// リセット
 	void Reset(void) {
 		m_pos = 0;
 		m_posSpd = 0.0f;
@@ -132,6 +204,12 @@ public:
 		m_fuel = 5000.0f;
 		m_invTime = 0.0f;
 		m_missiles = 10;
+		m_bStart = FALSE;
+	}
+
+	// ロケットのステータスをセット
+	void SetStatus(ROCKET_STATUS& rs) {
+		m_status = rs;
 	}
 };
 
@@ -158,6 +236,43 @@ HRESULT InitPlayer(void)
 	}
 	g_Model[MODEL_PLAYER_FIRE].srt.pos.z = -30.0f;
 
+
+	g_RS[MODEL_PLAYER_ROCKET2].posSpdMax = 80.0f;
+	g_RS[MODEL_PLAYER_ROCKET2].accel = 0.6f;
+	g_RS[MODEL_PLAYER_ROCKET2].decel = 0.98f;
+	g_RS[MODEL_PLAYER_ROCKET2].rotSpd = 0.003f;
+	g_RS[MODEL_PLAYER_ROCKET2].rotSpdMax = 0.05f;
+	g_RS[MODEL_PLAYER_ROCKET2].rotDecel = 0.98f;
+	g_RS[MODEL_PLAYER_ROCKET2].fuelMax = 5000.0f;
+	g_RS[MODEL_PLAYER_ROCKET2].missiles = 0;
+
+	g_RS[MODEL_PLAYER_ROCKET3].posSpdMax = 200.0f;
+	g_RS[MODEL_PLAYER_ROCKET3].accel = 0.2f;
+	g_RS[MODEL_PLAYER_ROCKET3].decel = 0.99f;
+	g_RS[MODEL_PLAYER_ROCKET3].rotSpd = 0.001f;
+	g_RS[MODEL_PLAYER_ROCKET3].rotSpdMax = 0.03f;
+	g_RS[MODEL_PLAYER_ROCKET3].rotDecel = 0.99f;
+	g_RS[MODEL_PLAYER_ROCKET3].fuelMax = 5000.0f;
+	g_RS[MODEL_PLAYER_ROCKET3].missiles = 0;
+
+	g_RS[MODEL_PLAYER_ROCKET4].posSpdMax = 110.0f;
+	g_RS[MODEL_PLAYER_ROCKET4].accel = 0.8f;
+	g_RS[MODEL_PLAYER_ROCKET4].decel = 0.98f;
+	g_RS[MODEL_PLAYER_ROCKET4].rotSpd = 0.004f;
+	g_RS[MODEL_PLAYER_ROCKET4].rotSpdMax = 0.08f;
+	g_RS[MODEL_PLAYER_ROCKET4].rotDecel = 0.98f;
+	g_RS[MODEL_PLAYER_ROCKET4].fuelMax = 5000.0f;
+	g_RS[MODEL_PLAYER_ROCKET4].missiles = 0;
+
+	g_RS[MODEL_PLAYER_ROCKET5].posSpdMax = 200.0f;
+	g_RS[MODEL_PLAYER_ROCKET5].accel = 5.0f;
+	g_RS[MODEL_PLAYER_ROCKET5].decel = 0.5f;
+	g_RS[MODEL_PLAYER_ROCKET5].rotSpd = 0.004f;
+	g_RS[MODEL_PLAYER_ROCKET5].rotSpdMax = 0.1f;
+	g_RS[MODEL_PLAYER_ROCKET5].rotDecel = 0.5f;
+	g_RS[MODEL_PLAYER_ROCKET5].fuelMax = 5000.0f;
+	g_RS[MODEL_PLAYER_ROCKET5].missiles = 0;
+
 	g_Load = TRUE;
 	return S_OK;
 }
@@ -178,27 +293,33 @@ void UninitPlayer(void)
 void UpdatePlayer(void)
 {
 	// ロケットの種類変更
-	if (GetKeyboardPress(DIK_1)) { testNo = 0; }
-	if (GetKeyboardPress(DIK_2)) { testNo = 1; }
-	if (GetKeyboardPress(DIK_3)) { testNo = 2; }
-	if (GetKeyboardPress(DIK_4)) { testNo = 3; }
-	if (GetKeyboardPress(DIK_5)) { testNo = 4; }
+	if (GetKeyboardPress(DIK_1)) { testNo = 0; g_Rocket.SetStatus(g_RS[testNo]); }
+	if (GetKeyboardPress(DIK_2)) { testNo = 1; g_Rocket.SetStatus(g_RS[testNo]); }
+	if (GetKeyboardPress(DIK_3)) { testNo = 2; g_Rocket.SetStatus(g_RS[testNo]); }
+	if (GetKeyboardPress(DIK_4)) { testNo = 3; g_Rocket.SetStatus(g_RS[testNo]); }
+	if (GetKeyboardPress(DIK_5)) { testNo = 4; g_Rocket.SetStatus(g_RS[testNo]); }
 
 	// ロケットの状態を保存
 	static ROCKET oldRocket;
 	oldRocket = g_Rocket;
 
 	// 回転
-	if (GetKeyboardPress(DIK_A)) { g_Rocket.Rotate(0.002f); }
-	if (GetKeyboardPress(DIK_D)) { g_Rocket.Rotate(-0.002f); }
+	//if (GetKeyboardPress(DIK_A)) { g_Rocket.Rotate(0.002f); }
+	//if (GetKeyboardPress(DIK_D)) { g_Rocket.Rotate(-0.002f); }
+	if (GetKeyboardPress(DIK_A)) { g_Rocket.RotateLeft(); }
+	else if (GetKeyboardPress(DIK_D)) { g_Rocket.RotateRight(); }
+	else { g_Rocket.RotDecel(); }
 	SetAfterRotation(&XMMatrixRotationRollPitchYaw(0.0f, 0.0f, g_Rocket.GetRotate()));
 
 	// アクセル
-	if (GetKeyboardTrigger(DIK_SPACE)) { g_Rocket.Accel(5.0f); }
+	//if (GetKeyboardTrigger(DIK_SPACE)) { g_Rocket.Accel(5.0f); }
+	if (GetKeyboardPress(DIK_SPACE)) { g_Rocket.Accel(); }
+	else { g_Rocket.Decel(); }
 	if (GetKeyboardTrigger(DIK_BACK)) { g_Rocket.Brake(5.0f); }
 
 	// ドライブ
-	g_Model[testNo].srt.rot.z = g_Rocket.Drive();
+	//g_Model[testNo].srt.rot.z = g_Rocket.Drive();
+	g_Model[testNo].srt.rot.z = g_Rocket.Drive2();
 
 	// ミサイル
 	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_01); }
@@ -320,6 +441,7 @@ void SetPlayerCollisionBlast(float rotAddSpd) {
 void SetRocketStart(void) {
 	g_Rocket.Accel(DEFAULT_SPEED);
 	g_Rocket.Boost(DEFAULT_SPEED);
+	g_Rocket.Start();
 	SetBoostEffect();
 }
 
@@ -330,4 +452,8 @@ CURVE_BUFFER GetCurveTestStatus(void) {
 
 void SetStageCurvePlayer(void) {
 	SetStageCurve(g_Rocket.GetPos(), g_Rocket.GetSpeed());
+}
+
+void ResetPlayer(void) {
+	g_Rocket.Reset();
 }

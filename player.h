@@ -29,3 +29,5 @@ void SetRocketStart(void);
 
 CURVE_BUFFER GetCurveTestStatus(void);
 void SetStageCurvePlayer(void);
+
+void ResetPlayer(void);

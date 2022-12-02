@@ -33,10 +33,10 @@ void InitLight(void)
 	{
 		g_Directional[i].Use = FALSE;
 	}
-	//g_Directional[0].Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//g_Directional[0].Direction = { 0.3f, -0.5f, 1.0f, 1.0f };
-	//g_Directional[0].Intensity = 1.0f;
-	//g_Directional[0].Use = TRUE;
+	g_Directional[0].Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	g_Directional[0].Direction = { 0.3f, -0.5f, 1.0f, 1.0f };
+	g_Directional[0].Intensity = 0.5f;
+	g_Directional[0].Use = TRUE;
 	//g_Directional[1].Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	//g_Directional[1].Direction = { 1.0f, -1.0f, 1.0f, 1.0f };
 	//g_Directional[1].Intensity = 0.5f;
@@ -52,6 +52,12 @@ void InitLight(void)
 	g_Point[0].Intensity = 1.0f;
 	g_Point[0].Attenuation = 2000.0f;
 	g_Point[0].Use = TRUE;
+
+	g_Point[1].Color = { 1.0f, 1.0f, 1.0f, 0.0f };
+	g_Point[1].Position = { -500.0f, 250.0f, -500.0f, 1.0f };
+	g_Point[1].Intensity = 1.0f;
+	g_Point[1].Attenuation = 2000.0f;
+	g_Point[1].Use = TRUE;
 	SetPointLight(g_Point);
 
 	for (int i = 0; i < LIGHT_SPOT_MAX; i++)

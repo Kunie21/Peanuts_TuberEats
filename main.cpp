@@ -469,6 +469,7 @@ void SetMode(MODE_LABEL mode)
 
 	case MODE_GAME:
 		InitGame();
+
 		break;
 
 	case MODE_RESULT:

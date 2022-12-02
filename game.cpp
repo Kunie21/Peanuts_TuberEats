@@ -52,6 +52,8 @@ HRESULT InitGame(void)
 	InitMissile();
 	InitAnimStart();
 
+	SetCameraAnimStart();
+
 	g_Load = TRUE;
 	return S_OK;
 }
