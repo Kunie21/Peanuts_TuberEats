@@ -26,7 +26,7 @@
 #define MAX_SPEED		(150.0f)
 #define DEFAULT_DECEL	(0.98f)
 #define BLAST_DECEL	(0.98f)
-#define RING_DECEL	(0.99f)
+#define RING_DECEL	(0.985f)
 #define RING_BOOST	(40.0f)
 
 //*****************************************************************************
@@ -141,6 +141,8 @@ public:
 
 	// ÉuÉåÅ[ÉL
 	void Brake(float posSpd) { m_posSpd -= posSpd; }
+	void BrakeFull(void) { m_posSpd = 0.0f; }
+	void Back(float pos) { m_pos -= pos; }
 
 	// â^ì]ÅiëSî ÇÃèàóùÅj
 	float Drive(void) {
@@ -160,9 +162,11 @@ public:
 		m_rot += m_rotSpd + m_rotAddSpd;
 		while (m_rot < 0.0f) m_rot += XM_2PI;
 		while (m_rot > XM_2PI) m_rot -= XM_2PI;
-		m_rotAddSpd *= BLAST_DECEL;
-		m_addSpd *= RING_DECEL;
-		m_invTime *= DEFAULT_DECEL;
+		//m_rotAddSpd *= BLAST_DECEL;
+		m_rotAddSpd *= m_status.rotDecel;
+		//m_addSpd *= RING_DECEL;
+		m_addSpd *= m_status.decel;
+		m_invTime *= 0.0f;
 		m_fuel -= m_posSpd / MAX_SPEED;	// îRóøè¡îÔ
 		return -(m_rotSpd + m_rotAddSpd) / m_status.rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
 	}
@@ -329,7 +333,10 @@ void UpdatePlayer(void)
 		CollisionGimmick(oldRocket.GetPos(), g_Rocket.GetPos(), oldRocket.GetRotate(), g_Rocket.GetRotate());
 		//SetDamageEffect();
 	}
+
+	// ÉSÅ[ÉãîªíË
 	if (CheckGoal(oldRocket.GetPos(), g_Rocket.GetPos())) {
+		OffTimer();
 		SetFade(FADE_OUT, MODE_RESULT);
 	}
 
@@ -381,6 +388,15 @@ void UpdatePlayer(void)
 //=============================================================================
 void DrawPlayer(void) {
 	SetCullingMode(CULL_MODE_NONE);
+
+	//g_Model[testNo].srt.scl.x = (float)(rand() % 50) * 0.0003f * g_Rocket.GetSpeedRate() + 0.3f;
+	//g_Model[testNo].srt.scl.y = (float)(rand() % 50) * 0.0003f * g_Rocket.GetSpeedRate() + 0.3f;
+	//g_Model[testNo].srt.scl.z = (float)(rand() % 50) * 0.0003f * g_Rocket.GetSpeedRate() + 0.3f;
+
+	g_Model[testNo].srt.pos.x = (float)(rand() % 10) * 0.003f * g_Rocket.GetSpeedRate() - 0.03f;
+	g_Model[testNo].srt.pos.y = (float)(rand() % 10) * 0.003f * g_Rocket.GetSpeedRate() + ROCKET_Y;
+	g_Model[testNo].srt.pos.z = (float)(rand() % 10) * 0.003f * g_Rocket.GetSpeedRate() - 0.03f;
+
 	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt);	// ÉÇÉfÉãï`âÊ
 	SetCullingMode(CULL_MODE_BACK);
 }
@@ -429,7 +445,9 @@ void SetPlayerThroughRing(void) {
 }
 void SetPlayerCollisionIce(void) {
 	g_Rocket.LostFuel(500.0f);
-	g_Rocket.Boost(-60.0f);
+	g_Rocket.Back(g_Rocket.GetSpeed());
+	g_Rocket.Boost(-g_Rocket.GetSpeed() * 0.5f);
+	g_Rocket.BrakeFull();
 	g_Rocket.Collision();
 }
 void SetPlayerCollisionBlast(float rotAddSpd) {
@@ -442,6 +460,7 @@ void SetRocketStart(void) {
 	g_Rocket.Boost(DEFAULT_SPEED);
 	g_Rocket.Start();
 	SetBoostEffect();
+	OnTimer();
 }
 
 CURVE_BUFFER GetCurveTestStatus(void) {
@@ -455,4 +474,5 @@ void SetStageCurvePlayer(void) {
 
 void ResetPlayer(void) {
 	g_Rocket.Reset();
+	ResetTimer();
 }

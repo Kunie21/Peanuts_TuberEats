@@ -121,8 +121,10 @@ void UpdateGate(void)
 //=============================================================================
 void DrawGate(void)
 {
+	SetCullingMode(CULL_MODE_NONE);
 	g_GoalGate->Draw();		// ゴールの方が後ろにあるので先に描画
 	g_StartGate->Draw();
+	SetCullingMode(CULL_MODE_BACK);
 }
 
 // コンストラクタ
@@ -178,7 +180,7 @@ GATE::~GATE()
 
 void GATE::Update(void)
 {
-	if (m_Status == GATE_STATUS_OFF) return;
+	//if (m_Status == GATE_STATUS_OFF) return;
 
 	// モデル位置調整
 	m_Model.srt.pos = {
@@ -222,9 +224,7 @@ void GATE::Update(void)
 
 void GATE::Draw(void)
 {
-	if (m_Status == GATE_STATUS_OFF) return;
-
-	SetCullingMode(CULL_MODE_NONE);
+	//if (m_Status == GATE_STATUS_OFF) return;
 	
 	// 文字表示
 	if (m_Status != GATE_STATUS_ON) {
@@ -236,8 +236,6 @@ void GATE::Draw(void)
 	SetCurveBuffer(&m_bCurve);
 	SetDrawMonitor();
 	DrawModel(&m_Model.model, &m_Model.srt, &m_MaterialMonitor);
-
-	SetCullingMode(CULL_MODE_BACK);
 }
 
 // ゴール設定

@@ -39,7 +39,7 @@ HRESULT InitGimmick(void);
 void UninitGimmick(void);
 void UpdateGimmick(void);
 void DrawGimmick(GIMMICK_TYPE gimmick);
-void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline = FALSE);
+void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline = FALSE, BOOL bAdd = FALSE);
 
 bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot);
 bool CollisionMissile(float oldZ, float newZ, float oldRot, float newRot);

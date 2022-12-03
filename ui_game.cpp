@@ -47,7 +47,8 @@ enum
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 
-static float g_Timer = 0.0f;
+static float	g_Timer = 0.0f;
+static bool		g_bTimer = FALSE;
 
 //=============================================================================
 // èâä˙âªèàóù
@@ -97,7 +98,7 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_SEMICOLON].size = { 20.0f, 90.0f };
 	g_td[TEXTURE_SEMICOLON].pos = { TIMER_CENTER_X, MAP_LINE_Y };
 	g_td[TEXTURE_NUMBER].size = { 255.0f, 90.0f };
-	g_td[TEXTURE_NUMBER].pos = { TIMER_CENTER_X - 25.0f, MAP_LINE_Y };
+	g_td[TEXTURE_NUMBER].pos = { TIMER_CENTER_X - 25.0f, MAP_LINE_Y + 2.5f };
 	g_td[TEXTURE_NUMBER].scl = { 0.1f, 1.0f };
 	g_td[TEXTURE_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
 
@@ -124,7 +125,7 @@ void UninitGameUI(void)
 void UpdateGameUI(void)
 {
 	g_td[TEXTURE_WHITE].col.w *= 0.97f;
-	OnTimer();
+	if (g_bTimer) g_Timer += 0.01666666f;
 }
 
 //=============================================================================
@@ -134,6 +135,7 @@ void DrawGameUI(void)
 {
 	int time;
 	float digit;
+	BOOL bZero;
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		switch (i)
@@ -148,27 +150,38 @@ void DrawGameUI(void)
 		case TEXTURE_NUMBER:
 			time = (int)(g_Timer * 100.0f);
 			digit = 1.5f;
+			bZero = TRUE;
 			while (time)
 			{
 				g_td[i].uv_pos.u = (float)(time % 10) * 0.1f;
-				if (digit > 0.0f)
+				if (digit > 0.0f)	// 1ïbñ¢ñû
 				{
 					g_td[i].pos.x = TIMER_CENTER_X + digit * 25.5f + 10.0f;
 				}
-				else
+				else	// 1ïbà»è„
 				{
 					g_td[i].pos.x = TIMER_CENTER_X + digit * 25.5f - 10.0f;
 				}
-				DrawTexture2D(&g_td[i], FALSE, TRUE);
+				DrawTexture2D(&g_td[i], TRUE, TRUE);
 				digit -= 1.0f;
 
 				time /= 10;
+
+				bZero = FALSE;
+			}
+			if (bZero)	//.00ïbÇï`âÊ
+			{
+				g_td[i].uv_pos.u = 0.0f;
+				g_td[i].pos.x = TIMER_CENTER_X + 1.5f * 25.5f + 10.0f;
+				DrawTexture2D(&g_td[i], TRUE, TRUE);
+				g_td[i].pos.x = TIMER_CENTER_X + 0.5f * 25.5f + 10.0f;
+				DrawTexture2D(&g_td[i], TRUE, TRUE);
 			}
 			if (g_Timer < 1.0f)	// 0ïbÇï`âÊ
 			{
 				g_td[i].uv_pos.u = 0.0f;
 				g_td[i].pos.x = TIMER_CENTER_X - 0.5f * 25.5f - 10.0f;
-				DrawTexture2D(&g_td[i], FALSE, TRUE);
+				DrawTexture2D(&g_td[i], TRUE, TRUE);
 			}
 			break;
 		default:
@@ -223,15 +236,24 @@ void SetDamageEffect(void)
 }
 void SetBoostEffect(void)
 {
-	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 1.0f, 0.5f };
+	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 1.0f, 0.4f };
 }
 void SetTimer(float time)
 {
 	g_Timer = time;
 }
+void ResetTimer(void)
+{
+	g_Timer = 0.0f;
+	g_bTimer = FALSE;
+}
 void OnTimer(void)
 {
-	g_Timer += 0.01666666f;
+	g_bTimer = TRUE;
+}
+void OffTimer(void)
+{
+	g_bTimer = FALSE;
 }
 
 float GetTime(void)

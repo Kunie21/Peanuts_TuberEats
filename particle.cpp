@@ -20,12 +20,14 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define	EMITTER_MAX		(50)	// エミッター最大数
+#define	EMITTER_MAX		(100)	// エミッター最大数
 #define	PARTICLE_MAX	(100)	// パーティクル最大数
-#define	PARTICLE_SIZE	(20)	// パーティクル粒サイズ
+#define	PARTICLE_SIZE	(10)	// パーティクル粒サイズ
 #define	PARTICLE_PUSH	(10)	// フレームごとの噴出数
-#define	PARTICLE_SPD	(3.0f)	// 噴出速度
-#define	PARTICLE_ACL	(0.98f)	// 噴出加速度
+#define	PARTICLE_SPD	(20.0f)	// 噴出速度
+//#define	PARTICLE_ACL	(0.98f)	// 噴出加速度
+#define	PARTICLE_ACL	(0.1f)	// 噴出加速度
+#define	PARTICLE_POS	(TUBE_RADIUS - 40.0f)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -78,9 +80,11 @@ public:
 		m_desc.m_pos.x += m_desc.m_vec.x * m_desc.m_spd;
 		m_desc.m_pos.y += m_desc.m_vec.y * m_desc.m_spd;
 		m_desc.m_pos.z += m_desc.m_vec.z * m_desc.m_spd;
-		m_desc.m_scl = PARTICLE_SIZE * m_desc.m_spd / m_desc.m_spdmax;
+		//m_desc.m_scl = PARTICLE_SIZE * m_desc.m_spd / m_desc.m_spdmax;
+		m_desc.m_col = { m_desc.m_spd, m_desc.m_spd, m_desc.m_spd, 1.0f };
 		//m_desc.m_col.w = m_desc.m_spd;
-		m_desc.m_spd *= m_desc.m_acl;
+		//m_desc.m_spd *= m_desc.m_acl;
+		m_desc.m_spd -= m_desc.m_acl;
 		if(m_desc.m_spd < 0.5f) m_bUse = FALSE;
 	}
 
@@ -112,12 +116,13 @@ private:
 public:
 	EMITTER() {
 		m_dscPtc.m_vec = { cosf(m_rot), sinf(m_rot), 0.0f };
-		m_dscPtc.m_scl = 1.0f;
+		m_dscPtc.m_scl = PARTICLE_SIZE;
 		m_dscPtc.m_spd = PARTICLE_SPD;
 		m_dscPtc.m_spdmax = m_dscPtc.m_spd;
 		m_dscPtc.m_acl = PARTICLE_ACL;
-		m_dscPtc.m_col = { 2.7f, 2.4f, 2.7f, 1.0f };
-		m_vol = XM_PIDIV2 * 0.333f;	// 30度
+		//m_dscPtc.m_col = { 2.7f, 2.4f, 2.7f, 1.0f };
+		m_dscPtc.m_col = { 2.7f, 2.7f, 2.7f, 1.0f };
+		m_vol = XM_PIDIV2 * 0.5f;	// 30度
 	}
 
 	// エミッター設置
@@ -138,7 +143,7 @@ public:
 		m_zPosNo = zPosNo;
 		//m_dscPtc.m_rotPosNo = rotPosNo;
 		m_rot = GetRotPos(rotPosNo) + XM_PI;
-		m_dscPtc.m_pos = { TUBE_RADIUS * cosf(m_rot - XM_PI), TUBE_RADIUS * sinf(m_rot - XM_PI), 0.0f };
+		m_dscPtc.m_pos = { PARTICLE_POS * cosf(m_rot - XM_PI), PARTICLE_POS * sinf(m_rot - XM_PI), 0.0f };
 
 		m_bUse = TRUE;
 
@@ -234,8 +239,6 @@ public:
 
 	void DrawParticle(void) {
 
-		SetBlendState(BLEND_MODE_ADD);
-
 		// デバイス取得
 		ID3D11DeviceContext* device = GetDeviceContext();
 
@@ -308,10 +311,6 @@ public:
 			//device->DrawInstanced(4, instNo + 1, 0, 0);
 			device->DrawInstanced(4, instNo, 0, 0);
 		}
-
-		SetShaderDefault();
-		SetBlendState(BLEND_MODE_ALPHABLEND);
-
 	}
 
 	// エミッター設置管理

@@ -67,11 +67,11 @@ static char* g_ModelName[MODEL_MAX] = {
 	"data/MODEL/missile01.obj",
 	"data/MODEL/missile02.obj",
 	"data/MODEL/fire01.obj",
-	"data/MODEL/rocket01_2.obj",
-	"data/MODEL/rocket02_2.obj",
-	"data/MODEL/rocket03_2.obj",
-	"data/MODEL/rocket04_2.obj",
-	"data/MODEL/rocket05_2.obj",
+	"data/MODEL/rocket01.obj",
+	"data/MODEL/rocket02.obj",
+	"data/MODEL/rocket03.obj",
+	"data/MODEL/rocket04.obj",
+	"data/MODEL/rocket05.obj",
 	"data/MODEL/stage.obj",
 	"data/MODEL/earth02.obj",
 };
@@ -565,6 +565,7 @@ void LoadObj( char *FileName, MODEL *Model )
 
 				s = strtok( str, "/" );	
 				Model->VertexArray[vc].Position = positionArray[ atoi( s ) - 1 ];
+				//Model->VertexArray[vc].Position.z *= -1.0f;
 				if( s[ strlen( s ) + 1 ] != '/' )
 				{
 					//テクスチャ座標が存在しない場合もある
@@ -573,6 +574,7 @@ void LoadObj( char *FileName, MODEL *Model )
 				}
 				s = strtok( NULL, "/" );	
 				Model->VertexArray[vc].Normal = normalArray[ atoi( s ) - 1 ];
+				//Model->VertexArray[vc].Normal.z *= -1.0f;
 
 				Model->VertexArray[vc].Diffuse = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
 

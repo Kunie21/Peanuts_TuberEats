@@ -161,6 +161,10 @@ void DrawGame(void)
 		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		//DrawMissile(MISSILE_TYPE_01);
 		//DrawMissile(MISSILE_TYPE_02);
+		
+		// アウトラインを引く 3000
+		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
+		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
 
 		// 環境光で下塗りする 3000
 		{
@@ -211,8 +215,9 @@ void DrawGame(void)
 			DrawGimmickInstancing(GIMMICK_ICE);
 			DrawMissile(MISSILE_TYPE_01);
 			DrawMissile(MISSILE_TYPE_02);
-			SetStencilReadLL(SHADER_PLAYER);
-			DrawPlayer();
+
+			//SetStencilReadLL(SHADER_PLAYER);
+			//DrawPlayer();
 
 #ifdef _DEBUG
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
@@ -225,12 +230,19 @@ void DrawGame(void)
 #endif
 			// 光るもの描画 3000
 			{
+				SetStencilNoneAL(SHADER_TUBE);
+				DrawTubeLight();
+
+				SetDrawMissileFire();
+				DrawGimmickInstancing(GIMMICK_RING);
+
 				SetBlendState(BLEND_MODE_ADD);
+
 
 				//SetDrawTubeLight();
 
 				SetDrawInstancingOnlyTex();
-				DrawGimmickInstancing(GIMMICK_RING);
+				DrawGimmickInstancing(GIMMICK_RING, FALSE, TRUE);
 
 				//SetDrawLight();
 				//DrawTubeLight();
@@ -244,22 +256,19 @@ void DrawGame(void)
 
 				ApplyLightToTarget();
 
-				SetDrawFire();
-				DrawFire();
+				//SetDrawFire();
+				//DrawFire();
 
 				SetDrawMissileFire();
 				DrawMissileFire();
 
-				DrawGate();
-
 				DrawParticle();
+
+				DrawGate();
 
 				SetBlendState(BLEND_MODE_ALPHABLEND);
 
 
-				// アウトラインを引く 3000
-				SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
-				DrawGimmickInstancing(GIMMICK_ICE, TRUE);
 
 			}
 #ifdef _DEBUG
@@ -279,6 +288,16 @@ void DrawGame(void)
 #endif
 	ApplyMotionBlur();
 
+	SetStencilReadLL(SHADER_PLAYER);
+	DrawPlayer();
+	SetBlendState(BLEND_MODE_ADD);
+	SetDrawFire();
+	DrawFire();
+	SetBlendState(BLEND_MODE_ALPHABLEND);
+
+#ifdef _DEBUG
+	if (!blur) ApplyMotionBlur();
+#endif
 	//ApplyFilter(FILTER_MODE_LAPLACIAN);
 	//	FILTER_MODE_NONE,			// フィルタなし
 	//	FILTER_MODE_AVERAGING,		// 平均化フィルタ

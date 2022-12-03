@@ -131,7 +131,7 @@ void DrawGimmick(GIMMICK_TYPE gimmick)
 		DrawModel(&g_Model[pStage->arrGmk[i].type], &mtxWorld, &material);	// モデル描画
 	}
 }
-void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
+void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline, BOOL bAdd)
 {
 	// インスタンス情報を登録
 	D3D11_MAPPED_SUBRESOURCE msr;
@@ -176,7 +176,9 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline)
 			b_pInstance->rot[instCount] = { XM_PIDIV2, XM_PI, rot + XM_PIDIV2, 0.0f };
 			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 80.0f) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
 			//b_pInstance->col[instCount] = pStage->arrGmk[i].col;
-			b_pInstance->col[instCount] = { 2.0f, 2.0f, 0.0f, 2.0f };
+			//b_pInstance->col[instCount] = { 2.0f, 2.0f, 0.0f, 2.0f };
+			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			if(bAdd) b_pInstance->col[instCount] = { 0.0f, 2.0f, 2.0f, 2.0f };
 			break;
 		}
 		// インスタンス数を更新
@@ -234,7 +236,7 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						break;
 
 					case GIMMICK_CRACK:
-						//SetDamageEffect();
+						SetDamageEffect();
 						if (rot > 0.0f) {
 							SetPlayerCollisionBlast(1.0f - (rot / pStage->arrGmk[i].rotSizeHalf));
 						}
