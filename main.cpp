@@ -521,8 +521,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_ESCAPE:	// エスケープキー
 			DestroyWindow(hWnd);
 
+#ifdef _DEBUG
 			// メモリリークチェック用
 			_CrtDumpMemoryLeaks();
+#endif
 			break;
 
 		case VK_BACK:

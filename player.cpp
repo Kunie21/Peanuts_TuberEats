@@ -393,9 +393,9 @@ void DrawPlayer(void) {
 	//g_Model[testNo].srt.scl.y = (float)(rand() % 50) * 0.0003f * g_Rocket.GetSpeedRate() + 0.3f;
 	//g_Model[testNo].srt.scl.z = (float)(rand() % 50) * 0.0003f * g_Rocket.GetSpeedRate() + 0.3f;
 
-	g_Model[testNo].srt.pos.x = (float)(rand() % 10) * 0.003f * g_Rocket.GetSpeedRate() - 0.03f;
-	g_Model[testNo].srt.pos.y = (float)(rand() % 10) * 0.003f * g_Rocket.GetSpeedRate() + ROCKET_Y;
-	g_Model[testNo].srt.pos.z = (float)(rand() % 10) * 0.003f * g_Rocket.GetSpeedRate() - 0.03f;
+	//g_Model[testNo].srt.pos.x = (float)(rand() % 10) * 0.001f * g_Rocket.GetSpeed();
+	g_Model[testNo].srt.pos.y = (float)(rand() % 20) * 0.025f - 0.25f + ROCKET_Y;
+	//g_Model[testNo].srt.pos.z = (float)(rand() % 20) * 0.05f - 0.5f;
 
 	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt);	// ƒ‚ƒfƒ‹•`‰æ
 	SetCullingMode(CULL_MODE_BACK);
@@ -414,9 +414,13 @@ void DrawPlayerResult(void) {
 }
 
 void DrawFire(void) {
-	g_Model[MODEL_PLAYER_FIRE].srt.scl.x = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
-	g_Model[MODEL_PLAYER_FIRE].srt.scl.y = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
-	g_Model[MODEL_PLAYER_FIRE].srt.scl.z = (float)(rand() % 10) * 0.003f + 0.3f * g_Rocket.GetSpeedRate();
+	float rate = g_Rocket.GetSpeedRate() * 0.3f;
+	g_Model[MODEL_PLAYER_FIRE].srt.scl.x = (float)(rand() % 10) * 0.02f * rate + rate;
+	g_Model[MODEL_PLAYER_FIRE].srt.scl.y = (float)(rand() % 10) * 0.02f * rate + rate;
+	g_Model[MODEL_PLAYER_FIRE].srt.scl.z = (float)(rand() % 10) * 0.02f * rate + rate;
+	//g_Model[MODEL_PLAYER_FIRE].srt.scl.x = (float)(rand() % 10) * 0.03f * g_Rocket.GetSpeedRate();
+	//g_Model[MODEL_PLAYER_FIRE].srt.scl.y = g_Model[MODEL_PLAYER_FIRE].srt.scl.x;
+	//g_Model[MODEL_PLAYER_FIRE].srt.scl.z = g_Model[MODEL_PLAYER_FIRE].srt.scl.x;
 	DrawModel(&g_Model[MODEL_PLAYER_FIRE].model, &g_Model[MODEL_PLAYER_FIRE].srt);	// ƒ‚ƒfƒ‹•`‰æ
 }
 

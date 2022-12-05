@@ -34,8 +34,8 @@ void InitLight(void)
 		g_Directional[i].Use = FALSE;
 	}
 	g_Directional[0].Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_Directional[0].Direction = { 0.3f, -0.5f, 1.0f, 1.0f };
-	g_Directional[0].Intensity = 0.5f;
+	g_Directional[0].Direction = { 0.5f, -0.3f, 0.5f, 1.0f };
+	g_Directional[0].Intensity = 0.8f;
 	g_Directional[0].Use = TRUE;
 	//g_Directional[1].Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	//g_Directional[1].Direction = { 1.0f, -1.0f, 1.0f, 1.0f };
@@ -88,6 +88,26 @@ void InitLight(void)
 //=============================================================================
 void UpdateLight(void)
 {
+
+#ifdef _DEBUG
+	if (GetKeyboardTrigger(DIK_F2)) {
+		g_Directional[0].Intensity += 0.1f;
+		SetDirectionalLight(g_Directional);
+	}
+	if (GetKeyboardTrigger(DIK_F3)) {
+		g_Directional[0].Intensity -= 0.1f;
+		SetDirectionalLight(g_Directional);
+	}
+	PrintDebugProc("lightD:%f\n", g_Directional[0].Intensity);
+	if (GetKeyboardTrigger(DIK_F4)) {
+		g_Ambient.Intensity += 0.1f; // 0.2f;
+		SetAmbientLight(&g_Ambient);
+	}
+	if (GetKeyboardTrigger(DIK_F5)) {
+		g_Ambient.Intensity -= 0.1f; // 0.2f;
+		SetAmbientLight(&g_Ambient);
+	}
+	PrintDebugProc("lightA:%f\n", g_Ambient.Intensity);
 	//if (GetKeyboardPress(DIK_6)) {
 	//	g_Point[0].Position.y += 10.0f;
 	//	SetPointLight(g_Point);
@@ -104,10 +124,7 @@ void UpdateLight(void)
 	//	g_Point[0].Position.x -= 10.0f;
 	//	SetPointLight(g_Point);
 	//}
-//#ifdef _DEBUG
-//	PrintDebugProc("lightposy:%f\n", g_Point[0].Position.y);
-//	PrintDebugProc("lightposx:%f\n", g_Point[0].Position.x);
-//#endif
+#endif
 }
 
 //=============================================================================

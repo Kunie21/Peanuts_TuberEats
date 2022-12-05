@@ -28,7 +28,7 @@ struct GIMMICK
 	float rotSizeHalf = XM_PIDIV4;
 	GIMMICK_TYPE type = GIMMICK_ICE;
 	float exPos = 0.0f;
-	float exSpd = 50.0f;
+	float exSpd = 20.0f;
 	XMFLOAT4 col = { 1.0, 1.0, 1.0, 1.0 };
 };
 

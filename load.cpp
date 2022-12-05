@@ -95,6 +95,7 @@ void UpdateLoad(void)
 			// ÉçÅ[ÉhäÆóπ
 			SetFade(FADE_OUT, MODE_TITLE_START);
 			//SetFade(FADE_OUT, MODE_GAME);
+
 		}
 	}
 }

@@ -244,7 +244,7 @@ float4 PSLL(IS_OUTPUT input) : SV_Target {
 	float3 normalDir = normalize(input.Normal.xyz);
 
 	// ライトの色と方向と距離
-	float3 lightColor = float3(1.0f, 1.0f, 1.0f) * 0.4f;
+	float3 lightColor = float3(0.8f, 0.8f, 0.8f);
 	float3 lightVec = float3(input.WorldPos.x, input.WorldPos.y - LL_POS, 0.0f);
 	float3 lightDir = normalize(lightVec);
 	float lightLen = length(lightVec);
@@ -264,10 +264,15 @@ float4 PSLL(IS_OUTPUT input) : SV_Target {
 	// 鏡面反射光を加算合成
 	float3 reflectDir = 2.0f * normalDir * dot(normalDir, -lightDir) + lightDir;
 	float specular = pow(saturate(dot(reflectDir, -cameraDir)), Material.Shininess);
+	//float specular = saturate(dot(reflectDir, -cameraDir));
+	//for (float i = 0.0f; i < Material.Shininess; i += 1.0f) {
+	//	specular *= specular;
+	//}
+
 	outDiffuse.rgb += lightColor * specular * Material.Specular.rgb;
 
 	// 環境光の色を反映
-	float3 AmbientLightColor = AmbientLight.Color.rgb * AmbientLight.Intensity;
+	float3 AmbientLightColor = AmbientLight.Color.rgb * 0.8f;
 	outDiffuse.rgb += AmbientLightColor * Material.Ambient.rgb * color.rgb;
 
 	// フォグ計算

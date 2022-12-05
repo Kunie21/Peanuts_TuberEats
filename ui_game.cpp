@@ -162,7 +162,7 @@ void DrawGameUI(void)
 				{
 					g_td[i].pos.x = TIMER_CENTER_X + digit * 25.5f - 10.0f;
 				}
-				DrawTexture2D(&g_td[i], TRUE, TRUE);
+				DrawTexture2D(&g_td[i], FALSE, TRUE);
 				digit -= 1.0f;
 
 				time /= 10;
@@ -173,15 +173,15 @@ void DrawGameUI(void)
 			{
 				g_td[i].uv_pos.u = 0.0f;
 				g_td[i].pos.x = TIMER_CENTER_X + 1.5f * 25.5f + 10.0f;
-				DrawTexture2D(&g_td[i], TRUE, TRUE);
+				DrawTexture2D(&g_td[i], FALSE, TRUE);
 				g_td[i].pos.x = TIMER_CENTER_X + 0.5f * 25.5f + 10.0f;
-				DrawTexture2D(&g_td[i], TRUE, TRUE);
+				DrawTexture2D(&g_td[i], FALSE, TRUE);
 			}
 			if (g_Timer < 1.0f)	// 0•b‚ð•`‰æ
 			{
 				g_td[i].uv_pos.u = 0.0f;
 				g_td[i].pos.x = TIMER_CENTER_X - 0.5f * 25.5f - 10.0f;
-				DrawTexture2D(&g_td[i], TRUE, TRUE);
+				DrawTexture2D(&g_td[i], FALSE, TRUE);
 			}
 			break;
 		default:

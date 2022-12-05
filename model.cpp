@@ -62,35 +62,39 @@ MATERIAL	g_Material;
 
 static char* g_ModelName[MODEL_MAX] = {
 	"data/MODEL/wall.obj",
+
 	"data/MODEL/ice_1.obj",
 	"data/MODEL/ring_1.obj",
+
 	"data/MODEL/missile01.obj",
 	"data/MODEL/missile02.obj",
+
 	"data/MODEL/fire01.obj",
+
 	"data/MODEL/rocket01.obj",
 	"data/MODEL/rocket02.obj",
 	"data/MODEL/rocket03.obj",
 	"data/MODEL/rocket04.obj",
 	"data/MODEL/rocket05.obj",
+
 	"data/MODEL/stage.obj",
 	"data/MODEL/earth02.obj",
+
+	"data/MODEL/sushi02.obj",
+	"data/MODEL/sushi01.obj",
+	"data/MODEL/sushi03.obj",
+	"data/MODEL/lollipop01.obj",
+	"data/MODEL/lollipop02.obj",
+	"data/MODEL/ramen01.obj",
+	"data/MODEL/donut02.obj",
+	//"data/MODEL/donut01.obj",
 };
 
 void InitModel(void)
 {
-	LoadModel("data/MODEL/wall.obj", &g_Model[MODEL_GATE]);
-	LoadModel("data/MODEL/ice_1.obj", &g_Model[MODEL_ICE]);
-	LoadModel("data/MODEL/ring_1.obj", &g_Model[MODEL_RING]);
-	LoadModel("data/MODEL/missile01.obj", &g_Model[MODEL_MISSILE1]);
-	LoadModel("data/MODEL/missile02.obj", &g_Model[MODEL_MISSILE2]);
-	LoadModel("data/MODEL/fire01.obj", &g_Model[MODEL_FIRE]);
-	LoadModel("data/MODEL/rocket01.obj", &g_Model[MODEL_ROCKET1]);
-	LoadModel("data/MODEL/rocket02.obj", &g_Model[MODEL_ROCKET2]);
-	LoadModel("data/MODEL/rocket03.obj", &g_Model[MODEL_ROCKET3]);
-	LoadModel("data/MODEL/rocket04.obj", &g_Model[MODEL_ROCKET4]);
-	LoadModel("data/MODEL/rocket05.obj", &g_Model[MODEL_ROCKET5]);
-	LoadModel("data/MODEL/stage.obj", &g_Model[MODEL_STAGE]);
-	LoadModel("data/MODEL/earth01.obj", &g_Model[MODEL_EARTH]);
+	for (int i = 0; i < MODEL_MAX; i++) {
+		LoadModel(g_ModelName[i], &g_Model[i]);
+	}
 }
 void UninitModel(void)
 {

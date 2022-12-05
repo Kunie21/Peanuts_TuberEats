@@ -15,3 +15,4 @@ void UpdateParticle(void);
 void DrawParticle(void);
 
 BOOL SetEmitter(int zPosNo, int rotPosNo);
+BOOL SetEmitterExp(int zPosNo, int rotPosNo);

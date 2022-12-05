@@ -33,6 +33,16 @@
 //#define EARTH_ANGLE			(-XM_PIDIV4 * 0.3f)
 #define ROCKET_ANGLE			(-XM_PIDIV4 * 0.2f)
 
+#define DEBRIS_NUM			(10)
+#define DEBRIS_DIST			(-280)
+#define DEBRIS_X			(290)
+#define DEBRIS_Y			(50)
+#define DEBRIS_SPD_X		(0.2f)
+#define DEBRIS_SPD_Y		(0.1f)
+#define DEBRIS_ROTSPD		(0.02f)
+#define DEBRIS_INTERVAL		(500)
+#define DEBRIS_SCL			(0.25f)
+
 // ÉeÉNÉXÉ`ÉÉñº
 enum {
 	TEXTURE_TITLE = 0,
@@ -49,7 +59,28 @@ enum {
 	MODEL_TITLE_ROCKET,
 	MODEL_TITLE_FIRE,
 	MODEL_TITLE_TUBE,
+	MODEL_TITLE_SUSHI,
 	MODEL_TITLE_MAX,
+};
+
+enum {
+	DEBRIS_SUSHI01 = 0,
+	DEBRIS_SUSHI02,
+	DEBRIS_SUSHI03,
+	DEBRIS_LOLLIPOP01,
+	DEBRIS_LOLLIPOP02,
+	DEBRIS_RAMEN,
+	DEBRIS_DONUT01,
+	DEBRIS_MAX,
+};
+
+struct DEBRIS {
+	XMFLOAT3 pos;
+	XMFLOAT3 rot;
+	XMFLOAT3 vpos;
+	XMFLOAT3 vrot;
+	int type;
+	BOOL use = FALSE;
 };
 
 //*****************************************************************************
@@ -59,6 +90,9 @@ static BOOL				g_Load = FALSE;
 static bool				g_Fade = true;
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 static MODEL_DATA		g_Model[MODEL_TITLE_MAX];
+
+static MODEL_DATA		g_ModelDebris[DEBRIS_MAX];
+static DEBRIS			g_Debris[DEBRIS_NUM];
 
 //=============================================================================
 // èâä˙âªèàóù
@@ -85,7 +119,7 @@ HRESULT InitTitle(void)
 	// ÉÇÉfÉãê›íË
 	g_Model[MODEL_TITLE_STAR].model = MODEL_EARTH;
 	g_Model[MODEL_TITLE_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
-	g_Model[MODEL_TITLE_STAR].srt.scl = { 80.0f, 80.0f, 80.0f };
+	g_Model[MODEL_TITLE_STAR].srt.scl = { 200.0f, 200.0f, 200.0f };
 
 	g_Model[MODEL_TITLE_EARTH].model = MODEL_EARTH;
 	g_Model[MODEL_TITLE_EARTH].srt.pos = { 0.0f, 0.0f, OBJ_DIST };
@@ -104,8 +138,16 @@ HRESULT InitTitle(void)
 	g_Model[MODEL_TITLE_TUBE].model = MODEL_RING;
 	g_Model[MODEL_TITLE_TUBE].srt.pos = { 0.0f, 0.0f, OBJ_DIST };
 	g_Model[MODEL_TITLE_TUBE].srt.scl = { 3.06f, 3.06f, 3.06f };
-	g_Model[MODEL_TITLE_TUBE].srt.rot = { 0.0f, 0.0f, 0.0f };;
+	g_Model[MODEL_TITLE_TUBE].srt.rot = { 0.0f, 0.0f, 0.0f };
 	
+
+	for (int i = 0; i < DEBRIS_MAX; i++) {
+		g_ModelDebris[i].model = (MODEL_LABEL)(MODEL_SUSHI01 + i);
+		g_ModelDebris[i].srt.scl = { DEBRIS_SCL, DEBRIS_SCL, DEBRIS_SCL };
+	}
+
+	// óêêîÇÃèâä˙âª
+	srand((unsigned int)timeGetTime());
 
 	g_Load = TRUE;
 	return S_OK;
@@ -121,17 +163,62 @@ void UninitTitle(void)
 	g_Load = FALSE;
 }
 
+void NewDebris(void) {
+	for (int i = 0; i < DEBRIS_NUM; i++) {
+		if (g_Debris[i].use) continue;
+		g_Debris[i].type = rand() % DEBRIS_MAX;
+		g_Debris[i].pos = { DEBRIS_X, DEBRIS_Y * (float)(rand() % 10) * 0.2f - DEBRIS_Y, DEBRIS_DIST };
+		g_Debris[i].vpos = { -DEBRIS_SPD_X - DEBRIS_SPD_X * (float)(rand() % 10) * 0.1f, DEBRIS_SPD_Y * (float)(rand() % 10) * 0.2f - DEBRIS_SPD_Y, 0.0f };
+		g_Debris[i].rot = { 0.0f, 0.0f, 0.0f };
+		g_Debris[i].vrot = { DEBRIS_ROTSPD * (float)(rand() % 10) * 0.1f, DEBRIS_ROTSPD * (float)(rand() % 10) * 0.1f, DEBRIS_ROTSPD * (float)(rand() % 10) * 0.1f };
+		g_Debris[i].use = TRUE;
+		return;
+	}
+}
+void UpdateDebris(void) {
+	static int time = 0;
+	if(!time) NewDebris();
+	for (int i = 0; i < DEBRIS_NUM; i++) {
+		if (!g_Debris[i].use) continue;
+		g_Debris[i].pos.x += g_Debris[i].vpos.x;
+		g_Debris[i].pos.y += g_Debris[i].vpos.y;
+		g_Debris[i].pos.z += g_Debris[i].vpos.z;
+		g_Debris[i].rot.x += g_Debris[i].vrot.x;
+		g_Debris[i].rot.y += g_Debris[i].vrot.y;
+		g_Debris[i].rot.z += g_Debris[i].vrot.z;
+		if (g_Debris[i].pos.x < -DEBRIS_X) g_Debris[i].use = FALSE;
+	}
+	time = (time + 1) % DEBRIS_INTERVAL;
+}
+void DrawDebris(void) {
+	XMMATRIX mtxWorld;
+	SRT srt;
+	for (int i = 0; i < DEBRIS_NUM; i++) {
+		if (!g_Debris[i].use) continue;
+		mtxWorld = XMMatrixIdentity();
+		srt = g_ModelDebris[g_Debris[i].type].srt;
+		srt.pos = g_Model[MODEL_TITLE_EARTH].srt.pos;
+		MulMtxScl(mtxWorld, srt.scl.x, srt.scl.y, srt.scl.z);	// ÉXÉPÅ[ÉãÇîΩâf
+		MulMtxRot(mtxWorld, srt.rot.x, srt.rot.y, srt.rot.z);	// âÒì]ÇîΩâf
+		MulMtxRot(mtxWorld, g_Debris[i].rot.x, g_Debris[i].rot.y, g_Debris[i].rot.z);					// âÒì]ÇîΩâf
+		MulMtxPos(mtxWorld, srt.pos.x + g_Debris[i].pos.x, srt.pos.y + g_Debris[i].pos.y, srt.pos.z + g_Debris[i].pos.z);	// à⁄ìÆÇîΩâf
+		DrawModel(&g_ModelDebris[g_Debris[i].type].model, &mtxWorld);
+	}
+}
+
 //=============================================================================
 // çXêVèàóù
 //=============================================================================
 void UpdateTitle(void)
 {
+	UpdateDebris();
+
 	g_Model[MODEL_TITLE_EARTH].srt.rot.y -= 0.001f;
 	g_Model[MODEL_TITLE_STAR].srt.rot.y += 0.0001f;
 	if (g_Model[MODEL_TITLE_EARTH].srt.rot.y < -XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y += XM_2PI;
 	if (g_Model[MODEL_TITLE_STAR].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y -= XM_2PI;
 
-	g_Model[MODEL_TITLE_ROCKET].srt.rot.y += 0.03f;
+	g_Model[MODEL_TITLE_ROCKET].srt.rot.y += 0.02f;
 	//g_Model[MODEL_TITLE_ROCKET].srt.rot.z -= 0.0002f;
 	if (g_Model[MODEL_TITLE_ROCKET].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y -= XM_2PI;
 	if (g_Model[MODEL_TITLE_ROCKET].srt.rot.z < -XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.z += XM_2PI;
@@ -178,6 +265,25 @@ void DrawEarthRocket(void) {
 	MulMtxRot(mtxWorld, EARTH_ANGLE, 0.0f, 0.0f);			// âÒì]ÇîΩâf
 	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// à⁄ìÆÇîΩâf
 	DrawModel(&g_Model[MODEL_TITLE_ROCKET].model, &mtxWorld);
+
+	// ÉpÉCÉvÅià íuÇÕÉçÉPÉbÉgÇéQè∆Åj
+	//SetBlendState(BLEND_MODE_ADD);
+	//mtxWorld = XMMatrixIdentity();
+	//srt = g_Model[MODEL_TITLE_ROCKET].srt;
+	//srt.scl = g_Model[MODEL_TITLE_TUBE].srt.scl;
+	//MulMtxScl(mtxWorld, srt.scl.x, srt.scl.y, srt.scl.z);	// ÉXÉPÅ[ÉãÇîΩâf
+	//MulMtxRot(mtxWorld, XM_PI, 0.0f, XM_PI);				// âÒì]ÇîΩâf
+	////MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// âÒì]ÇîΩâf
+	//MulMtxRot(mtxWorld, 0.0f, 0.0f, srt.rot.z);		// âÒì]ÇîΩâf
+	//MulMtxRot(mtxWorld, ROCKET_ANGLE, 0.0f, 0.0f);		// âÒì]ÇîΩâf
+	//MulMtxRot(mtxWorld, 0.0f, 0.0f, EARTH_ANGLE);			// âÒì]ÇîΩâf
+	//MulMtxRot(mtxWorld, EARTH_ANGLE, 0.0f, 0.0f);			// âÒì]ÇîΩâf
+	//MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// à⁄ìÆÇîΩâf
+	//material.Specular = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//material.Diffuse = { 0.0f, 0.3f, 0.0f, 0.7f };	// îºìßñæÇ…Ç∑ÇÈ
+	//DrawModel(&g_Model[MODEL_TITLE_TUBE].model, &mtxWorld, TEXTURE_LABEL_WHITE, &material);
+	//SetBlendState(BLEND_MODE_ALPHABLEND);
+
 }
 //=============================================================================
 // ï`âÊèàóù
@@ -198,10 +304,12 @@ void DrawTitle(void)
 	// çïìhÇË
 	SetDrawFillBlackPlayer();
 	DrawEarthRocket();
+	DrawDebris();
 
 	// ÉVÉÉÉhÉEÉ{ÉäÉÖÅ[ÉÄ
 	//SetStencilWriteDL();
 	//DrawEarthRocket();
+	//DrawDebris();
 
 	SetBlendState(BLEND_MODE_ADD);
 
@@ -209,37 +317,14 @@ void DrawTitle(void)
 	SetLightNo(0);
 	SetStencilReadDL();
 	DrawEarthRocket();
+	DrawDebris();
 
 	// ÉAÉìÉrÉGÉìÉgÉâÉCÉg
 	SetStencilNoneAL();
 	DrawEarthRocket();
+	DrawDebris();
 
 	SetBlendState(BLEND_MODE_ALPHABLEND);
-
-	//// ínãÖ
-	//mtxWorld = XMMatrixIdentity();
-	//srt = g_Model[MODEL_TITLE_EARTH].srt;
-	//MulMtxScl(mtxWorld, srt.scl.x, srt.scl.y, srt.scl.z);	// ÉXÉPÅ[ÉãÇîΩâf
-	//MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// âÒì]ÇîΩâf
-	//MulMtxRot(mtxWorld, 0.0f, 0.0f, EARTH_ANGLE);			// âÒì]ÇîΩâf
-	//MulMtxRot(mtxWorld, EARTH_ANGLE, 0.0f, 0.0f);			// âÒì]ÇîΩâf
-	//MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// à⁄ìÆÇîΩâf
-	//DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &mtxWorld);
-	////DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &g_Model[MODEL_TITLE_EARTH].srt);
-
-	//// ÉçÉPÉbÉg
-	//mtxWorld = XMMatrixIdentity();
-	//srt = g_Model[MODEL_TITLE_ROCKET].srt;
-	//MulMtxScl(mtxWorld, srt.scl.x, srt.scl.y, srt.scl.z);	// ÉXÉPÅ[ÉãÇîΩâf
-	//MulMtxRot(mtxWorld, XM_PI, 0.0f, XM_PI);				// âÒì]ÇîΩâf
-	//MulMtxPos(mtxWorld, -225.0f, 0.0f, 0.0f);				// à⁄ìÆÇîΩâf
-	//MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// âÒì]ÇîΩâf
-	//MulMtxRot(mtxWorld, 0.0f, 0.0f, srt.rot.z);		// âÒì]ÇîΩâf
-	//MulMtxRot(mtxWorld, ROCKET_ANGLE, 0.0f, 0.0f);		// âÒì]ÇîΩâf
-	//MulMtxRot(mtxWorld, 0.0f, 0.0f, EARTH_ANGLE);			// âÒì]ÇîΩâf
-	//MulMtxRot(mtxWorld, EARTH_ANGLE, 0.0f, 0.0f);			// âÒì]ÇîΩâf
-	//MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// à⁄ìÆÇîΩâf
-	//DrawModel(&g_Model[MODEL_TITLE_ROCKET].model, &mtxWorld);
 
 	// ÉtÉ@ÉCÉÑÅ[
 	SetBlendState(BLEND_MODE_ADD);
@@ -263,6 +348,7 @@ void DrawTitle(void)
 
 	// ÉpÉCÉvÅià íuÇÕÉçÉPÉbÉgÇéQè∆Åj
 	//SetCullingMode(CULL_MODE_NONE);	// ó†ñ Ç‡ï`âÊ
+	//SetStencilReadDL();
 	mtxWorld = XMMatrixIdentity();
 	srt = g_Model[MODEL_TITLE_ROCKET].srt;
 	srt.scl = g_Model[MODEL_TITLE_TUBE].srt.scl;
@@ -277,8 +363,9 @@ void DrawTitle(void)
 	material.Diffuse = { 0.0f, 0.3f, 0.0f, 0.7f };	// îºìßñæÇ…Ç∑ÇÈ
 	DrawModel(&g_Model[MODEL_TITLE_TUBE].model, &mtxWorld, TEXTURE_LABEL_WHITE, &material);
 	//SetCullingMode(CULL_MODE_BACK);	// ó†ñ Ç‡ï`âÊ
-	SetBlendState(BLEND_MODE_ALPHABLEND);
 
+	SetBlendState(BLEND_MODE_ALPHABLEND);
+	
 
 	// É^ÉCÉgÉãÉçÉSÇ»Ç«
 	DrawTexture2D(&g_td[TEXTURE_TITLE], TRUE, TRUE);

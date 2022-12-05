@@ -137,12 +137,6 @@ void DrawGame(void)
 
 	DrawAnimStart();
 
-	//SetDrawNoLighting();
-	//DrawPlayer();
-
-	//DrawGameUI();
-	//DrawTexture2DAll(TRUE);
-
 
 #ifdef _DEBUG
 	static LARGE_INTEGER Shadow_S, Shadow_E, Shade_S, Shade_E, Light_S, Light_E;
@@ -154,17 +148,13 @@ void DrawGame(void)
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Light_S); }
 #endif
 	{	// ALL 25000 → 15000
-		//// アウトラインを引く 3000
-		//SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
-		//DrawGimmickInstancing(GIMMICK_ICE, TRUE);
+		// アウトラインを引く 3000
+		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
+		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
 
 		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		//DrawMissile(MISSILE_TYPE_01);
 		//DrawMissile(MISSILE_TYPE_02);
-		
-		// アウトラインを引く 3000
-		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
-		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
 
 		// 環境光で下塗りする 3000
 		{
@@ -208,7 +198,6 @@ void DrawGame(void)
 			SetStencilReadLL(SHADER_TUBE);
 			DrawTube();
 
-
 			//DrawDoor();
 			SetStencilReadLLGimmick();
 			//SetStencilReadLL(SHADER_GIMMICK);
@@ -235,6 +224,7 @@ void DrawGame(void)
 
 				SetDrawMissileFire();
 				DrawGimmickInstancing(GIMMICK_RING);
+				
 
 				SetBlendState(BLEND_MODE_ADD);
 

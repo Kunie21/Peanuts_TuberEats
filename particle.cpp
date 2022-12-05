@@ -21,13 +21,17 @@
 // マクロ定義
 //*****************************************************************************
 #define	EMITTER_MAX		(100)	// エミッター最大数
-#define	PARTICLE_MAX	(100)	// パーティクル最大数
-#define	PARTICLE_SIZE	(10)	// パーティクル粒サイズ
+#define	PARTICLE_MAX	(25)	// パーティクル最大数
+#define	PARTICLE_SIZE	(50)	// パーティクル粒サイズ
 #define	PARTICLE_PUSH	(10)	// フレームごとの噴出数
-#define	PARTICLE_SPD	(20.0f)	// 噴出速度
+#define	PARTICLE_SPD	(5.0f)	// 噴出速度
 //#define	PARTICLE_ACL	(0.98f)	// 噴出加速度
 #define	PARTICLE_ACL	(0.1f)	// 噴出加速度
 #define	PARTICLE_POS	(TUBE_RADIUS - 40.0f)
+
+#define	EXP_POS	(TUBE_RADIUS - 80.0f)
+#define	EXP_MAX			(10)	// エミッター最大数
+#define	EXP_PUSH		(25)	// 
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -80,8 +84,9 @@ public:
 		m_desc.m_pos.x += m_desc.m_vec.x * m_desc.m_spd;
 		m_desc.m_pos.y += m_desc.m_vec.y * m_desc.m_spd;
 		m_desc.m_pos.z += m_desc.m_vec.z * m_desc.m_spd;
-		//m_desc.m_scl = PARTICLE_SIZE * m_desc.m_spd / m_desc.m_spdmax;
-		m_desc.m_col = { m_desc.m_spd, m_desc.m_spd, m_desc.m_spd, 1.0f };
+		float rate = m_desc.m_spd / m_desc.m_spdmax;
+		m_desc.m_scl = PARTICLE_SIZE * (1.0f - rate);
+		//m_desc.m_col = { m_desc.m_col.x * rate, m_desc.m_col.y * rate, m_desc.m_col.z * rate, 1.0f };
 		//m_desc.m_col.w = m_desc.m_spd;
 		//m_desc.m_spd *= m_desc.m_acl;
 		m_desc.m_spd -= m_desc.m_acl;
@@ -120,45 +125,30 @@ public:
 		m_dscPtc.m_spd = PARTICLE_SPD;
 		m_dscPtc.m_spdmax = m_dscPtc.m_spd;
 		m_dscPtc.m_acl = PARTICLE_ACL;
-		//m_dscPtc.m_col = { 2.7f, 2.4f, 2.7f, 1.0f };
-		m_dscPtc.m_col = { 2.7f, 2.7f, 2.7f, 1.0f };
+		m_dscPtc.m_col = { 3.0f, 2.0f, 2.0f, 1.0f };
 		m_vol = XM_PIDIV2 * 0.5f;	// 30度
 	}
 
 	// エミッター設置
-	//BOOL Set(XMFLOAT3* pos, float rot) {
-	//	if (m_bUse) return FALSE;
+	virtual BOOL Set(int zPosNo, int rotPosNo) {
+		if (GetUse()) return FALSE;
 
-	//	m_dscPtc.m_pos = *pos;
-	//	m_dscPtc.m_pos.z = 0.0f;
-	//	m_rot = rot;
+		SetZPosNo(zPosNo);
+		SetRot(rotPosNo);
+		SetPos(PARTICLE_POS);
 
-	//	m_bUse = TRUE;
-
-	//	return TRUE;
-	//}
-	BOOL Set(int zPosNo, int rotPosNo) {
-		if (m_bUse) return FALSE;
-
-		m_zPosNo = zPosNo;
-		//m_dscPtc.m_rotPosNo = rotPosNo;
-		m_rot = GetRotPos(rotPosNo) + XM_PI;
-		m_dscPtc.m_pos = { PARTICLE_POS * cosf(m_rot - XM_PI), PARTICLE_POS * sinf(m_rot - XM_PI), 0.0f };
-
-		m_bUse = TRUE;
+		SetUse(TRUE);
 
 		return TRUE;
 	}
 
-	void Update(void) {
-		if (!m_bUse) return;
+	virtual void Update(void) {
+		if (!GetUse()) return;
 
+		// パーティクル更新と発生処理
 		int count = 0;
 		for (int p = 0; p < PARTICLE_MAX; p++) {
-			if (m_aPtc[p].GetUse()) {
-				m_aPtc[p].Update();
-			}
-			else {
+			if (!UpdateParticle(p)) {
 				if (count < m_pushNum) {
 					SetRandDesc();
 					m_aPtc[p].Emit(m_dscPtc);
@@ -167,23 +157,27 @@ public:
 			}
 		}
 
-		//float zPos = GetZPos(GetZPosNo());
-		//XMFLOAT3 cmps = GetCamera()->pos;
-		for (int p = 0; p < PARTICLE_MAX; p++) {
-			m_aSort[p].next = -1;
-			//m_aSort[p].length = (m_aPtc[p].GetDesc()->m_pos.z + zPos) * (m_aPtc[p].GetDesc()->m_pos.z + zPos);
-				//(m_aPtc[p].GetDesc()->m_pos.x - cmps.x) * (m_aPtc[p].GetDesc()->m_pos.x - cmps.x) +
-				//(m_aPtc[p].GetDesc()->m_pos.y - cmps.y) * (m_aPtc[p].GetDesc()->m_pos.y - cmps.y) +
-				//(m_aPtc[p].GetDesc()->m_pos.z + zPos - cmps.z) * (m_aPtc[p].GetDesc()->m_pos.z + zPos - cmps.z);
-		}
-		m_indexTop = 0;
+		// パーティクル並び替え
+		SortParticle();
+	}
 
-		int prv, cur;
+	// ランダムにステータスを決める
+	virtual void SetRandDesc(void) {
+		PARTICLE_DESC* dsc = GetDesc();
+		dsc->m_spd = dsc->m_spdmax * (float)(rand() % 30) * 0.033333f;
+		float rand_xy = m_vol * ((float)(rand() % 30) * 0.033333f - 0.5f);
+		float rand_z = m_vol * ((float)(rand() % 30) * 0.033333f - 0.5f);
+		dsc->m_vec = { cosf(m_rot + rand_xy), sinf(m_rot + rand_xy), sinf(rand_z) };
+	}
+
+	// パーティクル並び替え
+	void SortParticle(void) {
+		for (int p = 0; p < PARTICLE_MAX; p++) m_aSort[p].next = -1;
+		int prv, cur; m_indexTop = 0;
 		for (int p = 1; p < PARTICLE_MAX; p++) {
 			prv = -1;
 			cur = m_indexTop;
 			while (m_aPtc[p].GetDesc()->m_pos.z < m_aPtc[cur].GetDesc()->m_pos.z)
-			//while (m_aSort[p].length < m_aSort[cur].length)
 			{
 				prv = cur;
 				cur = m_aSort[cur].next;
@@ -200,39 +194,103 @@ public:
 				m_aSort[prv].next = p;
 			}
 		}
-
-		for (int p2 = 0; p2 < 5; p2++) {
-			//if (m_aSort[p].zPos > m_aSort[p2].zPos) {
-			//	m_aSort[p].nextIndex = m_aSort[p2].nextIndex;
-			//	m_aSort[p2].nextIndex = p;
-			//}
-		}
-	}
-
-	void SetRandDesc(void) {
-		m_dscPtc.m_spd = 5.0f * (float)(rand() % 30) * 0.033333f;
-		float rand_xy = m_vol * ((float)(rand() % 30) * 0.033333f - 0.5f);
-		float rand_z = m_vol * ((float)(rand() % 30) * 0.033333f - 0.5f);
-		m_dscPtc.m_vec = { cosf(m_rot + rand_xy), sinf(m_rot + rand_xy), sinf(rand_z) };
 	}
 
 	PARTICLE* GetParticle(int index) { return &m_aPtc[index]; }
 
 	int GetZPosNo(void) { return m_zPosNo; }
+	float GetRot(void) { return m_rot; }
 	int GetIndexTop(void) { return m_indexTop; }
 	int GetIndexNext(int index) { return m_aSort[index].next; }
 	BOOL GetUse(void) { return m_bUse; }
+	BOOL GetPtcUse(int index) { return m_aPtc[index].GetUse(); }
+	PARTICLE_DESC* GetDesc(void) { return &m_dscPtc; }
+
+	BOOL UpdateParticle(int index){
+		if (m_aPtc[index].GetUse()) {
+			m_aPtc[index].Update();
+			return TRUE;
+		}
+		return FALSE;
+	}
+	void EmitParticle(int index) { return m_aPtc[index].Emit(m_dscPtc); }
+	void SetZPosNo(int zPosNo) { m_zPosNo = zPosNo; }
+	void SetRot(int rotPosNo) { m_rot = GetRotPos(rotPosNo) + XM_PI; }
+	void SetUse(BOOL use) { m_bUse = use; }
+	void SetPos(float height) {
+		m_dscPtc.m_pos = { height * cosf(m_rot - XM_PI), height * sinf(m_rot - XM_PI), 0.0f };
+	}
+};
+
+class EMITTER_EXP :public EMITTER
+{
+public:
+	EMITTER_EXP() {
+		GetDesc()->m_col = { 1.0f, 2.0f, 3.0f, 1.0f };
+	}
+
+	// エミッター設置
+	BOOL Set(int zPosNo, int rotPosNo) override {
+		if (GetUse()) return FALSE;
+
+		SetZPosNo(zPosNo);
+		SetRot(rotPosNo);
+		SetPos(EXP_POS);
+
+		// パーティクル発生処理
+		int count = 0;
+		for (int p = 0; p < PARTICLE_MAX; p++) {
+			if (!GetPtcUse(p)) {
+				if (count < EXP_PUSH) {
+					SetRandDesc();
+					EmitParticle(p);
+					count++;
+				}
+			}
+		}
+
+		SetUse(TRUE);
+
+		return TRUE;
+	}
+
+	void Update(void) override {
+		if (!GetUse()) return;
+
+		int count = 0;
+		for (int p = 0; p < PARTICLE_MAX; p++) {
+			if (UpdateParticle(p)) {
+				count++;
+			}
+		}
+		if (!count) { SetUse(FALSE); return; }	// パーティクルがなくなった
+
+		// パーティクル並び替え
+		SortParticle();
+	}
+
+	// ランダムにステータスを決める
+	void SetRandDesc(void) override {
+		PARTICLE_DESC* dsc = GetDesc();
+		dsc->m_spd = dsc->m_spdmax * (float)(rand() % 30) * 0.033333f;
+		float rand_xy = XM_2PI * (float)(rand() % 30) * 0.033333f;
+		float rand_z = XM_2PI * (float)(rand() % 30) * 0.033333f;
+		dsc->m_vec = { cosf(GetRot() + rand_xy), sinf(GetRot() + rand_xy), sinf(rand_z) };
+	}
 };
 
 // エミッター管理クラス
 class EMITTER_MANAGER
 {
 private:
-	EMITTER m_aEmt[EMITTER_MAX];
+	EMITTER* m_aEmt;
+	int		m_nEmt;
 
 public:
+	EMITTER_MANAGER(EMITTER* aEmt, int nEmt) :m_aEmt(aEmt), m_nEmt(nEmt) {}
+
 	void Update(void) {
-		for (int e = 0; e < EMITTER_MAX; e++) {
+		for (int e = 0; e < m_nEmt; e++) {
 			m_aEmt[e].Update();
 		}
 	}
@@ -269,7 +327,8 @@ public:
 		int instNo = 0;
 		PARTICLE_DESC* desc = NULL;
 		float zPos = 0.0f;
-		for (int e = 0; e < EMITTER_MAX; e++)
+		float rate = 0.0f;
+		for (int e = 0; e < m_nEmt; e++)
 		{
 			if (!m_aEmt[e].GetUse()) continue;
 			zPos = GetZPos(m_aEmt[e].GetZPosNo());
@@ -285,7 +344,8 @@ public:
 					pInstance->pos[instNo] = { desc->m_pos.x, desc->m_pos.y, desc->m_pos.z + zPos, 0.0f };
 					pInstance->rot[instNo] = { 0.0f, 0.0f, 0.0f, 0.0f };
 					pInstance->scl[instNo] = { desc->m_scl, desc->m_scl, desc->m_scl, 0.0f };
-					pInstance->col[instNo] = desc->m_col;
+					rate = desc->m_spd / desc->m_spdmax;
+					pInstance->col[instNo] = { desc->m_col.x * rate, desc->m_col.y * rate, desc->m_col.z * rate, 1.0f };
 
 					instanceCount++;
 
@@ -294,7 +354,7 @@ public:
 						device->Unmap(GetInstanceBuffer(), 0);
 						device->DrawInstanced(4, INSTANCE_MAX, 0, 0);
 
-						if (instanceCount < EMITTER_MAX * PARTICLE_MAX)
+						if (instanceCount < m_nEmt * PARTICLE_MAX)
 						{
 							device->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 							pInstance = (INSTANCE*)msr.pData;
@@ -321,7 +381,7 @@ public:
 	//	return FALSE;
 	//}
 	BOOL SetEmitter(int zPosNo, int rotPosNo) {
-		for (int e = 0; e < EMITTER_MAX; e++) {
+		for (int e = 0; e < m_nEmt; e++) {
 			if (m_aEmt[e].Set(zPosNo, rotPosNo)) return TRUE;
 		}
 		return FALSE;
@@ -329,7 +389,12 @@ public:
 
 	//EMITTER* GetEmitter(int index) { return &m_aEmt[index]; }
 };
-EMITTER_MANAGER g_EM;
+
+EMITTER g_aEmt[EMITTER_MAX];
+EMITTER_MANAGER g_EM(g_aEmt, EMITTER_MAX);
+
+EMITTER_EXP g_aEmtExp[EXP_MAX];
+EMITTER_MANAGER g_EMExp(g_aEmtExp, EXP_MAX);
 
 //=============================================================================
 // 初期化処理
@@ -366,6 +431,7 @@ void UninitParticle(void)
 void UpdateParticle(void)
 {
 	g_EM.Update();
+	g_EMExp.Update();
 }
 
 //=============================================================================
@@ -374,10 +440,15 @@ void UpdateParticle(void)
 void DrawParticle(void)
 {
 	g_EM.DrawParticle();
+	g_EMExp.DrawParticle();
 }
 
 BOOL SetEmitter(int zPosNo, int rotPosNo) {
 	return g_EM.SetEmitter(zPosNo, rotPosNo);
+}
+
+BOOL SetEmitterExp(int zPosNo, int rotPosNo) {
+	return g_EMExp.SetEmitter(zPosNo, rotPosNo);
 }
 
 //=============================================================================

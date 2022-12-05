@@ -16,6 +16,7 @@
 #include "player.h"
 #include "ui_game.h"
 #include "stage.h"
+#include "particle.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -145,7 +146,7 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline, BOOL bAdd)
 	{
 		if (!pStage->arrGmk[i].use) {
 			if (bOutline) continue;
-			if (pStage->arrGmk[i].exSpd > 5.0f) {
+			if (pStage->arrGmk[i].exSpd > 1.0f) {
 				pStage->arrGmk[i].exPos += pStage->arrGmk[i].exSpd;
 				pStage->arrGmk[i].exSpd *= EX_ACCEL;
 				pStage->arrGmk[i].col.w *= EX_ACCEL * 1.01f;
@@ -281,6 +282,7 @@ bool CollisionMissile(float oldZ, float newZ, float oldRot, float newRot)
 					{
 					case GIMMICK_ICE:
 						pStage->arrGmk[i].use = FALSE;
+						SetEmitterExp(pStage->arrGmk[i].zPosNo, pStage->arrGmk[i].rotPosNo);
 						return true;
 						break;
 					//case GIMMICK_RING:

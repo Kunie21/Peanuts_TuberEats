@@ -62,6 +62,7 @@ HRESULT InitTube(void)
 	// 直線パイプ
 	{
 		g_MeshTube.material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+		g_MeshTube.material.Specular = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 		// ポジション設定
 		g_MeshTube.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
