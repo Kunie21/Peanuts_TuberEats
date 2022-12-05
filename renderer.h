@@ -235,6 +235,7 @@ void SetStencilReadPL(void);
 void SetStencilReadSL(void);
 void SetStencilReadLL(SHADER_TYPE shader);
 void SetStencilReadLLGimmick(void);
+void SetStencilReadLLMissile(void);
 void SetStencilNone(void);
 void SetStencilNoneAL(SHADER_TYPE shader);
 void SetStencilNoneAL(void);

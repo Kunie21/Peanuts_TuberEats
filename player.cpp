@@ -89,7 +89,7 @@ private:
 
 	float m_invTime = 0.0f;
 
-	int m_missiles = 10;
+	int m_missiles = 5;
 
 	BOOL m_bStart = FALSE;
 
@@ -168,6 +168,8 @@ public:
 		m_addSpd *= m_status.decel;
 		m_invTime *= 0.0f;
 		m_fuel -= m_posSpd / MAX_SPEED;	// 燃料消費
+		if (GetFuelRate() < 0.25f) SetAlertRedEffect();
+		else if (GetFuelRate() < 0.5f) SetAlertYellowEffect();
 		return -(m_rotSpd + m_rotAddSpd) / m_status.rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
 	}
 
@@ -190,10 +192,12 @@ public:
 	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
 
 	// ミサイル発射
-	bool Launch(MISSILE_TYPE type) {
-		//if (!m_missiles--)
-		//	return false;
-		return LaunchMissile(type, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd);
+	int GetMissiles(void) { return m_missiles; }
+	void SetMissiles(void) { m_missiles++; }
+	bool Launch(void) {
+		if (m_missiles <= 0) return false;
+		m_missiles--;
+		return LaunchMissile(MISSILE_TYPE_01, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd);
 	}
 
 	// リセット
@@ -206,7 +210,7 @@ public:
 		m_rotAddSpd = 0.0f;
 		m_fuel = 5000.0f;
 		m_invTime = 0.0f;
-		m_missiles = 10;
+		m_missiles = 5;
 		m_bStart = FALSE;
 	}
 
@@ -226,12 +230,12 @@ static CURVE_BUFFER curveTest;
 //=============================================================================
 HRESULT InitPlayer(void)
 {
-	g_Model[0].model = MODEL_ROCKET1;
-	g_Model[1].model = MODEL_ROCKET2;
-	g_Model[2].model = MODEL_ROCKET3;
-	g_Model[3].model = MODEL_ROCKET4;
-	g_Model[4].model = MODEL_ROCKET5;
-	g_Model[5].model = MODEL_FIRE;
+	g_Model[MODEL_PLAYER_ROCKET1].model = MODEL_ROCKET1;
+	g_Model[MODEL_PLAYER_ROCKET2].model = MODEL_ROCKET2;
+	g_Model[MODEL_PLAYER_ROCKET3].model = MODEL_ROCKET3;
+	g_Model[MODEL_PLAYER_ROCKET4].model = MODEL_ROCKET4;
+	g_Model[MODEL_PLAYER_ROCKET5].model = MODEL_ROCKET5;
+	g_Model[MODEL_PLAYER_FIRE].model = MODEL_FIRE;
 	for (int i = 0; i < MODEL_PLAYER_MAX; i++) {
 		g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
 		g_Model[i].srt.rot = { XM_PI, 0.0f, XM_PI };
@@ -325,8 +329,8 @@ void UpdatePlayer(void)
 	g_Model[testNo].srt.rot.z = g_Rocket.Drive2();
 
 	// ミサイル
-	if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_01); }
-	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(MISSILE_TYPE_02); }
+	//if (GetKeyboardTrigger(DIK_RETURN)) { g_Rocket.Launch(MISSILE_TYPE_01); }
+	if (GetKeyboardTrigger(DIK_S)) { g_Rocket.Launch(); }
 
 	// コリジョン
 	if (g_Rocket.AbleToCollision()) {
@@ -394,7 +398,7 @@ void DrawPlayer(void) {
 	//g_Model[testNo].srt.scl.z = (float)(rand() % 50) * 0.0003f * g_Rocket.GetSpeedRate() + 0.3f;
 
 	//g_Model[testNo].srt.pos.x = (float)(rand() % 10) * 0.001f * g_Rocket.GetSpeed();
-	g_Model[testNo].srt.pos.y = (float)(rand() % 20) * 0.025f - 0.25f + ROCKET_Y;
+	g_Model[testNo].srt.pos.y = (float)(rand() % 20) * 0.0125f + ROCKET_Y;
 	//g_Model[testNo].srt.pos.z = (float)(rand() % 20) * 0.05f - 0.5f;
 
 	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt);	// モデル描画
@@ -443,6 +447,9 @@ float GetPlayerPosition(void) {
 float GetPlayerRotation(void) {
 	return g_Rocket.GetRotate();
 }
+int GetPlayerMissiles(void) {
+	return g_Rocket.GetMissiles();
+}
 void SetPlayerThroughRing(void) {
 	g_Rocket.Boost(30.0f);
 	g_Rocket.Collision();
@@ -453,6 +460,9 @@ void SetPlayerCollisionIce(void) {
 	g_Rocket.Boost(-g_Rocket.GetSpeed() * 0.5f);
 	g_Rocket.BrakeFull();
 	g_Rocket.Collision();
+}
+void SetPlayerCollisionSushi(void) {
+	g_Rocket.SetMissiles();
 }
 void SetPlayerCollisionBlast(float rotAddSpd) {
 	g_Rocket.Blast(rotAddSpd * 0.1f);

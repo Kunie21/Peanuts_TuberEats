@@ -42,5 +42,7 @@ HRESULT InitMissile(void);
 void UninitMissile(void);
 void UpdateMissile(void);
 void DrawMissile(MISSILE_TYPE gimmick);
+void DrawMissile(void);
+void DrawMissileHave(void);
 void DrawMissileFire(void);
 BOOL LaunchMissile(MISSILE_TYPE type, float zPos, float zSpd, float zRot, float zRotSpd);

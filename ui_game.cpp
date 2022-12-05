@@ -43,12 +43,14 @@ enum
 	TEXTURE_NUMBER,
 	TEXTURE_SEMICOLON,
 	TEXTURE_WHITE,
+	TEXTURE_WHITE2,
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 
 static float	g_Timer = 0.0f;
 static bool		g_bTimer = FALSE;
+static bool		g_bAlert = FALSE;
 
 //=============================================================================
 // 初期化処理
@@ -62,6 +64,7 @@ HRESULT InitGameUI(void)
 		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_FUEL_EMPTY + i);
 	}
 	g_td[TEXTURE_WHITE].tex = TEXTURE_LABEL_WHITE;
+	g_td[TEXTURE_WHITE2].tex = TEXTURE_LABEL_WHITE;
 
 	// 詳細設定
 	// スピードメーター
@@ -104,6 +107,7 @@ HRESULT InitGameUI(void)
 
 	// スクリーンエフェクト用
 	g_td[TEXTURE_WHITE].col = { 0.0f, 0.0f, 0.0f, 0.0f };
+	g_td[TEXTURE_WHITE2].col = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	g_Load = TRUE;
 	return S_OK;
@@ -126,6 +130,10 @@ void UpdateGameUI(void)
 {
 	g_td[TEXTURE_WHITE].col.w *= 0.97f;
 	if (g_bTimer) g_Timer += 0.01666666f;
+
+	if(g_bAlert) g_td[TEXTURE_WHITE2].col.w = 0.1f * (1.0f + sinf(g_Timer * 5.0f));
+	else g_td[TEXTURE_WHITE2].col.w = 0.0f;
+	SetNoAlertEffect();
 }
 
 //=============================================================================
@@ -236,7 +244,29 @@ void SetDamageEffect(void)
 }
 void SetBoostEffect(void)
 {
-	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 1.0f, 0.4f };
+	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 1.0f, 0.5f };
+}
+void SetSushiEffect(void)
+{
+	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 0.5f, 0.3f };
+}
+void SetAlertYellowEffect(void)
+{
+	g_td[TEXTURE_WHITE2].col.x = 1.0f;
+	g_td[TEXTURE_WHITE2].col.y = 1.0f;
+	g_td[TEXTURE_WHITE2].col.z = 0.0f;
+	g_bAlert = TRUE;
+}
+void SetAlertRedEffect(void)
+{
+	g_td[TEXTURE_WHITE2].col.x = 1.0f;
+	g_td[TEXTURE_WHITE2].col.y = 0.0f;
+	g_td[TEXTURE_WHITE2].col.z = 0.0f;
+	g_bAlert = TRUE;
+}
+void SetNoAlertEffect(void)
+{
+	g_bAlert = FALSE;
 }
 void SetTimer(float time)
 {

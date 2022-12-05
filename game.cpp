@@ -151,6 +151,10 @@ void DrawGame(void)
 		// アウトラインを引く 3000
 		SetDrawOutline(0.8f, { 1.0f, 0.0f, 0.0f, 1.0f });
 		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
+		DrawGimmickInstancing(GIMMICK_SUSHI_ICE, TRUE);
+
+		SetDrawOutline(4.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
+		DrawGimmickInstancing(GIMMICK_SUSHI, TRUE);
 
 		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		//DrawMissile(MISSILE_TYPE_01);
@@ -202,11 +206,17 @@ void DrawGame(void)
 			SetStencilReadLLGimmick();
 			//SetStencilReadLL(SHADER_GIMMICK);
 			DrawGimmickInstancing(GIMMICK_ICE);
-			DrawMissile(MISSILE_TYPE_01);
-			DrawMissile(MISSILE_TYPE_02);
+			DrawGimmickInstancing(GIMMICK_SUSHI_ICE);
+			DrawGimmickInstancing(GIMMICK_SUSHI);
+
+			SetStencilReadLLMissile();
+			DrawMissile();
+			//DrawMissile(MISSILE_TYPE_01);
+			//DrawMissile(MISSILE_TYPE_02);
 
 			//SetStencilReadLL(SHADER_PLAYER);
-			//DrawPlayer();
+			////DrawPlayer();
+			//DrawMissileHave();
 
 #ifdef _DEBUG
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
@@ -279,7 +289,11 @@ void DrawGame(void)
 	ApplyMotionBlur();
 
 	SetStencilReadLL(SHADER_PLAYER);
+	DrawMissileHave();
+
+	SetStencilReadLL(SHADER_PLAYER);
 	DrawPlayer();
+
 	SetBlendState(BLEND_MODE_ADD);
 	SetDrawFire();
 	DrawFire();

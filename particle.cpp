@@ -332,7 +332,7 @@ public:
 		{
 			if (!m_aEmt[e].GetUse()) continue;
 			zPos = GetZPos(m_aEmt[e].GetZPosNo());
-			if (zPos < -500.0f || 10000.0f < zPos) continue;
+			if (zPos < DRAW_DIST_NEAR || DRAW_DIST_FAR < zPos) continue;
 			
 			int p = m_aEmt[e].GetIndexTop();
 			while (p != -1) {

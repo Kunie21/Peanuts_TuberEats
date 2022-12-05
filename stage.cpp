@@ -110,35 +110,35 @@ static STAGE_TABLE g_StageTbl[STAGE_MAX][TUBE_ZPS_NUM] = {
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
+	{{ 0, 0, 0, 0, 0, 0, 5, 5 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 2, 2, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
+	{{ 0, 5, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
+	{{ 0, 5, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 2, 2, 2, 2, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
+	{{ 2, 6, 2, 2, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 3 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 3, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 3, 0, 0 }, { 0.00f, 0.09f }},
 	{{ 0, 0, 0, 0, 3, 0, 0, 0 }, { 0.00f, 0.09f }},
 	{{ 0, 0, 0, 3, 0, 0, 0, 0 }, { 0.00f, 0.09f }},
-	{{ 0, 0, 3, 0, 0, 0, 0, 0 }, { 0.00f, 0.09f }},
+	{{ 0, 0, 3, 0, 0, 5, 0, 0 }, { 0.00f, 0.09f }},
 	{{ 0, 3, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.09f }},
 	{{ 3, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.09f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 2 }, { 0.00f, 0.09f }},
-	{{ 0, 0, 0, 0, 0, 0, 2, 0 }, { 0.00f, 0.09f }},
+	{{ 0, 0, 5, 0, 0, 0, 2, 0 }, { 0.00f, 0.09f }},
 	{{ 0, 0, 0, 0, 0, 2, 0, 0 }, { 0.00f, 0.09f }},
 	{{ 0, 0, 0, 0, 2, 0, 0, 0 }, { 0.01f, 0.09f }},
 	{{ 0, 0, 0, 2, 0, 0, 0, 0 }, { 0.02f, 0.09f }},
 	{{ 0, 0, 2, 0, 0, 0, 0, 0 }, { 0.03f, 0.09f }},
-	{{ 0, 2, 0, 0, 0, 0, 0, 0 }, { 0.04f, 0.09f }},
+	{{ 0, 2, 0, 0, 5, 0, 0, 0 }, { 0.04f, 0.09f }},
 	{{ 2, 0, 0, 0, 0, 0, 0, 0 }, { 0.03f, 0.00f }},
-	{{ 0, 0, 0, 0, 0, 0, 0, 1 }, { 0.02f, 0.00f }},
+	{{ 0, 0, 5, 0, 0, 0, 0, 1 }, { 0.02f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 1, 0 }, { 0.01f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 1, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 0, 0, 0, 0, 1, 0, 0, 0 }, { 0.00f, 0.00f }},
-	{{ 0, 0, 0, 1, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
+	{{ 0, 5, 0, 0, 1, 0, 0, 0 }, { 0.00f, 0.00f }},
+	{{ 0, 0, 0, 1, 0, 6, 2, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 1, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 3, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }},
 	{{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.00f, 0.00f }}
@@ -525,12 +525,14 @@ HRESULT InitStage(void)
 					g_Stage2[s].arrGmk[gmkCount].rotPosNo = rPosNo;
 					gmkCount++;
 					break;
+
 				case 2:
 					g_Stage2[s].arrGmk[gmkCount].type = GIMMICK_ICE;
 					g_Stage2[s].arrGmk[gmkCount].zPosNo = zPosNo;
 					g_Stage2[s].arrGmk[gmkCount].rotPosNo = rPosNo;
 					gmkCount++;
 					break;
+
 				case 3:
 					g_Stage2[s].arrGmk[gmkCount].type = GIMMICK_CRACK;
 					g_Stage2[s].arrGmk[gmkCount].zPosNo = zPosNo;
@@ -538,9 +540,33 @@ HRESULT InitStage(void)
 					SetEmitter(zPosNo, rPosNo);
 					gmkCount++;
 					break;
+
 				case 4:
 					g_Stage2[s].goal = zPosNo * MESH_SIZE_Z;
 					//SetGoalGate(g_Stage2[s].goal * MESH_SIZE_Z);
+					break;
+
+				case 5:
+					g_Stage2[s].arrGmk[gmkCount].type = GIMMICK_SUSHI;
+					g_Stage2[s].arrGmk[gmkCount].zPosNo = zPosNo;
+					g_Stage2[s].arrGmk[gmkCount].rotPosNo = rPosNo;
+					gmkCount++;
+					break;
+
+				case 6:	// ŽõŽiƒAƒCƒX
+					g_Stage2[s].arrGmk[gmkCount].type = GIMMICK_SUSHI_ICE;
+					g_Stage2[s].arrGmk[gmkCount].zPosNo = zPosNo;
+					g_Stage2[s].arrGmk[gmkCount].rotPosNo = rPosNo;
+					gmkCount++;
+
+					// ‰B‚µŽõŽi
+					g_Stage2[s].arrGmk[gmkCount].type = GIMMICK_SUSHI;
+					g_Stage2[s].arrGmk[gmkCount].zPosNo = zPosNo;
+					g_Stage2[s].arrGmk[gmkCount].rotPosNo = rPosNo;
+					g_Stage2[s].arrGmk[gmkCount].use = FALSE;
+					g_Stage2[s].arrGmk[gmkCount].col.w = 0.0f;
+					gmkCount++;
+
 					break;
 				default:
 					break;

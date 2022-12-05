@@ -1215,6 +1215,15 @@ void SetStencilReadLLGimmick(void)
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
+void SetStencilReadLLMissile(void)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VSInst, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSLL, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+}
 
 void SetDrawMonitor(void)
 {
