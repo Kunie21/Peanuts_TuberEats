@@ -9,6 +9,8 @@
 #include "texture2d.h"
 #include "camera.h"
 #include "load.h"
+#include "input.h"
+#include "collision.h"
 
 //*****************************************************************************
 // グローバル変数
@@ -54,7 +56,8 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/game_UI/fuel_font.png",
 	"data/TEXTURE/game_UI/fuel_full.png",
 	"data/TEXTURE/game_UI/goalpin_UI.png",
-	"data/TEXTURE/game_UI/icon_UI.png",
+	//"data/TEXTURE/game_UI/icon_UI.png",
+	"data/TEXTURE/character/onna_1.png",
 	"data/TEXTURE/game_UI/map_UI.png",
 	"data/TEXTURE/game_UI/rocket_map.png",
 	"data/TEXTURE/game_UI/speed_empty.png",
@@ -65,7 +68,7 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/game_UI/timer_semicolon.png",
 
 
-	"data/TEXTURE/home_menu_gamen/character.png",
+	"data/TEXTURE/character/chocolate.png",
 	"data/TEXTURE/home_menu_gamen/character01.png",
 	"data/TEXTURE/home_menu_gamen/character02.png",
 	"data/TEXTURE/home_menu_gamen/character03.png",
@@ -177,23 +180,23 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/title_menu_gamen/start_1.png",
 	"data/TEXTURE/title_menu_gamen/start_2.png",
 	"data/TEXTURE/title_menu_gamen/start_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/menupannel2_1.png",
+	"data/TEXTURE/title_menu_gamen/menupannel3_1.png",
 	"data/TEXTURE/title_menu_gamen/option_1.png",
 	"data/TEXTURE/title_menu_gamen/option_2.png",
 	"data/TEXTURE/title_menu_gamen/option_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/menupannel2_2.png",
+	"data/TEXTURE/title_menu_gamen/menupannel3_2.png",
 	"data/TEXTURE/title_menu_gamen/gallery_1.png",
 	"data/TEXTURE/title_menu_gamen/gallery_2.png",
 	"data/TEXTURE/title_menu_gamen/gallery_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/menupannel2_3.png",
+	"data/TEXTURE/title_menu_gamen/menupannel3_3.png",
 	"data/TEXTURE/title_menu_gamen/credit_1.png",
 	"data/TEXTURE/title_menu_gamen/credit_2.png",
 	"data/TEXTURE/title_menu_gamen/credit_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/menupannel2_4.png",
+	"data/TEXTURE/title_menu_gamen/menupannel3_4.png",
 	"data/TEXTURE/title_menu_gamen/quit_1.png",
 	"data/TEXTURE/title_menu_gamen/quit_2.png",
 	"data/TEXTURE/title_menu_gamen/quit_setsumei.png",
-	"data/TEXTURE/title_menu_gamen/menupannel2_5.png",
+	"data/TEXTURE/title_menu_gamen/menupannel3_5.png",
 
 	"data/TEXTURE/title_menu_gamen/title_logo.png",
 	"data/TEXTURE/title_menu_gamen/press_button.png",
@@ -229,6 +232,8 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_1.png",
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_2.png",
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_3.png",
+
+	"data/TEXTURE/back.png",
 
 };
 
@@ -454,106 +459,27 @@ void UpdateTexture2D(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
+void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV, BOOL bOutline)
 {
+	if (g_InstenceCount > INSTANCE_MAX - 1) return;
+
 #ifdef NO_INSTANCING
 	// UV座標の再設定
 	if (bUV) { SetUVTexture2D(&td->uv_pos); };
 #endif
 
-	if (g_InstenceCount > 100) return;
 
 	// 位置の計算
 	XMFLOAT2 pos = { td->pos.x + td->posAdd.x, td->pos.y + td->posAdd.y };
 	
-	switch (td->posType)
-	{
-	case POSITION_RELATIVE:
-	case POSITION_CENTER:
-		pos.x += SCREEN_CENTER_X;
-		pos.y += SCREEN_CENTER_Y;
-		break;
-
-	case POSITION_TOP:
-		pos.x += SCREEN_CENTER_X;
-		pos.y += 0.0f;
-		break;
-	case POSITION_LEFT:
-		pos.x += 0.0f;
-		pos.y += SCREEN_CENTER_Y;
-		break;
-	case POSITION_RIGHT:
-		pos.x += SCREEN_WIDTH;
-		pos.y += SCREEN_CENTER_Y;
-		break;
-	case POSITION_BOTTOM:
-		pos.x += SCREEN_CENTER_X;
-		pos.y += SCREEN_HEIGHT;
-		break;
-
-	case POSITION_ABSOLUTE:
-	case POSITION_LEFTTOP:
-		break;
-	case POSITION_RIGHTTOP:
-		pos.x += SCREEN_WIDTH;
-		pos.y += 0.0f;
-		break;
-	case POSITION_LEFTBOTTOM:
-		pos.x += 0.0f;
-		pos.y += SCREEN_HEIGHT;
-		break;
-	case POSITION_RIGHTBOTTOM:
-		pos.x += SCREEN_WIDTH;
-		pos.y += SCREEN_HEIGHT;
-		break;
-
-	default:
-		break;
-	}
-
-	switch (td->ctrType)
-	{
-	case CENTER_CENTER:
-		break;
-
-	case CENTER_TOP:
-		pos.y += td->size.y * 0.5f;
-		break;
-	case CENTER_LEFT:
-		pos.x += td->size.x * 0.5f;
-		break;
-	case CENTER_RIGHT:
-		pos.x -= td->size.x * 0.5f;
-		break;
-	case CENTER_BOTTOM:
-		pos.y -= td->size.y * 0.5f;
-		break;
-
-	case CENTER_LEFTTOP:
-		pos.x += td->size.x * 0.5f;
-		pos.y += td->size.y * 0.5f;
-		break;
-	case CENTER_RIGHTTOP:
-		pos.x -= td->size.x * 0.5f;
-		pos.y += td->size.y * 0.5f;
-		break;
-	case CENTER_LEFTBOTTOM:
-		pos.x += td->size.x * 0.5f;
-		pos.y -= td->size.y * 0.5f;
-		break;
-	case CENTER_RIGHTBOTTOM:
-		pos.x -= td->size.x * 0.5f;
-		pos.y -= td->size.y * 0.5f;
-		break;
-
-	default:
-		break;
-	}
-
+	pos = ConvertToAbsolutePosition(pos, td->size, td->posType, td->ctrType);
+	
 	// マテリアル設定
 	MATERIAL material;
-	//ZeroMemory(&material, sizeof(material));
 	material.Diffuse = td->col;
+
+	float outline = 0.0f;
+
 	// 影が設定されている場合
 	if (bShadow)
 	{
@@ -563,6 +489,11 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 		material.Diffuse.y *= td->sd_col.y;
 		material.Diffuse.z *= td->sd_col.z;
 		material.Diffuse.w *= td->sd_col.w;
+	}
+	else if(bOutline)
+	{
+		material.Diffuse = td->outline;
+		outline = td->wight * 2.0f;
 	}
 
 #ifdef NO_INSTANCING
@@ -623,7 +554,7 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 	g_pTexture[g_InstenceCount] = td->tex;
 
 	// インスタンス情報を登録
-	g_Instance.scl[g_InstenceCount] = { td->size.x * td->scl.x, td->size.y * td->scl.y, 1.0f , 0.0f };
+	g_Instance.scl[g_InstenceCount] = { td->size.x * td->scl.x + outline, td->size.y * td->scl.y + outline, 1.0f , 0.0f };
 	g_Instance.rot[g_InstenceCount] = { 0.0f, 0.0f, td->rot, 0.0f };
 	g_Instance.pos[g_InstenceCount] = { pos.x, pos.y, 0.0f, 0.0f };
 	g_Instance.col[g_InstenceCount] = material.Diffuse;
@@ -635,7 +566,8 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 #endif
 
 	// 影が設定されている場合
-	if (bShadow) { DrawTexture2D(td); }	// 本体を描画する
+	if (bShadow) { DrawTexture2D(td, FALSE, bUV, bOutline); }	// 本体を描画する
+	else if(bOutline) { DrawTexture2D(td); }	// 本体を描画する
 
 #ifdef NO_INSTANCING
 	// UV座標のリセット
@@ -788,4 +720,87 @@ void SetUIButton(BUTTON_DESC* ub, TEXTURE2D_DESC* td)
 	ub->pos = ConvertToAbsolutePosition(td->pos, td->size, td->posType, td->ctrType);
 	ub->p_td->col = ub->col_off;
 	ub->p_td->scl = ub->scl_off;
+}
+
+// ボタンを全てオフにする
+void SetButtonOffAll(BUTTON_DESC* bd, int num)
+{
+	for (int i = 0; i < num; i++) {
+		if (bd[i].b_on) {
+			bd[i].b_on = FALSE;
+			bd[i].p_td->col = bd[i].col_off;
+			bd[i].p_td->scl = bd[i].scl_off;
+			bd[i].p_td->b_outline = FALSE;
+		}
+	}
+}
+// ボタンをオンにする
+void SetButtonOn(BUTTON_DESC* bd, int index)
+{
+	if (!bd[index].b_on) {
+		bd[index].b_on = TRUE;
+		bd[index].p_td->col = bd[index].col_on;
+		bd[index].p_td->scl = bd[index].scl_on;
+		if(bd[index].p_td->b_useOutline) bd[index].p_td->b_outline = TRUE;
+	}
+}
+// カーソル位置からボタン名を取得する
+int GetButtonByCursor(BUTTON_TABLE* bt) {
+	return *(bt->tbl + bt->tbl_x * bt->cursor->y + bt->cursor->x);
+}
+// カーソルがあるボタンをオンにする
+void SetButtonOnByCursor(BUTTON_TABLE* bt) {
+	SetButtonOn(bt->bd, GetButtonByCursor(bt));
+}
+// ボタン名からカーソル位置を変更する
+void SetButtonPosition(BUTTON_TABLE* bt, int b) {
+	for (int y = 0; y < bt->tbl_y; y++) {
+		for (int x = 0; x < bt->tbl_x; x++) {
+			if (*(bt->tbl + bt->tbl_x * y + x) == b) {
+				*bt->cursor = { x, y };
+				return;
+			}
+		}
+	}
+}
+// マウス・カーソルのあるボタンをオンにする
+void UpdateButton(BUTTON_TABLE* bt, void bp(int b))
+{
+	// 全ボタンOFF
+	SetButtonOffAll(bt->bd, bt->num);
+
+	// カーソルがあるボタンON
+	if (GetMouseUse())	// マウスを使っているとき
+	{
+		for (int i = 0; i < bt->num; i++)
+		{
+			if (CollisionMouse(bt->bd[i].pos, bt->bd[i].size))
+			{
+				// マウスカーソルがのっているボタンをオンにする
+				SetButtonOn(bt->bd, i);
+
+				// キーボード用のボタン位置も変更
+				SetButtonPosition(bt, i);
+
+				// ボタンが押された
+				if (IsMouseLeftTriggered()) bp(i);
+
+				return;	// ONにするのは1つだけ
+			}
+		}
+
+		// ボタンがないところが押された
+		if (IsMouseLeftTriggered()) bp(-1);
+	}
+	else	// キーボードを使っているとき
+	{
+		// カーソルを動かす
+		MoveCursor(*bt->cursor, bt->tbl_x, bt->tbl_y);
+
+		// カーソルがのっているボタンをオンにする
+		SetButtonOnByCursor(bt);
+
+		// ボタンが押された
+		if (GetKeyboardTrigger(DIK_RETURN)) bp(GetButtonByCursor(bt));
+	}
 }

@@ -723,4 +723,5 @@ int GetStageNumber(void)
 	default:
 		break;
 	}
+	return 0;
 }

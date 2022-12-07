@@ -11,6 +11,7 @@
 #include "fade.h"
 #include "model.h"
 #include "input.h"
+#include "start.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -99,6 +100,8 @@ static DEBRIS			g_Debris[DEBRIS_NUM];
 //=============================================================================
 HRESULT InitTitle(void)
 {
+	if (g_Load) return S_OK;
+
 	// テクスチャ設定
 	for (int i = 0; i < TEXTURE_STAR; i++) {
 		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_TITLE + i);
@@ -234,6 +237,10 @@ void UpdateTitle(void)
 		g_td[TEXTURE_BUTTON].col.w += ALPHASPEED;
 		if (g_td[TEXTURE_BUTTON].col.w >= 1.0f)
 			g_Fade = true;
+	}
+
+	if (IsMouseLeftTriggered() || IsMouseRightTriggered()) {
+		PressedAnyButton();
 	}
 }
 

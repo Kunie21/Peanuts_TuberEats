@@ -192,6 +192,8 @@ enum TEXTURE_LABEL {
 	TEXTURE_LABEL_NORTH_AMERICA_STAGE_2,
 	TEXTURE_LABEL_NORTH_AMERICA_STAGE_3,
 
+	TEXTURE_LABEL_BACK,
+
 	TEXTURE_LABEL_MAX,
 };
 
@@ -201,6 +203,8 @@ struct TEXTURE2D_DESC
 	UV_POSITION uv_pos = { 0.0f, 0.0f, 1.0f, 1.0f };	// UV座標
 
 	XMFLOAT4 col = { 1.0f, 1.0f, 1.0f, 1.0f };			// 色
+
+	XMFLOAT4 outline = { 100.0f, 100.0f, 0.0f, 1.0f };	// 色
 
 	XMFLOAT4 sd_col = { 0.0f, 0.0f, 0.0f, 0.5f };		// 影色
 	XMFLOAT2 sd_pos = { 5.0f, 5.0f };					// 影位置（ずらす量）
@@ -218,6 +222,10 @@ struct TEXTURE2D_DESC
 	//ID3D11ShaderResourceView** tex = NULL;			// テクスチャ
 	TEXTURE_LABEL	tex = TEXTURE_LABEL_WHITE;			// テクスチャ
 
+	float wight = 5.0f;
+	BOOL b_useOutline = FALSE;
+	BOOL b_outline = FALSE;
+
 	float rot = 0.0f;									// 回転
 };
 
@@ -228,12 +236,31 @@ struct BUTTON_DESC {
 	XMFLOAT2 scl_off = { 0.9f, 0.9f };	// 拡大率OFF
 	XMFLOAT2 pos = { 0.0f, 0.0f };	// 左上から
 	XMFLOAT2 size = { 0.0f, 0.0f };
+	TEXTURE_LABEL tex_on = TEXTURE_LABEL_WHITE;			// テクスチャ
+	TEXTURE_LABEL tex_off = TEXTURE_LABEL_WHITE;			// テクスチャ
 	TEXTURE2D_DESC* p_td = NULL;
 	BOOL b_on = FALSE;
 };
 
+struct BUTTON_TABLE {
+	int* tbl = NULL;
+	int tbl_x = 0;
+	int tbl_y = 0;
+
+	BUTTON_DESC* bd = NULL;
+	int num = 0;
+
+	XMINT2* cursor;
+};
+
+//struct OUTLINE_DESC {
+//	XMFLOAT4 col = { 1.0f, 1.0f, 0.0f, 1.0f };	// 色
+//	float wight = 5.0f;
+//};
+
 XMFLOAT2 ConvertToAbsolutePosition(XMFLOAT2 pos, XMFLOAT2 size, POSITION_TYPE pt, CENTER_TYPE ct);
 void SetUIButton(BUTTON_DESC* ub, TEXTURE2D_DESC* td);
+void UpdateButton(BUTTON_TABLE* bt, void bp(int b));
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -242,7 +269,7 @@ HRESULT InitTexture2D(void);
 HRESULT LoadTexture2D(void);
 void UninitTexture2D(void);
 void UpdateTexture2D(void);
-void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow = FALSE, BOOL bUV = FALSE);
+void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow = FALSE, BOOL bUV = FALSE, BOOL bOutline = FALSE);
 void SetUVTexture2D(UV_POSITION* uv);
 void ResetUVTexture2D(void);
 void DrawTexture2DAll(BOOL bInterrupt = FALSE);	// TRUEで割り込み（途中で描画する）

@@ -41,7 +41,7 @@ enum
 	TEXTURE_START_BUTTON_3,
 	TEXTURE_MAX,
 };
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static TEXTURE2D_DESC*	g_td;
 
 static int g_TexNoChar;		//キャラクターのテキスチャー番号
 static int g_TexNoButton;	//ボタンのテキスチャー番号
@@ -51,6 +51,7 @@ static int g_TexNoButton;	//ボタンのテキスチャー番号
 //=============================================================================
 HRESULT InitCharacterSelect(void)
 {
+	g_td = new TEXTURE2D_DESC[TEXTURE_MAX];
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{

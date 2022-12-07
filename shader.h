@@ -160,7 +160,7 @@ cbuffer MosaicBuffer : register(b10) {
 //}
 
 // インスタンシング
-#define INSTANCE_MAX 100
+#define INSTANCE_MAX 126
 struct INSTANCE {
 	float4 pos[INSTANCE_MAX];
 	float4 rot[INSTANCE_MAX];
@@ -377,6 +377,32 @@ float4 GetColorFromTextureArray(int id, float2 texCoord)
 	case 97: return g_TextureArray[97].Sample(g_SamplerState, texCoord);
 	case 98: return g_TextureArray[98].Sample(g_SamplerState, texCoord);
 	case 99: return g_TextureArray[99].Sample(g_SamplerState, texCoord);
+	case 100: return g_TextureArray[100].Sample(g_SamplerState, texCoord);
+	case 101: return g_TextureArray[101].Sample(g_SamplerState, texCoord);
+	case 102: return g_TextureArray[102].Sample(g_SamplerState, texCoord);
+	case 103: return g_TextureArray[103].Sample(g_SamplerState, texCoord);
+	case 104: return g_TextureArray[104].Sample(g_SamplerState, texCoord);
+	case 105: return g_TextureArray[105].Sample(g_SamplerState, texCoord);
+	case 106: return g_TextureArray[106].Sample(g_SamplerState, texCoord);
+	case 107: return g_TextureArray[107].Sample(g_SamplerState, texCoord);
+	case 108: return g_TextureArray[108].Sample(g_SamplerState, texCoord);
+	case 109: return g_TextureArray[109].Sample(g_SamplerState, texCoord);
+	case 110: return g_TextureArray[110].Sample(g_SamplerState, texCoord);
+	case 111: return g_TextureArray[111].Sample(g_SamplerState, texCoord);
+	case 112: return g_TextureArray[112].Sample(g_SamplerState, texCoord);
+	case 113: return g_TextureArray[113].Sample(g_SamplerState, texCoord);
+	case 114: return g_TextureArray[114].Sample(g_SamplerState, texCoord);
+	case 115: return g_TextureArray[115].Sample(g_SamplerState, texCoord);
+	case 116: return g_TextureArray[116].Sample(g_SamplerState, texCoord);
+	case 117: return g_TextureArray[117].Sample(g_SamplerState, texCoord);
+	case 118: return g_TextureArray[118].Sample(g_SamplerState, texCoord);
+	case 119: return g_TextureArray[119].Sample(g_SamplerState, texCoord);
+	case 120: return g_TextureArray[120].Sample(g_SamplerState, texCoord);
+	case 121: return g_TextureArray[121].Sample(g_SamplerState, texCoord);
+	case 122: return g_TextureArray[122].Sample(g_SamplerState, texCoord);
+	case 123: return g_TextureArray[123].Sample(g_SamplerState, texCoord);
+	case 124: return g_TextureArray[124].Sample(g_SamplerState, texCoord);
+	case 125: return g_TextureArray[125].Sample(g_SamplerState, texCoord);
 	default: return g_TextureArray[0].Sample(g_SamplerState, texCoord);
 	}
 }

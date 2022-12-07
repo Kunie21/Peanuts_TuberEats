@@ -96,7 +96,7 @@ enum SHADER_TYPE {	// シェーダーの種類
 //*********************************************************
 // 構造体
 //*********************************************************
-#define INSTANCE_MAX 100
+#define INSTANCE_MAX 126
 struct INSTANCE {		// インスタンシングバッファ用構造体
 	XMFLOAT4 pos[INSTANCE_MAX];
 	XMFLOAT4 rot[INSTANCE_MAX];
@@ -254,9 +254,9 @@ void SetStencilRead(void);
 void SetStencilReadDL(void);
 void SetStencilReadPL(void);
 void SetStencilReadSL(void);
-void SetStencilReadLL(SHADER_TYPE shader);
-void SetStencilReadLLGimmick(void);
-void SetStencilReadLLMissile(void);
+void SetStencilReadLL(SHADER_TYPE shader, BOOL read = FALSE);
+void SetStencilReadLLGimmick(BOOL read = FALSE);
+void SetStencilReadLLMissile(BOOL read = FALSE);
 void SetStencilNone(void);
 void SetStencilNoneAL(SHADER_TYPE shader);
 void SetStencilNoneAL(void);

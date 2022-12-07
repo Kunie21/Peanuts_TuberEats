@@ -29,6 +29,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+//#define SHADOW
 
 //*****************************************************************************
 // グローバル変数
@@ -160,16 +161,18 @@ void DrawGame(void)
 		//DrawMissile(MISSILE_TYPE_01);
 		//DrawMissile(MISSILE_TYPE_02);
 
-		// 環境光で下塗りする 3000
 		{
-			//SetStencilNoneAL(SHADER_TUBE);
-			//DrawTube();	// 800
-			//SetStencilNoneAL(SHADER_GIMMICK);
-			//DrawGimmick(GIMMICK_ICE);	// 1500
-			//SetStencilNoneAL(SHADER_PLAYER);
-			//DrawPlayer();	// 900
+#ifdef SHADOW
+		{
+			// 環境光で下塗りする 3000
+			SetStencilNoneAL(SHADER_TUBE);
+			DrawTube();	// 800
+			SetStencilNoneAL(SHADER_GIMMICK);
+			DrawGimmick(GIMMICK_ICE);	// 1500
+			SetStencilNoneAL(SHADER_PLAYER);
+			DrawPlayer();	// 900
 
-			// 黒塗りする 3000
+			//// 黒塗りする 3000
 			//SetDrawFillBlack(SHADER_TUBE);
 			//DrawTube();
 			//SetDrawFillBlack(SHADER_GIMMICK);
@@ -178,21 +181,38 @@ void DrawGame(void)
 			//DrawPlayer();
 		}
 
-		// 加算合成モードにする
-		//SetBlendState(BLEND_MODE_ADD);
 
-		{
 			// シャドウステンシルを描画 3000
 		{
 			// 影になる部分のステンシルを作成
-			////SetStencilWriteLL(SHADER_TUBE);
-			////DrawTube();
-			//SetStencilWriteLL(SHADER_GIMMICK);
-			//DrawGimmick(GIMMICK_ICE);
-			////SetStencilWritePL();
-			//SetStencilWriteLL(SHADER_PLAYER);
-			//DrawPlayer();
+			//SetStencilWriteLL(SHADER_TUBE);
+			//DrawTube();
+			SetStencilWriteLL(SHADER_GIMMICK);
+			DrawGimmick(GIMMICK_ICE);
+			//SetStencilWritePL();
+			SetStencilWriteLL(SHADER_PLAYER);
+			DrawPlayer();
 		}
+		// 加算合成モードにする
+		SetBlendState(BLEND_MODE_ADD);
+		
+
+		SetStencilReadLL(SHADER_TUBE, TRUE);
+		DrawTube();
+
+		//DrawDoor();
+		SetStencilReadLLGimmick(TRUE);
+		//SetStencilReadLL(SHADER_GIMMICK);
+		DrawGimmickInstancing(GIMMICK_ICE);
+		DrawGimmickInstancing(GIMMICK_SUSHI_ICE);
+		DrawGimmickInstancing(GIMMICK_SUSHI);
+
+		SetStencilReadLLMissile(TRUE);
+		DrawMissile();
+
+		// ステンシルを初期化
+		ClearStencil();
+#else
 
 #ifdef _DEBUG
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_S); }
@@ -217,12 +237,11 @@ void DrawGame(void)
 			//SetStencilReadLL(SHADER_PLAYER);
 			////DrawPlayer();
 			//DrawMissileHave();
+#endif // SHADOW
 
 #ifdef _DEBUG
 		if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shade_E); }
 #endif
-			// ステンシルを初期化
-			//ClearStencil();
 
 #ifdef _DEBUG
 			if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_S); }
