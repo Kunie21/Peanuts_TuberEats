@@ -12,7 +12,7 @@
 #include "model.h"
 #include "rocket_select.h"
 #include "wallet.h"
-
+#include "home.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -21,7 +21,7 @@
 #define TEXTURE_HEIGHT				(SCREEN_HEIGHT)	// 背景サイズ縦
 
 #define SIZE_SHOP_MENU		{ 1001.0f, 1080.0f }		// キャラクターサイズ縦
-#define POS_SHOP_MENU		{ 919.0f,0.0f }		// キャラクターサイズ縦
+#define POS_SHOP_MENU		{ 919.0f, 0.0f }		// キャラクターサイズ縦
 #define POS_STATUSBAR		{ 210.0f, 70.0f }		// キャラクターサイズ縦
 #define POS_STATUSBARPOINT		{ 212.5f, 72.7f }		// キャラクターサイズ縦
 #define DISTANCE_STATUSBAR_Y			(76.0f)	// キャラクターサイズ縦
@@ -29,6 +29,11 @@
 
 #define COL_BLACK		{0.0f,0.0f,0.0f,1.0f}	// 黒い色
 #define COL_ORIGINAL	{1.0f,1.0f,1.0f,1.0f}	// 元の色
+
+#define SLIDE_X (1001.0f)
+#define ANIM_SLIDE		(80.0f)		// メニューがスライドしてくるスピード
+#define SHOP_SLIDE_Y (-150.0f)
+#define SHOP_SLIDE_SPD (20.0f)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -64,9 +69,9 @@ enum
 	TEXTURE_DISPLAY_ICON_02, //単にロケットのアイコンの表示で使う
 	TEXTURE_DISPLAY_ICON_03,
 	TEXTURE_DISPLAY_ICON_04,
+	TEXTURE_SHOP,
 	TEXTURE_MAX,
 };
-
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 
 enum {
@@ -108,6 +113,10 @@ struct SELECTROCKET
 
 static SELECTROCKET   g_Rocket[MODEL_SELECT_MAX];	// 全モデルの管理足すロケット情報
 
+static float		g_AnimScl = 0.0f;				// アニメーション管理用
+static float		g_AnimSlide = SLIDE_X;	// アニメーション管理用
+static float		g_AnimShopSlide = SHOP_SLIDE_Y;	// アニメーション管理用
+
 //=============================================================================
 // 初期化処理
 //=============================================================================
@@ -125,7 +134,7 @@ HRESULT InitRocketSelect(void)
 		g_td[i].posType = POSITION_ABSOLUTE;
 	}
 
-	g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f,1.0f };
+	g_td[TEXTURE_BG].col = { 1.0f, 1.0f, 1.0f, 1.0f };
 	g_td[TEXTURE_SHOP_MENU].size = SIZE_SHOP_MENU;
 	g_td[TEXTURE_SHOP_MENU].pos = POS_SHOP_MENU;
 	g_td[TEXTURE_STATUSBAR].size = { 795.0f, 33.0f };
@@ -139,25 +148,25 @@ HRESULT InitRocketSelect(void)
 	g_td[TEXTURE_ROCKET_1].size = { 563.0f, 67.0f };
 	g_td[TEXTURE_ROCKET_1].pos = { 1300.0f, 215.0f };
 	g_td[TEXTURE_ROCKET_2].size = { 509.0f, 56.0f };
-	g_td[TEXTURE_ROCKET_2].pos = { 1280.0f, 323.0f };
+	g_td[TEXTURE_ROCKET_2].pos = { 1280.0f, 315.0f };
 	g_td[TEXTURE_ROCKET_3].size = { 461.0f, 67.0f };
 	g_td[TEXTURE_ROCKET_3].pos = { 1260.0f, 415.0f };
 	g_td[TEXTURE_ROCKET_4].size = { 528.0f, 67.0f };
 	g_td[TEXTURE_ROCKET_4].pos = { 1240.0f, 515.0f };
-	g_td[TEXTURE_ROCKETSELECT_1].size = SIZE_SHOP_MENU;
-	g_td[TEXTURE_ROCKETSELECT_1].pos = POS_SHOP_MENU;
-	g_td[TEXTURE_ROCKETSELECT_2].size = SIZE_SHOP_MENU;
-	g_td[TEXTURE_ROCKETSELECT_2].pos = POS_SHOP_MENU;
-	g_td[TEXTURE_ROCKETSELECT_3].size = SIZE_SHOP_MENU;
-	g_td[TEXTURE_ROCKETSELECT_3].pos = POS_SHOP_MENU;
-	g_td[TEXTURE_ROCKETSELECT_4].size = SIZE_SHOP_MENU;
-	g_td[TEXTURE_ROCKETSELECT_4].pos = POS_SHOP_MENU;
 
-	g_td[TEXTURE_DISPLAY_ICON_01].pos = { 1200.0f,200.0f };
-	g_td[TEXTURE_DISPLAY_ICON_02].pos = { 1180.0f,300.0f };
-	g_td[TEXTURE_DISPLAY_ICON_03].pos = { 1160.0f,400.0f };
-	g_td[TEXTURE_DISPLAY_ICON_04].pos = { 1140.0f,500.0f };
+	for (int i = 0; i < MODEL_SELECT_MAX; i++) {
+		g_td[TEXTURE_ROCKETSELECT_1 + i].size = GetTextureSize(g_td[TEXTURE_ROCKETSELECT_1 + i].tex);
+		g_td[TEXTURE_ROCKETSELECT_1 + i].pos = { SCREEN_WIDTH - g_td[TEXTURE_ROCKETSELECT_1 + i].size.x * 0.5f, g_td[TEXTURE_ROCKET_1 + i].pos.y };
+	}
 
+	g_td[TEXTURE_DISPLAY_ICON_01].pos = { 1200.0f, 200.0f };
+	g_td[TEXTURE_DISPLAY_ICON_02].pos = { 1180.0f, 300.0f };
+	g_td[TEXTURE_DISPLAY_ICON_03].pos = { 1160.0f, 400.0f };
+	g_td[TEXTURE_DISPLAY_ICON_04].pos = { 1140.0f, 500.0f };
+
+	g_td[TEXTURE_SHOP].tex = TEXTURE_LABEL_SHOP;
+	g_td[TEXTURE_SHOP].size = GetTextureSize(TEXTURE_LABEL_SHOP);
+	g_td[TEXTURE_SHOP].pos.x = SCREEN_WIDTH - g_td[TEXTURE_SHOP].size.x;
 
 	// モデル生成
 	g_ModelStage.model = MODEL_STAGE;
@@ -256,6 +265,36 @@ void UninitRocketSelect(void)
 //=============================================================================
 void UpdateRocketSelect(void)
 {
+	if (GetHomeMode() == HOME_MODE_SHOP) {
+		if (g_AnimSlide > 0.0f) {
+			g_AnimSlide = max(g_AnimSlide - ANIM_SLIDE, 0.0f);
+		}
+		if(g_AnimShopSlide < 0.0f) {
+			g_AnimShopSlide = min(g_AnimShopSlide + SHOP_SLIDE_SPD, 0.0f);
+		}
+	}
+	else {
+		if (g_AnimShopSlide > SHOP_SLIDE_Y) {
+			g_AnimShopSlide = max(g_AnimShopSlide - SHOP_SLIDE_SPD, SHOP_SLIDE_Y);
+		}
+		if (g_AnimSlide < SLIDE_X) {
+			g_AnimSlide = min(g_AnimSlide + ANIM_SLIDE, SLIDE_X);
+		}
+	}
+
+	g_td[TEXTURE_SHOP_MENU].posAdd.x = g_AnimSlide;
+	g_td[g_SelectBar].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_DISPLAY_ICON_01].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_DISPLAY_ICON_02].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_DISPLAY_ICON_03].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_DISPLAY_ICON_04].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_ROCKET_1].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_ROCKET_2].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_ROCKET_3].posAdd.x = g_AnimSlide;
+	g_td[TEXTURE_ROCKET_4].posAdd.x = g_AnimSlide;
+
+	g_td[TEXTURE_SHOP].posAdd.y = g_AnimShopSlide;
+
 	// ロケット選択画面に戻る
 	if (GetKeyboardTrigger(DIK_6))
 	{
@@ -340,6 +379,10 @@ void UpdateRocketSelect(void)
 		}
 
 	}
+	else if (GetKeyboardRelease(DIK_BACK))
+	{
+		ResetTransaction();
+	}
 
 	// 選択中のロケットはロックしている場合、値段を表示する
 	if (g_Rocket[g_ModelNo_Rocket].status == STATUS_LOCK)
@@ -374,11 +417,10 @@ void DrawRocketSelect(void)
 		DrawTexture2D(&g_td[TEXTURE_ROCKET_2]);
 		DrawTexture2D(&g_td[TEXTURE_ROCKET_3]);
 		DrawTexture2D(&g_td[TEXTURE_ROCKET_4]);
+		DrawTexture2D(&g_td[TEXTURE_SHOP], TRUE);
 	}
 
 	// モデル描画
-
-	SetCullingMode(CULL_MODE_NONE);
 
 	// 黒塗り
 	SetDrawFillBlackPlayer();
@@ -404,8 +446,6 @@ void DrawRocketSelect(void)
 	DrawModel(&g_Rocket[g_ModelNo_Rocket].model, &g_ModelDisplay.srt);
 
 	SetBlendState(BLEND_MODE_ALPHABLEND);
-
-	SetCullingMode(CULL_MODE_BACK);
 }
 
 BOOL IsRocketSelectFinished(void)

@@ -275,6 +275,10 @@ void StartTransaction(void)
 	g_td[TEXTURE_NO].col = COL_ORIGINAL;
 	g_td[TEXTURE_BUY].col = COL_BLACK;
 }
+void ResetTransaction(void)
+{
+	g_InTransaction = FALSE;
+}
 
 BOOL InTransaction(void)
 {
@@ -303,4 +307,8 @@ void GainMoney(ULONG64& gain)
 ULONG64& GetMoney(void)
 {
 	return g_Money;
+}
+
+void SetWalletPosAdd(XMFLOAT2& posAdd) {
+
 }

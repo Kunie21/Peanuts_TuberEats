@@ -31,6 +31,7 @@
 #include "home.h"
 
 // stage_select
+#include "stage_select.h"
 
 // game
 #include "game.h"
@@ -40,7 +41,6 @@
 #include "result_event.h"
 #include "tube.h"
 #include "player.h"
-
 
 
 //*****************************************************************************
@@ -306,6 +306,7 @@ void Update(void)
 		break;
 
 	case MODE_STAGESELECT:
+		UpdateStageSelect();
 		break;
 
 	case MODE_GAME:
@@ -381,6 +382,7 @@ void Draw(void)
 		break;
 
 	case MODE_STAGESELECT:
+		DrawStageSelect();
 		break;
 
 	case MODE_GAME:
@@ -441,6 +443,7 @@ void SetMode(MODE_LABEL mode)
 	UninitStart();
 	UninitHome();
 	UninitGame();
+	UninitStageSelect();
 
 
 	g_Mode = mode;	// 次のモードをセット
@@ -465,6 +468,7 @@ void SetMode(MODE_LABEL mode)
 		break;
 
 	case MODE_STAGESELECT:
+		InitStageSelect();
 		break;
 
 	case MODE_GAME:
@@ -516,6 +520,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:	// キーが押された
+		SetMouseUse(FALSE);	// マウス操作をOFFにする
 		switch (wParam)
 		{
 		case VK_ESCAPE:	// エスケープキー
@@ -544,6 +549,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEMOVE:	// マウスが動いた
+		SetMouseUse(TRUE);	// マウス操作をONにする
 		g_MouseX = LOWORD(lParam);
 		g_MouseY = HIWORD(lParam);
 		break;

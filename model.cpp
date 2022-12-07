@@ -63,6 +63,27 @@ MATERIAL	g_Material;
 static char* g_ModelName[MODEL_MAX] = {
 	"data/MODEL/wall.obj",
 
+#ifdef _DEBUG
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+	"data/MODEL/wall.obj",
+#else
 	"data/MODEL/ice_1.obj",
 	"data/MODEL/ring_1.obj",
 
@@ -88,6 +109,7 @@ static char* g_ModelName[MODEL_MAX] = {
 	"data/MODEL/ramen01.obj",
 	"data/MODEL/donut02.obj",
 	//"data/MODEL/donut01.obj",
+#endif
 };
 
 void InitModel(void)

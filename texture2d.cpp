@@ -23,6 +23,8 @@ static TEXTURE_LABEL	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
 static ID3D11ShaderResourceView*	g_Texture[TEXTURE_LABEL_MAX];
 //#define NO_INSTANCING	// インスタンシングしないバージョン
 
+static XMFLOAT2 g_size[TEXTURE_LABEL_MAX];
+XMFLOAT2 GetTextureSize(TEXTURE_LABEL label) { return g_size[label]; }
 
 static char* TextureName[TEXTURE_LABEL_MAX] = {
 
@@ -62,6 +64,7 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/game_UI/timer_UI.png",
 	"data/TEXTURE/game_UI/timer_semicolon.png",
 
+
 	"data/TEXTURE/home_menu_gamen/character.png",
 	"data/TEXTURE/home_menu_gamen/character01.png",
 	"data/TEXTURE/home_menu_gamen/character02.png",
@@ -70,8 +73,8 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/home_menu_gamen/delivery_start_button_2.png",
 	"data/TEXTURE/home_menu_gamen/delivery_start_button_3.png",
 
-	"data/TEXTURE/home_menu_gamen/customize_bg.png",
-	"data/TEXTURE/home_menu_gamen/shop_menu.png",
+	"data/TEXTURE/home_menu_gamen/customize_bg2.png",
+	"data/TEXTURE/home_menu_gamen/shop_menu2.png",
 	"data/TEXTURE/home_menu_gamen/statusbar_0.png",
 	"data/TEXTURE/home_menu_gamen/statusbar_point.png",
 	"data/TEXTURE/home_menu_gamen/rocket_icon_lock.png",
@@ -82,10 +85,13 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/home_menu_gamen/rocket_2.png",
 	"data/TEXTURE/home_menu_gamen/rocket_3.png",
 	"data/TEXTURE/home_menu_gamen/rocket_4.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_1.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_2.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_3.png",
-	"data/TEXTURE/home_menu_gamen/rocket_select_4.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_1_2.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_2_2.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_3_2.png",
+	"data/TEXTURE/home_menu_gamen/rocket_select_4_2.png",
+	"data/TEXTURE/home_menu_gamen/shop.png",
+	"data/TEXTURE/home_menu_gamen/left_arrow.png",
+	"data/TEXTURE/home_menu_gamen/right_arrow.png",
 
 	"data/TEXTURE/home_menu_gamen/player_wallet.png",
 	"data/TEXTURE/home_menu_gamen/player_wallet_total.png",
@@ -132,10 +138,20 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/result_gamen/firework4.png",
 	"data/TEXTURE/result_gamen/firework5.png",
 
-	//"data/TEXTURE/result_country/oosaka.jpg",
-	//"data/TEXTURE/result_country/shanghai.jpg",
-	//"data/TEXTURE/result_country/France.jpg",
-	//"data/TEXTURE/result_country/America.jpg",
+#ifdef _DEBUG
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+	"data/TEXTURE/white.png",
+#else
 	"data/TEXTURE/result_country/Oosaka.jpg",
 	"data/TEXTURE/result_country/Hokkaido.jpg",
 	"data/TEXTURE/result_country/Okinawa.jpg",
@@ -148,8 +164,13 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/result_country/america.jpg",
 	"data/TEXTURE/result_country/Canada.jpg",
 	"data/TEXTURE/result_country/Mexico.jpg",
+#endif
 
+#ifdef _DEBUG
+	"data/TEXTURE/white.png",
+#else
 	"data/MODEL/star1.jpg",
+#endif // _DEBUG
 
 	"data/TEXTURE/title_menu_gamen/menu_board.png",
 	"data/TEXTURE/title_menu_gamen/menu_line.png",
@@ -177,6 +198,38 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/title_menu_gamen/title_logo.png",
 	"data/TEXTURE/title_menu_gamen/press_button.png",
 	"data/TEXTURE/title_menu_gamen/peanuts_copyright.png",
+
+	"data/TEXTURE/stage_select_gamen/stage_selection_map.png",
+	"data/TEXTURE/stage_select_gamen/stage_selection_map_1.png",
+	"data/TEXTURE/stage_select_gamen/circle_spin.png",
+	"data/TEXTURE/stage_select_gamen/stage_1.png",
+	"data/TEXTURE/stage_select_gamen/stage_2.png",
+	"data/TEXTURE/stage_select_gamen/stage_3.png",
+	"data/TEXTURE/stage_select_gamen/stage_4.png",
+	"data/TEXTURE/stage_select_gamen/stage_select_1.png",
+	"data/TEXTURE/stage_select_gamen/stage_select_2.png",
+	"data/TEXTURE/stage_select_gamen/stage_select_3.png",
+	"data/TEXTURE/stage_select_gamen/stage_select_4.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_1.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_2.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_3.png",
+	"data/TEXTURE/stage_select_gamen/japan_menu.png",
+	"data/TEXTURE/stage_select_gamen/japan_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/japan_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/japan_stage_3.png",
+	"data/TEXTURE/stage_select_gamen/asia_menu.png",
+	"data/TEXTURE/stage_select_gamen/asia_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/asia_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/asia_stage_3.png",
+	"data/TEXTURE/stage_select_gamen/europe_menu.png",
+	"data/TEXTURE/stage_select_gamen/europe_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/europe_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/europe_stage_3.png",
+	"data/TEXTURE/stage_select_gamen/north_america_menu.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_3.png",
+
 };
 
 //=============================================================================
@@ -229,6 +282,16 @@ HRESULT InitTexture2D(void)
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_LABEL_COUNTDOWN3; i++) {
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[i], NULL, NULL, &g_Texture[i], NULL);
+
+		// 読み込んだテクスチャのサイズを取得する
+		ID3D11Resource* pResource = NULL;
+		g_Texture[i]->GetResource(&pResource);
+		ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
+		D3D11_TEXTURE2D_DESC desc;
+		pTexture2D->GetDesc(&desc);
+		g_size[i].x = (float)desc.Width;
+		g_size[i].y = (float)desc.Height;
+		pResource->Release();
 	}
 
 	//LoadTexture2D();
@@ -251,6 +314,17 @@ BOOL LoadTexture(int loadpoint)
 {
 	g_Texture[loadpoint] = NULL;
 	D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[loadpoint], NULL, NULL, &g_Texture[loadpoint], NULL);
+	
+	// 読み込んだテクスチャのサイズを取得する
+	ID3D11Resource* pResource = NULL;
+	g_Texture[loadpoint]->GetResource(&pResource);
+	ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
+	D3D11_TEXTURE2D_DESC desc;
+	pTexture2D->GetDesc(&desc);
+	g_size[loadpoint].x = (float)desc.Width;
+	g_size[loadpoint].y = (float)desc.Height;
+	pResource->Release();
+	
 	return TRUE;
 }
 BOOL LoadTextureKernel(void)
@@ -390,16 +464,90 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV)
 	if (g_InstenceCount > 100) return;
 
 	// 位置の計算
-	XMFLOAT2 pos = td->pos;
-	if (td->posType == POSITION_RELATIVE)
+	XMFLOAT2 pos = { td->pos.x + td->posAdd.x, td->pos.y + td->posAdd.y };
+	
+	switch (td->posType)
 	{
+	case POSITION_RELATIVE:
+	case POSITION_CENTER:
 		pos.x += SCREEN_CENTER_X;
 		pos.y += SCREEN_CENTER_Y;
+		break;
+
+	case POSITION_TOP:
+		pos.x += SCREEN_CENTER_X;
+		pos.y += 0.0f;
+		break;
+	case POSITION_LEFT:
+		pos.x += 0.0f;
+		pos.y += SCREEN_CENTER_Y;
+		break;
+	case POSITION_RIGHT:
+		pos.x += SCREEN_WIDTH;
+		pos.y += SCREEN_CENTER_Y;
+		break;
+	case POSITION_BOTTOM:
+		pos.x += SCREEN_CENTER_X;
+		pos.y += SCREEN_HEIGHT;
+		break;
+
+	case POSITION_ABSOLUTE:
+	case POSITION_LEFTTOP:
+		break;
+	case POSITION_RIGHTTOP:
+		pos.x += SCREEN_WIDTH;
+		pos.y += 0.0f;
+		break;
+	case POSITION_LEFTBOTTOM:
+		pos.x += 0.0f;
+		pos.y += SCREEN_HEIGHT;
+		break;
+	case POSITION_RIGHTBOTTOM:
+		pos.x += SCREEN_WIDTH;
+		pos.y += SCREEN_HEIGHT;
+		break;
+
+	default:
+		break;
 	}
-	if (td->ctrType == CENTER_LEFTTOP)
+
+	switch (td->ctrType)
 	{
+	case CENTER_CENTER:
+		break;
+
+	case CENTER_TOP:
+		pos.y += td->size.y * 0.5f;
+		break;
+	case CENTER_LEFT:
+		pos.x += td->size.x * 0.5f;
+		break;
+	case CENTER_RIGHT:
+		pos.x -= td->size.x * 0.5f;
+		break;
+	case CENTER_BOTTOM:
+		pos.y -= td->size.y * 0.5f;
+		break;
+
+	case CENTER_LEFTTOP:
 		pos.x += td->size.x * 0.5f;
 		pos.y += td->size.y * 0.5f;
+		break;
+	case CENTER_RIGHTTOP:
+		pos.x -= td->size.x * 0.5f;
+		pos.y += td->size.y * 0.5f;
+		break;
+	case CENTER_LEFTBOTTOM:
+		pos.x += td->size.x * 0.5f;
+		pos.y -= td->size.y * 0.5f;
+		break;
+	case CENTER_RIGHTBOTTOM:
+		pos.x -= td->size.x * 0.5f;
+		pos.y -= td->size.y * 0.5f;
+		break;
+
+	default:
+		break;
 	}
 
 	// マテリアル設定
@@ -544,4 +692,100 @@ void DrawTexture2DAll(BOOL bInterrupt)
 }
 
 
+XMFLOAT2 ConvertToAbsolutePosition(XMFLOAT2 pos, XMFLOAT2 size, POSITION_TYPE pt, CENTER_TYPE ct)
+{
+	switch (pt)
+	{
+	case POSITION_RELATIVE:
+	case POSITION_CENTER:
+		pos.x += SCREEN_CENTER_X;
+		pos.y += SCREEN_CENTER_Y;
+		break;
 
+	case POSITION_TOP:
+		pos.x += SCREEN_CENTER_X;
+		pos.y += 0.0f;
+		break;
+	case POSITION_LEFT:
+		pos.x += 0.0f;
+		pos.y += SCREEN_CENTER_Y;
+		break;
+	case POSITION_RIGHT:
+		pos.x += SCREEN_WIDTH;
+		pos.y += SCREEN_CENTER_Y;
+		break;
+	case POSITION_BOTTOM:
+		pos.x += SCREEN_CENTER_X;
+		pos.y += SCREEN_HEIGHT;
+		break;
+
+	case POSITION_ABSOLUTE:
+	case POSITION_LEFTTOP:
+		break;
+	case POSITION_RIGHTTOP:
+		pos.x += SCREEN_WIDTH;
+		pos.y += 0.0f;
+		break;
+	case POSITION_LEFTBOTTOM:
+		pos.x += 0.0f;
+		pos.y += SCREEN_HEIGHT;
+		break;
+	case POSITION_RIGHTBOTTOM:
+		pos.x += SCREEN_WIDTH;
+		pos.y += SCREEN_HEIGHT;
+		break;
+
+	default:
+		break;
+	}
+
+	switch (ct)
+	{
+	case CENTER_CENTER:
+		break;
+
+	case CENTER_TOP:
+		pos.y += size.y * 0.5f;
+		break;
+	case CENTER_LEFT:
+		pos.x += size.x * 0.5f;
+		break;
+	case CENTER_RIGHT:
+		pos.x -= size.x * 0.5f;
+		break;
+	case CENTER_BOTTOM:
+		pos.y -= size.y * 0.5f;
+		break;
+
+	case CENTER_LEFTTOP:
+		pos.x += size.x * 0.5f;
+		pos.y += size.y * 0.5f;
+		break;
+	case CENTER_RIGHTTOP:
+		pos.x -= size.x * 0.5f;
+		pos.y += size.y * 0.5f;
+		break;
+	case CENTER_LEFTBOTTOM:
+		pos.x += size.x * 0.5f;
+		pos.y -= size.y * 0.5f;
+		break;
+	case CENTER_RIGHTBOTTOM:
+		pos.x -= size.x * 0.5f;
+		pos.y -= size.y * 0.5f;
+		break;
+
+	default:
+		break;
+	}
+
+	return pos;
+}
+
+void SetUIButton(BUTTON_DESC* ub, TEXTURE2D_DESC* td)
+{
+	ub->p_td = td;
+	ub->size = td->size;
+	ub->pos = ConvertToAbsolutePosition(td->pos, td->size, td->posType, td->ctrType);
+	ub->p_td->col = ub->col_off;
+	ub->p_td->scl = ub->scl_off;
+}

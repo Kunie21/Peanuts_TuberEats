@@ -541,6 +541,13 @@ long GetMouseZ(void)
 	return mouseState.lZ;
 }
 
+//=============================================================================
+// マウスカーソルの現在位置を取得する
+//=============================================================================
+XMFLOAT2 GetMousePos(void)
+{
+	return XMFLOAT2((float)GetMousePosX() * SCREEN_WIDTH / (float)GetWinWidth(), (float)GetMousePosY() * SCREEN_HEIGHT / (float)GetWinHeight());
+}
 
 //=============================================================================
 // マウスの使用状況を取得する
@@ -556,6 +563,10 @@ BOOL GetMouseUse(void)
 void SetMouseUse(void)
 {
 	g_MouseUse = (g_MouseUse + 1) % 2;	// 0か1（TUREかFALSE）を行ったり来たりする
+}
+void SetMouseUse(BOOL use)
+{
+	g_MouseUse = use;
 }
 
 //================================================= game pad
@@ -1210,4 +1221,21 @@ BOOL IsXinputButtonStatus(int padNo, XINPUT_BUTTON button, XINPUT_BUTTON_STATUS 
 		return FALSE;
 	}
 	return FALSE;
+}
+
+
+void MoveCursor(XMINT2& cursor, const int num_x, const int num_y)
+{
+	if (GetKeyboardRepeat(DIK_UP) || GetKeyboardRepeat(DIK_W)) {
+		cursor.y = (cursor.y - 1 + num_y) % num_y;
+	}
+	else if (GetKeyboardRepeat(DIK_DOWN) || GetKeyboardRepeat(DIK_S)) {
+		cursor.y = (cursor.y + 1) % num_y;
+	}
+	else if (GetKeyboardRepeat(DIK_LEFT) || GetKeyboardRepeat(DIK_A)) {
+		cursor.x = (cursor.x - 1 + num_x) % num_x;
+	}
+	else if (GetKeyboardRepeat(DIK_RIGHT) || GetKeyboardRepeat(DIK_D)) {
+		cursor.x = (cursor.x - 1 + num_x) % num_x;
+	}
 }

@@ -6,6 +6,7 @@
 //=============================================================================
 #include "main.h"
 #include "collision.h"
+#include "input.h"
 
 //=============================================================================
 // 球による当たり判定処理
@@ -59,6 +60,31 @@ BOOL CollisionBB(XMFLOAT3 mpos, float mw, float mh,
 		(mpos.x - mw < ypos.x + yw) &&
 		(mpos.y + mh > ypos.y - yh) &&
 		(mpos.y - mh < ypos.y + yh))
+	{
+		// 当たった時の処理
+		ans = TRUE;
+	}
+
+	return ans;
+}
+
+BOOL CollisionMouse(XMFLOAT2 pos, XMFLOAT2 size)
+{
+	BOOL ans = FALSE;	// 外れをセットしておく
+
+	// 座標が中心点なので計算しやすく半分にしている
+	float mw = 0.5f;
+	float mh = 0.5f;
+	float yw = size.x * 0.5f;
+	float yh = size.y * 0.5f;
+
+	XMFLOAT2 mpos = GetMousePos();
+
+	// バウンディングボックス(BB)の処理
+	if ((mpos.x + mw > pos.x - yw) &&
+		(mpos.x - mw < pos.x + yw) &&
+		(mpos.y + mh > pos.y - yh) &&
+		(mpos.y - mh < pos.y + yh))
 	{
 		// 当たった時の処理
 		ans = TRUE;

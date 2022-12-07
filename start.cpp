@@ -88,10 +88,10 @@ static TEXTURE2D_DESC	g_td[TEXTURE_MAX];				// UI管理用
 static float			g_AnimScl = 0.0f;				// アニメーション管理用
 static float			g_AnimAlpha = 0.0f;				// アニメーション管理用
 static float			g_AnimSlide = -SCREEN_WIDTH;	// アニメーション管理用
-static BOOL				g_Load = FALSE;
 static BOOL				g_bStartOn = FALSE;
 static BOOL				g_bStartFlg = FALSE;
 static BOOL				g_bStartOffFlg = FALSE;
+static BOOL				g_Load = FALSE;
 
 //*****************************************************************************
 // ローカル関数
@@ -285,7 +285,7 @@ void UpdateStart(void)
 		switch (g_Menu)
 		{
 		case MENU_START:
-			SetMode(MODE_HOME); // game
+			SetFade(FADE_OUT, MODE_HOME); // game
 			break;
 
 		case MENU_OPTION:

@@ -117,8 +117,12 @@ void UpdateCharacterSelect(void)
 	{
 		g_TexNoButton = TEXTURE_START_BUTTON_2;
 
-		SetFade(FADE_OUT, MODE_GAME); // game
+		SetMode(MODE_STAGESELECT); // game
 		ResetPlayer();
+	}
+	else if (GetKeyboardRelease(DIK_BACK))
+	{
+		SetMode(MODE_TITLE_START); // game
 	}
 
 }

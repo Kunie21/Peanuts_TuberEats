@@ -51,10 +51,31 @@ enum CULL_MODE {		// カリングモード
 enum POSITION_TYPE {	// 位置の種類
 	POSITION_RELATIVE = 0,	// 相対位置（画面中心を0,0としてPositionを数える）
 	POSITION_ABSOLUTE,		// 絶対位置（画面左上を0,0としてPositionを数える）
+
+	POSITION_CENTER,
+
+	POSITION_TOP,
+	POSITION_LEFT,
+	POSITION_RIGHT,
+	POSITION_BOTTOM,
+
+	POSITION_LEFTTOP,
+	POSITION_RIGHTTOP,
+	POSITION_LEFTBOTTOM,
+	POSITION_RIGHTBOTTOM,
 };
 enum CENTER_TYPE {		// 中心の種類
-	CENTER_LEFTTOP = 0,		// Positionがテクスチャの左上を指すとき
-	CENTER_CENTER,			// Positionがテクスチャの中心を指すとき
+	CENTER_CENTER = 0,		// Positionがテクスチャの中心を指すとき
+
+	CENTER_TOP,				// 中心上
+	CENTER_LEFT,			// 中心左
+	CENTER_RIGHT,			// 中心右
+	CENTER_BOTTOM,			// 中心下
+
+	CENTER_LEFTTOP,			// 左上
+	CENTER_RIGHTTOP,		// 右上
+	CENTER_LEFTBOTTOM,		// 左下
+	CENTER_RIGHTBOTTOM,		// 右下
 };
 enum HORIZONTAL_POSITION {	// 水平位置の種類
 	HORIZONTAL_LEFT = 0,	// 左寄せ

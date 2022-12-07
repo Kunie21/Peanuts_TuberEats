@@ -153,7 +153,7 @@ void DrawGame(void)
 		DrawGimmickInstancing(GIMMICK_ICE, TRUE);
 		DrawGimmickInstancing(GIMMICK_SUSHI_ICE, TRUE);
 
-		SetDrawOutline(4.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
+		SetDrawOutline(3.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		DrawGimmickInstancing(GIMMICK_SUSHI, TRUE);
 
 		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });

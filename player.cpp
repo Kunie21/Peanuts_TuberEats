@@ -89,7 +89,7 @@ private:
 
 	float m_invTime = 0.0f;
 
-	int m_missiles = 5;
+	int m_missiles = 0;
 
 	BOOL m_bStart = FALSE;
 
@@ -210,7 +210,7 @@ public:
 		m_rotAddSpd = 0.0f;
 		m_fuel = 5000.0f;
 		m_invTime = 0.0f;
-		m_missiles = 5;
+		m_missiles = 0;
 		m_bStart = FALSE;
 	}
 
@@ -260,7 +260,7 @@ HRESULT InitPlayer(void)
 	g_RS[MODEL_PLAYER_ROCKET3].rotSpdMax = 0.03f;
 	g_RS[MODEL_PLAYER_ROCKET3].rotDecel = 0.99f;
 	g_RS[MODEL_PLAYER_ROCKET3].fuelMax = 5000.0f;
-	g_RS[MODEL_PLAYER_ROCKET3].missiles = 0;
+	g_RS[MODEL_PLAYER_ROCKET3].missiles = 3;
 
 	g_RS[MODEL_PLAYER_ROCKET4].posSpdMax = 110.0f;
 	g_RS[MODEL_PLAYER_ROCKET4].accel = 0.8f;
@@ -269,7 +269,7 @@ HRESULT InitPlayer(void)
 	g_RS[MODEL_PLAYER_ROCKET4].rotSpdMax = 0.08f;
 	g_RS[MODEL_PLAYER_ROCKET4].rotDecel = 0.98f;
 	g_RS[MODEL_PLAYER_ROCKET4].fuelMax = 5000.0f;
-	g_RS[MODEL_PLAYER_ROCKET4].missiles = 0;
+	g_RS[MODEL_PLAYER_ROCKET4].missiles = 5;
 
 	g_RS[MODEL_PLAYER_ROCKET5].posSpdMax = 200.0f;
 	g_RS[MODEL_PLAYER_ROCKET5].accel = 5.0f;
@@ -278,7 +278,7 @@ HRESULT InitPlayer(void)
 	g_RS[MODEL_PLAYER_ROCKET5].rotSpdMax = 0.1f;
 	g_RS[MODEL_PLAYER_ROCKET5].rotDecel = 0.5f;
 	g_RS[MODEL_PLAYER_ROCKET5].fuelMax = 5000.0f;
-	g_RS[MODEL_PLAYER_ROCKET5].missiles = 0;
+	g_RS[MODEL_PLAYER_ROCKET5].missiles = 10;
 
 	g_Load = TRUE;
 	return S_OK;

@@ -792,6 +792,7 @@ void ReStartSound(int label)
 //=============================================================================
 void SetBGM(MODE_LABEL mode)
 {
+	return;
 	if (GetMode() > MODE_LOADING)
 	{
 		StopSound(g_NowBGMLabel);

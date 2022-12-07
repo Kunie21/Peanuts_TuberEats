@@ -21,5 +21,6 @@ void DrawRocketSelect(void);
 
 BOOL IsRocketSelectFinished(void);
 int GetRocketSelected(void);
+void ResetTransaction(void);
 
 
