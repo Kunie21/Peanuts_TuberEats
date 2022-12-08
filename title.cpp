@@ -50,6 +50,7 @@ enum {
 	TEXTURE_BUTTON,
 	TEXTURE_COPYR,
 	TEXTURE_STAR,
+	TEXTURE_LINE,
 	TEXTURE_MAX,
 };
 
@@ -88,7 +89,6 @@ struct DEBRIS {
 // グローバル変数
 //*****************************************************************************
 static BOOL				g_Load = FALSE;
-static bool				g_Fade = true;
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 static MODEL_DATA		g_Model[MODEL_TITLE_MAX];
 
@@ -105,19 +105,36 @@ HRESULT InitTitle(void)
 	// テクスチャ設定
 	for (int i = 0; i < TEXTURE_STAR; i++) {
 		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_TITLE + i);
+		g_td[i].size = GetTextureSize(g_td[i].tex);
 		g_td[i].ctrType = CENTER_LEFTTOP;
-		g_td[i].posType = POSITION_ABSOLUTE;
+		g_td[i].posType = POSITION_LEFTTOP;
 	}
 	g_td[TEXTURE_STAR].tex = TEXTURE_LABEL_STAR;
 
-	g_td[TEXTURE_TITLE].size = { 577.0f, 345.0f };
-	g_td[TEXTURE_TITLE].pos = { TITLE_X, TITLE_Y };
+	g_td[TEXTURE_LINE].tex = TEXTURE_LABEL_WHITE;
+	g_td[TEXTURE_LINE].ctrType = CENTER_LEFTTOP;
+	g_td[TEXTURE_LINE].posType = POSITION_LEFTTOP;
+	g_td[TEXTURE_LINE].col = { 0.0f, 0.3f, 0.0f, 1.0f };
+	g_td[TEXTURE_LINE].size = { 50.0f, g_td[TEXTURE_TITLE].size.y + 25.0f + g_td[TEXTURE_BUTTON].size.y };
+	g_td[TEXTURE_LINE].pos = { TITLE_X - 80.0f, TITLE_Y };
 
-	g_td[TEXTURE_BUTTON].size = { 739.0f, 67.0f };
-	g_td[TEXTURE_BUTTON].pos = { TITLE_BUTTON_X, TITLE_BUTTON_Y };
+	//g_td[TEXTURE_TITLE].size = { 577.0f, 345.0f };
+	//g_td[TEXTURE_TITLE].pos = { TITLE_X, TITLE_Y };
+	g_td[TEXTURE_TITLE].ctrType = CENTER_TOP;
+	g_td[TEXTURE_TITLE].pos = { TITLE_X + g_td[TEXTURE_TITLE].size.x * 0.5f, TITLE_Y };
+	g_td[TEXTURE_TITLE].sd_pos = { 6.0f, 6.0f };
+	g_td[TEXTURE_TITLE].sd_col = { 0.0f, 0.15f, 0.0f, 0.5f };
 
-	g_td[TEXTURE_COPYR].size = { 547.0f, 43.0f };
-	g_td[TEXTURE_COPYR].pos = { COPYR_X, COPYR_Y };
+	//g_td[TEXTURE_BUTTON].size = { 739.0f, 67.0f };
+	//g_td[TEXTURE_BUTTON].pos = { TITLE_BUTTON_X, TITLE_BUTTON_Y };
+	g_td[TEXTURE_BUTTON].ctrType = CENTER_TOP;
+	g_td[TEXTURE_BUTTON].pos = { g_td[TEXTURE_TITLE].pos.x + 15.0f, g_td[TEXTURE_TITLE].pos.y + g_td[TEXTURE_TITLE].size.y + 60.0f };
+	g_td[TEXTURE_BUTTON].scl = { 0.9f, 0.9f };
+
+	//g_td[TEXTURE_COPYR].size = { 547.0f, 43.0f };
+	g_td[TEXTURE_COPYR].ctrType = CENTER_RIGHTBOTTOM;
+	g_td[TEXTURE_COPYR].posType = POSITION_RIGHTBOTTOM;
+	g_td[TEXTURE_COPYR].pos = { -50.0f, -50.0f };
 
 	// モデル設定
 	g_Model[MODEL_TITLE_STAR].model = MODEL_EARTH;
@@ -226,18 +243,9 @@ void UpdateTitle(void)
 	if (g_Model[MODEL_TITLE_ROCKET].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y -= XM_2PI;
 	if (g_Model[MODEL_TITLE_ROCKET].srt.rot.z < -XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.z += XM_2PI;
 
-	if (g_Fade)
-	{
-		g_td[TEXTURE_BUTTON].col.w -= ALPHASPEED;
-		if (g_td[TEXTURE_BUTTON].col.w <= 0.0f)
-			g_Fade = false;
-	}
-	else
-	{
-		g_td[TEXTURE_BUTTON].col.w += ALPHASPEED;
-		if (g_td[TEXTURE_BUTTON].col.w >= 1.0f)
-			g_Fade = true;
-	}
+	static float time = 0.0f;
+	time += 0.05f; if(time > XM_2PI) time -= XM_2PI;
+	g_td[TEXTURE_BUTTON].col.w = 1.0f + sinf(time);
 
 	if (IsMouseLeftTriggered() || IsMouseRightTriggered()) {
 		PressedAnyButton();
@@ -375,15 +383,20 @@ void DrawTitle(void)
 	
 
 	// タイトルロゴなど
-	DrawTexture2D(&g_td[TEXTURE_TITLE], TRUE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_BUTTON], TRUE, TRUE);
-	DrawTexture2D(&g_td[TEXTURE_COPYR], FALSE, TRUE);
+	DrawTexture2D(&g_td[TEXTURE_TITLE], TRUE);
+	DrawTexture2D(&g_td[TEXTURE_BUTTON]);
+	DrawTexture2D(&g_td[TEXTURE_COPYR]);
+	//DrawTexture2D(&g_td[TEXTURE_LINE], FALSE);
 }
 
 void SetTitleAlpha(float rate) {
 	g_td[TEXTURE_TITLE].col.w = rate;
 	g_td[TEXTURE_BUTTON].col.w = rate;
 	g_td[TEXTURE_COPYR].col.w = rate;
+
+	g_td[TEXTURE_TITLE].sd_col.w = rate * 0.5f;
+	g_td[TEXTURE_BUTTON].sd_col.w = rate * 0.5f;
+	g_td[TEXTURE_COPYR].sd_col.w = rate * 0.5f;
 
 	float dist = (1.0f - rate) * OBJ_DIST;
 	g_Model[MODEL_TITLE_EARTH].srt.pos.x = dist;

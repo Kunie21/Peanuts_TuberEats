@@ -23,4 +23,6 @@ BOOL IsRocketSelectFinished(void);
 int GetRocketSelected(void);
 void ResetTransaction(void);
 
+void DrawHomeRocket(void);
 
+void SetRocketOutline(void);

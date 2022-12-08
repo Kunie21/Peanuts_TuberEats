@@ -1301,18 +1301,22 @@ void SetStencilNoneOnlyDepth(void)
 	g_ImmediateContext->OMSetRenderTargets(0, NULL, g_DepthStencilView);
 }
 
-void SetDrawOutline(float Scale, XMFLOAT4 Color)
+void SetDrawOutline(float Scale, XMFLOAT4 Color, BOOL one)
 {
 	OUTLINE outline = { { Scale, 0.0f, 0.0f, 0.0f }, Color };
 	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
 	SetCullingMode(CULL_MODE_FRONT);
-	g_ImmediateContext->VSSetShader(g_VSOutlineInst, NULL, 0);
+	if(one)
+		g_ImmediateContext->VSSetShader(g_VSOutline, NULL, 0);
+	else
+		g_ImmediateContext->VSSetShader(g_VSOutlineInst, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOutline, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
+
 }
 void SetDrawFillBlack(SHADER_TYPE shader)
 {
@@ -1801,6 +1805,10 @@ void SetBackGroundColor(XMFLOAT4 color)
 MATERIAL* GetDefaultMaterial(void) {
 	static MATERIAL material;
 	return &material;
+}
+
+ID3D11ShaderResourceView** GetRenderTargetTexture(void) {
+	return &g_WrittenTexture[g_CurrentResource ? 0 : 1];
 }
 
 //=============================================================================

@@ -97,7 +97,8 @@ VS_OUTPUT VSPlayerSV(VS_INPUT input) {
 VS_OUTPUT VSOutline(VS_INPUT input) {	// –@ü•ûŒü‚É–c‚ç‚Ü‚¹‚é
 	VS_OUTPUT output;
 	input.Position.xyz = input.Position.xyz + normalize(input.Normal.xyz) * Outline.Scale.x;
-	output.Position = GetTubeCurvePos(mul(input.Position, World));
+	//output.Position = GetTubeCurvePos(mul(input.Position, World));
+	output.Position = mul(input.Position, WVP);
 	return output;
 }
 VS_OUTPUT VSOutlineInst(VS_INPUT input, uint instID : SV_InstanceID) {	// –@ü•ûŒü‚É–c‚ç‚Ü‚¹‚é

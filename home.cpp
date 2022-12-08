@@ -18,7 +18,15 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-//#define RIGHT_CENTER_LINE ()
+#define ARROW_Y (150.0f)
+
+//*****************************************************************************
+// グローバル変数
+//*****************************************************************************
+static BOOL				g_Load = FALSE;
+static HOME_MODE		g_Home = HOME_HOME;
+static float			g_leftArrow = 0.0f;
+static float			g_rightArrow = 0.0f;
 
 //*****************************************************************************
 // UI定義
@@ -32,8 +40,8 @@ enum UI_LABEL {
 	UI_START,
 	UI_LEFT,
 	UI_RIGHT,
-	UI_SHOP,
 	UI_BACK,
+	UI_SHOP,
 
 	UI_NUM
 };
@@ -43,10 +51,10 @@ enum UI_LABEL {
 	TEXTURE_LABEL_ICON,\
 	TEXTURE_LABEL_ROCKET_1,\
 	TEXTURE_LABEL_CHARACTER_01,\
-	TEXTURE_LABEL_START_BUTTON_1,\
+	TEXTURE_LABEL_START_BUTTON_2,\
 	TEXTURE_LABEL_LEFT,\
 	TEXTURE_LABEL_RIGHT,\
-	TEXTURE_LABEL_ICON,\
+	TEXTURE_LABEL_BACK,\
 	TEXTURE_LABEL_ICON,\
 }
 // UI詳細管理
@@ -76,13 +84,12 @@ enum BT_LABEL {
 // ボタン詳細管理
 static BUTTON_DESC* g_bd;
 // ボタン表
-#define BT_NUM_X 2
-#define BT_NUM_Y 4
+#define BT_NUM_X 3
+#define BT_NUM_Y 3
 static int g_btTbl[BT_NUM_Y][BT_NUM_X] = {
-	{BT_BACK, BT_BACK},
-	{BT_LEFT, BT_RIGHT},
-	{BT_SHOP, BT_SHOP},
-	{BT_START, BT_START},
+	{BT_BACK, BT_BACK, BT_BACK},
+	{BT_SHOP, BT_LEFT, BT_RIGHT},
+	{BT_START, BT_START, BT_START},
 };
 static BUTTON_TABLE g_bt;
 // カーソル位置
@@ -103,6 +110,7 @@ static void ButtonPressed(int b)
 		break;
 
 	case BT_SHOP:
+		SetHomeMode(HOME_SHOP);
 		break;
 
 	case BT_BACK:
@@ -129,16 +137,18 @@ static void InitUI(void)
 	}
 	g_td[UI_START].posType = POSITION_RIGHTBOTTOM;
 	g_td[UI_START].ctrType = CENTER_BOTTOM;
-	g_td[UI_START].pos = { -g_td[UI_START].size.x * 0.5f, -20.0f };
-	g_td[UI_START].b_useOutline = TRUE;
+	g_td[UI_START].pos = { -g_td[UI_START].size.x * 0.5f, -30.0f };
+	//g_td[UI_START].b_useOutline = TRUE;
 
 	g_td[UI_ICON].posType = POSITION_LEFTTOP;
 	g_td[UI_ICON].ctrType = CENTER_LEFTTOP;
-	g_td[UI_ICON].b_useOutline = TRUE;
+	g_td[UI_ICON].scl = { 0.7f, 0.7f };
 
 	g_td[UI_ROCKET_NAME].posType = POSITION_LEFTTOP;
 	g_td[UI_ROCKET_NAME].ctrType = CENTER_LEFT;
+	g_td[UI_ROCKET_NAME].col = { 0.0f, 0.3f, 0.0f, 1.0f };
 	g_td[UI_ROCKET_NAME].pos = { g_td[UI_ICON].size.x, g_td[UI_ICON].size.y * 0.5f };
+	g_td[UI_ROCKET_NAME].sd_pos = { 3.0f, 3.0f };
 
 	g_td[UI_PLAYER].posType = POSITION_RIGHT;
 	g_td[UI_PLAYER].ctrType = CENTER_CENTER;
@@ -146,24 +156,27 @@ static void InitUI(void)
 
 	g_td[UI_LEFT].posType = POSITION_RIGHT;
 	g_td[UI_LEFT].ctrType = CENTER_RIGHT;
-	g_td[UI_LEFT].pos = {
-		g_td[UI_PLAYER].pos.x - g_td[UI_PLAYER].size.x * 0.5f,
-		g_td[UI_PLAYER].pos.y
-	};
+	g_leftArrow = g_td[UI_PLAYER].pos.x - g_td[UI_PLAYER].size.x * 0.55f;
+	g_td[UI_LEFT].pos = { g_leftArrow, ARROW_Y };
 
 	g_td[UI_RIGHT].posType = POSITION_RIGHT;
 	g_td[UI_RIGHT].ctrType = CENTER_LEFT;
-	g_td[UI_RIGHT].pos = {
-		g_td[UI_PLAYER].pos.x + g_td[UI_PLAYER].size.x * 0.5f,
-		g_td[UI_PLAYER].pos.y
-	};
+	g_rightArrow = g_td[UI_PLAYER].pos.x + g_td[UI_PLAYER].size.x * 0.55f;
+	g_td[UI_RIGHT].pos = { g_rightArrow, ARROW_Y };
+
 
 	g_td[UI_SHOP].posType = POSITION_LEFT;
-	g_td[UI_SHOP].ctrType = CENTER_LEFT;
-	g_td[UI_SHOP].pos = { g_td[UI_SHOP].size.x, 0.0f };
+	g_td[UI_SHOP].ctrType = CENTER_CENTER;
+	g_td[UI_SHOP].pos = { SCREEN_CENTER_X * 0.5f, 0.0f };
+	g_td[UI_SHOP].size.x *= 2.0f;
+	g_td[UI_SHOP].size.y *= 2.0f;
 
 	g_td[UI_BACK].posType = POSITION_RIGHTTOP;
 	g_td[UI_BACK].ctrType = CENTER_RIGHTTOP;
+	g_td[UI_BACK].pos = { -20.0f, 20.0f };
+	g_td[UI_BACK].sd_pos = { 3.0f, 1.5f };
+	g_bd[BT_BACK].col_on = { 0.2f, 0.5f, 0.2f, 1.0f };
+	g_bd[BT_BACK].col_off = { 0.0f, 0.3f, 0.0f, 1.0f };
 
 	// ボタン詳細設定
 	UI_LABEL ul[BT_NUM] = REF_UL;
@@ -171,6 +184,7 @@ static void InitUI(void)
 	{
 		SetUIButton(&g_bd[i], &g_td[ul[i]]);
 	}
+	g_bd[BT_START].tex_on = TEXTURE_LABEL_START_BUTTON_3;
 
 	// ボタンテーブルへの登録
 	g_bt = { &g_btTbl[0][0], BT_NUM_X, BT_NUM_Y, g_bd, BT_NUM, &g_cursor };
@@ -179,16 +193,27 @@ static void InitUI(void)
 // 更新
 static void UpdateUI(void)
 {
+	static float time = 0.0f;
+	time += 0.03f; if (time > XM_2PI) time -= XM_2PI;
+	g_td[UI_PLAYER].pos.y = 3.0f * sinf(time);
+	g_td[UI_LEFT].pos.x = g_leftArrow - 5.0f * cosf(time * 2.0f);
+	g_td[UI_RIGHT].pos.x = g_rightArrow + 5.0f * cosf(time * 2.0f);
+
 	UpdateButton(&g_bt, ButtonPressed);
 }
 // 描画
 static void DrawUI(void)
 {
-	for (int i = 0; i < UI_NUM; i++)
+	DrawTexture2D(&g_td[UI_BG]);
+	DrawTexture2DAll();
+
+	for (int i = 1; i < UI_BACK; i++)
 	{
 		if (g_td[i].b_outline) DrawTexture2D(&g_td[i], TRUE, FALSE, TRUE);
 		else DrawTexture2D(&g_td[i], TRUE);
 	}
+
+	DrawTexture2D(&g_td[UI_BACK], TRUE);
 }
 // 終了
 static void UninitUI(void)
@@ -196,19 +221,14 @@ static void UninitUI(void)
 	delete[] g_td, g_bd;
 }
 
-//*****************************************************************************
-// グローバル変数
-//*****************************************************************************
-static BOOL				g_Load = FALSE;
-static HOME_MODE		g_Home = HOME_MODE_HOME;
-
 //=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT InitHome(void)
 {
 	InitUI();
-	//InitRocketSelect();
+
+	InitRocketSelect();
 	//InitCharacterSelect();
 	//InitWallet();
 
@@ -237,20 +257,14 @@ void UninitHome(void)
 //=============================================================================
 void UpdateHome(void)
 {
-	UpdateUI();
-
-	//UpdateRocketSelect();
+	UpdateRocketSelect();
 	//UpdateCharacterSelect();
 	//UpdateWallet();
 
-	if (GetKeyboardTrigger(DIK_1))
-	{
-		g_Home = HOME_MODE_HOME;
-	}
-	if (GetKeyboardTrigger(DIK_2))
-	{
-		g_Home = HOME_MODE_SHOP;
-	}
+	if (GetHomeMode() != HOME_HOME) return;
+	UpdateUI();
+
+	if(g_bt.bd[BT_SHOP].b_on) SetRocketOutline();
 }
 
 //=============================================================================
@@ -259,12 +273,18 @@ void UpdateHome(void)
 void DrawHome(void)
 {
 	DrawUI();
+	
+	DrawHomeRocket();
 
-	//DrawRocketSelect();
+	DrawRocketSelect();
 	//DrawCharacterSelect();
 	//DrawWallet();
 }
 
 HOME_MODE GetHomeMode(void) {
 	return g_Home;
+}
+
+void SetHomeMode(HOME_MODE mode) {
+	g_Home = mode;
 }

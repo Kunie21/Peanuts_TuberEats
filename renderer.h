@@ -52,17 +52,17 @@ enum POSITION_TYPE {	// 位置の種類
 	POSITION_RELATIVE = 0,	// 相対位置（画面中心を0,0としてPositionを数える）
 	POSITION_ABSOLUTE,		// 絶対位置（画面左上を0,0としてPositionを数える）
 
-	POSITION_CENTER,
+	POSITION_CENTER,		// 中心
 
-	POSITION_TOP,
-	POSITION_LEFT,
-	POSITION_RIGHT,
-	POSITION_BOTTOM,
+	POSITION_TOP,			// 中心上
+	POSITION_LEFT,			// 中心左
+	POSITION_RIGHT,			// 中心右
+	POSITION_BOTTOM,		// 中心下
 
-	POSITION_LEFTTOP,
-	POSITION_RIGHTTOP,
-	POSITION_LEFTBOTTOM,
-	POSITION_RIGHTBOTTOM,
+	POSITION_LEFTTOP,		// 左上
+	POSITION_RIGHTTOP,		// 右上
+	POSITION_LEFTBOTTOM,	// 左下
+	POSITION_RIGHTBOTTOM,	// 右下
 };
 enum CENTER_TYPE {		// 中心の種類
 	CENTER_CENTER = 0,		// Positionがテクスチャの中心を指すとき
@@ -263,7 +263,7 @@ void SetStencilNoneAL(void);
 void SetStencilNoneOnlyDepth(void);
 
 void SetDrawMonitor(void);
-void SetDrawOutline(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f });
+void SetDrawOutline(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f }, BOOL one = FALSE);
 void SetDrawFillBlack(SHADER_TYPE shader);
 void SetDrawFillBlackPlayer(void);
 void SetDrawNoLighting(void);
@@ -329,3 +329,5 @@ void MulMtxRot(XMMATRIX& mtxWorld, XMFLOAT3& rot);
 void MulMtxRot(XMMATRIX& mtxWorld, float x, float y, float z);
 void MulMtxPos(XMMATRIX& mtxWorld, XMFLOAT3& pos);
 void MulMtxPos(XMMATRIX& mtxWorld, float x, float y, float z);
+
+ID3D11ShaderResourceView** GetRenderTargetTexture(void);

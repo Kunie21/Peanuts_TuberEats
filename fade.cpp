@@ -137,9 +137,9 @@ BOOL CheckFadeIn(void)
 BOOL CheckFadeOut(void)
 {
 #ifdef SHUTTER
-	if (g_td.pos.y <= 0.0f)
+	if (g_td.pos.y >= g_td.size.y * 0.75f)
 #else
-	if (g_td.col.w <= 0.0f)
+	if (g_td.col.w >= 1.0f)
 #endif
 		return TRUE;
 	return FALSE;

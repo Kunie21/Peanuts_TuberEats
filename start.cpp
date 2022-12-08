@@ -23,6 +23,7 @@
 #define ANIM_SCALING	(0.1f)		// メニューが大きくなる倍率
 #define ANIM_ALPHA		(0.1f)		// メニューが色づくスピード
 #define ANIM_SLIDE		(80.0f)		// メニューがスライドしてくるスピード
+#define ANIM_SLIDE_X	(-1360.0f)	// スライド量
 
 // メニュー部品の種類
 enum {
@@ -39,7 +40,7 @@ enum {
 //*****************************************************************************
 static float			g_AnimScl = 0.0f;				// アニメーション管理用
 static float			g_AnimAlpha = 0.0f;				// アニメーション管理用
-static float			g_AnimSlide = -SCREEN_WIDTH;	// アニメーション管理用
+static float			g_AnimSlide = ANIM_SLIDE_X;	// アニメーション管理用
 static BOOL				g_bStartOn = FALSE;
 static BOOL				g_bStartFlg = FALSE;
 static BOOL				g_bStartOffFlg = FALSE;
@@ -115,7 +116,7 @@ enum UI_LABEL {
 	TEXTURE_LABEL_MENU_PANNEL_05,\
 }
 // UI詳細管理
-static TEXTURE2D_DESC* g_td;
+static TEXTURE2D_DESC* g_td = NULL;
 
 //*****************************************************************************
 // ボタン定義
@@ -139,7 +140,7 @@ enum BT_LABEL {
 	UI_MENU_PANNEL_05,\
 }
 // ボタン詳細管理
-static BUTTON_DESC* g_bd;
+static BUTTON_DESC* g_bd = NULL;
 // ボタン表
 #define BT_NUM_X 1
 #define BT_NUM_Y 5
@@ -150,7 +151,7 @@ static int g_btTbl[BT_NUM_Y][BT_NUM_X] = {
 	{BT_CREDIT},
 	{BT_QUIT},
 };
-static BUTTON_TABLE g_bt;
+static BUTTON_TABLE* g_bt = NULL;
 // カーソル位置
 static XMINT2 g_cursor = { 0, 0 };	// BT_STARTから
 // ボタンごとの処理
@@ -199,7 +200,7 @@ static void InitUI(void)
 
 		// 一括設定
 		g_td[i].ctrType = CENTER_LEFTTOP;
-		g_td[i].posType = POSITION_ABSOLUTE;
+		g_td[i].posType = POSITION_LEFTTOP;
 		g_td[i].wight = 0.0f;
 	}
 
@@ -229,45 +230,49 @@ static void InitUI(void)
 	}
 
 	// ボタンテーブルへの登録
-	g_bt = { &g_btTbl[0][0], BT_NUM_X, BT_NUM_Y, g_bd, BT_NUM, &g_cursor };
+	g_bt = new BUTTON_TABLE;
+	*g_bt = { &g_btTbl[0][0], BT_NUM_X, BT_NUM_Y, g_bd, BT_NUM, &g_cursor };
 
 }
 // 更新
 static void UpdateUI(void)
 {
-	UpdateButton(&g_bt, ButtonPressed);
+	UpdateButton(g_bt, ButtonPressed);
 }
 // 描画
 static void DrawUI(void)
 {
 	for (int i = 0; i < UI_NUM; i++)
 	{
-		if (g_td[i].b_outline) DrawTexture2D(&g_td[i], TRUE, FALSE, TRUE);
-		else DrawTexture2D(&g_td[i], TRUE);
+		DrawTexture2D(&g_td[i], TRUE);
 	}
 }
 // 終了
 static void UninitUI(void)
 {
 	delete[] g_td, g_bd;
+	delete g_bt;
 }
 
 //*****************************************************************************
 // ローカル関数
 //*****************************************************************************
 // メニューの種類と部品名からテクスチャ名を取得
-int GetTexNo(int menu_tex) {
+static int GetTexNo(int menu_tex) {
 	return UI_START + MENU_TEX_NUM * g_cursor.y + menu_tex;
 }
 // パネルのアニメーション
-void PannelAnim(void) {
-	g_td[GetTexNo(MENU_TEX_PANNEL)].scl.y = g_AnimScl;
-	g_td[GetTexNo(MENU_TEX_PANNEL)].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
-	g_td[GetTexNo(MENU_TEX_PANNEL)].uv_pos.vh = g_AnimScl;
-
-	g_td[GetTexNo(MENU_TEX_GREEN)].scl.y = g_AnimScl;
-	g_td[GetTexNo(MENU_TEX_GREEN)].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
-	g_td[GetTexNo(MENU_TEX_GREEN)].uv_pos.vh = g_AnimScl;
+static void PannelAnim(void)
+{
+	int tex = GetTexNo(MENU_TEX_PANNEL);
+	g_td[tex].scl.y = g_AnimScl;
+	g_td[tex].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
+	g_td[tex].uv_pos.vh = g_AnimScl;
+	
+	tex = GetTexNo(MENU_TEX_GREEN);
+	g_td[tex].scl.y = g_AnimScl;
+	g_td[tex].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
+	g_td[tex].uv_pos.vh = g_AnimScl;
 }
 
 //=============================================================================
@@ -280,18 +285,24 @@ HRESULT InitStart(void)
 	InitUI();
 
 	// アニメーション初期設定
+	g_AnimSlide = ANIM_SLIDE_X;
 	for (int i = 0; i < UI_NUM; i++) {
-		g_td[i].pos.x -= SCREEN_WIDTH;
+		g_td[i].posAdd.x = g_AnimSlide;
 	}
+
+	g_AnimAlpha = 0.0f;
 	for (int i = UI_MENU_LINE; i < UI_NUM; i++) {
 		g_td[i].col.w = g_AnimAlpha;
 	}
+
 #ifdef ANIM_SMALL
 	g_td[UI_MENUBOARD].scl = {
 		1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f),
 		1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f)
 	};
 #endif
+
+	g_AnimScl = 0.0f;
 	PannelAnim();
 
 	g_Load = TRUE;
@@ -315,6 +326,8 @@ void UninitStart(void)
 //=============================================================================
 void UpdateStart(void)
 {
+	if (!CheckFadeIn()) return;
+
 	if (!g_bStartOn)
 	{
 		if (g_bStartFlg)
@@ -325,7 +338,14 @@ void UpdateStart(void)
 		return;
 	}
 
-	UpdateUI();
+	if (g_AnimAlpha > 0.0f) UpdateUI();
+
+	static int old_cur_y = g_cursor.y;
+	if (old_cur_y != g_cursor.y) {
+		g_AnimScl = 0.0f;
+		PannelAnim();
+		old_cur_y = g_cursor.y;
+	}
 
 	// ひっこみアニメーション
 	if (g_bStartOffFlg)
@@ -342,12 +362,14 @@ void UpdateStart(void)
 			};
 #endif
 		}
-		else if (g_AnimSlide > -SCREEN_WIDTH)
+		else if (g_AnimSlide > ANIM_SLIDE_X)
 		{
 			g_AnimSlide -= ANIM_SLIDE;
-			for (int i = 0; i < UI_NUM; i++) g_td[i].pos.x -= ANIM_SLIDE;
+			for (int i = 0; i < UI_NUM; i++) {
+				g_td[i].posAdd.x = g_AnimSlide;
+			}
 			PannelAnim();
-			SetTitleAlpha(-g_AnimSlide / SCREEN_WIDTH);
+			SetTitleAlpha(g_AnimSlide / ANIM_SLIDE_X);
 		}
 		else
 		{
@@ -362,10 +384,11 @@ void UpdateStart(void)
 	{
 		g_AnimSlide += ANIM_SLIDE;
 		for (int i = 0; i < UI_NUM; i++) {
-			g_td[i].pos.x += ANIM_SLIDE;
+			g_td[i].posAdd.x = g_AnimSlide;
 		}
 		PannelAnim();
-		SetTitleAlpha(-g_AnimSlide / SCREEN_WIDTH);
+		SetTitleAlpha(g_AnimSlide / ANIM_SLIDE_X);
+		//return;
 	}
 	else if (g_AnimAlpha < 1.0f)
 	{
@@ -383,18 +406,12 @@ void UpdateStart(void)
 		//for (int i = 0; i < BT_NUM; i++) {
 		//	g_td[i * MENU_TEX_NUM + UI_START].col.w = g_AnimAlpha * 2.0f - (float)i * 0.25f;
 		//}
+		//return;
 	}
 	else if (g_AnimScl < 1.0f)
 	{
 		g_AnimScl += ANIM_SCALING;
 		PannelAnim();
-	}
-
-	static int old_cur_y = g_cursor.y;
-	if (old_cur_y != g_cursor.y) {
-		g_AnimScl = 0.0f;
-		PannelAnim();
-		old_cur_y = g_cursor.y;
 	}
 
 	if (GetKeyboardTrigger(DIK_BACK)) {
@@ -410,18 +427,19 @@ void DrawStart(void)
 	if (!g_bStartOn) return;
 	//DrawUI();
 
-	DrawTexture2D(&g_td[UI_MENUBOARD], FALSE);	// メニュー背景
-	DrawTexture2D(&g_td[UI_MENU_LINE], FALSE);	// メニュー詳細背景
+	DrawTexture2D(&g_td[UI_MENUBOARD]);	// メニュー背景
+	DrawTexture2D(&g_td[UI_MENU_LINE]);	// メニュー装飾線
 
-	DrawTexture2D(&g_td[UI_START], FALSE);		// スタート
-	DrawTexture2D(&g_td[UI_OPTION], FALSE);		// オプション
-	DrawTexture2D(&g_td[UI_GALLERY], FALSE);	// ギャラリー
-	DrawTexture2D(&g_td[UI_CREDIT], FALSE);		// クレジット
-	DrawTexture2D(&g_td[UI_QUIT], FALSE);		// 退出
+	DrawTexture2D(&g_td[UI_START]);		// スタート
+	DrawTexture2D(&g_td[UI_OPTION]);	// オプション
+	DrawTexture2D(&g_td[UI_GALLERY]);	// ギャラリー
+	DrawTexture2D(&g_td[UI_CREDIT]);	// クレジット
+	DrawTexture2D(&g_td[UI_QUIT]);		// 退出
 
+	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_TEXT)], TRUE);			// メニュー詳細
+	if (g_AnimScl == 0.0f) return;
 	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_PANNEL)], FALSE, TRUE);	// メニューパネル
 	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_GREEN)], TRUE, TRUE);		// メニュー名
-	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_TEXT)], TRUE);			// メニュー詳細
 }
 
 void PressedAnyButton(void) {
@@ -430,10 +448,12 @@ void PressedAnyButton(void) {
 	g_bStartFlg = TRUE;
 	g_AnimScl = 0.0f;
 	g_AnimAlpha = 0.0f;
-	g_AnimSlide = -SCREEN_WIDTH;
+	g_AnimSlide = ANIM_SLIDE_X;
 
-	for (int i = UI_MENU_LINE; i < UI_NUM; i++) g_td[i].col.w = g_AnimAlpha;
-	
+	for (int i = UI_MENU_LINE; i < UI_NUM; i++) {
+		g_td[i].col.w = g_AnimAlpha;
+	}
+
 	//StopSound();
 	//PlaySound(SOUND_LABEL_BGM_START);
 }

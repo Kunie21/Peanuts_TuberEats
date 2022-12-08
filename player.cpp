@@ -401,7 +401,8 @@ void DrawPlayer(void) {
 	g_Model[testNo].srt.pos.y = (float)(rand() % 20) * 0.0125f + ROCKET_Y;
 	//g_Model[testNo].srt.pos.z = (float)(rand() % 20) * 0.05f - 0.5f;
 
-	DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt);	// ƒ‚ƒfƒ‹•`‰æ
+	if(testNo == 4) DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, TEXTURE_LABEL_MAX);
+	else DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt);	// ƒ‚ƒfƒ‹•`‰æ
 	SetCullingMode(CULL_MODE_BACK);
 }
 

@@ -93,6 +93,7 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/home_menu_gamen/rocket_select_3_2.png",
 	"data/TEXTURE/home_menu_gamen/rocket_select_4_2.png",
 	"data/TEXTURE/home_menu_gamen/shop.png",
+	"data/TEXTURE/home_menu_gamen/shop_menu_detail.png",
 	"data/TEXTURE/home_menu_gamen/left_arrow.png",
 	"data/TEXTURE/home_menu_gamen/right_arrow.png",
 
@@ -233,7 +234,7 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_2.png",
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_3.png",
 
-	"data/TEXTURE/back.png",
+	"data/TEXTURE/title_menu_gamen/cancel.png",
 
 };
 
@@ -352,7 +353,10 @@ BOOL LoadTextureKernel(void)
 }
 
 ID3D11ShaderResourceView** GetTexture(TEXTURE_LABEL texture) {
-	return &g_Texture[texture];
+	if (texture >= 0 && texture < TEXTURE_LABEL_MAX)
+		return &g_Texture[texture];
+	else
+		return GetRenderTargetTexture();
 }
 
 void SetUVTexture2D(UV_POSITION* uv)
@@ -720,6 +724,7 @@ void SetUIButton(BUTTON_DESC* ub, TEXTURE2D_DESC* td)
 	ub->pos = ConvertToAbsolutePosition(td->pos, td->size, td->posType, td->ctrType);
 	ub->p_td->col = ub->col_off;
 	ub->p_td->scl = ub->scl_off;
+	ub->tex_on = ub->tex_off = ub->p_td->tex;
 }
 
 // ボタンを全てオフにする
@@ -730,6 +735,7 @@ void SetButtonOffAll(BUTTON_DESC* bd, int num)
 			bd[i].b_on = FALSE;
 			bd[i].p_td->col = bd[i].col_off;
 			bd[i].p_td->scl = bd[i].scl_off;
+			bd[i].p_td->tex = bd[i].tex_off;
 			bd[i].p_td->b_outline = FALSE;
 		}
 	}
@@ -741,6 +747,7 @@ void SetButtonOn(BUTTON_DESC* bd, int index)
 		bd[index].b_on = TRUE;
 		bd[index].p_td->col = bd[index].col_on;
 		bd[index].p_td->scl = bd[index].scl_on;
+		bd[index].p_td->tex = bd[index].tex_on;
 		if(bd[index].p_td->b_useOutline) bd[index].p_td->b_outline = TRUE;
 	}
 }

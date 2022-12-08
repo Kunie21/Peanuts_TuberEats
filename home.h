@@ -12,10 +12,10 @@
 //*****************************************************************************
 enum HOME_MODE
 {
-	HOME_MODE_HOME = 0,
-	HOME_MODE_SHOP,
+	HOME_HOME = 0,
+	HOME_SHOP,
 
-	HOME_MODE_NUM,
+	HOME_NUM,
 };
 
 //*****************************************************************************
@@ -27,4 +27,4 @@ void UpdateHome(void);
 void DrawHome(void);
 
 HOME_MODE GetHomeMode(void);
-
+void SetHomeMode(HOME_MODE mode);
