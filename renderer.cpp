@@ -1811,6 +1811,37 @@ ID3D11ShaderResourceView** GetRenderTargetTexture(void) {
 	return &g_WrittenTexture[g_CurrentResource ? 0 : 1];
 }
 
+void SetHomeViewPort(void)
+{
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)SCREEN_WIDTH * 0.5f;
+	vp.Height = (FLOAT)SCREEN_HEIGHT;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+
+	// 初期設定
+	g_ImmediateContext->RSSetViewports(1, &vp);
+
+	SetProjectionBuffer(&XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT * 0.5f, VIEW_NEAR_Z, VIEW_FAR_Z));
+}
+void ResetViewPort(void)
+{
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)SCREEN_WIDTH;
+	vp.Height = (FLOAT)SCREEN_HEIGHT;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+
+	// 初期設定
+	g_ImmediateContext->RSSetViewports(1, &vp);
+
+	SetProjectionBuffer(&XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT, VIEW_NEAR_Z, VIEW_FAR_Z));
+}
+
 //=============================================================================
 // バックバッファクリア
 //=============================================================================

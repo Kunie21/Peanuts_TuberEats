@@ -61,14 +61,12 @@ enum {
 	MODEL_TITLE_ROCKET,
 	MODEL_TITLE_FIRE,
 	MODEL_TITLE_TUBE,
-	MODEL_TITLE_SUSHI,
 	MODEL_TITLE_MAX,
 };
 
 enum {
 	DEBRIS_SUSHI01 = 0,
 	DEBRIS_SUSHI02,
-	DEBRIS_SUSHI03,
 	DEBRIS_LOLLIPOP01,
 	DEBRIS_LOLLIPOP02,
 	DEBRIS_RAMEN,
@@ -211,6 +209,7 @@ void UpdateDebris(void) {
 	time = (time + 1) % DEBRIS_INTERVAL;
 }
 void DrawDebris(void) {
+	//SetCullingMode(CULL_MODE_NONE);
 	XMMATRIX mtxWorld;
 	SRT srt;
 	for (int i = 0; i < DEBRIS_NUM; i++) {
@@ -224,6 +223,7 @@ void DrawDebris(void) {
 		MulMtxPos(mtxWorld, srt.pos.x + g_Debris[i].pos.x, srt.pos.y + g_Debris[i].pos.y, srt.pos.z + g_Debris[i].pos.z);	// ˆÚ“®‚ð”½‰f
 		DrawModel(&g_ModelDebris[g_Debris[i].type].model, &mtxWorld);
 	}
+	//SetCullingMode(CULL_MODE_BACK);
 }
 
 //=============================================================================

@@ -15,6 +15,11 @@
 #define LIGHT_POINT_MAX			10
 #define LIGHT_SPOT_MAX			10
 
+#define	VIEW_ANGLE		(XMConvertToRadians(45.0f))						// ビュー平面の視野角
+#define	VIEW_ASPECT		((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)	// ビュー平面のアスペクト比	
+#define	VIEW_NEAR_Z		(10.0f)											// ビュー平面のNearZ値
+#define	VIEW_FAR_Z		(20000.0f)										// ビュー平面のFarZ値
+
 //*********************************************************
 // 列挙子
 //*********************************************************
@@ -331,3 +336,6 @@ void MulMtxPos(XMMATRIX& mtxWorld, XMFLOAT3& pos);
 void MulMtxPos(XMMATRIX& mtxWorld, float x, float y, float z);
 
 ID3D11ShaderResourceView** GetRenderTargetTexture(void);
+
+void SetHomeViewPort(void);
+void ResetViewPort(void);

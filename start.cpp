@@ -437,7 +437,16 @@ void DrawStart(void)
 	DrawTexture2D(&g_td[UI_QUIT]);		// 退出
 
 	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_TEXT)], TRUE);			// メニュー詳細
+
 	if (g_AnimScl == 0.0f) return;
+
+	static float time = 0.0f;
+	time += 0.05f; if (time > XM_2PI) time -= XM_2PI;
+	if (g_AnimScl >= 1.0f) {
+		g_td[GetTexNo(MENU_TEX_GREEN)].scl.x = 1.0f + 0.025f * sinf(time);
+		g_td[GetTexNo(MENU_TEX_GREEN)].scl.y = 1.0f + 0.025f * sinf(time);
+	}
+
 	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_PANNEL)], FALSE, TRUE);	// メニューパネル
 	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_GREEN)], TRUE, TRUE);		// メニュー名
 }

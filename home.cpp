@@ -19,6 +19,8 @@
 // マクロ定義
 //*****************************************************************************
 #define ARROW_Y (150.0f)
+#define ANIM_ALPHA		(0.1f)		// メニューが色づくスピード
+
 
 //*****************************************************************************
 // グローバル変数
@@ -27,6 +29,8 @@ static BOOL				g_Load = FALSE;
 static HOME_MODE		g_Home = HOME_HOME;
 static float			g_leftArrow = 0.0f;
 static float			g_rightArrow = 0.0f;
+static float			g_AnimAlpha = 0.0f;				// アニメーション管理用
+static BOOL				g_bButton = FALSE;
 
 //*****************************************************************************
 // UI定義
@@ -100,7 +104,7 @@ static void ButtonPressed(int b)
 	switch (b)
 	{
 	case BT_START:
-		SetFade(FADE_OUT, MODE_GAME);
+		SetFade(FADE_OUT, MODE_STAGESELECT);
 		break;
 
 	case BT_LEFT:
@@ -111,12 +115,14 @@ static void ButtonPressed(int b)
 
 	case BT_SHOP:
 		SetHomeMode(HOME_SHOP);
+		g_bt.bd[BT_SHOP].b_on = FALSE;
 		break;
 
 	case BT_BACK:
 		SetFade(FADE_OUT, MODE_TITLE_START);
 		break;
 	}
+	g_bButton = FALSE;	// ボタンを一瞬オフにする
 }
 // 初期化
 static void InitUI(void)
@@ -199,7 +205,8 @@ static void UpdateUI(void)
 	g_td[UI_LEFT].pos.x = g_leftArrow - 5.0f * cosf(time * 2.0f);
 	g_td[UI_RIGHT].pos.x = g_rightArrow + 5.0f * cosf(time * 2.0f);
 
-	UpdateButton(&g_bt, ButtonPressed);
+	if (g_bButton) UpdateButton(&g_bt, ButtonPressed);
+	else g_bButton = TRUE;
 }
 // 描画
 static void DrawUI(void)
@@ -261,10 +268,37 @@ void UpdateHome(void)
 	//UpdateCharacterSelect();
 	//UpdateWallet();
 
-	if (GetHomeMode() != HOME_HOME) return;
-	UpdateUI();
 
-	if(g_bt.bd[BT_SHOP].b_on) SetRocketOutline();
+	if (GetHomeMode() == HOME_HOME)
+	{
+		if (g_AnimAlpha < 1.0f)
+		{
+			g_AnimAlpha += ANIM_ALPHA;
+			for (int i = UI_ICON; i < UI_NUM; i++) {
+				g_td[i].col.w = g_AnimAlpha;
+			}
+			return;
+		}
+	}
+	else
+	{
+		if (g_AnimAlpha > 0.0f)
+		{
+			g_AnimAlpha -= ANIM_ALPHA;
+			for (int i = UI_ICON; i < UI_NUM; i++) {
+				g_td[i].col.w = g_AnimAlpha;
+			}
+			return;
+		}
+	}
+
+
+	if (GetHomeMode() == HOME_HOME)
+	{
+		UpdateUI();
+
+		if (g_bt.bd[BT_SHOP].b_on) SetRocketOutline();
+	}
 }
 
 //=============================================================================

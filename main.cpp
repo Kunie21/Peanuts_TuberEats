@@ -446,6 +446,7 @@ void SetMode(MODE_LABEL mode)
 	UninitStageSelect();
 
 
+
 	g_Mode = mode;	// 次のモードをセット
 
 	switch (g_Mode)

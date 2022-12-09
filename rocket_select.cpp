@@ -23,8 +23,8 @@
 
 #define SIZE_SHOP_MENU		{ 1001.0f, 1080.0f }		// キャラクターサイズ縦
 #define POS_SHOP_MENU		{ 919.0f, 0.0f }		// キャラクターサイズ縦
-#define POS_STATUSBAR		{ 210.0f, 70.0f }		// キャラクターサイズ縦
-#define POS_STATUSBARPOINT		{ 212.5f, 72.7f }		// キャラクターサイズ縦
+#define POS_STATUSBAR		{ 160.0f, 50.0f }		// キャラクターサイズ縦
+#define POS_STATUSBARPOINT		{ 162.5f, 52.7f }		// キャラクターサイズ縦
 #define DISTANCE_STATUSBAR_Y			(76.0f)	// キャラクターサイズ縦
 #define DISTANCE_STATUSBARPOINT_X		(79.2f)	// キャラクターサイズ縦
 
@@ -32,11 +32,21 @@
 #define COL_ORIGINAL	{1.0f,1.0f,1.0f,1.0f}	// 元の色
 
 #define SLIDE_X			(1040.0f)
-#define ANIM_SLIDE		(80.0f)		// メニューがスライドしてくるスピード
+#define ANIM_SLIDE		(70.0f)		// メニューがスライドしてくるスピード
 #define ANIM_ALPHA		(0.1f)		// メニューが色づくスピード
 #define ANIM_SCALING	(0.1f)		// メニューが大きくなる倍率
-#define SHOP_SLIDE_Y	(-150.0f)
+#define SHOP_SLIDE_Y	(-200.0f)
 #define SHOP_SLIDE_SPD	(20.0f)
+#define ROCKET_SLIDE_Y	(20.0f)
+#define ROCKET_SLIDE_SPD	(1.0f)
+#define ROCKET_STAGE_Y	(-80.0f)
+
+#define STATUS_SLIDE_Y	(-500.0f)
+#define STATUS_MAX		(10)
+#define STATUS_MAX_COLOR { 64.0f, 64.0f, 0.0f, 1.0f };
+
+#define SHOP_X		(0)
+#define SHOP_Y		(0)
 
 #define TEXT_START_Y (255.0f)
 #define TEXT_BETWN_Y (103.0f)
@@ -58,7 +68,6 @@ static BOOL			g_Load = FALSE;
 
 static MODEL_DATA	g_ModelStage;	// 表示モデルの管理
 static SRT			g_RocketSRT;	// 表示モデルの管理
-static int			g_RSEquip;  // 装備中のロケットアイコンのテキスチャー番号
 static int			g_ModelNo_Rocket;  // 選択しているロケットのモデル番号
 static int			g_SelectBar;	   // セレクトバールのテキスチャー番号
 static BOOL			g_IsSelectFinished; // ロケットを選んだら、次のステップに進む
@@ -95,15 +104,19 @@ struct ROCKET_STATUS
 	int fuel;
 	LOCK_STATUS status;
 };
-static ROCKET_LABEL		g_SR = ROCKET01;	// 選択されているロケット
 static ROCKET_STATUS*	g_RS;	// 全モデルの管理足すロケット情報
+static ROCKET_LABEL		g_SR = ROCKET01;	// 選択されているロケット
+static ROCKET_LABEL		g_RSEquip = ROCKET01;  // 装備中のロケットアイコンのテキスチャー番号
 
 static float		g_AnimScl = 0.0f;				// アニメーション管理用
 static float		g_AnimRocketScl = 0.0f;				// アニメーション管理用
+static float		g_AnimRocketY = ROCKET_SLIDE_Y;				// アニメーション管理用
 static float		g_AnimAlpha = 0.0f;				// アニメーション管理用
 static float		g_AnimSlide = SLIDE_X;	// アニメーション管理用
 static float		g_AnimShopSlide = SHOP_SLIDE_Y;	// アニメーション管理用
+static float		g_AnimStatusSlide = STATUS_SLIDE_Y;	// アニメーション管理用
 static float		g_RocketOutline = FALSE;
+static BOOL			g_bButton = FALSE;
 
 // 部品の種類
 enum {
@@ -147,16 +160,20 @@ enum UI_LABEL {
 	UI_ROCKET_PANNEL_4,
 	UI_ROCKET_LOCK_4,
 
+	UI_STATUS_LIST,
 	UI_STATUSBAR,
 	UI_STATUSBAR_POINT,
 
 	UI_SHOP_DETAIL,
-	UI_SHOP,
+	UI_SHOP_S,
+	UI_SHOP_H,
+	UI_SHOP_O,
+	UI_SHOP_P,
 
 	UI_NUM,
 };
 #define ALPHA_START (UI_ROCKET_ICON_LOCK)
-#define ALPHA_END (UI_SHOP)
+#define ALPHA_END (UI_SHOP_DETAIL)
 // 参照テクスチャ名（UI名順）
 #define REF_TL {\
 	TEXTURE_LABEL_SHOP_MENU,\
@@ -186,11 +203,15 @@ enum UI_LABEL {
 	TEXTURE_LABEL_ROCKETSELECT_4,\
 	TEXTURE_LABEL_ROCKET_ICON,\
 \
+	TEXTURE_LABEL_STATUS_LIST,\
 	TEXTURE_LABEL_STATUSBAR,\
 	TEXTURE_LABEL_STATUSBAR_POINT,\
 \
 	TEXTURE_LABEL_SHOP_DETAIL,\
-	TEXTURE_LABEL_SHOP,\
+	TEXTURE_LABEL_SHOP_S,\
+	TEXTURE_LABEL_SHOP_H,\
+	TEXTURE_LABEL_SHOP_O,\
+	TEXTURE_LABEL_SHOP_P,\
 \
 }
 // UI詳細管理
@@ -235,21 +256,37 @@ static void ButtonPressed(int b)
 	switch (b)
 	{
 	case BT_ROCKET1:
-		break;
-
 	case BT_ROCKET2:
-		break;
-
 	case BT_ROCKET3:
-		break;
-
 	case BT_ROCKET4:
+		switch (g_RS[b].status)
+		{
+		case STATUS_LOCK:
+			break;
+
+		case STATUS_NEW:
+		case STATUS_NORMAL:
+			g_RS[g_RSEquip].status = STATUS_NORMAL;
+			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].tex = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].tex;
+			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].size = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].size;
+
+			g_RSEquip = (ROCKET_LABEL)b;
+			g_RS[g_RSEquip].status = STATUS_EQUIP;
+			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].tex = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].tex;
+			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].size = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].size;
+			break;
+
+		case STATUS_EQUIP:
+			break;
+		}
 		break;
 
 	default:
 		SetHomeMode(HOME_HOME);
+		if(g_RSEquip != g_cursor.y) g_AnimRocketScl = 0.0f;
 		break;
 	}
+	g_bButton = FALSE;
 }
 // 初期化
 static void InitUI(void)
@@ -269,22 +306,40 @@ static void InitUI(void)
 		g_td[i].size = GetTextureSize(g_td[i].tex);
 	}
 
-	g_AnimSlide = g_td[UI_SHOP_MENU].size.x;
-	g_AnimShopSlide = -g_td[UI_SHOP].size.y;
-
 	g_td[UI_SHOP_MENU].ctrType = CENTER_RIGHTTOP;
 	g_td[UI_SHOP_MENU].posType = POSITION_RIGHTTOP;
 
-	g_td[UI_SHOP].ctrType = CENTER_RIGHTTOP;
-	g_td[UI_SHOP].posType = POSITION_RIGHTTOP;
-	g_td[UI_SHOP].sd_pos = { 10.0f, 10.0f };
+	g_td[UI_SHOP_P].ctrType = CENTER_RIGHTTOP;
+	g_td[UI_SHOP_P].posType = POSITION_RIGHTTOP;
+	g_td[UI_SHOP_P].pos = { -SHOP_X, SHOP_Y };
+	g_td[UI_SHOP_P].sd_pos = { 10.0f, 10.0f };
+
+	g_td[UI_SHOP_O].ctrType = CENTER_RIGHTTOP;
+	g_td[UI_SHOP_O].posType = POSITION_RIGHTTOP;
+	g_td[UI_SHOP_O].pos = { g_td[UI_SHOP_P].pos.x - g_td[UI_SHOP_P].size.x , g_td[UI_SHOP_P].pos.y };
+	g_td[UI_SHOP_O].sd_pos = { 10.0f, 10.0f };
+
+	g_td[UI_SHOP_H].ctrType = CENTER_RIGHTTOP;
+	g_td[UI_SHOP_H].posType = POSITION_RIGHTTOP;
+	g_td[UI_SHOP_H].pos = { g_td[UI_SHOP_O].pos.x - g_td[UI_SHOP_P].size.x , g_td[UI_SHOP_P].pos.y };
+	g_td[UI_SHOP_H].sd_pos = { 10.0f, 10.0f };
+
+	g_td[UI_SHOP_S].ctrType = CENTER_RIGHTTOP;
+	g_td[UI_SHOP_S].posType = POSITION_RIGHTTOP;
+	g_td[UI_SHOP_S].pos = { g_td[UI_SHOP_H].pos.x - g_td[UI_SHOP_P].size.x , g_td[UI_SHOP_P].pos.y };
+	g_td[UI_SHOP_S].sd_pos = { 10.0f, 10.0f };
+
 
 	g_td[UI_SHOP_DETAIL].ctrType = CENTER_RIGHTBOTTOM;
 	g_td[UI_SHOP_DETAIL].posType = POSITION_RIGHTBOTTOM;
 	g_td[UI_SHOP_DETAIL].sd_pos = { 2.5f, 2.5f };
 
+	g_td[UI_STATUS_LIST].ctrType = CENTER_RIGHTTOP;
+	g_td[UI_STATUS_LIST].posType = POSITION_LEFTTOP;
+	g_td[UI_STATUS_LIST].sd_pos = { 2.0f, 2.0f };
 	g_td[UI_STATUSBAR].ctrType = CENTER_LEFTTOP;
 	g_td[UI_STATUSBAR].posType = POSITION_LEFTTOP;
+	g_td[UI_STATUSBAR].sd_pos = { 2.0f, 2.0f };
 	g_td[UI_STATUSBAR_POINT].ctrType = CENTER_LEFTTOP;
 	g_td[UI_STATUSBAR_POINT].posType = POSITION_LEFTTOP;
 
@@ -356,7 +411,8 @@ static void InitUI(void)
 // 更新
 static void UpdateUI(void)
 {
-	UpdateButton(g_bt, ButtonPressed);
+	if(g_bButton) UpdateButton(g_bt, ButtonPressed);
+	else g_bButton = TRUE;
 }
 // 描画
 static void DrawUI(void)
@@ -407,14 +463,17 @@ HRESULT InitRocketSelect(void)
 
 	// ステージモデルの設定
 	g_ModelStage.model = MODEL_STAGE;
-	g_ModelStage.srt.pos = { -100.0f, -100.0f, 0.0f };
-	g_ModelStage.srt.rot = { 0.0f, -1.5f, -0.22f };
-	g_ModelStage.srt.scl = { 9.0f, 6.9f, 9.0f };
+	g_ModelStage.srt.rot = { 0.0f, 0.0f, 0.0f };
+	g_ModelStage.srt.scl = { 9.0f, 9.0f, 9.0f };
 
 	// 表示モデルの設定
-	g_RocketSRT.pos = { -100.0f, -10.0f, 0.0f };
-	g_RocketSRT.rot = { 0.45f, -1.6f, 0.03f };
+	g_RocketSRT.rot = { XM_PIDIV2 * 0.3f, 0.0f, 0.0f };
 	g_RocketSRT.scl = { ROCKET_SCL, ROCKET_SCL, ROCKET_SCL };
+
+	g_RocketSRT.pos.y = g_AnimRocketY;
+	g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY;
+	g_RocketSRT.pos.z = g_AnimRocketY;
+	g_ModelStage.srt.pos.z = g_AnimRocketY;
 
 	// ロケット情報の設定
 	g_RS = new ROCKET_STATUS[ROCKET_NUM];
@@ -433,7 +492,7 @@ HRESULT InitRocketSelect(void)
 	g_RS[ROCKET02].control = 9;
 	g_RS[ROCKET02].fuel = 7;
 	g_RS[ROCKET02].price = 50;
-	g_RS[ROCKET02].status = STATUS_LOCK;
+	g_RS[ROCKET02].status = STATUS_NORMAL;
 
 	g_RS[ROCKET03].model = MODEL_ROCKET4;
 	g_RS[ROCKET03].speed = 9;
@@ -441,7 +500,7 @@ HRESULT InitRocketSelect(void)
 	g_RS[ROCKET03].control = 7;
 	g_RS[ROCKET03].fuel = 8;
 	g_RS[ROCKET03].price = 99999;
-	g_RS[ROCKET03].status = STATUS_LOCK;
+	g_RS[ROCKET03].status = STATUS_NEW;
 
 	g_RS[ROCKET04].model = MODEL_ROCKET5;
 	g_RS[ROCKET04].speed = 10;
@@ -451,23 +510,21 @@ HRESULT InitRocketSelect(void)
 	g_RS[ROCKET04].price = 20221119;
 	g_RS[ROCKET04].status = STATUS_LOCK;
 
-	//// 最初の時、選択するロケットの設定
-	//g_ModelNo_Rocket = g_RSEquip - TEXTURE_DISPLAY_ICON_01;
-	//g_SelectBar = g_ModelNo_Rocket + TEXTURE_ROCKETSELECT_1;
-	//g_td[g_SelectBar - 4].col = COL_BLACK;
-
-	//g_IsSelectFinished = FALSE;
-
 	// アニメーション初期設定
+	g_AnimSlide = SLIDE_X;
+	g_AnimShopSlide = SHOP_SLIDE_Y;
 	g_AnimScl = 0.0f;
 	g_AnimAlpha = 0.0f;
-	for (int i = ALPHA_START; i < ALPHA_END; i++) {
+	for (int i = ALPHA_START; i <= ALPHA_END; i++) {
 		g_td[i].col.w = g_AnimAlpha;
 	}
-	for (int i = 0; i < UI_SHOP; i++) {
+	for (int i = 0; i <= ALPHA_END; i++) {
 		g_td[i].posAdd.x = g_AnimSlide;
 	}
-	g_td[UI_SHOP].posAdd.y = g_AnimShopSlide;
+	g_td[UI_SHOP_S].posAdd.y = g_AnimShopSlide;
+	g_td[UI_SHOP_H].posAdd.y = g_AnimShopSlide;
+	g_td[UI_SHOP_O].posAdd.y = g_AnimShopSlide;
+	g_td[UI_SHOP_P].posAdd.y = g_AnimShopSlide;
 	PannelAnim();
 
 	g_Load = TRUE;
@@ -515,6 +572,27 @@ void UpdateRocketSelect(void)
 		g_AnimRocketScl = 1.0f;
 	}
 
+	if (GetHomeMode() == HOME_SHOP)
+	{
+		if (g_AnimRocketY > 0.0f) {
+			g_AnimRocketY = max(g_AnimRocketY - ROCKET_SLIDE_SPD, 0.0f);
+			g_RocketSRT.pos.y = g_AnimRocketY;
+			g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY;
+			g_RocketSRT.pos.z = g_AnimRocketY;
+			g_ModelStage.srt.pos.z = g_AnimRocketY;
+		}
+	}
+	else
+	{
+		if (g_AnimRocketY < ROCKET_SLIDE_Y) {
+			g_AnimRocketY = min(g_AnimRocketY + ROCKET_SLIDE_SPD, ROCKET_SLIDE_Y);
+			g_RocketSRT.pos.y = g_AnimRocketY;
+			g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY;
+			g_RocketSRT.pos.z = g_AnimRocketY;
+			g_ModelStage.srt.pos.z = g_AnimRocketY;
+		}
+	}
+
 	g_RocketSRT.rot.y -= 0.02f;
 	if (g_RocketSRT.rot.y < -XM_2PI) g_RocketSRT.rot.y += XM_2PI;
 
@@ -532,26 +610,39 @@ void UpdateRocketSelect(void)
 	{	// 出てくるとき
 		if (g_AnimSlide > 0.0f) {
 			g_AnimSlide = max(g_AnimSlide - ANIM_SLIDE, 0.0f);
-			for (int i = 0; i < UI_SHOP; i++) {
+			for (int i = 0; i <= ALPHA_END; i++) {
 				g_td[i].posAdd.x = g_AnimSlide;
 			}
 		}
 		else if(g_AnimShopSlide < 0.0f) {
 			g_AnimShopSlide = min(g_AnimShopSlide + SHOP_SLIDE_SPD, 0.0f);
-			g_td[UI_SHOP].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_S].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_H].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_O].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_P].posAdd.y = g_AnimShopSlide;
 		}
 		else if (g_AnimAlpha < 1.0f)
 		{
 			g_AnimAlpha += ANIM_ALPHA;
-			for (int i = ALPHA_START; i < ALPHA_END; i++) {
+			for (int i = ALPHA_START; i <= ALPHA_END; i++) {
 				g_td[i].col.w = g_AnimAlpha;
 			}
+		}
+		else if (g_AnimStatusSlide < 0.0f) {
+			g_AnimStatusSlide = min(g_AnimStatusSlide + ANIM_SLIDE, 0.0f);
 		}
 		else if (g_AnimScl < 1.0f)
 		{
 			g_AnimScl += ANIM_SCALING;
 			PannelAnim();
 		}
+		g_bButton = TRUE;
+
+		// SHOPのアニメーション
+		static int shop = 0;
+		static float time = 0.0f;
+		if (shop % 8 < 4) g_td[UI_SHOP_S + shop % 8].posAdd.y = g_AnimShopSlide - 20.0f * sinf(time);
+		time += 0.15f; if (time >= XM_PI) { shop++; time = 0.0f; }
 	}
 	else
 	{	// しまうとき
@@ -560,116 +651,31 @@ void UpdateRocketSelect(void)
 			g_AnimScl -= ANIM_SCALING;
 			PannelAnim();
 		}
+		else if (g_AnimStatusSlide > STATUS_SLIDE_Y) {
+			g_AnimStatusSlide = max(g_AnimStatusSlide - ANIM_SLIDE, STATUS_SLIDE_Y);
+		}
 		else if (g_AnimAlpha > 0.0f)
 		{
 			g_AnimAlpha -= ANIM_ALPHA;
-			for (int i = ALPHA_START; i < ALPHA_END; i++) {
+			for (int i = ALPHA_START; i <= ALPHA_END; i++) {
 				g_td[i].col.w = g_AnimAlpha;
 			}
 		}
 		else if (g_AnimShopSlide > SHOP_SLIDE_Y) {
 			g_AnimShopSlide = max(g_AnimShopSlide - SHOP_SLIDE_SPD, SHOP_SLIDE_Y);
-			g_td[UI_SHOP].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_S].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_H].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_O].posAdd.y = g_AnimShopSlide;
+			g_td[UI_SHOP_P].posAdd.y = g_AnimShopSlide;
 		}
 		else if (g_AnimSlide < SLIDE_X) {
 			g_AnimSlide = min(g_AnimSlide + ANIM_SLIDE, SLIDE_X);
-			for (int i = 0; i < UI_SHOP; i++) {
+			for (int i = 0; i <= ALPHA_END; i++) {
 				g_td[i].posAdd.x = g_AnimSlide;
 			}
 		}
 		return;
 	}
-
-
-	
-
-	//// ロケット選択画面に戻る
-	//if (GetKeyboardTrigger(DIK_6))
-	//{
-	//	g_IsSelectFinished = FALSE;
-	//}
-
-	//// 取引中ロケットの更新をやめる
-	//if (InTransaction())
-	//{
-	//	if (SuccessfulTransaction())
-	//	{
-	//		g_RS[g_ModelNo_Rocket].status = STATUS_NEW;
-	//		g_td[g_ModelNo_Rocket + TEXTURE_DISPLAY_ICON_01].tex = g_td[TEXTURE_ROCKET_ICON_NEW].tex;
-	//		g_td[g_ModelNo_Rocket + TEXTURE_DISPLAY_ICON_01].size = g_td[TEXTURE_ROCKET_ICON_NEW].size;
-	//	}
-	//	return;
-	//}
-
-
-	//// ロケットの設定完了
-	//if (g_IsSelectFinished)return;
-
-
-	//if (GetKeyboardTrigger(DIK_W)) 
-	//{
-	//	//g_ModelNo_Rocket = g_ModelNo_Rocket-- > MODEL_ROCKET_01 ?
-	//	//	g_ModelNo_Rocket : MODEL_ROCKET_01;
-	//	//g_SelectBar = TEXTURE_ROCKETSELECT_1 + g_ModelNo_Rocket;
-	//	//g_td[g_SelectBar - 3].col = COL_ORIGINAL;// 元の白色の字に戻る
-	//	//g_td[g_SelectBar - 4].col = COL_BLACK;// バールと同じ場所のロケットの名前の字を黒くする
-
-	//	g_ModelNo_Rocket--;
-	//	g_SelectBar = TEXTURE_ROCKETSELECT_1 + g_ModelNo_Rocket;
-	//	g_td[g_SelectBar - 3].col = COL_ORIGINAL;// 元の白色の字に戻る
-	//	g_td[g_SelectBar - 4].col = COL_BLACK;// バールと同じ場所のロケットの名前の字を黒くする
-	//	if (g_ModelNo_Rocket < MODEL_SELECT_ROCKET_01)
-	//	{
-	//		g_ModelNo_Rocket = MODEL_SELECT_ROCKET_04;
-	//		g_SelectBar = TEXTURE_ROCKETSELECT_4;
-	//		g_td[TEXTURE_ROCKET_4].col = COL_BLACK;// バールと同じ場所のロケットの名前の字を黒くする
-	//		g_td[TEXTURE_ROCKET_ICON_EQUIP].col = COL_ORIGINAL;// バールと同じ場所のロケットの名前の字を黒くする
-	//	}	
-	//}
-	//else if (GetKeyboardTrigger(DIK_S)) 
-	//{
-	//	//g_ModelNo_Rocket = g_ModelNo_Rocket++ < MODEL_ROCKET_04 ?
-	//	//	g_ModelNo_Rocket : MODEL_ROCKET_04;
-	//	//g_SelectBar = TEXTURE_ROCKETSELECT_1 + g_ModelNo_Rocket;
-	//	//g_td[g_SelectBar - 5].col = COL_ORIGINAL;
-	//	//g_td[g_SelectBar - 4].col = COL_BLACK;
-	//	g_ModelNo_Rocket++;
-	//	g_SelectBar = TEXTURE_ROCKETSELECT_1 + g_ModelNo_Rocket;
-	//	g_td[g_SelectBar - 5].col = COL_ORIGINAL;
-	//	g_td[g_SelectBar - 4].col = COL_BLACK;
-	//	if (g_ModelNo_Rocket > MODEL_SELECT_ROCKET_04)
-	//	{
-	//		g_ModelNo_Rocket = MODEL_SELECT_ROCKET_01;
-	//		g_SelectBar = TEXTURE_ROCKETSELECT_1;
-	//		g_td[TEXTURE_ROCKET_1].col = COL_BLACK;// バールと同じ場所のロケットの名前の字を黒くする
-	//		g_td[TEXTURE_ROCKETSELECT_1].col = COL_ORIGINAL;// バールと同じ場所のロケットの名前の字を黒くする
-	//	}
-	//}
-	//else if (GetKeyboardTrigger(DIK_SPACE))
-	//{
-	//	if (g_RS[g_ModelNo_Rocket].status != STATUS_LOCK)
-	//	{
-	//		g_RS[g_RSEquip - TEXTURE_DISPLAY_ICON_01].status = STATUS_NORMAL;
-	//		g_td[g_RSEquip].tex = g_td[TEXTURE_ROCKET_ICON].tex;
-	//		g_td[g_RSEquip].size = g_td[TEXTURE_ROCKET_ICON].size;
-
-	//		g_RS[g_ModelNo_Rocket].status = STATUS_EQUIP;
-	//		g_RSEquip = g_ModelNo_Rocket + TEXTURE_DISPLAY_ICON_01;
-	//		g_td[g_RSEquip].tex = g_td[TEXTURE_ROCKET_ICON_EQUIP].tex;
-	//		g_td[g_RSEquip].size = g_td[TEXTURE_ROCKET_ICON_EQUIP].size;
-	//		g_IsSelectFinished = TRUE;
-	//	}
-	//	else
-	//	{
-	//		StartTransaction();
-	//		return;
-	//	}
-
-	//}
-	//else if (GetKeyboardRelease(DIK_BACK))
-	//{
-	//	ResetTransaction();
-	//}
 
 	// 選択中のロケットはロックしている場合、値段を表示する
 	if (g_RS[g_ModelNo_Rocket].status == STATUS_LOCK)
@@ -680,7 +686,6 @@ void UpdateRocketSelect(void)
 	{
 		SetPriceRocket(0);
 	}
-
 }
 
 //=============================================================================
@@ -688,12 +693,13 @@ void UpdateRocketSelect(void)
 //=============================================================================
 void DrawRocketSelect(void)
 {
-	//DrawUI();
-
-	//DrawTextureStatus();
+	DrawTextureStatus();
 
 	DrawTexture2D(&g_td[UI_SHOP_MENU]);
-	DrawTexture2D(&g_td[UI_SHOP], TRUE);
+	DrawTexture2D(&g_td[UI_SHOP_S], TRUE);
+	DrawTexture2D(&g_td[UI_SHOP_H], TRUE);
+	DrawTexture2D(&g_td[UI_SHOP_O], TRUE);
+	DrawTexture2D(&g_td[UI_SHOP_P], TRUE);
 	DrawTexture2D(&g_td[UI_SHOP_DETAIL], TRUE);
 
 	DrawTexture2D(&g_td[UI_ROCKET_NAME_1]);
@@ -703,6 +709,13 @@ void DrawRocketSelect(void)
 
 	if (g_AnimScl > 0.0f)
 	{
+		static float time = 0.0f;
+		time += 0.05f; if (time > XM_2PI) time -= XM_2PI;
+		if (g_AnimScl >= 1.0f) {
+			g_td[GetTexNo(TEXT_BLACK)].scl.x = 1.0f + 0.025f * sinf(time);
+			g_td[GetTexNo(TEXT_BLACK)].scl.y = 1.0f + 0.025f * sinf(time);
+		}
+
 		DrawTexture2D(&g_td[GetTexNo(TEXT_PANNEL)], FALSE, TRUE);	// メニューパネル
 		DrawTexture2D(&g_td[GetTexNo(TEXT_BLACK)], TRUE, TRUE);		// メニュー名
 	}
@@ -715,24 +728,35 @@ void DrawRocketSelect(void)
 #define ON_RATE (0.05f)
 void DrawHomeRocket(void)
 {
+	SetHomeViewPort();
+	SetCullingMode(CULL_MODE_NONE);
+
+	int rocket;
+	if (GetHomeMode() == HOME_SHOP) {
+		rocket = g_cursor.y;
+	}
+	else {
+		rocket = g_RSEquip;
+	}
+
 	if (g_RocketOutline) {
 		g_RocketSRT.scl.x += ON_RATE;
 		g_RocketSRT.scl.y += ON_RATE;
 		g_RocketSRT.scl.z += ON_RATE;
 		SetDrawOutline(3.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, TRUE);
-		DrawModel(&g_RS[g_cursor.y].model, &g_RocketSRT);
+		DrawModel(&g_RS[rocket].model, &g_RocketSRT);
 		SetCullingMode(CULL_MODE_BACK);
 	}
 
 	// 黒塗り
 	SetDrawFillBlackPlayer();
 	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
-	DrawModel(&g_RS[g_cursor.y].model, &g_RocketSRT);
+	DrawModel(&g_RS[rocket].model, &g_RocketSRT);
 
 	// シャドウボリューム
 	SetStencilWritePL();
 	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
-	DrawModel(&g_RS[g_cursor.y].model, &g_RocketSRT);
+	DrawModel(&g_RS[rocket].model, &g_RocketSRT);
 
 	SetBlendState(BLEND_MODE_ADD);
 
@@ -740,14 +764,17 @@ void DrawHomeRocket(void)
 	SetLightNo(0);
 	SetStencilReadPL();
 	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
-	DrawModel(&g_RS[g_cursor.y].model, &g_RocketSRT);
+	DrawModel(&g_RS[rocket].model, &g_RocketSRT);
 
 	// アンビエントライト
 	SetStencilNoneAL();
 	DrawModel(&g_ModelStage.model, &g_ModelStage.srt);
-	DrawModel(&g_RS[g_cursor.y].model, &g_RocketSRT);
+	DrawModel(&g_RS[rocket].model, &g_RocketSRT);
 
 	SetBlendState(BLEND_MODE_ALPHABLEND);
+
+	SetCullingMode(CULL_MODE_BACK);
+	ResetViewPort();
 
 	if (g_RocketOutline) {
 		g_RocketSRT.scl.x -= ON_RATE;
@@ -755,6 +782,7 @@ void DrawHomeRocket(void)
 		g_RocketSRT.scl.z -= ON_RATE;
 		g_RocketOutline = FALSE;
 	}
+
 }
 
 BOOL IsRocketSelectFinished(void)
@@ -764,7 +792,7 @@ BOOL IsRocketSelectFinished(void)
 
 int GetRocketSelected(void)
 {
-	return g_ModelNo_Rocket;
+	return g_cursor.y;
 }
 
 void SetRocketOutline(void)
@@ -774,44 +802,59 @@ void SetRocketOutline(void)
 
 void DrawTextureStatus(void)
 {
-	//return;
+	g_td[UI_STATUS_LIST].pos = POS_STATUSBAR;
+	g_td[UI_STATUS_LIST].pos.x -= 25.0f;
+	g_td[UI_STATUS_LIST].pos.y -= 10.0f;
+	g_td[UI_STATUS_LIST].pos.y += g_AnimStatusSlide;
+	DrawTexture2D(&g_td[UI_STATUS_LIST], TRUE);
+
 	// スピードの描画処理
-	//g_td[TEXTURE_STATUSBAR].pos = POS_STATUSBAR;
-	//DrawTexture2D(&g_td[TEXTURE_STATUSBAR]);
-	//g_td[TEXTURE_STATUSBAR_POINT].pos = POS_STATUSBARPOINT;
-	//for (int i = 0; i < g_RS[g_ModelNo_Rocket].speed; i++)
-	//{
-	//	DrawTexture2D(&g_td[TEXTURE_STATUSBAR_POINT]);
-	//	g_td[TEXTURE_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
-	//}
+	g_td[UI_STATUSBAR].pos = POS_STATUSBAR;
+	g_td[UI_STATUSBAR].pos.y += g_AnimStatusSlide;
+	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
+	g_td[UI_STATUSBAR_POINT].pos = POS_STATUSBARPOINT;
+	g_td[UI_STATUSBAR_POINT].pos.y += g_AnimStatusSlide;
+	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
+	if (g_RS[g_cursor.y].speed == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[g_cursor.y].speed; i++)
+	{
+		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
+		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
+	}
 
-	//// 加速の描画処理
-	//g_td[TEXTURE_STATUSBAR].pos.y += DISTANCE_STATUSBAR_Y;
-	//DrawTexture2D(&g_td[TEXTURE_STATUSBAR]);
-	//g_td[TEXTURE_STATUSBAR_POINT].pos = { 212.5f, g_td[TEXTURE_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
-	//for (int i = 0; i < g_RS[g_ModelNo_Rocket].accelerate; i++)
-	//{
-	//	DrawTexture2D(&g_td[TEXTURE_STATUSBAR_POINT]);
-	//	g_td[TEXTURE_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
-	//}
+	// 加速の描画処理
+	g_td[UI_STATUSBAR].pos.y += DISTANCE_STATUSBAR_Y;
+	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
+	g_td[UI_STATUSBAR_POINT].pos = { 162.5f, g_td[UI_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
+	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
+	if (g_RS[g_cursor.y].accelerate == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[g_cursor.y].accelerate; i++)
+	{
+		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
+		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
+	}
 
-	//// 操作の描画処理
-	//g_td[TEXTURE_STATUSBAR].pos.y += DISTANCE_STATUSBAR_Y;
-	//DrawTexture2D(&g_td[TEXTURE_STATUSBAR]);
-	//g_td[TEXTURE_STATUSBAR_POINT].pos = { 212.5f, g_td[TEXTURE_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
-	//for (int i = 0; i < g_RS[g_ModelNo_Rocket].control; i++)
-	//{
-	//	DrawTexture2D(&g_td[TEXTURE_STATUSBAR_POINT]);
-	//	g_td[TEXTURE_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
-	//}
+	// 操作の描画処理
+	g_td[UI_STATUSBAR].pos.y += DISTANCE_STATUSBAR_Y;
+	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
+	g_td[UI_STATUSBAR_POINT].pos = { 162.5f, g_td[UI_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
+	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
+	if (g_RS[g_cursor.y].control == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[g_cursor.y].control; i++)
+	{
+		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
+		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
+	}
 
-	//// 燃料の描画処理
-	//g_td[TEXTURE_STATUSBAR].pos.y += DISTANCE_STATUSBAR_Y;
-	//DrawTexture2D(&g_td[TEXTURE_STATUSBAR]);
-	//g_td[TEXTURE_STATUSBAR_POINT].pos = { 212.5f, g_td[TEXTURE_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
-	//for (int i = 0; i < g_RS[g_ModelNo_Rocket].fuel; i++)
-	//{
-	//	DrawTexture2D(&g_td[TEXTURE_STATUSBAR_POINT]);
-	//	g_td[TEXTURE_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
-	//}
+	// 燃料の描画処理
+	g_td[UI_STATUSBAR].pos.y += DISTANCE_STATUSBAR_Y;
+	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
+	g_td[UI_STATUSBAR_POINT].pos = { 162.5f, g_td[UI_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
+	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
+	if (g_RS[g_cursor.y].fuel == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[g_cursor.y].fuel; i++)
+	{
+		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
+		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
+	}
 }
