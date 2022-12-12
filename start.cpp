@@ -237,6 +237,7 @@ static void InitUI(void)
 // XV
 static void UpdateUI(void)
 {
+	if (g_AnimScl < 1.0f) return;
 	UpdateButton(g_bt, ButtonPressed);
 }
 // •`‰æ

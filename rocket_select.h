@@ -26,3 +26,5 @@ void ResetTransaction(void);
 void DrawHomeRocket(void);
 
 void SetRocketOutline(void);
+
+void DrawTextureStatus(int rocket, float slide);

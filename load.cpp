@@ -93,8 +93,8 @@ void UpdateLoad(void)
 			CloseHandle(g_hThread);	// スレッドを閉じる
 
 			// ロード完了
-			SetFade(FADE_OUT, MODE_TITLE_START);
-			//SetFade(FADE_OUT, MODE_STAGESELECT);
+			//SetFade(FADE_OUT, MODE_TITLE_START);
+			SetFade(FADE_OUT, POST_LOAD_MODE);
 
 		}
 	}

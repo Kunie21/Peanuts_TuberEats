@@ -37,7 +37,7 @@
 #define ANIM_SCALING	(0.1f)		// メニューが大きくなる倍率
 #define SHOP_SLIDE_Y	(-200.0f)
 #define SHOP_SLIDE_SPD	(20.0f)
-#define ROCKET_SLIDE_Y	(20.0f)
+#define ROCKET_SLIDE_Y	(10.0f)
 #define ROCKET_SLIDE_SPD	(1.0f)
 #define ROCKET_STAGE_Y	(-80.0f)
 
@@ -59,7 +59,7 @@
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-void DrawTextureStatus(void);
+//void DrawTextureStatus(void);
 
 //*****************************************************************************
 // グローバル変数
@@ -160,15 +160,16 @@ enum UI_LABEL {
 	UI_ROCKET_PANNEL_4,
 	UI_ROCKET_LOCK_4,
 
-	UI_STATUS_LIST,
-	UI_STATUSBAR,
-	UI_STATUSBAR_POINT,
-
 	UI_SHOP_DETAIL,
+
 	UI_SHOP_S,
 	UI_SHOP_H,
 	UI_SHOP_O,
 	UI_SHOP_P,
+
+	UI_STATUS_LIST,
+	UI_STATUSBAR,
+	UI_STATUSBAR_POINT,
 
 	UI_NUM,
 };
@@ -203,15 +204,15 @@ enum UI_LABEL {
 	TEXTURE_LABEL_ROCKETSELECT_4,\
 	TEXTURE_LABEL_ROCKET_ICON,\
 \
-	TEXTURE_LABEL_STATUS_LIST,\
-	TEXTURE_LABEL_STATUSBAR,\
-	TEXTURE_LABEL_STATUSBAR_POINT,\
-\
 	TEXTURE_LABEL_SHOP_DETAIL,\
 	TEXTURE_LABEL_SHOP_S,\
 	TEXTURE_LABEL_SHOP_H,\
 	TEXTURE_LABEL_SHOP_O,\
 	TEXTURE_LABEL_SHOP_P,\
+\
+	TEXTURE_LABEL_STATUS_LIST,\
+	TEXTURE_LABEL_STATUSBAR,\
+	TEXTURE_LABEL_STATUSBAR_POINT,\
 \
 }
 // UI詳細管理
@@ -693,7 +694,7 @@ void UpdateRocketSelect(void)
 //=============================================================================
 void DrawRocketSelect(void)
 {
-	DrawTextureStatus();
+	DrawTextureStatus(g_cursor.y, g_AnimStatusSlide);
 
 	DrawTexture2D(&g_td[UI_SHOP_MENU]);
 	DrawTexture2D(&g_td[UI_SHOP_S], TRUE);
@@ -720,10 +721,10 @@ void DrawRocketSelect(void)
 		DrawTexture2D(&g_td[GetTexNo(TEXT_BLACK)], TRUE, TRUE);		// メニュー名
 	}
 
-	DrawTexture2D(&g_td[UI_ROCKET_LOCK_1]);
-	DrawTexture2D(&g_td[UI_ROCKET_LOCK_2]);
-	DrawTexture2D(&g_td[UI_ROCKET_LOCK_3]);
-	DrawTexture2D(&g_td[UI_ROCKET_LOCK_4]);
+	DrawTexture2D(&g_td[UI_ROCKET_LOCK_1], TRUE);
+	DrawTexture2D(&g_td[UI_ROCKET_LOCK_2], TRUE);
+	DrawTexture2D(&g_td[UI_ROCKET_LOCK_3], TRUE);
+	DrawTexture2D(&g_td[UI_ROCKET_LOCK_4], TRUE);
 }
 #define ON_RATE (0.05f)
 void DrawHomeRocket(void)
@@ -800,23 +801,25 @@ void SetRocketOutline(void)
 	g_RocketOutline = TRUE;
 }
 
-void DrawTextureStatus(void)
+void DrawTextureStatus(int rocket, float slide)
 {
+	if (rocket < 0) rocket = g_RSEquip;
+
 	g_td[UI_STATUS_LIST].pos = POS_STATUSBAR;
 	g_td[UI_STATUS_LIST].pos.x -= 25.0f;
 	g_td[UI_STATUS_LIST].pos.y -= 10.0f;
-	g_td[UI_STATUS_LIST].pos.y += g_AnimStatusSlide;
+	g_td[UI_STATUS_LIST].pos.y += slide;
 	DrawTexture2D(&g_td[UI_STATUS_LIST], TRUE);
 
 	// スピードの描画処理
 	g_td[UI_STATUSBAR].pos = POS_STATUSBAR;
-	g_td[UI_STATUSBAR].pos.y += g_AnimStatusSlide;
+	g_td[UI_STATUSBAR].pos.y += slide;
 	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
 	g_td[UI_STATUSBAR_POINT].pos = POS_STATUSBARPOINT;
-	g_td[UI_STATUSBAR_POINT].pos.y += g_AnimStatusSlide;
+	g_td[UI_STATUSBAR_POINT].pos.y += slide;
 	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	if (g_RS[g_cursor.y].speed == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
-	for (int i = 0; i < g_RS[g_cursor.y].speed; i++)
+	if (g_RS[rocket].speed == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[rocket].speed; i++)
 	{
 		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
 		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
@@ -827,8 +830,8 @@ void DrawTextureStatus(void)
 	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
 	g_td[UI_STATUSBAR_POINT].pos = { 162.5f, g_td[UI_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
 	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	if (g_RS[g_cursor.y].accelerate == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
-	for (int i = 0; i < g_RS[g_cursor.y].accelerate; i++)
+	if (g_RS[rocket].accelerate == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[rocket].accelerate; i++)
 	{
 		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
 		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
@@ -839,8 +842,8 @@ void DrawTextureStatus(void)
 	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
 	g_td[UI_STATUSBAR_POINT].pos = { 162.5f, g_td[UI_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
 	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	if (g_RS[g_cursor.y].control == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
-	for (int i = 0; i < g_RS[g_cursor.y].control; i++)
+	if (g_RS[rocket].control == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[rocket].control; i++)
 	{
 		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
 		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;
@@ -851,8 +854,8 @@ void DrawTextureStatus(void)
 	DrawTexture2D(&g_td[UI_STATUSBAR], TRUE);
 	g_td[UI_STATUSBAR_POINT].pos = { 162.5f, g_td[UI_STATUSBAR_POINT].pos.y + DISTANCE_STATUSBAR_Y };
 	g_td[UI_STATUSBAR_POINT].col = { 1.0f, 1.0f, 1.0f, 1.0f };
-	if (g_RS[g_cursor.y].fuel == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
-	for (int i = 0; i < g_RS[g_cursor.y].fuel; i++)
+	if (g_RS[rocket].fuel == STATUS_MAX) g_td[UI_STATUSBAR_POINT].col = STATUS_MAX_COLOR;
+	for (int i = 0; i < g_RS[rocket].fuel; i++)
 	{
 		DrawTexture2D(&g_td[UI_STATUSBAR_POINT]);
 		g_td[UI_STATUSBAR_POINT].pos.x += DISTANCE_STATUSBARPOINT_X;

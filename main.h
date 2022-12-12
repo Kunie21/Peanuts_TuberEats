@@ -107,6 +107,8 @@ enum MODE_LABEL
 	MODE_END,
 };
 
+#define	START_MODE			(MODE_LOADING)
+#define	POST_LOAD_MODE		(MODE_HOME)
 
 //*****************************************************************************
 // プロトタイプ宣言

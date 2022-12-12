@@ -281,7 +281,14 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	//"data/TEXTURE/stage_select_gamen/northamerica_stage_2.png",
 	//"data/TEXTURE/stage_select_gamen/northamerica_stage_3.png",
 
-	"data/TEXTURE/title_menu_gamen/cancel.png",
+	"data/TEXTURE/home_menu_gamen/sentaku_bar_1.png",
+	"data/TEXTURE/home_menu_gamen/rocket_status_ui_up.png",
+	"data/TEXTURE/home_menu_gamen/rocket_status_ui_down.png",
+	//"data/TEXTURE/home_menu_gamen/status_miseru.png",
+	//"data/TEXTURE/home_menu_gamen/status_kakusu.png",
+
+	"data/TEXTURE/home_menu_gamen/back_button.png",
+	//"data/TEXTURE/title_menu_gamen/cancel.png",
 
 };
 

@@ -585,10 +585,10 @@ static void InitUI(void)
 
 	g_td_ss[UI_BACK].posType = POSITION_RIGHTTOP;
 	g_td_ss[UI_BACK].ctrType = CENTER_RIGHTTOP;
-	g_td_ss[UI_BACK].pos = { -20.0f, 20.0f };
-	g_td_ss[UI_BACK].sd_pos = { 3.0f, 1.5f };
-	g_bd_main[BT_MAIN_BACK].col_on = { 0.4f, 1.0f, 0.4f, 1.0f };
-	g_bd_main[BT_MAIN_BACK].col_off = { 0.3f, 0.7f, 0.3f, 1.0f };
+	g_td_ss[UI_BACK].pos = { -30.0f, 20.0f };
+	g_td_ss[UI_BACK].sd_pos = { 2.0f, 2.0f };
+	g_bd_main[BT_MAIN_BACK].col_on = { 100.0f, 100.0f, 0.0f, 1.0f };
+	g_bd_main[BT_MAIN_BACK].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	int d = 0;
 	for (int j = 0; j < REGION_NUM; j++)
@@ -709,12 +709,16 @@ static void DrawUI(void)
 		DrawTexture2D(&g_td_ss[UI_JAPAN_BG_ALL + (g_menu - 1)]);
 
 		index = (g_menu - 1) * 12;
+
+		g_td_ss[UI_JAPAN_B + index].scl.x = 1.0f;
+		g_td_ss[UI_JAPAN_B + index].scl.y = 1.0f;
+
 		DrawTexture2D(&g_td_ss[UI_JAPAN_B + index]);
 		DrawTexture2D(&g_td_ss[UI_JAPAN_OSAKA + index]);
 		DrawTexture2D(&g_td_ss[UI_JAPAN_HOKKAIDO + index]);
 		DrawTexture2D(&g_td_ss[UI_JAPAN_OKINAWA + index]);
 
-		DrawTexture2D(&g_td_ss[UI_PIN]);
+		DrawTexture2D(&g_td_ss[UI_PIN], TRUE);
 	}
 	else if (g_DDScl > 0.0f)
 	{
@@ -728,8 +732,16 @@ static void DrawUI(void)
 
 
 	if (g_cursor.y < BT_NUM_Y_MAIN - 1) {
+
+		static float time = 0.0f;
+		time += 0.05f; if (time > XM_2PI) time -= XM_2PI;
+		if (g_AnimScl >= 1.0f) {
+			g_td_ss[GetTexNo() + 1].scl.x = 1.0f + 0.025f * sinf(time);
+			g_td_ss[GetTexNo() + 1].scl.y = 1.0f + 0.025f * sinf(time);
+		}
+
 		DrawTexture2D(&g_td_ss[GetTexNo() + 2], FALSE, TRUE);
-		DrawTexture2D(&g_td_ss[GetTexNo() + 1], FALSE, TRUE);
+		DrawTexture2D(&g_td_ss[GetTexNo() + 1], TRUE, TRUE);
 	}
 
 	DrawTexture2D(&g_td_ss[UI_LINE]);
