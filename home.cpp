@@ -119,6 +119,7 @@ static void ButtonPressed(int b)
 		break;
 
 	case BT_BACK:
+	case BT_BACKSPACE:
 		SetFade(FADE_OUT, MODE_TITLE_START);
 		break;
 	}

@@ -24,7 +24,7 @@
 #define OBJ_DIST		(220.0f)
 #define COL_BLACK		{0.0f,0.0f,0.0f,1.0f}	// çïÇ¢êF
 #define COL_ORIGINAL	{1.0f,1.0f,1.0f,1.0f}	// å≥ÇÃêF
-#define SLIDE_X	(-750.0f)
+#define SLIDE_X			(-750.0f)
 
 // ÉÇÉfÉãñº
 enum {
@@ -465,6 +465,7 @@ static void ButtonPressedMain(int b)
 		break;
 
 	case BT_MAIN_BACK:
+	case BT_BACKSPACE:
 		SetFade(FADE_OUT, MODE_HOME);
 		break;
 

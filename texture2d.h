@@ -6,6 +6,9 @@
 //=============================================================================
 #pragma once
 
+#define BT_ELSE (-1)
+#define BT_BACKSPACE (-2)
+
 enum TEXTURE_LABEL {
 	TEXTURE_LABEL_WHITE = 0,
 	TEXTURE_LABEL_TEAMLOGO,

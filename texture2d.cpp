@@ -801,7 +801,10 @@ void SetButtonOn(BUTTON_DESC* bd, int index)
 }
 // カーソル位置からボタン名を取得する
 int GetButtonByCursor(BUTTON_TABLE* bt) {
-	return *(bt->tbl + bt->tbl_x * bt->cursor->y + bt->cursor->x);
+	int ans = *(bt->tbl + (bt->tbl_x * bt->cursor->y + bt->cursor->x));
+	if (ans < 0 || ans >= bt->num)
+		ans = 0;
+	return ans;
 }
 // カーソルがあるボタンをオンにする
 void SetButtonOnByCursor(BUTTON_TABLE* bt) {
@@ -870,7 +873,7 @@ void UpdateButton(BUTTON_TABLE* bt, void bp(int b))
 		}
 		// バックスペースが押された
 		else if (GetKeyboardTrigger(DIK_BACKSPACE)) {
-			bp(-1);
+			bp(-2);
 			SetButtonPressed();
 		}
 	}

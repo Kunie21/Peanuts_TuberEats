@@ -506,6 +506,10 @@ HRESULT InitStage(void)
 				{
 					g_Stage2[s].gmkNum++;
 				}
+				if (g_StageTbl[s][z].gimmick[r] == 6)
+				{
+					g_Stage2[s].gmkNum++;
+				}
 			}
 		}
 		g_Stage2[s].arrGmk = new GIMMICK[g_Stage2[s].gmkNum];
