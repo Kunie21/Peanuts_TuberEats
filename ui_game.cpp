@@ -34,6 +34,7 @@ enum
 	TEXTURE_FUEL_FULL,
 	TEXTURE_GOALPIN,
 	TEXTURE_ICON,
+	TEXTURE_ICON_DAMAGE,
 	TEXTURE_MAP,
 	TEXTURE_MAP_ROCKET,
 	TEXTURE_SPEED_EMPTY,
@@ -88,6 +89,8 @@ HRESULT InitGameUI(void)
 	// プレイヤーアイコン
 	g_td[TEXTURE_ICON].size = { 183.0f, 183.0f };
 	g_td[TEXTURE_ICON].pos = { -700.0f, 350.0f };
+	g_td[TEXTURE_ICON_DAMAGE].size = { 183.0f, 183.0f };
+	g_td[TEXTURE_ICON_DAMAGE].pos = { -700.0f, 350.0f };
 
 	// マップ
 	g_td[TEXTURE_MAP].size = { 1425.0f, 25.0f };
@@ -108,7 +111,7 @@ HRESULT InitGameUI(void)
 	g_td[TEXTURE_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
 
 	// スクリーンエフェクト用
-	g_td[TEXTURE_WHITE].col = { 0.0f, 0.0f, 0.0f, 0.0f };
+	g_td[TEXTURE_WHITE].col = { 1.0f, 1.0f, 1.0f, 0.0f };
 	g_td[TEXTURE_WHITE2].col = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	g_Load = TRUE;
@@ -195,6 +198,14 @@ void DrawGameUI(void)
 				g_td[i].pos.x = TIMER_CENTER_X - 0.5f * 25.5f - 10.0f;
 				DrawTexture2D(&g_td[i], FALSE, TRUE);
 			}
+			break;
+		case TEXTURE_ICON:
+			if (g_td[TEXTURE_WHITE].col.w > 0.1f && g_td[TEXTURE_WHITE].col.y == 0.0f)
+				DrawTexture2D(&g_td[TEXTURE_ICON + 1]);
+			else
+				DrawTexture2D(&g_td[TEXTURE_ICON]);
+			break;
+		case TEXTURE_ICON_DAMAGE:
 			break;
 		default:
 			DrawTexture2D(&g_td[i], TRUE);

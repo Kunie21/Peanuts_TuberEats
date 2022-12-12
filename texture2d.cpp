@@ -58,6 +58,7 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/game_UI/goalpin_UI.png",
 	//"data/TEXTURE/game_UI/icon_UI.png",
 	"data/TEXTURE/character/onna_1.png",
+	"data/TEXTURE/character/onna_2.png",
 	"data/TEXTURE/game_UI/map_UI.png",
 	"data/TEXTURE/game_UI/rocket_map.png",
 	"data/TEXTURE/game_UI/speed_empty.png",
