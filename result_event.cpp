@@ -47,7 +47,7 @@ enum
 	TEXTURE_MEXICO,
 	TEXTURE_MAX,
 };
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static TEXTURE2D_DESC*	g_td;
 //static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 //static char*	g_TextureName[TEXTURE_MAX] = {
 //	"data/TEXTURE/result_country/oosaka.jpg",
@@ -82,9 +82,11 @@ XMFLOAT3 g_CameraPos, g_CameraAt, g_CameraUp;
 //=============================================================================
 HRESULT InitResultEvent(void)
 {
+	g_td = new TEXTURE2D_DESC[TEXTURE_MAX];
+
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++) {
-		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_OOSAKA + i);
+		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_BG_OOSAKA + i);
 	}
 
 	// 詳細設定
@@ -165,6 +167,7 @@ void UninitResultEvent(void)
 {
 	if (g_Load == FALSE) return;
 
+	delete[] g_td;
 
 	g_Load = FALSE;
 }

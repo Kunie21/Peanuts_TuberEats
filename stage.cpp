@@ -32,8 +32,8 @@ static int		g_StageNo;
 static STAGE	g_Stage[STAGE_MAX];
 static STAGE2	g_Stage2[STAGE_MAX];
 
-static GIMMICK	g_Gmk_Osaka[GIMMICK_OSAKA];
-static CURVE	g_Crv_Osaka[6];
+//static GIMMICK	g_Gmk_Osaka[GIMMICK_OSAKA];
+//static CURVE	g_Crv_Osaka[6];
 
 
 //struct STAGE_DESC {

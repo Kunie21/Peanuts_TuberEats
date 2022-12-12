@@ -46,7 +46,7 @@ enum
 	TEXTURE_WHITE2,
 	TEXTURE_MAX,
 };
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static TEXTURE2D_DESC*	g_td;
 
 static float	g_Timer = 0.0f;
 static bool		g_bTimer = FALSE;
@@ -57,6 +57,8 @@ static bool		g_bAlert = FALSE;
 //=============================================================================
 HRESULT InitGameUI(void)
 {
+	g_td = new TEXTURE2D_DESC[TEXTURE_MAX];
+
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_WHITE; i++)
 	{
@@ -119,6 +121,8 @@ HRESULT InitGameUI(void)
 void UninitGameUI(void)
 {
 	if (g_Load == FALSE) return;
+
+	delete[] g_td;
 
 	g_Load = FALSE;
 }

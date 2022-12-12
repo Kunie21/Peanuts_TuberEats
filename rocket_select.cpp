@@ -678,14 +678,14 @@ void UpdateRocketSelect(void)
 	}
 
 	// 選択中のロケットはロックしている場合、値段を表示する
-	if (g_RS[g_ModelNo_Rocket].status == STATUS_LOCK)
-	{
-		SetPriceRocket(g_RS[g_ModelNo_Rocket].price);
-	}
-	else
-	{
-		SetPriceRocket(0);
-	}
+	//if (g_RS[g_ModelNo_Rocket].status == STATUS_LOCK)
+	//{
+	//	SetPriceRocket(g_RS[g_ModelNo_Rocket].price);
+	//}
+	//else
+	//{
+	//	SetPriceRocket(0);
+	//}
 }
 
 //=============================================================================
@@ -728,7 +728,7 @@ void DrawRocketSelect(void)
 #define ON_RATE (0.05f)
 void DrawHomeRocket(void)
 {
-	SetHomeViewPort();
+	SetViewPortHome();
 	SetCullingMode(CULL_MODE_NONE);
 
 	int rocket;

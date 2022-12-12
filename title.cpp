@@ -87,7 +87,7 @@ struct DEBRIS {
 // グローバル変数
 //*****************************************************************************
 static BOOL				g_Load = FALSE;
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static TEXTURE2D_DESC*	g_td;
 static MODEL_DATA		g_Model[MODEL_TITLE_MAX];
 
 static MODEL_DATA		g_ModelDebris[DEBRIS_MAX];
@@ -99,6 +99,8 @@ static DEBRIS			g_Debris[DEBRIS_NUM];
 HRESULT InitTitle(void)
 {
 	if (g_Load) return S_OK;
+
+	g_td = new TEXTURE2D_DESC[TEXTURE_MAX];
 
 	// テクスチャ設定
 	for (int i = 0; i < TEXTURE_STAR; i++) {
@@ -178,6 +180,8 @@ void UninitTitle(void)
 {
 	if (g_Load == FALSE) return;
 
+	delete[] g_td;
+
 	g_Load = FALSE;
 }
 
@@ -234,9 +238,10 @@ void UpdateTitle(void)
 	UpdateDebris();
 
 	g_Model[MODEL_TITLE_EARTH].srt.rot.y -= 0.001f;
+	if (g_Model[MODEL_TITLE_EARTH].srt.rot.y < -XM_2PI) g_Model[MODEL_TITLE_EARTH].srt.rot.y += XM_2PI;
+	
 	g_Model[MODEL_TITLE_STAR].srt.rot.y += 0.0001f;
-	if (g_Model[MODEL_TITLE_EARTH].srt.rot.y < -XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y += XM_2PI;
-	if (g_Model[MODEL_TITLE_STAR].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_ROCKET].srt.rot.y -= XM_2PI;
+	if (g_Model[MODEL_TITLE_STAR].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_STAR].srt.rot.y -= XM_2PI;
 
 	g_Model[MODEL_TITLE_ROCKET].srt.rot.y += 0.02f;
 	//g_Model[MODEL_TITLE_ROCKET].srt.rot.z -= 0.0002f;

@@ -18,77 +18,13 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MENU_H			(111)		// メニュー文字高さ
-#define TEXT_H			( 61)		// メニュー詳細文高さ
-#define MENU_BW			(150)		// メニュー行間
-//#define ANIM_SMALL		(0.05f)		// メニューが大きくなる倍率
 #define ANIM_SCALING	(0.1f)		// メニューが大きくなる倍率
 #define ANIM_ALPHA		(0.1f)		// メニューが色づくスピード
 #define ANIM_SLIDE		(80.0f)		// メニューがスライドしてくるスピード
-#define OBJ_DIST		(200)
+#define OBJ_DIST		(220.0f)
 #define COL_BLACK		{0.0f,0.0f,0.0f,1.0f}	// 黒い色
 #define COL_ORIGINAL	{1.0f,1.0f,1.0f,1.0f}	// 元の色
-
-// メニューの種類
-enum {
-
-	STAGE_JAPAN = 0,
-	STAGE_ASIA,
-	STAGE_EUROPE,
-	STAGE_NORTH_AMERICA,
-
-	STAGE_NUM,
-};
-
- //メニュー部品の種類
-enum {
-
-	MENU_STAGE_1 = 0,
-	MENU_STAGE_2,
-	MENU_STAGE_3,
-	MENU_STAGE_4,
-	MENU_STAGE_5,
-	MENU_STAGE_6,
-	MENU_STAGE_7,
-
-	MENU_PANNEL_NUM,
-};
-
-// メニューテクスチャ名
-enum {
-	TEXTURE_STAGE_MENU,
-	TEXTURE_STAGE_MENU_1,
-	TEXTURE_STAGE_CIRCLE,
-	TEXTURE_STAGE_JAPAN,
-	TEXTURE_STAGE_ASIA,
-	TEXTURE_STAGE_EUROPE,
-	TEXTURE_STAGE_NORTH_AMERICA,
-	TEXTURE_STAGE_SELECT_1,
-	TEXTURE_STAGE_SELECT_2,
-	TEXTURE_STAGE_SELECT_3,
-	TEXTURE_STAGE_SELECT_4,
-	TEXTURE_STAGE_SELECT_5,
-	TEXTURE_STAGE_SELECT_6,
-	TEXTURE_STAGE_SELECT_7,
-	TEXTURE_STAGE_JAPAN_MENU,
-	TEXTURE_JAPAN_STAGE_1,
-	TEXTURE_JAPAN_STAGE_2,
-	TEXTURE_JAPAN_STAGE_3,
-	TEXTURE_STAGE_ASIA_MENU,
-	TEXTURE_ASIA_STAGE_1,
-	TEXTURE_ASIA_STAGE_2,
-	TEXTURE_ASIA_STAGE_3,
-	TEXTURE_STAGE_EUROPE_MENU,
-	TEXTURE_EUROPE_STAGE_1,
-	TEXTURE_EUROPE_STAGE_2,
-	TEXTURE_EUROPE_STAGE_3,
-	TEXTURE_STAGE_NORTH_AMERICA_MENU,
-	TEXTURE_NORTH_AMERICA_STAGE_1,
-	TEXTURE_NORTH_AMERICA_STAGE_2,
-	TEXTURE_NORTH_AMERICA_STAGE_3,
-
-	TEXTURE_MAX,
-};
+#define SLIDE_X	(-750.0f)
 
 // モデル名
 enum {
@@ -97,212 +33,758 @@ enum {
 	MODEL_TITLE_MAX,
 };
 
-
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static int				g_Menu = STAGE_JAPAN;			// 選択されているメニュー管理用
-static int				g_pannel = MENU_STAGE_1;
-static int				g_pannelNow;
-static int				g_pressSelect;
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];				// UI管理用
 static float			g_AnimScl = 0.0f;				// アニメーション管理用
 static float			g_AnimAlpha = 0.0f;				// アニメーション管理用
 static float			g_AnimSlide = -SCREEN_WIDTH;	// アニメーション管理用
+static float			g_PinScl = 0.0f;
+static float			g_DDScl = 0.0f;	// ドロップダウンアニメーション管理用
+static float			g_DDAlpha = 0.0f;	// ドロップダウンアニメーション管理用
 static BOOL				g_Load = FALSE;
-static BOOL				g_bStartOn = FALSE;
-static BOOL				g_bStartFlg = FALSE;
-static BOOL				g_bStartOffFlg = FALSE;
 static MODEL_DATA		g_Model[MODEL_TITLE_MAX];
-static BOOL				isSelect = FALSE;
-static int				test;
-static int				test2;
-static int				texnum = TEXTURE_ASIA_STAGE_1;
-//static int				menunum = TEXTURE_STAGE_SELECT_1;
+static int				g_SelectedStage = -1;
+
+enum GPS_LABEL {
+	GPS_JAPAN = 0,
+	GPS_ASIA,
+	GPS_EUROPE,
+	GPS_NORTHAMERICA,
+
+	GPS_OSAKA,
+	GPS_HOKKAIDO,
+	GPS_OKINAWA,
+
+	GPS_CHINA,
+	GPS_KOREA,
+	GPS_SINGAPORE,
+
+	GPS_FRANCE,
+	GPS_ENGLAND,
+	GPS_ITALY,
+
+	GPS_AMERICA,
+	GPS_CANADA,
+	GPS_MEXICO,
+
+	GPS_NUM
+};
+#define GPS {\
+	{ 35.683333f, 139.76666f },\
+	{ 30.0f, 130.f },\
+	{ 47.0f, 5.0f },\
+	{ 35.0f, -90.0f },\
+\
+	{ 34.683333f, 135.5f },\
+	{ 43.06666f, 141.35f },\
+	{ 26.5f, 128.0f },\
+\
+	{ 31.216666f, 121.46666f },\
+	{ 37.55f, 126.96666f },\
+	{ 1.283333f, 103.83333f },\
+\
+	{ 48.85f, 2.35f },\
+	{ 51.5f, 0.116666f },\
+	{ 41.9f, 12.483333f },\
+\
+	{ 40.7f, -74.0f },\
+	{ 45.5f, -73.55f },\
+	{ 19.43333f, -99.13333f },\
+}
+static XMFLOAT2*	g_gpsRef;
+static XMFLOAT2		g_gps;
+
+enum MENU_LABEL {
+	MENU_MAIN = 0,
+	MENU_JAPAN,
+	MENU_ASIA,
+	MENU_EUROPE,
+	MENU_NORTHAMERICA,
+
+	MENU_NUM
+};
+static MENU_LABEL g_menu = MENU_MAIN;
+static MENU_LABEL g_menuDD = MENU_JAPAN;
+#define REGION_NUM (4)
+#define AREA_NUM (3)
+#define TEX_NUM (3)
+
+//*****************************************************************************
+// UI定義
+//*****************************************************************************
+// UI名（描画順）
+enum UI_LABEL {
+	UI_BG = 0,
+	UI_HEAD,
+	UI_LINE,
+	UI_CIRCLE,
+	UI_BACK,
+	UI_PIN,
+
+	UI_JAPAN_BG_ALL,
+	UI_ASIA_BG_ALL,
+	UI_EUROPE_BG_ALL,
+	UI_NORTHAMERICA_BG_ALL,
+
+	// 日本
+	UI_JAPAN,
+	UI_JAPAN_B,
+	UI_JAPAN_BG,
+
+	UI_JAPAN_OSAKA,
+	UI_JAPAN_OSAKA_B,
+	UI_JAPAN_OSAKA_BG,
+
+	UI_JAPAN_HOKKAIDO,
+	UI_JAPAN_HOKKAIDO_B,
+	UI_JAPAN_HOKKAIDO_BG,
+
+	UI_JAPAN_OKINAWA,
+	UI_JAPAN_OKINAWA_B,
+	UI_JAPAN_OKINAWA_BG,
+
+	// アジア
+	UI_ASIA,
+	UI_ASIA_B,
+	UI_ASIA_BG,
+
+	UI_ASIA_CHINA,
+	UI_ASIA_CHINA_B,
+	UI_ASIA_CHINA_BG,
+
+	UI_ASIA_KOREA,
+	UI_ASIA_KOREA_B,
+	UI_ASIA_KOREA_BG,
+
+	UI_ASIA_SINGAPORE,
+	UI_ASIA_SINGAPORE_B,
+	UI_ASIA_SINGAPORE_BG,
+
+	// ヨーロッパ
+	UI_EUROPE,
+	UI_EUROPE_B,
+	UI_EUROPE_BG,
+
+	UI_EUROPE_FRANCE,
+	UI_EUROPE_FRANCE_B,
+	UI_EUROPE_FRANCE_BG,
+
+	UI_EUROPE_ENGLAND,
+	UI_EUROPE_ENGLAND_B,
+	UI_EUROPE_ENGLAND_BG,
+
+	UI_EUROPE_ITALY,
+	UI_EUROPE_ITALY_B,
+	UI_EUROPE_ITALY_BG,
+
+	// 北アメリカ
+	UI_NORTHAMERICA,
+	UI_NORTHAMERICA_B,
+	UI_NORTHAMERICA_BG,
+
+	UI_NORTHAMERICA_AMERICA,
+	UI_NORTHAMERICA_AMERICA_B,
+	UI_NORTHAMERICA_AMERICA_BG,
+
+	UI_NORTHAMERICA_CANADA,
+	UI_NORTHAMERICA_CANADA_B,
+	UI_NORTHAMERICA_CANADA_BG,
+
+	UI_NORTHAMERICA_MEXICO,
+	UI_NORTHAMERICA_MEXICO_B,
+	UI_NORTHAMERICA_MEXICO_BG,
+
+	UI_NUM,
+};
+#define ALPHA_START (UI_BACK)
+#define ALPHA_END (UI_NORTHAMERICA_MEXICO_BG)
+// 参照テクスチャ名（UI名順）
+#define REF_TL {\
+	TEXTURE_LABEL_STAGE_SELECTION_BG,\
+	TEXTURE_LABEL_STAGE_SELECTION_HEAD,\
+	TEXTURE_LABEL_STAGE_SELECTION_LINE,\
+	TEXTURE_LABEL_CIRCLE_SPIN,\
+	TEXTURE_LABEL_BACK,\
+	TEXTURE_LABEL_GOALPIN,\
+\
+	TEXTURE_LABEL_JAPAN_BG_ALL,\
+	TEXTURE_LABEL_ASIA_BG_ALL,\
+	TEXTURE_LABEL_EUROPE_BG_ALL,\
+	TEXTURE_LABEL_AMERICA_BG_ALL,\
+\
+	TEXTURE_LABEL_JAPAN,\
+	TEXTURE_LABEL_JAPAN,\
+	TEXTURE_LABEL_JAPAN_BG,\
+	TEXTURE_LABEL_JAPAN1,\
+	TEXTURE_LABEL_JAPAN1,\
+	TEXTURE_LABEL_JAPAN1_BG,\
+	TEXTURE_LABEL_JAPAN2,\
+	TEXTURE_LABEL_JAPAN2,\
+	TEXTURE_LABEL_JAPAN2_BG,\
+	TEXTURE_LABEL_JAPAN3,\
+	TEXTURE_LABEL_JAPAN3,\
+	TEXTURE_LABEL_JAPAN3_BG,\
+\
+	TEXTURE_LABEL_ASIA,\
+	TEXTURE_LABEL_ASIA,\
+	TEXTURE_LABEL_ASIA_BG,\
+	TEXTURE_LABEL_ASIA1,\
+	TEXTURE_LABEL_ASIA1,\
+	TEXTURE_LABEL_ASIA1_BG,\
+	TEXTURE_LABEL_ASIA2,\
+	TEXTURE_LABEL_ASIA2,\
+	TEXTURE_LABEL_ASIA2_BG,\
+	TEXTURE_LABEL_ASIA3,\
+	TEXTURE_LABEL_ASIA3,\
+	TEXTURE_LABEL_ASIA3_BG,\
+\
+	TEXTURE_LABEL_EUROPE,\
+	TEXTURE_LABEL_EUROPE,\
+	TEXTURE_LABEL_EUROPE_BG,\
+	TEXTURE_LABEL_EUROPE1,\
+	TEXTURE_LABEL_EUROPE1,\
+	TEXTURE_LABEL_EUROPE1_BG,\
+	TEXTURE_LABEL_EUROPE2,\
+	TEXTURE_LABEL_EUROPE2,\
+	TEXTURE_LABEL_EUROPE2_BG,\
+	TEXTURE_LABEL_EUROPE3,\
+	TEXTURE_LABEL_EUROPE3,\
+	TEXTURE_LABEL_EUROPE3_BG,\
+\
+	TEXTURE_LABEL_AMERICA,\
+	TEXTURE_LABEL_AMERICA,\
+	TEXTURE_LABEL_AMERICA_BG,\
+	TEXTURE_LABEL_AMERICA1,\
+	TEXTURE_LABEL_AMERICA1,\
+	TEXTURE_LABEL_AMERICA1_BG,\
+	TEXTURE_LABEL_AMERICA2,\
+	TEXTURE_LABEL_AMERICA2,\
+	TEXTURE_LABEL_AMERICA2_BG,\
+	TEXTURE_LABEL_AMERICA3,\
+	TEXTURE_LABEL_AMERICA3,\
+	TEXTURE_LABEL_AMERICA3_BG,\
+\
+}
+// UI詳細管理
+static TEXTURE2D_DESC* g_td_ss = NULL;
+
+
+//*****************************************************************************
+// ボタン定義
+//*****************************************************************************
+// ボタン名（優先順）
+enum BT_LABEL_MAIN {
+	BT_MAIN_JAPAN = 0,
+	BT_MAIN_ASIA,
+	BT_MAIN_EUROPE,
+	BT_MAIN_NORTHAMERICA,
+
+	BT_MAIN_BACK,
+
+	BT_MAIN_NUM
+};
+// 参照UI名（ボタン名順）
+#define REF_UL_MAIN {\
+	UI_JAPAN_BG,\
+	UI_ASIA_BG,\
+	UI_EUROPE_BG,\
+	UI_NORTHAMERICA_BG,\
+	UI_BACK,\
+}
+enum BT_LABEL_JAPAN {
+	BT_JAPAN_OSAKA = 0,
+	BT_JAPAN_HOKKAIDO,
+	BT_JAPAN_OKINAWA,
+
+	BT_JAPAN_NUM
+};
+// 参照UI名（ボタン名順）
+#define REF_UL_JAPAN {\
+	UI_JAPAN_OSAKA_BG,\
+	UI_JAPAN_HOKKAIDO_BG,\
+	UI_JAPAN_OKINAWA_BG,\
+}
+enum BT_LABEL_ASIA {
+	BT_ASIA_CHINA = 0,
+	BT_ASIA_KOREA,
+	BT_ASIA_SINGAPORE,
+
+	BT_ASIA_NUM
+};
+// 参照UI名（ボタン名順）
+#define REF_UL_ASIA {\
+	UI_ASIA_CHINA_BG,\
+	UI_ASIA_KOREA_BG,\
+	UI_ASIA_SINGAPORE_BG,\
+}
+enum BT_LABEL_EUROPE {
+	BT_EUROPE_FRANCE = 0,
+	BT_EUROPE_ENGLAND,
+	BT_EUROPE_ITALY,
+
+	BT_EUROPE_NUM
+};
+// 参照UI名（ボタン名順）
+#define REF_UL_EUROPE {\
+	UI_EUROPE_FRANCE_BG,\
+	UI_EUROPE_ENGLAND_BG,\
+	UI_EUROPE_ITALY_BG,\
+}
+enum BT_LABEL_NORTHAMERICA {
+	BT_NORTHAMERICA_AMERICA = 0,
+	BT_NORTHAMERICA_CANADA,
+	BT_NORTHAMERICA_MEXICO,
+
+	BT_NORTHAMERICA_NUM
+};
+// 参照UI名（ボタン名順）
+#define REF_UL_NORTHAMERICA {\
+	UI_NORTHAMERICA_AMERICA_BG,\
+	UI_NORTHAMERICA_CANADA_BG,\
+	UI_NORTHAMERICA_MEXICO_BG,\
+}
+// ボタン詳細管理
+static BUTTON_DESC* g_bd_main = NULL;
+static BUTTON_DESC* g_bd_japan = NULL;
+static BUTTON_DESC* g_bd_asia = NULL;
+static BUTTON_DESC* g_bd_europe = NULL;
+static BUTTON_DESC* g_bd_northamerica = NULL;
+// ボタン表
+#define BT_NUM_X_MAIN 1
+#define BT_NUM_Y_MAIN 5
+static int g_btTbl_main[BT_NUM_Y_MAIN][BT_NUM_X_MAIN] = {
+	{BT_MAIN_JAPAN},
+	{BT_MAIN_ASIA},
+	{BT_MAIN_EUROPE},
+	{BT_MAIN_NORTHAMERICA},
+	{BT_MAIN_BACK},
+};
+#define BT_NUM_X_ELSE 1
+#define BT_NUM_Y_ELSE 3
+static int g_btTbl_japan[BT_NUM_Y_ELSE][BT_NUM_X_ELSE] = {
+	{BT_JAPAN_OSAKA},
+	{BT_JAPAN_HOKKAIDO},
+	{BT_JAPAN_OKINAWA},
+};
+static int g_btTbl_asia[BT_NUM_Y_ELSE][BT_NUM_X_ELSE] = {
+	{BT_ASIA_CHINA},
+	{BT_ASIA_KOREA},
+	{BT_ASIA_SINGAPORE},
+};
+static int g_btTbl_europe[BT_NUM_Y_ELSE][BT_NUM_X_ELSE] = {
+	{BT_EUROPE_FRANCE},
+	{BT_EUROPE_ENGLAND},
+	{BT_EUROPE_ITALY},
+};
+static int g_btTbl_northamerica[BT_NUM_Y_ELSE][BT_NUM_X_ELSE] = {
+	{BT_NORTHAMERICA_AMERICA},
+	{BT_NORTHAMERICA_CANADA},
+	{BT_NORTHAMERICA_MEXICO},
+};
+static BUTTON_TABLE* g_bt_main = NULL;
+static BUTTON_TABLE* g_bt_japan = NULL;
+static BUTTON_TABLE* g_bt_asia = NULL;
+static BUTTON_TABLE* g_bt_europe = NULL;
+static BUTTON_TABLE* g_bt_northamerica = NULL;
+// カーソル位置
+static XMINT2 g_cursor = { 0, 0 };
+
 //*****************************************************************************
 // ローカル関数
 //*****************************************************************************
 // メニューの種類と部品名からテクスチャ名を取得
-//int GetPannelNo(int menu_tex) {
-//	return TEXTURE_STAGE_SELECT_1 + MENU_PANNEL_NUM * g_pannel + menu_tex;
-//}
+static int GetTexNo(void) {
+	if (g_menu == MENU_MAIN) return UI_JAPAN + g_cursor.y * 12;
+	else return UI_JAPAN + (g_menu - 1) * 12 + (g_cursor.y + 1) * 3;
+}
+static int GetGpsNo(void) {
+	if (g_menu == MENU_MAIN) return g_cursor.y;
+	else return GPS_OSAKA + (g_menu - 1) * 3 + g_cursor.y;
+}
 // パネルのアニメーション
-//void StagePannelAnim(void) {
-//
-//	g_td[g_pannel].scl.y = g_AnimScl;
-//	g_td[g_pannel].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
-//	g_td[g_pannel].uv_pos.vh = g_AnimScl;
-//
-//	if (g_pannel > TEXTURE_STAGE_SELECT_7)
-//	{
-//		g_pannel = TEXTURE_STAGE_SELECT_1;
-//	}
-//	//g_td[GetStageNo(MENU_TEX_GREEN)].scl.y = g_AnimScl;
-//	//g_td[GetStageNo(MENU_TEX_GREEN)].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
-//	//g_td[GetStageNo(MENU_TEX_GREEN)].uv_pos.vh = g_AnimScl;
-//}
+static void PannelAnim(void)
+{
+	int index = GetTexNo();
+
+	++index;
+	g_td_ss[index].scl.y = g_AnimScl;
+	g_td_ss[index].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
+	g_td_ss[index].uv_pos.vh = g_AnimScl;
+
+	++index;
+	g_td_ss[index].scl.y = g_AnimScl;
+	g_td_ss[index].uv_pos.v = 0.5f - g_AnimScl * 0.5f;
+	g_td_ss[index].uv_pos.vh = g_AnimScl;
+}
+static void PannelAnimDD(void)
+{
+	int index = UI_JAPAN_BG_ALL + (g_menuDD - 1);
+	g_td_ss[index].scl.y = g_DDScl;
+	g_td_ss[index].posAdd.y = (g_DDScl - 1.0f) * g_td_ss[index].size.y * 0.5f;
+	g_td_ss[index].uv_pos.vh = g_DDScl;
+
+	g_td_ss[UI_BACK].col.w = 1.0f - g_DDScl;
+}
+static void AlphaAnimDD(void)
+{
+	int index = UI_JAPAN_OSAKA + 12 * (g_menuDD - 1);
+
+	g_td_ss[index].col.w = g_DDAlpha;
+	g_td_ss[index + 3].col.w = g_DDAlpha;
+	g_td_ss[index + 6].col.w = g_DDAlpha;
+}
+
+// ボタンごとの処理
+static void ButtonPressedMain(int b)
+{
+	if (g_DDScl > 0.0f) return;
+	switch (b)
+	{
+	case BT_MAIN_JAPAN:
+	case BT_MAIN_ASIA:
+	case BT_MAIN_EUROPE:
+	case BT_MAIN_NORTHAMERICA:
+
+		g_menu =(MENU_LABEL)(b + 1);
+		g_cursor.y = 0;
+		g_AnimScl = 0.0f;
+		PannelAnim();
+
+		g_menuDD = g_menu;
+
+		g_DDScl = 0.0f;
+		PannelAnimDD();
+
+		g_DDAlpha = 0.0f;
+		AlphaAnimDD();
+
+		g_PinScl = 0.0f;
+		g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
+
+		break;
+
+	case BT_MAIN_BACK:
+		SetFade(FADE_OUT, MODE_HOME);
+		break;
+
+	default:
+		break;
+	}
+}
+static void ButtonPressedJapan(int b)
+{
+	if (g_DDAlpha < 1.0f) return;
+	switch (b)
+	{
+	case BT_JAPAN_OSAKA:
+	case BT_JAPAN_HOKKAIDO:
+	case BT_JAPAN_OKINAWA:
+		//g_SelectedStage = 
+		SetFade(FADE_OUT, MODE_GAME);
+		break;
+
+	default:
+		g_menu = MENU_MAIN;
+		g_cursor.y = 0;
+		g_AnimScl = 0.0f;
+		PannelAnim();
+		break;
+	}
+}
+static void ButtonPressedAsia(int b)
+{
+	if (g_DDAlpha < 1.0f) return;
+	switch (b)
+	{
+	case BT_ASIA_CHINA:
+	case BT_ASIA_KOREA:
+	case BT_ASIA_SINGAPORE:
+		break;
+
+	default:
+		g_menu = MENU_MAIN;
+		g_cursor.y = 1;
+		g_AnimScl = 0.0f;
+		PannelAnim();
+		break;
+	}
+}
+static void ButtonPressedEurope(int b)
+{
+	if (g_DDAlpha < 1.0f) return;
+	switch (b)
+	{
+	case BT_EUROPE_FRANCE:
+	case BT_EUROPE_ENGLAND:
+	case BT_EUROPE_ITALY:
+		break;
+
+	default:
+		g_menu = MENU_MAIN;
+		g_cursor.y = 2;
+		g_AnimScl = 0.0f;
+		PannelAnim();
+		break;
+	}
+}
+static void ButtonPressedNorthAmerica(int b)
+{
+	if (g_DDAlpha < 1.0f) return;
+	switch (b)
+	{
+	case BT_NORTHAMERICA_AMERICA:
+	case BT_NORTHAMERICA_CANADA:
+	case BT_NORTHAMERICA_MEXICO:
+		break;
+
+	default:
+		g_menu = MENU_MAIN;
+		g_cursor.y = 3;
+		g_AnimScl = 0.0f;
+		PannelAnim();
+		break;
+	}
+}
+
+// 初期化
+static void InitUI(void)
+{
+	// メモリ確保
+	g_td_ss = new TEXTURE2D_DESC[UI_NUM];
+	g_bd_main = new BUTTON_DESC[BT_MAIN_NUM];
+	g_bd_japan = new BUTTON_DESC[BT_JAPAN_NUM];
+	g_bd_asia = new BUTTON_DESC[BT_ASIA_NUM];
+	g_bd_europe = new BUTTON_DESC[BT_EUROPE_NUM];
+	g_bd_northamerica = new BUTTON_DESC[BT_NORTHAMERICA_NUM];
+
+	// UI詳細設定
+	TEXTURE_LABEL tl[UI_NUM] = REF_TL;
+	for (int i = 0; i < UI_NUM; i++)
+	{
+		// テクスチャの対応付け
+		g_td_ss[i].tex = tl[i];
+
+		// テクスチャサイズの取得
+		g_td_ss[i].size = GetTextureSize(g_td_ss[i].tex);
+
+		g_td_ss[i].posType = POSITION_LEFTTOP;
+		g_td_ss[i].ctrType = CENTER_LEFTTOP;
+	}
+
+	g_td_ss[UI_LINE].pos.x -= 6.0f;
+
+	g_td_ss[UI_PIN].posType = POSITION_CENTER;
+	g_td_ss[UI_PIN].ctrType = CENTER_BOTTOM;
+	g_td_ss[UI_PIN].pos.x = SCREEN_WIDTH * 0.2f;
+
+	g_td_ss[UI_CIRCLE].posType = POSITION_RIGHT;
+	g_td_ss[UI_CIRCLE].ctrType = CENTER_CENTER;
+	g_td_ss[UI_CIRCLE].pos = { -320.0f, -60.0f };
+
+	g_td_ss[UI_BACK].posType = POSITION_RIGHTTOP;
+	g_td_ss[UI_BACK].ctrType = CENTER_RIGHTTOP;
+	g_td_ss[UI_BACK].pos = { -20.0f, 20.0f };
+	g_td_ss[UI_BACK].sd_pos = { 3.0f, 1.5f };
+	g_bd_main[BT_MAIN_BACK].col_on = { 0.4f, 1.0f, 0.4f, 1.0f };
+	g_bd_main[BT_MAIN_BACK].col_off = { 0.3f, 0.7f, 0.3f, 1.0f };
+
+	int d = 0;
+	for (int j = 0; j < REGION_NUM; j++)
+	{
+		g_td_ss[UI_JAPAN_BG_ALL + j].pos.y = g_td_ss[UI_HEAD].size.y + g_td_ss[UI_JAPAN_BG].size.y * (j + 1);
+
+		for (int i = 0; i < AREA_NUM + 1; i++)
+		{
+			d = TEX_NUM * (AREA_NUM + 1) * j + TEX_NUM * i;
+
+			g_td_ss[UI_JAPAN + d].ctrType = CENTER_TOP;
+			g_td_ss[UI_JAPAN + d].pos.x = g_td_ss[UI_BG].size.x * 0.35f;
+			g_td_ss[UI_JAPAN + d].pos.y = g_td_ss[UI_HEAD].size.y + g_td_ss[UI_JAPAN_BG].size.y * (j + i);
+
+			g_td_ss[UI_JAPAN_B + d] = g_td_ss[UI_JAPAN + d];
+			g_td_ss[UI_JAPAN_B + d].col = { 0.0f, 0.2f, 0.0f, 1.0f };
+
+			g_td_ss[UI_JAPAN_BG + d].pos.y = g_td_ss[UI_JAPAN + d].pos.y;
+		}
+	}
+
+	// ボタン詳細設定
+	UI_LABEL ul_main[BT_MAIN_NUM] = REF_UL_MAIN;
+	for (int i = 0; i < BT_MAIN_BACK; i++)
+	{
+		g_bd_main[i].col_off = g_bd_main[i].col_on;
+		g_bd_main[i].scl_off = g_bd_main[i].scl_on;
+		SetUIButton(&g_bd_main[i], &g_td_ss[ul_main[i]]);
+	}
+	SetUIButton(&g_bd_main[BT_MAIN_BACK], &g_td_ss[ul_main[BT_MAIN_BACK]]);
+	UI_LABEL ul_japan[BT_JAPAN_NUM] = REF_UL_JAPAN;
+	for (int i = 0; i < BT_JAPAN_NUM; i++)
+	{
+		g_bd_japan[i].col_off = g_bd_japan[i].col_on;
+		g_bd_japan[i].scl_off = g_bd_japan[i].scl_on;
+		SetUIButton(&g_bd_japan[i], &g_td_ss[ul_japan[i]]);
+	}
+	UI_LABEL ul_asia[BT_ASIA_NUM] = REF_UL_ASIA;
+	for (int i = 0; i < BT_ASIA_NUM; i++)
+	{
+		g_bd_asia[i].col_off = g_bd_asia[i].col_on;
+		g_bd_asia[i].scl_off = g_bd_asia[i].scl_on;
+		SetUIButton(&g_bd_asia[i], &g_td_ss[ul_asia[i]]);
+	}
+	UI_LABEL ul_europe[BT_EUROPE_NUM] = REF_UL_EUROPE;
+	for (int i = 0; i < BT_EUROPE_NUM; i++)
+	{
+		g_bd_europe[i].col_off = g_bd_europe[i].col_on;
+		g_bd_europe[i].scl_off = g_bd_europe[i].scl_on;
+		SetUIButton(&g_bd_europe[i], &g_td_ss[ul_europe[i]]);
+	}
+	UI_LABEL ul_northamerica[BT_NORTHAMERICA_NUM] = REF_UL_NORTHAMERICA;
+	for (int i = 0; i < BT_NORTHAMERICA_NUM; i++)
+	{
+		g_bd_northamerica[i].col_off = g_bd_northamerica[i].col_on;
+		g_bd_northamerica[i].scl_off = g_bd_northamerica[i].scl_on;
+		SetUIButton(&g_bd_northamerica[i], &g_td_ss[ul_northamerica[i]]);
+	}
+
+	// ボタンテーブルへの登録
+	g_bt_main = new BUTTON_TABLE;
+	*g_bt_main = { &g_btTbl_main[0][0], BT_NUM_X_MAIN, BT_NUM_Y_MAIN, &g_bd_main[0], BT_MAIN_NUM, &g_cursor };
+	
+	g_bt_japan = new BUTTON_TABLE;
+	*g_bt_japan = { &g_btTbl_japan[0][0], BT_NUM_X_ELSE, BT_NUM_Y_ELSE, &g_bd_japan[0], BT_JAPAN_NUM, &g_cursor };
+	
+	g_bt_asia = new BUTTON_TABLE;
+	*g_bt_asia = { &g_btTbl_asia[0][0], BT_NUM_X_ELSE, BT_NUM_Y_ELSE, &g_bd_asia[0], BT_ASIA_NUM, &g_cursor };
+	
+	g_bt_europe = new BUTTON_TABLE;
+	*g_bt_europe = { &g_btTbl_europe[0][0], BT_NUM_X_ELSE, BT_NUM_Y_ELSE, &g_bd_europe[0], BT_EUROPE_NUM, &g_cursor };
+	
+	g_bt_northamerica = new BUTTON_TABLE;
+	*g_bt_northamerica = { &g_btTbl_northamerica[0][0], BT_NUM_X_ELSE, BT_NUM_Y_ELSE, &g_bd_northamerica[0], BT_NORTHAMERICA_NUM, &g_cursor };
+}
+// 更新
+static void UpdateUI(void)
+{
+	if (g_AnimScl < 1.0f) return;
+	switch (g_menu)
+	{
+	case MENU_MAIN:
+		UpdateButton(g_bt_main, ButtonPressedMain);
+		break;
+
+	case MENU_JAPAN:
+		UpdateButton(g_bt_japan, ButtonPressedJapan);
+		break;
+
+	case MENU_ASIA:
+		UpdateButton(g_bt_asia, ButtonPressedAsia);
+		break;
+
+	case MENU_EUROPE:
+		UpdateButton(g_bt_europe, ButtonPressedEurope);
+		break;
+
+	case MENU_NORTHAMERICA:
+		UpdateButton(g_bt_northamerica, ButtonPressedNorthAmerica);
+		break;
+	}
+}
+// 描画
+static void DrawUI(void)
+{
+	DrawTexture2D(&g_td_ss[UI_BG]);
+	DrawTexture2D(&g_td_ss[UI_HEAD]);
+	DrawTexture2D(&g_td_ss[UI_BACK], TRUE);
+
+	DrawTexture2D(&g_td_ss[UI_JAPAN]);
+	DrawTexture2D(&g_td_ss[UI_ASIA]);
+	DrawTexture2D(&g_td_ss[UI_EUROPE]);
+	DrawTexture2D(&g_td_ss[UI_NORTHAMERICA]);
+
+	int index;
+	if (g_menu != MENU_MAIN)
+	{
+		DrawTexture2D(&g_td_ss[UI_JAPAN_BG_ALL + (g_menu - 1)]);
+
+		index = (g_menu - 1) * 12;
+		DrawTexture2D(&g_td_ss[UI_JAPAN_B + index]);
+		DrawTexture2D(&g_td_ss[UI_JAPAN_OSAKA + index]);
+		DrawTexture2D(&g_td_ss[UI_JAPAN_HOKKAIDO + index]);
+		DrawTexture2D(&g_td_ss[UI_JAPAN_OKINAWA + index]);
+
+		DrawTexture2D(&g_td_ss[UI_PIN]);
+	}
+	else if (g_DDScl > 0.0f)
+	{
+		DrawTexture2D(&g_td_ss[UI_JAPAN_BG_ALL + (g_menuDD - 1)]);
+
+		index = (g_menuDD - 1) * 12;
+		DrawTexture2D(&g_td_ss[UI_JAPAN_OSAKA + index]);
+		DrawTexture2D(&g_td_ss[UI_JAPAN_HOKKAIDO + index]);
+		DrawTexture2D(&g_td_ss[UI_JAPAN_OKINAWA + index]);
+	}
+
+
+	if (g_cursor.y < BT_NUM_Y_MAIN - 1) {
+		DrawTexture2D(&g_td_ss[GetTexNo() + 2], FALSE, TRUE);
+		DrawTexture2D(&g_td_ss[GetTexNo() + 1], FALSE, TRUE);
+	}
+
+	DrawTexture2D(&g_td_ss[UI_LINE]);
+	DrawTexture2D(&g_td_ss[UI_CIRCLE]);
+}
+// 終了
+static void UninitUI(void)
+{
+	delete[] g_td_ss, g_bd_main, g_bd_japan, g_bd_asia, g_bd_europe, g_bd_northamerica;
+	delete g_bt_main, g_bt_japan, g_bt_asia, g_bt_europe, g_bt_northamerica;
+}
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT InitStageSelect(void)
 {
-	// UI設定 ///////////////////////
+	if (g_Load) return S_OK;
 
-	// 一括設定
-	for (int i = 0; i < TEXTURE_MAX; i++) {
-
-		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_STAGE_SELECTION_MAP + i);
-		g_td[i].ctrType = CENTER_LEFTTOP;
-		g_td[i].posType = POSITION_ABSOLUTE;
-	}
-	//g_td[TEXTURE_BG].tex = TEXTURE_LABEL_WHITE;
-
-	// メニューの土台
-	g_td[TEXTURE_STAGE_MENU].size = { 986.0f, SCREEN_HEIGHT };
-	g_td[TEXTURE_STAGE_MENU].pos = { 0.0f, 0.0f };
-
-	// メニュー飾り
-	g_td[TEXTURE_STAGE_MENU_1].size = { 969.0f, SCREEN_HEIGHT };
-	g_td[TEXTURE_STAGE_MENU_1].pos = { -2.0f, 0.0f };
-
-	g_td[TEXTURE_STAGE_CIRCLE].size = { 1692.0f, 1692.0f };
-	g_td[TEXTURE_STAGE_CIRCLE].pos = { 770.0f, -370.0f };
-
-	g_td[TEXTURE_STAGE_JAPAN].size = { 244.0f, 101.0f };
-	g_td[TEXTURE_STAGE_JAPAN].pos = { 220.0f, 172.0f };
-	g_td[TEXTURE_STAGE_JAPAN].col = COL_BLACK;
-
-	g_td[TEXTURE_STAGE_ASIA].size = { 168.0f, 101.0f };
-	g_td[TEXTURE_STAGE_ASIA].pos = { 250.0f, 290.0f };
-
-	g_td[TEXTURE_STAGE_EUROPE].size = { 288.0f, 101.0f };
-	g_td[TEXTURE_STAGE_EUROPE].pos = { 192.0f, 408.0f };
-
-	g_td[TEXTURE_STAGE_NORTH_AMERICA].size = { 580.0f, 100.0f };
-	g_td[TEXTURE_STAGE_NORTH_AMERICA].pos = { 40.0f, 526.0f };
-
-	g_td[TEXTURE_STAGE_SELECT_1].size = { 704.0f, 120.0f };
-	g_td[TEXTURE_STAGE_SELECT_1].pos = { 0.0f, 156.0f };
-
-	g_td[TEXTURE_STAGE_SELECT_2].size = { 672.0f, 120.0f };
-	g_td[TEXTURE_STAGE_SELECT_2].pos = { 0.0f, 274.0f };
-
-	g_td[TEXTURE_STAGE_SELECT_3].size = { 661.0f, 120.0f };
-	g_td[TEXTURE_STAGE_SELECT_3].pos = { 0.0f, 393.0f };
-
-	g_td[TEXTURE_STAGE_SELECT_4].size = { 682.0f, 120.0f };
-	g_td[TEXTURE_STAGE_SELECT_4].pos = { 0.0f, 512.0f };
-
-	g_td[TEXTURE_STAGE_SELECT_5].size = { 720.0f, 120.0f };
-	g_td[TEXTURE_STAGE_SELECT_5].pos = { 0.0f, 631.0f };
-
-	g_td[TEXTURE_STAGE_SELECT_6].size = { 780.0f, 120.0f };
-	g_td[TEXTURE_STAGE_SELECT_6].pos = { 2.0f, 749.0f };
-
-	g_td[TEXTURE_STAGE_SELECT_7].size = { 849.0f, 120.0f };
-	g_td[TEXTURE_STAGE_SELECT_7].pos = { 18.0f, 870.0f };
-
-
-	g_td[TEXTURE_STAGE_JAPAN_MENU].size = { 682.0f, 358.0f };
-	g_td[TEXTURE_STAGE_JAPAN_MENU].pos = { 0.0f, 275.0f };
-
-	g_td[TEXTURE_JAPAN_STAGE_1].size = { 388.0f, 100.0f };
-	g_td[TEXTURE_JAPAN_STAGE_1].pos = { 54.0f, 290.0f };
-
-	g_td[TEXTURE_JAPAN_STAGE_2].size = { 515.0f, 100.0f };
-	g_td[TEXTURE_JAPAN_STAGE_2].pos = { 54.0f, 410.0f };
-
-	g_td[TEXTURE_JAPAN_STAGE_3].size = { 490.0f, 100.0f };
-	g_td[TEXTURE_JAPAN_STAGE_3].pos = { 54.0f, 530.0f };
-
-
-	g_td[TEXTURE_STAGE_ASIA_MENU].size = { 723.0f, 358.0f };
-	g_td[TEXTURE_STAGE_ASIA_MENU].pos = { 0.0f, 394.0f };
-
-	g_td[TEXTURE_ASIA_STAGE_1].size = { 374.0f, 100.0f };
-	g_td[TEXTURE_ASIA_STAGE_1].pos = { 54.0f, 419.0f };
-
-	g_td[TEXTURE_ASIA_STAGE_2].size = { 377.0f, 100.0f };
-	g_td[TEXTURE_ASIA_STAGE_2].pos = { 54.0f, 529.0f };
-
-	g_td[TEXTURE_ASIA_STAGE_3].size = { 566.0f, 100.0f };
-	g_td[TEXTURE_ASIA_STAGE_3].pos = { 54.0f, 639.0f };
-
-
-	g_td[TEXTURE_STAGE_EUROPE_MENU].size = { 787.0f, 358.0f };
-	g_td[TEXTURE_STAGE_EUROPE_MENU].pos = { 0.0f, 513.0f };
-
-	g_td[TEXTURE_EUROPE_STAGE_1].size = { 414.0f, 100.0f };
-	g_td[TEXTURE_EUROPE_STAGE_1].pos = { 54.0f, 530.0f };
-
-	g_td[TEXTURE_EUROPE_STAGE_2].size = { 473.0f, 100.0f };
-	g_td[TEXTURE_EUROPE_STAGE_2].pos = { 54.0f, 650.0f };
-
-	g_td[TEXTURE_EUROPE_STAGE_3].size = { 316.0f, 100.0f };
-	g_td[TEXTURE_EUROPE_STAGE_3].pos = { 54.0f, 770.0f };
-
-
-	g_td[TEXTURE_STAGE_NORTH_AMERICA_MENU].size = { 875.0f, 358.0f };
-	g_td[TEXTURE_STAGE_NORTH_AMERICA_MENU].pos = { 0.0f, 632.0f };
-
-	g_td[TEXTURE_NORTH_AMERICA_STAGE_1].size = { 485.0f, 100.0f };
-	g_td[TEXTURE_NORTH_AMERICA_STAGE_1].pos = { 130.0f, 645.0f };
-
-	g_td[TEXTURE_NORTH_AMERICA_STAGE_2].size = { 466.0f, 100.0f };
-	g_td[TEXTURE_NORTH_AMERICA_STAGE_2].pos = { 130.0f, 755.0f };
-
-	g_td[TEXTURE_NORTH_AMERICA_STAGE_3].size = { 449.0f, 100.0f };
-	g_td[TEXTURE_NORTH_AMERICA_STAGE_3].pos = { 130.0f, 865.0f };
-
-
-	// メニュー
-	//for (int i = 0; i < MENU_NUM; i++) {
-	//	g_td[i * MENU_TEX_NUM + TEXTURE_START_01].pos = g_td[i * MENU_TEX_NUM + TEXTURE_START].pos = { 200.0f, MENU_BW * (float)(i + 1) };
-
-	//	g_td[i * MENU_TEX_NUM + TEXTURE_MENU_PANNEL_01].pos = { 0.0f, MENU_BW * (float)(i + 1) - 8.0f };
-	//	g_td[i * MENU_TEX_NUM + TEXTURE_MENU_PANNEL_01].size = { 1273.0f, 125.0f };
-
-	//	g_td[i * MENU_TEX_NUM + TEXTURE_START_JP].posType = POSITION_RELATIVE;
-	//	g_td[i * MENU_TEX_NUM + TEXTURE_START_JP].pos = { -SCREEN_CENTER_X + 200.0f, SCREEN_CENTER_Y - TEXT_H * 1.75f };
-	//}
-	//g_td[TEXTURE_START_01].size = g_td[TEXTURE_START].size = { 282.0f, MENU_H };
-	//g_td[TEXTURE_OPTION_01].size = g_td[TEXTURE_OPTION].size = { 368.0f, MENU_H };
-	//g_td[TEXTURE_GALLERY_01].size = g_td[TEXTURE_GALLERY].size = { 416.0f, MENU_H };
-	//g_td[TEXTURE_CREDIT_01].size = g_td[TEXTURE_CREDIT].size = { 335.0f, MENU_H };
-	//g_td[TEXTURE_QUIT_01].size = g_td[TEXTURE_QUIT].size = { 227.0f, MENU_H };
-
-	//g_td[TEXTURE_START_JP].size = { 217.0f, TEXT_H };
-	//g_td[TEXTURE_OPTION_JP].size = { 293.0f, TEXT_H };
-	//g_td[TEXTURE_GALLERY_JP].size = { 399.0f, TEXT_H };
-	//g_td[TEXTURE_CREDIT_JP].size = { 600.0f, TEXT_H };
-	//g_td[TEXTURE_QUIT_JP].size = { 121.0f, TEXT_H };
-
+	InitUI();
 
 	// アニメーション初期設定
-	//for (int i = 0; i < TEXTURE_MAX; i++) {
-	//	g_td[i].pos.x -= SCREEN_WIDTH;
-	//}
-	//for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) {
-	//	g_td[i].col.w = g_AnimAlpha;
-	//}
-//#ifdef ANIM_SMALL
-//	g_td[TEXTURE_MENUBOARD].scl = {
-//		1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f),
-//		1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f)
-//	};
-//#endif
-	//PannelAnim();
+	g_AnimSlide = SLIDE_X;
+	g_AnimScl = 0.0f;
+	g_AnimAlpha = 0.0f;
+	for (int i = ALPHA_START; i <= ALPHA_END; i++) {
+		g_td_ss[i].col.w = g_AnimAlpha;
+	}
+	g_td_ss[UI_HEAD].posAdd.x = g_AnimSlide;
+	PannelAnim();
+
+	g_DDAlpha = 0.0f;
+	AlphaAnimDD();
+	g_DDScl = 0.0f;
+	PannelAnimDD();
+
+	g_PinScl = 0.0f;
+	g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
+
 	g_Model[MODEL_TITLE_STAR].model = MODEL_EARTH;
-	g_Model[MODEL_TITLE_STAR].srt.pos = { 0.0f, 0.0f, 0.0f };
 	g_Model[MODEL_TITLE_STAR].srt.scl = { 80.0f, 80.0f, 80.0f };
 
 	g_Model[MODEL_TITLE_EARTH].model = MODEL_EARTH;
-	g_Model[MODEL_TITLE_EARTH].srt.pos = { 120.0f, 0.0f, OBJ_DIST };
+	g_Model[MODEL_TITLE_EARTH].srt.pos.z = (1.3f - g_DDScl * 0.3f) * OBJ_DIST;
 	g_Model[MODEL_TITLE_EARTH].srt.scl = { 20.0f, 20.0f, 20.0f };
 
+	g_gpsRef = new XMFLOAT2[GPS_NUM];
+	XMFLOAT2 gps[GPS_NUM] = GPS;
+	for (int i = 0; i < GPS_NUM; i++) {
+		g_gpsRef[i].x = -(XM_PIDIV2 * gps[i].x / 90.0f) - 0.015f;
+		g_gpsRef[i].y = XM_PI + (XM_PI * gps[i].y / 180.0f) - 0.07f;
+	}
+	
+	g_gps = g_gpsRef[0];
+
 	g_Load = TRUE;
-	test = (TEXTURE_STAGE_JAPAN_MENU + g_Menu * 4);
 
 	return S_OK;
 }
@@ -314,6 +796,10 @@ void UninitStageSelect(void)
 {
 	if (g_Load == FALSE) return;
 
+	UninitUI();
+
+	delete[] g_gpsRef;
+
 	g_Load = FALSE;
 }
 
@@ -322,289 +808,153 @@ void UninitStageSelect(void)
 //=============================================================================
 void UpdateStageSelect(void)
 {
+	if (g_AnimAlpha > 0.0f) UpdateUI();
 
-	if (GetKeyboardTrigger(DIK_W))
-	{
-		g_td[texnum].pos.y += 5.0f;
-	}
+	static int old_cur_y = g_cursor.y;
+	if (old_cur_y != g_cursor.y) {
+		if (!(g_menu == MENU_MAIN && g_cursor.y == BT_NUM_Y_MAIN - 1)) {
+			g_AnimScl = 0.0f;
+			PannelAnim();
+			old_cur_y = g_cursor.y;
 
-	if (GetKeyboardTrigger(DIK_S))
-	{
-		g_td[texnum].pos.y -= 5.0f;
-	}
-
-	if (GetKeyboardTrigger(DIK_A))
-	{
-		g_td[texnum].pos.x -= 5.0f;
-	}
-
-	if (GetKeyboardTrigger(DIK_D))
-	{
-		g_td[texnum].pos.x += 5.0f;
-	}
-
-	if (GetKeyboardTrigger(DIK_SPACE))
-	{
-		texnum++;
-		if (texnum > TEXTURE_ASIA_STAGE_3)
-		{
-			texnum = TEXTURE_ASIA_STAGE_1;
-		}
-
-	}
-	else if (GetKeyboardTrigger(DIK_M))
-	{
-		texnum--;
-		if (texnum < TEXTURE_ASIA_STAGE_1)
-		{
-			texnum = TEXTURE_ASIA_STAGE_3;
+			g_PinScl =0.0f;
+			g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
 		}
 	}
 
-	if (GetKeyboardTrigger(DIK_UPARROW)) {
-
-
-		if (isSelect == TRUE)
+	if (GetMode() == MODE_STAGESELECT)
+	{	// 出てくるとき
+		if (g_AnimSlide < 0.0f) {
+			g_AnimSlide = min(g_AnimSlide + ANIM_SLIDE, 0.0f);
+			g_td_ss[UI_HEAD].posAdd.x = g_AnimSlide;
+		}
+		else if (g_AnimAlpha < 1.0f)
 		{
-			g_pressSelect = (g_pressSelect + 3 - 1) % 3;
-			g_pannel = g_pannelNow + g_pressSelect;
-			g_td[test2 + g_pressSelect ].col = COL_BLACK;
-			g_td[test2 + g_pressSelect + 1].col = COL_ORIGINAL;
-			if (g_pressSelect == 2)
-			{
-				g_td[test2].col = COL_ORIGINAL;
+			g_AnimAlpha += ANIM_ALPHA;
+			for (int i = ALPHA_START; i <= ALPHA_END; i++) {
+				g_td_ss[i].col.w = g_AnimAlpha;
 			}
-
 		}
-		else
+		else if (g_AnimScl < 1.0f)
 		{
-			g_Menu = (g_Menu + STAGE_NUM - 1) % STAGE_NUM;
-			g_pannel = g_Menu;
-			UpColChange(TEXTURE_STAGE_JAPAN, STAGE_NORTH_AMERICA);
-
-		}
-
-
-	}
-	if (GetKeyboardTrigger(DIK_DOWNARROW)) {
-
-		if (isSelect == TRUE)
-		{
-			g_pressSelect = (g_pressSelect + 1) % 3;
-			g_pannel = g_pannelNow + g_pressSelect;
-			g_td[test2 + g_pressSelect].col = COL_BLACK;
-			g_td[test2 + g_pressSelect - 1].col = COL_ORIGINAL;
-			if (g_pressSelect == 0)
-			{
-				g_td[test2 + 2].col = COL_ORIGINAL;
-			}
-
-		}
-		else
-		{
-
-			g_Menu = (g_Menu + 1) % STAGE_NUM;
-			g_pannel = g_Menu;
-			DownColChange(TEXTURE_STAGE_JAPAN, STAGE_JAPAN, TEXTURE_STAGE_NORTH_AMERICA);
-
-		}
-	}
-
-
-	//if (GetKeyboardTrigger(DIK_UPARROW))
-	//{
-	//	g_td[texnum--].tex;
-	//}
-	//else if (GetKeyboardTrigger(DIK_DOWNARROW))
-	//{
-	//	g_td[texnum++].tex;
-	//}
-
-	if (GetKeyboardTrigger(DIK_RETURN))
-	{
-		if (isSelect == TRUE)
-		{
-			SetFade(FADE_OUT, MODE_GAME);
-		}
-		else
-		{
-			switch (g_Menu)
-			{
-			case STAGE_JAPAN:
-				isSelect = TRUE;
-				test2 = TEXTURE_JAPAN_STAGE_1;
-				for (int i = TEXTURE_STAGE_ASIA; i <= TEXTURE_STAGE_NORTH_AMERICA; i++)
-				{
-					g_td[i].pos.y += 360.0f;
-
+			if (g_menu != MENU_MAIN) {
+				if (g_DDAlpha >= 1.0f) {
+					g_AnimScl += ANIM_SCALING;
+					PannelAnim();
 				}
-				g_td[TEXTURE_STAGE_NORTH_AMERICA].pos.x = 100.0f;
-				PannelPlus();
-				g_td[TEXTURE_JAPAN_STAGE_1].col = COL_BLACK;
-
-				break;
-
-			case STAGE_ASIA:
-				isSelect = TRUE;
-				test2 = TEXTURE_ASIA_STAGE_1;
-				for (int i = TEXTURE_STAGE_EUROPE; i <= TEXTURE_STAGE_NORTH_AMERICA; i++)
-				{
-					g_td[i].pos.y += 360.0f;
-				}
-				g_td[TEXTURE_STAGE_NORTH_AMERICA].pos.x = 100.0f;
-				g_td[TEXTURE_ASIA_STAGE_1].col = COL_BLACK;
-
-				PannelPlus();
-				break;
-
-			case STAGE_EUROPE:
-				isSelect = TRUE;
-				test2 = TEXTURE_EUROPE_STAGE_1;
-				g_td[TEXTURE_STAGE_NORTH_AMERICA].pos.y += 360.0f;
-				g_td[TEXTURE_STAGE_NORTH_AMERICA].pos.x = 100.0f;
-				g_td[TEXTURE_EUROPE_STAGE_1].col = COL_BLACK;
-
-				PannelPlus();
-				break;
-
-			case STAGE_NORTH_AMERICA:
-				isSelect = TRUE;
-				test2 = TEXTURE_NORTH_AMERICA_STAGE_1;
-				g_td[TEXTURE_NORTH_AMERICA_STAGE_1].col = COL_BLACK;
-				PannelPlus();
-				break;
-
 			}
-
+			else {
+				g_AnimScl += ANIM_SCALING;
+				PannelAnim();
+			}
 		}
-
 	}
-
-	if (GetKeyboardTrigger(DIK_L))
-	{	
-		isSelect = FALSE;
-		g_td[test2 + g_pressSelect].col = COL_ORIGINAL;
-
-		switch (g_Menu)
+	else
+	{	// しまうとき
+		if (g_AnimScl > 0.0f)
 		{
-		case STAGE_JAPAN:
-			g_pannel = MENU_STAGE_1;
-			g_td[TEXTURE_STAGE_ASIA].pos = { 250.0f, 290.0f };
-			g_td[TEXTURE_STAGE_EUROPE].pos = { 192.0f, 408.0f };
-			g_td[TEXTURE_STAGE_NORTH_AMERICA].pos = { 40.0f, 526.0f };
-			break;
-		case STAGE_ASIA:
-			g_pannel = MENU_STAGE_2;
-			g_td[TEXTURE_STAGE_EUROPE].pos = { 192.0f, 408.0f };
-			g_td[TEXTURE_STAGE_NORTH_AMERICA].pos = { 40.0f, 526.0f };
-			break;
-		case STAGE_EUROPE:
-			g_pannel = MENU_STAGE_3;
-			g_td[TEXTURE_STAGE_NORTH_AMERICA].pos = { 40.0f, 526.0f };
+			g_AnimScl -= ANIM_SCALING;
+			PannelAnim();
+		}
+		else if (g_AnimAlpha > 0.0f)
+		{
+			g_AnimAlpha -= ANIM_ALPHA;
+			for (int i = ALPHA_START; i <= ALPHA_END; i++) {
+				g_td_ss[i].col.w = g_AnimAlpha;
+			}
+		}
+		else if (g_AnimSlide > SLIDE_X) {
+			g_AnimSlide = max(g_AnimSlide - ANIM_SLIDE, SLIDE_X);
+			g_td_ss[UI_HEAD].posAdd.x = g_AnimSlide;
+		}
+		return;
+	}
 
-			break;
-		case STAGE_NORTH_AMERICA:
-			g_pannel = MENU_STAGE_4;
-			break;
-
-		default:
-			break;
+	// ドロップダウンアニメーション
+	if (g_menu != MENU_MAIN)
+	{
+		if (g_DDScl < 1.0f)
+		{
+			g_DDScl = min(g_DDScl + ANIM_SCALING, 1.0f);
+			PannelAnimDD();
+			g_Model[MODEL_TITLE_EARTH].srt.pos.z = (1.3f - g_DDScl * 0.3f) * OBJ_DIST;
+		}
+		else if (g_DDAlpha < 1.0f)
+		{
+			g_DDAlpha = min(g_DDAlpha + ANIM_ALPHA, 1.0f);
+			AlphaAnimDD();
+		}
+	}
+	else
+	{
+		if (g_DDAlpha > 0.0f)
+		{
+			g_DDAlpha = max(g_DDAlpha - ANIM_ALPHA, 0.0f);
+			AlphaAnimDD();
+		}
+		else if (g_DDScl > 0.0f)
+		{
+			g_DDScl = max(g_DDScl - ANIM_SCALING, 0.0f);
+			PannelAnimDD();
+			g_Model[MODEL_TITLE_EARTH].srt.pos.z = (1.3f - g_DDScl * 0.3f) * OBJ_DIST;
 		}
 	}
 
+	g_td_ss[UI_CIRCLE].rot -= 0.0005f;
+	if (g_td_ss[UI_CIRCLE].rot < -XM_2PI) g_td_ss[UI_CIRCLE].rot += XM_2PI;
 
-	//PrintDebugProc("%f, %f", g_td[texnum].pos.x, g_td[texnum].pos.y);
-	PrintDebugProc("%d", GetStageNumber());
+	g_Model[MODEL_TITLE_STAR].srt.rot.y += 0.0001f;
+	if (g_Model[MODEL_TITLE_STAR].srt.rot.y > XM_2PI) g_Model[MODEL_TITLE_STAR].srt.rot.y -= XM_2PI;
 
-	//if (!g_bStartOn)
-	//{
-	//	if (g_bStartFlg)
-	//	{
-	//		g_bStartFlg = FALSE;
-	//		g_bStartOn = TRUE;
-	//	}
-	//	return;
-	//}
 
-	// ひっこみアニメーション
-//	if (g_bStartOffFlg)
-//	{
-//		if (g_AnimAlpha > 0.0f)
-//		{
-//			g_AnimAlpha -= ANIM_SCALING;
-//			for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) g_td[i].col.w = g_AnimAlpha;
-//
-//#ifdef ANIM_SMALL
-//			g_td[TEXTURE_MENUBOARD].scl = {
-//				1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f),
-//				1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f)
-//			};
-//#endif
-//		}
-//		else if (g_AnimSlide > -SCREEN_WIDTH)
-//		{
-//			g_AnimSlide -= ANIM_SLIDE;
-//			for (int i = 0; i < TEXTURE_MAX; i++) g_td[i].pos.x -= ANIM_SLIDE;
-//			PannelAnim();
-//			SetTitleAlpha(-g_AnimSlide / SCREEN_WIDTH);
-//		}
-//		else
-//		{
-//			g_bStartOn = FALSE;
-//			g_bStartOffFlg = FALSE;
-//		}
-//		return;
-//	}
-//
-//	 //とびだしアニメーション
-//	if (g_AnimSlide < 0.0f)
-//	{
-//		g_AnimSlide += ANIM_SLIDE;
-//		for (int i = 0; i < TEXTURE_MAX; i++) {
-//			g_td[i].pos.x += ANIM_SLIDE;
-//		}
-//		PannelAnim();
-//		SetTitleAlpha(-g_AnimSlide / SCREEN_WIDTH);
-//	}
-//	else if (g_AnimAlpha < 1.0f)
-//	{
-//		g_AnimAlpha += ANIM_ALPHA;
-//		for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) g_td[i].col.w = g_AnimAlpha;
-//
-//#ifdef ANIM_SMALL
-//		g_td[TEXTURE_MENUBOARD].scl = {
-//			1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f),
-//			1.0f + ANIM_SMALL * (g_AnimAlpha - 1.0f)
-//		};
-//#endif
-//		// バラバラに色が付く
-//		//g_td[TEXTURE_MENU_LINE].col.w = g_AnimAlpha;
-//		//for (int i = 0; i < MENU_NUM; i++) {
-//		//	g_td[i * MENU_TEX_NUM + TEXTURE_START].col.w = g_AnimAlpha - (float)i * 0.25f;
-//		//}
-//	}
-//	else if (g_AnimScl < 1.0f)
-//	{
-//		g_AnimScl += ANIM_SCALING;
-//		PannelAnim();
-//	}
-//
-//	if (GetKeyboardTrigger(DIK_BACK)) {
-//		g_bStartOffFlg = TRUE;
-//	}
-//
-//	if (GetKeyboardTrigger(DIK_UPARROW)) {
-//		g_Menu = (g_Menu + MENU_NUM - 1) % MENU_NUM;
-//		g_AnimScl = 0.0f;
-//		PannelAnim();
-//	}
-//	if (GetKeyboardTrigger(DIK_DOWNARROW)) {
-//		g_Menu = (g_Menu + 1) % MENU_NUM;
-//		g_AnimScl = 0.0f;
-//		PannelAnim();
-//	}
-//
+	if (g_cursor.y < BT_NUM_Y_MAIN - 1)
+	{
+		float dy = g_gpsRef[GetGpsNo()].y - g_Model[MODEL_TITLE_EARTH].srt.rot.y;
+		float dx = g_gpsRef[GetGpsNo()].x - g_Model[MODEL_TITLE_EARTH].srt.rot.x;
+			g_Model[MODEL_TITLE_EARTH].srt.rot.y += dy * 0.08f;
+			g_Model[MODEL_TITLE_EARTH].srt.rot.x += dx * 0.08f;
+		if ((g_PinScl < 1.0f) && (fabs(dy) < 0.005f && fabs(dx) < 0.005f))
+		{
+			g_PinScl = min(g_PinScl + ANIM_SCALING, 1.0f);
+			g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
+		}
 
+		//g_Model[MODEL_TITLE_EARTH].srt.rot.x -= g_gpsRef[GetGpsNo()].y;
+	}
+	else
+	{
+		g_Model[MODEL_TITLE_EARTH].srt.rot.y -= 0.001f;
+		if (g_Model[MODEL_TITLE_EARTH].srt.rot.y < -XM_2PI) g_Model[MODEL_TITLE_EARTH].srt.rot.y += XM_2PI;
+
+	}
+
+	static float g_x = 0.0f;
+	static float g_y = 0.0f;
+	static const float d = 0.005f;
+	if (GetKeyboardTrigger(DIK_1)) {
+		for (int i = 0; i < GPS_NUM; i++) {
+			g_gpsRef[i].x += d;
+		}
+		g_x += d;
+	}
+	if (GetKeyboardTrigger(DIK_2)) {
+		for (int i = 0; i < GPS_NUM; i++) {
+			g_gpsRef[i].x -= d;
+		}
+		g_x -= d;
+	}
+	if (GetKeyboardTrigger(DIK_3)) {
+		for (int i = 0; i < GPS_NUM; i++) {
+			g_gpsRef[i].y += d;
+		}
+		g_y += d;
+	}
+	if (GetKeyboardTrigger(DIK_4)) {
+		for (int i = 0; i < GPS_NUM; i++) {
+			g_gpsRef[i].y -= d;
+		}
+		g_y -= d;
+	}
 }
 
 //=============================================================================
@@ -612,116 +962,95 @@ void UpdateStageSelect(void)
 //=============================================================================
 void DrawStageSelect(void)
 {
-	//if (!g_bStartOn) return;
-	//XMMATRIX mtxWorld;
-	SRT srt;
+	DrawUI();
+
 
 	SetDrawNoLighting();
 
-	// 地球
-	DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &g_Model[MODEL_TITLE_EARTH].srt);
-
 	// 星
-	SetCullingMode(CULL_MODE_NONE);
+	SetCullingMode(CULL_MODE_FRONT);
 	DrawModel(&g_Model[MODEL_TITLE_STAR].model, &g_Model[MODEL_TITLE_STAR].srt, TEXTURE_LABEL_STAR);
 	SetCullingMode(CULL_MODE_BACK);
 
-	DrawTexture2D(&g_td[TEXTURE_STAGE_MENU], FALSE);	// メニュー背景
-	DrawTexture2D(&g_td[TEXTURE_STAGE_CIRCLE], FALSE);	// メニュー詳細背景
-	if (isSelect == TRUE)
-	{
-		DrawTexture2D(&g_td[TEXTURE_STAGE_JAPAN_MENU + g_Menu * 4], FALSE);	// メニュー詳細背景
-		DrawTexture2D(&g_td[g_pannel + TEXTURE_STAGE_SELECT_1], FALSE);	// メニュー詳細背景
-		DrawTexture2D(&g_td[(TEXTURE_STAGE_JAPAN_MENU + g_Menu * 4) + 1], FALSE);	// メニュー詳細背景
-		DrawTexture2D(&g_td[(TEXTURE_STAGE_JAPAN_MENU + g_Menu * 4) + 2], FALSE);	// メニュー詳細背景
-		DrawTexture2D(&g_td[(TEXTURE_STAGE_JAPAN_MENU + g_Menu * 4) + 3], FALSE);	// メニュー詳細背景
+	// 地球
+	SetViewPortStageSelect();
 
-	}
-	else
-	{
-		DrawTexture2D(&g_td[g_pannel + TEXTURE_STAGE_SELECT_1], FALSE);	// メニュー詳細背景
-	}
+	XMMATRIX mtxWorld;
+	SRT srt;
+	MATERIAL material;
 
-	DrawTexture2D(&g_td[TEXTURE_STAGE_JAPAN], FALSE);	// メニュー詳細背景
-	DrawTexture2D(&g_td[TEXTURE_STAGE_ASIA], FALSE);	// メニュー詳細背景
-	DrawTexture2D(&g_td[TEXTURE_STAGE_EUROPE], FALSE);	// メニュー詳細背景
-	DrawTexture2D(&g_td[TEXTURE_STAGE_NORTH_AMERICA], FALSE);	// メニュー詳細背景
+	material.Specular = { 0.0f, 0.0f, 0.0f, 0.0f };
+	mtxWorld = XMMatrixIdentity();
+	srt = g_Model[MODEL_TITLE_EARTH].srt;
+	MulMtxScl(mtxWorld, srt.scl.x, srt.scl.y, srt.scl.z);	// スケールを反映
+	MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// 回転を反映
+	MulMtxRot(mtxWorld, srt.rot.x, 0.0f, 0.0f);				// 回転を反映
+	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// 移動を反映
+	DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &mtxWorld, &material);
 
-	DrawTexture2D(&g_td[TEXTURE_STAGE_MENU_1], FALSE);	// メニュー詳細背景
-
-
+	ResetViewPort();
 }
-
-//void PressedAnyButton(void) {
-//	if (g_bStartOn) return;
 //
-//	g_bStartFlg = TRUE;
-//	g_AnimScl = 0.0f;
-//	g_AnimAlpha = 0.0f;
-//	g_AnimSlide = -SCREEN_WIDTH;
+//void DownColChange(int a, int b,int c)
+//{
+//	g_td_ss[g_Menu + a].col = COL_BLACK;
+//	g_td_ss[g_Menu + a - 1].col = COL_ORIGINAL;
+//	if (g_Menu == b)
+//	{
+//		g_td_ss[c].col = COL_ORIGINAL;
+//	}
 //
-//	for (int i = TEXTURE_MENU_LINE; i < TEXTURE_MAX; i++) g_td[i].col.w = g_AnimAlpha;
-//	StopSound();
-//	PlaySound(SOUND_LABEL_BGM_START);
+//}
+//
+//void UpColChange(int a, int b)
+//{
+//	g_td_ss[g_Menu + a].col = COL_BLACK;
+//	g_td_ss[g_Menu + a + 1].col = COL_ORIGINAL;
+//	if (g_Menu == b)
+//	{
+//		g_td_ss[a].col = COL_ORIGINAL;
+//	}
+//
+//}
+//
+//void PannelPlus(void)
+//{
+//	g_pannel++;
+//	g_pannelNow = g_pannel;
+//	g_pressSelect = 0;
+//}
+//
+//int GetStageNumber(void)
+//{
+//	switch (g_Menu)
+//	{
+//	case STAGE_JAPAN:
+//
+//		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1;
+//
+//		break;
+//	case STAGE_ASIA:
+//
+//		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1 - 1;
+//
+//		break;
+//	case STAGE_EUROPE:
+//
+//		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1 - 2;
+//
+//		break;
+//	case STAGE_NORTH_AMERICA:
+//
+//		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1 - 3;
+//
+//		break;
+//
+//	default:
+//		break;
+//	}
+//	return 0;
 //}
 
-void DownColChange(int a, int b,int c)
-{
-	g_td[g_Menu + a].col = COL_BLACK;
-	g_td[g_Menu + a - 1].col = COL_ORIGINAL;
-	if (g_Menu == b)
-	{
-		g_td[c].col = COL_ORIGINAL;
-	}
-
-}
-
-
-void UpColChange(int a, int b)
-{
-	g_td[g_Menu + a].col = COL_BLACK;
-	g_td[g_Menu + a + 1].col = COL_ORIGINAL;
-	if (g_Menu == b)
-	{
-		g_td[a].col = COL_ORIGINAL;
-	}
-
-}
-
-void PannelPlus(void)
-{
-	g_pannel++;
-	g_pannelNow = g_pannel;
-	g_pressSelect = 0;
-}
-
-int GetStageNumber(void)
-{
-	switch (g_Menu)
-	{
-	case STAGE_JAPAN:
-
-		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1;
-
-		break;
-	case STAGE_ASIA:
-
-		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1 - 1;
-
-		break;
-	case STAGE_EUROPE:
-
-		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1 - 2;
-
-		break;
-	case STAGE_NORTH_AMERICA:
-
-		return test2 + g_pressSelect - TEXTURE_JAPAN_STAGE_1 - 3;
-
-		break;
-
-	default:
-		break;
-	}
-	return 0;
+int GetSelectedStage(void) {
+	return g_SelectedStage;
 }

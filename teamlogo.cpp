@@ -28,14 +28,16 @@
 static int				g_Time = 0;
 static BOOL				g_Load = FALSE;
 
-static TEXTURE2D_DESC	g_td;
+static TEXTURE2D_DESC*	g_td;
 
 //=============================================================================
 // 
 //=============================================================================
 HRESULT InitTeamLogo(void)
 {
-	g_td.tex = TEXTURE_LABEL_TEAMLOGO;
+	g_td = new TEXTURE2D_DESC;
+
+	g_td->tex = TEXTURE_LABEL_TEAMLOGO;
 
 	g_Time = 0;
 
@@ -49,6 +51,8 @@ HRESULT InitTeamLogo(void)
 void UninitTeamLogo(void)
 {
 	if (g_Load == FALSE) return;
+
+	delete g_td;
 
 	g_Load = FALSE;
 }
@@ -66,5 +70,5 @@ void UpdateTeamLogo(void)
 //=============================================================================
 void DrawTeamLogo(void)
 {
-	DrawTexture2D(&g_td);
+	DrawTexture2D(g_td);
 }

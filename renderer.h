@@ -337,5 +337,6 @@ void MulMtxPos(XMMATRIX& mtxWorld, float x, float y, float z);
 
 ID3D11ShaderResourceView** GetRenderTargetTexture(void);
 
-void SetHomeViewPort(void);
+void SetViewPortHome(void);
+void SetViewPortStageSelect(void);
 void ResetViewPort(void);

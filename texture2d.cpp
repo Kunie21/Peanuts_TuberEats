@@ -47,7 +47,7 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/game_UI/goal_ui3.png",
 	"data/TEXTURE/particle3.jpg",
 
-	"data/TEXTURE/tube10.jpg",
+	"data/TEXTURE/tube12.jpg",
 	//"data/TEXTURE/tube21.jpg",
 	"data/TEXTURE/background.png",
 	//"data/TEXTURE/background2.png",
@@ -208,36 +208,77 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/title_menu_gamen/press_button.png",
 	"data/TEXTURE/title_menu_gamen/peanuts_copyright.png",
 
-	"data/TEXTURE/stage_select_gamen/stage_selection_map.png",
+	"data/TEXTURE/stage_select_gamen/stage_selection_bg.png",
+	"data/TEXTURE/stage_select_gamen/stage_selection_head.png",
 	"data/TEXTURE/stage_select_gamen/stage_selection_map_1.png",
 	"data/TEXTURE/stage_select_gamen/circle_spin.png",
+
 	"data/TEXTURE/stage_select_gamen/stage_1.png",
-	"data/TEXTURE/stage_select_gamen/stage_2.png",
-	"data/TEXTURE/stage_select_gamen/stage_3.png",
-	"data/TEXTURE/stage_select_gamen/stage_4.png",
 	"data/TEXTURE/stage_select_gamen/stage_select_1.png",
-	"data/TEXTURE/stage_select_gamen/stage_select_2.png",
-	"data/TEXTURE/stage_select_gamen/stage_select_3.png",
-	"data/TEXTURE/stage_select_gamen/stage_select_4.png",
-	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_1.png",
-	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_2.png",
-	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_3.png",
 	"data/TEXTURE/stage_select_gamen/japan_menu.png",
 	"data/TEXTURE/stage_select_gamen/japan_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/japan_stage_select_1.png",
 	"data/TEXTURE/stage_select_gamen/japan_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/japan_stage_select_2.png",
 	"data/TEXTURE/stage_select_gamen/japan_stage_3.png",
+	"data/TEXTURE/stage_select_gamen/japan_stage_select_3.png",
+
+	"data/TEXTURE/stage_select_gamen/stage_2.png",
+	"data/TEXTURE/stage_select_gamen/stage_select_2.png",
 	"data/TEXTURE/stage_select_gamen/asia_menu.png",
 	"data/TEXTURE/stage_select_gamen/asia_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/asia_stage_select_1.png",
 	"data/TEXTURE/stage_select_gamen/asia_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/asia_stage_select_2.png",
 	"data/TEXTURE/stage_select_gamen/asia_stage_3.png",
+	"data/TEXTURE/stage_select_gamen/asia_stage_select_3.png",
+
+	"data/TEXTURE/stage_select_gamen/stage_3.png",
+	"data/TEXTURE/stage_select_gamen/stage_select_3.png",
 	"data/TEXTURE/stage_select_gamen/europe_menu.png",
 	"data/TEXTURE/stage_select_gamen/europe_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/europe_stage_select_1.png",
 	"data/TEXTURE/stage_select_gamen/europe_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/europe_stage_select_2.png",
 	"data/TEXTURE/stage_select_gamen/europe_stage_3.png",
+	"data/TEXTURE/stage_select_gamen/europe_stage_select_3.png",
+
+	"data/TEXTURE/stage_select_gamen/stage_4.png",
+	"data/TEXTURE/stage_select_gamen/stage_select_4.png",
 	"data/TEXTURE/stage_select_gamen/north_america_menu.png",
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_1.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_1.png",
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_2.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_2.png",
 	"data/TEXTURE/stage_select_gamen/northamerica_stage_3.png",
+	"data/TEXTURE/stage_select_gamen/northamerica_stage_select_3.png",
+
+	//"data/TEXTURE/stage_select_gamen/stage_2.png",
+	//"data/TEXTURE/stage_select_gamen/stage_3.png",
+	//"data/TEXTURE/stage_select_gamen/stage_4.png",
+	//"data/TEXTURE/stage_select_gamen/stage_select_1.png",
+	//"data/TEXTURE/stage_select_gamen/stage_select_2.png",
+	//"data/TEXTURE/stage_select_gamen/stage_select_3.png",
+	//"data/TEXTURE/stage_select_gamen/stage_select_4.png",
+	//"data/TEXTURE/stage_select_gamen/northamerica_stage_select_1.png",
+	//"data/TEXTURE/stage_select_gamen/northamerica_stage_select_2.png",
+	//"data/TEXTURE/stage_select_gamen/northamerica_stage_select_3.png",
+	//"data/TEXTURE/stage_select_gamen/japan_menu.png",
+	//"data/TEXTURE/stage_select_gamen/japan_stage_1.png",
+	//"data/TEXTURE/stage_select_gamen/japan_stage_2.png",
+	//"data/TEXTURE/stage_select_gamen/japan_stage_3.png",
+	//"data/TEXTURE/stage_select_gamen/asia_menu.png",
+	//"data/TEXTURE/stage_select_gamen/asia_stage_1.png",
+	//"data/TEXTURE/stage_select_gamen/asia_stage_2.png",
+	//"data/TEXTURE/stage_select_gamen/asia_stage_3.png",
+	//"data/TEXTURE/stage_select_gamen/europe_menu.png",
+	//"data/TEXTURE/stage_select_gamen/europe_stage_1.png",
+	//"data/TEXTURE/stage_select_gamen/europe_stage_2.png",
+	//"data/TEXTURE/stage_select_gamen/europe_stage_3.png",
+	//"data/TEXTURE/stage_select_gamen/north_america_menu.png",
+	//"data/TEXTURE/stage_select_gamen/northamerica_stage_1.png",
+	//"data/TEXTURE/stage_select_gamen/northamerica_stage_2.png",
+	//"data/TEXTURE/stage_select_gamen/northamerica_stage_3.png",
 
 	"data/TEXTURE/title_menu_gamen/cancel.png",
 
@@ -295,6 +336,7 @@ HRESULT InitTexture2D(void)
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[i], NULL, NULL, &g_Texture[i], NULL);
 
 		// 読み込んだテクスチャのサイズを取得する
+		if (!g_Texture[i]) return TRUE;
 		ID3D11Resource* pResource = NULL;
 		g_Texture[i]->GetResource(&pResource);
 		ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
@@ -327,6 +369,7 @@ BOOL LoadTexture(int loadpoint)
 	D3DX11CreateShaderResourceViewFromFile(GetDevice(), TextureName[loadpoint], NULL, NULL, &g_Texture[loadpoint], NULL);
 	
 	// 読み込んだテクスチャのサイズを取得する
+	if (!g_Texture[loadpoint]) return TRUE;
 	ID3D11Resource* pResource = NULL;
 	g_Texture[loadpoint]->GetResource(&pResource);
 	ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
@@ -778,6 +821,8 @@ void SetButtonPosition(BUTTON_TABLE* bt, int b) {
 // マウス・カーソルのあるボタンをオンにする
 void UpdateButton(BUTTON_TABLE* bt, void bp(int b))
 {
+	if (!GetCanUseButton()) return;
+
 	// 全ボタンOFF
 	SetButtonOffAll(bt->bd, bt->num);
 
@@ -795,14 +840,20 @@ void UpdateButton(BUTTON_TABLE* bt, void bp(int b))
 				SetButtonPosition(bt, i);
 
 				// ボタンが押された
-				if (IsMouseLeftTriggered()) bp(i);
+				if (IsMouseLeftTriggered()) {
+					bp(i);
+					SetButtonPressed();
+				}
 
 				return;	// ONにするのは1つだけ
 			}
 		}
 
 		// ボタンがないところが押された
-		if (IsMouseLeftTriggered()) bp(-1);
+		if (IsMouseLeftTriggered()) {
+			bp(-1);
+			SetButtonPressed();
+		}
 	}
 	else	// キーボードを使っているとき
 	{
@@ -813,6 +864,14 @@ void UpdateButton(BUTTON_TABLE* bt, void bp(int b))
 		SetButtonOnByCursor(bt);
 
 		// ボタンが押された
-		if (GetKeyboardTrigger(DIK_RETURN)) bp(GetButtonByCursor(bt));
+		if (GetKeyboardTrigger(DIK_RETURN)) {
+			bp(GetButtonByCursor(bt));
+			SetButtonPressed();
+		}
+		// バックスペースが押された
+		else if (GetKeyboardTrigger(DIK_BACKSPACE)) {
+			bp(-1);
+			SetButtonPressed();
+		}
 	}
 }

@@ -122,3 +122,6 @@ long GetWinWidth(void);
 long GetWinHeight(void);
 
 HWND GetWindowHandle(void);
+
+void SetButtonPressed(void);
+BOOL GetCanUseButton(void);

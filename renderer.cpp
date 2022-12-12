@@ -1811,10 +1811,10 @@ ID3D11ShaderResourceView** GetRenderTargetTexture(void) {
 	return &g_WrittenTexture[g_CurrentResource ? 0 : 1];
 }
 
-void SetHomeViewPort(void)
+void SetViewPortHome(void)
 {
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)SCREEN_WIDTH * 0.5f;
+	vp.Width = (FLOAT)SCREEN_CENTER_X;
 	vp.Height = (FLOAT)SCREEN_HEIGHT;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
@@ -1825,6 +1825,21 @@ void SetHomeViewPort(void)
 	g_ImmediateContext->RSSetViewports(1, &vp);
 
 	SetProjectionBuffer(&XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT * 0.5f, VIEW_NEAR_Z, VIEW_FAR_Z));
+}
+void SetViewPortStageSelect(void)
+{
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)SCREEN_WIDTH * 0.6f;
+	vp.Height = (FLOAT)SCREEN_HEIGHT;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = (FLOAT)SCREEN_WIDTH * 0.4f;
+	vp.TopLeftY = 0;
+
+	// ‰ŠúÝ’è
+	g_ImmediateContext->RSSetViewports(1, &vp);
+
+	SetProjectionBuffer(&XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT * 0.6f, VIEW_NEAR_Z, VIEW_FAR_Z));
 }
 void ResetViewPort(void)
 {

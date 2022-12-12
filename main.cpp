@@ -66,13 +66,14 @@ static long		g_MouseY = 0;
 static long		g_WinWidth = SCREEN_WIDTH;		// ウィンドウの横幅
 static long		g_WinHeight = SCREEN_HEIGHT;	// ウィンドウの縦幅
 static HWND		g_hWnd;							// ウィンドウハンドル
+static BOOL		g_bButton = TRUE;
 
 #ifdef _DEBUG
 int		g_CountFPS;							// FPSカウンタ
 char	g_DebugStr[2048] = WINDOW_NAME;		// デバッグ文字表示用
 #endif
 
-MODE_LABEL	g_Mode = MODE_LOADING;	// 起動時の画面を設定
+MODE_LABEL	g_Mode = MODE_OPENING;	// 起動時の画面を設定
 
 //=============================================================================
 // メイン関数
@@ -279,6 +280,8 @@ void Uninit(void)
 
 	UninitTitle();
 	UninitStart();
+	UninitHome();
+	UninitStageSelect();
 }
 
 //=============================================================================
@@ -343,6 +346,8 @@ void Update(void)
 
 	// オーディオフェード更新処理
 	//if (g_Mode > MODE_LOADING) { UpdateAudioFade(); }
+
+	g_bButton = TRUE;
 }
 
 //=============================================================================
@@ -441,9 +446,7 @@ void SetMode(MODE_LABEL mode)
 	UninitResultEvent();
 	UninitTube();
 	UninitPlayer();
-	UninitHome();
 	UninitGame();
-	UninitStageSelect();
 
 
 
@@ -564,4 +567,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+void SetButtonPressed(void) {
+	g_bButton = FALSE;
+}
+BOOL GetCanUseButton(void) {
+	return g_bButton;
 }

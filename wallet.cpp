@@ -68,7 +68,7 @@ enum
 	TEXTURE_BUY,
 	TEXTURE_MAX,
 };
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static TEXTURE2D_DESC*	g_td;
 
 
 //=============================================================================
@@ -76,6 +76,8 @@ static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
 //=============================================================================
 HRESULT InitWallet(void)
 {
+	g_td = new TEXTURE2D_DESC[TEXTURE_MAX];
+
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
@@ -137,6 +139,8 @@ HRESULT InitWallet(void)
 void UninitWallet(void)
 {
 	if (g_Load == FALSE) return;
+
+	delete[] g_td;
 
 	g_Load = FALSE;
 }
