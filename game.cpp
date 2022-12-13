@@ -307,15 +307,21 @@ void DrawGame(void)
 #endif
 	ApplyMotionBlur();
 
-	SetStencilReadLL(SHADER_PLAYER);
+	//SetStencilReadLL(SHADER_PLAYER);
+	SetStencilReadLLMissileHave();
 	DrawMissileHave();
 
 	SetStencilReadLL(SHADER_PLAYER);
 	DrawPlayer();
 
 	SetBlendState(BLEND_MODE_ADD);
+
 	SetDrawFire();
 	DrawFire();
+
+	SetDrawMissileFireHave();
+	DrawMissileFireHave();
+
 	SetBlendState(BLEND_MODE_ALPHABLEND);
 
 #ifdef _DEBUG

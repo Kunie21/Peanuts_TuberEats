@@ -306,6 +306,11 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/home_menu_gamen/back_button_bar_right.png",
 	//"data/TEXTURE/title_menu_gamen/cancel.png",
 
+	"data/TEXTURE/home_menu_gamen/shop_detail1.png",
+	"data/TEXTURE/home_menu_gamen/shop_detail2.png",
+	"data/TEXTURE/home_menu_gamen/shop_detail3.png",
+	"data/TEXTURE/home_menu_gamen/shop_detail4.png",
+
 };
 
 //=============================================================================

@@ -69,6 +69,13 @@ ROCKET_STATUS g_RS[MODEL_PLAYER_MAX];
 
 static float		g_Rotation = 0.0f;
 static float		g_TestAddSpeed = 0.0f;
+static float	g_FirePos[5] = {
+	-30.0f,
+	-30.0f,
+	-25.0f,
+	-45.0f,
+	-45.0f,
+};
 
 class ROCKET
 {
@@ -197,7 +204,7 @@ public:
 	bool Launch(void) {
 		if (m_missiles <= 0) return false;
 		m_missiles--;
-		return LaunchMissile(MISSILE_TYPE_01, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd);
+		return LaunchMissile(MISSILE_TYPE_SALMON, 0.0f, m_posSpd, -m_rot + XM_PI, m_rotSpd);
 	}
 
 	// リセット
@@ -420,6 +427,7 @@ void DrawPlayerResult(void) {
 
 void DrawFire(void) {
 	float rate = g_Rocket.GetSpeedRate() * 0.3f;
+	g_Model[MODEL_PLAYER_FIRE].srt.pos.z = g_FirePos[testNo];
 	g_Model[MODEL_PLAYER_FIRE].srt.scl.x = (float)(rand() % 10) * 0.02f * rate + rate;
 	g_Model[MODEL_PLAYER_FIRE].srt.scl.y = (float)(rand() % 10) * 0.02f * rate + rate;
 	g_Model[MODEL_PLAYER_FIRE].srt.scl.z = (float)(rand() % 10) * 0.02f * rate + rate;
@@ -434,11 +442,17 @@ void DrawFireResult(void) {
 	srt.scl.x = (float)(rand() % 10) * 0.02f * 0.7f + 0.7f;
 	srt.scl.y = (float)(rand() % 10) * 0.02f * 0.7f + 0.7f;
 	srt.scl.z = (float)(rand() % 10) * 0.02f * 0.7f + 0.7f;
-	srt.pos = { 0.0f, 0.0f , -90.0f };
+	srt.pos = { 0.0f, 0.0f , g_FirePos[testNo] - 90.0f };
 	srt.rot = g_Model[testNo].srt.rot;
 	DrawModel(&g_Model[MODEL_PLAYER_FIRE].model, &srt);	// モデル描画
 }
 
+int GetPlayerRocket(void) {
+	return testNo;
+}
+float GetPlayerFireScale(void) {
+	return g_Rocket.GetSpeedRate() * 0.3f;
+}
 float GetPlayerSpeed(void) {
 	return g_Rocket.GetSpeed();
 }

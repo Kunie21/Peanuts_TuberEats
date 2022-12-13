@@ -144,6 +144,7 @@ enum UI_LABEL {
 	UI_ROCKET_PANNEL_4,
 	UI_ROCKET_LOCK_4,
 
+	UI_DETAIL,
 	UI_SHOP_DETAIL,
 
 	UI_SHOP_S,
@@ -154,6 +155,7 @@ enum UI_LABEL {
 	UI_STATUS_LIST,
 	UI_STATUSBAR,
 	UI_STATUSBAR_POINT,
+
 
 	UI_NUM,
 };
@@ -188,6 +190,7 @@ enum UI_LABEL {
 	TEXTURE_LABEL_ROCKETSELECT_4,\
 	TEXTURE_LABEL_ROCKET_ICON,\
 \
+	TEXTURE_LABEL_ROCKET_DETAIL1,\
 	TEXTURE_LABEL_SHOP_DETAIL,\
 	TEXTURE_LABEL_SHOP_S,\
 	TEXTURE_LABEL_SHOP_H,\
@@ -318,6 +321,10 @@ static void InitUI(void)
 	g_td[UI_SHOP_DETAIL].ctrType = CENTER_RIGHTBOTTOM;
 	g_td[UI_SHOP_DETAIL].posType = POSITION_RIGHTBOTTOM;
 	g_td[UI_SHOP_DETAIL].sd_pos = { 2.5f, 2.5f };
+
+	g_td[UI_DETAIL].ctrType = CENTER_RIGHTBOTTOM;
+	g_td[UI_DETAIL].posType = POSITION_RIGHTBOTTOM;
+	//g_td[UI_DETAIL].sd_pos = { 2.0f, 2.0f };
 
 	g_td[UI_STATUS_LIST].ctrType = CENTER_RIGHTTOP;
 	g_td[UI_STATUS_LIST].posType = POSITION_LEFTTOP;
@@ -466,31 +473,31 @@ HRESULT InitRocketSelect(void)
 	g_RS[ROCKET01].model = MODEL_ROCKET1;
 	g_RS[ROCKET01].speed = 3;
 	g_RS[ROCKET01].accelerate = 4;
-	g_RS[ROCKET01].control = 10;
+	g_RS[ROCKET01].control = 6;
 	g_RS[ROCKET01].fuel = 5;
 	g_RS[ROCKET01].price = 100000;
 	g_RS[ROCKET01].status = STATUS_EQUIP;// SavaDataÇ≈ê›íËÇ∑ÇÈó\íË
 
 	g_RS[ROCKET02].model = MODEL_ROCKET3;
-	g_RS[ROCKET02].speed = 5;
-	g_RS[ROCKET02].accelerate = 5;
-	g_RS[ROCKET02].control = 9;
-	g_RS[ROCKET02].fuel = 7;
+	g_RS[ROCKET02].speed = 9;
+	g_RS[ROCKET02].accelerate = 2;
+	g_RS[ROCKET02].control = 1;
+	g_RS[ROCKET02].fuel = 8;
 	g_RS[ROCKET02].price = 50;
 	g_RS[ROCKET02].status = STATUS_NORMAL;
 
 	g_RS[ROCKET03].model = MODEL_ROCKET4;
-	g_RS[ROCKET03].speed = 9;
-	g_RS[ROCKET03].accelerate = 6;
-	g_RS[ROCKET03].control = 7;
-	g_RS[ROCKET03].fuel = 8;
+	g_RS[ROCKET03].speed = 7;
+	g_RS[ROCKET03].accelerate = 8;
+	g_RS[ROCKET03].control = 9;
+	g_RS[ROCKET03].fuel = 7;
 	g_RS[ROCKET03].price = 99999;
 	g_RS[ROCKET03].status = STATUS_NEW;
 
 	g_RS[ROCKET04].model = MODEL_ROCKET5;
 	g_RS[ROCKET04].speed = 10;
 	g_RS[ROCKET04].accelerate = 10;
-	g_RS[ROCKET04].control = 5;
+	g_RS[ROCKET04].control = 10;
 	g_RS[ROCKET04].fuel = 10;
 	g_RS[ROCKET04].price = 20221119;
 	g_RS[ROCKET04].status = STATUS_LOCK;
@@ -692,6 +699,9 @@ void DrawRocketSelect(void)
 	DrawTexture2D(&g_td[UI_SHOP_O], TRUE);
 	DrawTexture2D(&g_td[UI_SHOP_P], TRUE);
 	DrawTexture2D(&g_td[UI_SHOP_DETAIL], TRUE);
+
+	g_td[UI_DETAIL].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_ROCKET_DETAIL1 + g_cursor.y);
+	DrawTexture2D(&g_td[UI_DETAIL]);
 
 	DrawTexture2D(&g_td[UI_ROCKET_NAME_1]);
 	DrawTexture2D(&g_td[UI_ROCKET_NAME_2]);

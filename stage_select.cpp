@@ -598,7 +598,7 @@ static void InitUI(void)
 	int d = 0;
 	for (int j = 0; j < REGION_NUM; j++)
 	{
-		g_td_ss[UI_JAPAN_BG_ALL + j].pos.y = g_td_ss[UI_HEAD].size.y + g_td_ss[UI_JAPAN_BG].size.y * (j + 1);
+		g_td_ss[UI_JAPAN_BG_ALL + j].pos.y = g_td_ss[UI_HEAD].size.y + g_td_ss[UI_JAPAN_BG].size.y * (j + 1) - 5.0f;
 
 		for (int i = 0; i < AREA_NUM + 1; i++)
 		{
@@ -611,7 +611,7 @@ static void InitUI(void)
 			g_td_ss[UI_JAPAN_B + d] = g_td_ss[UI_JAPAN + d];
 			g_td_ss[UI_JAPAN_B + d].col = { 0.0f, 0.2f, 0.0f, 1.0f };
 
-			g_td_ss[UI_JAPAN_BG + d].pos.y = g_td_ss[UI_JAPAN + d].pos.y;
+			g_td_ss[UI_JAPAN_BG + d].pos.y = g_td_ss[UI_JAPAN + d].pos.y - 5.0f;
 		}
 	}
 
@@ -995,6 +995,7 @@ void DrawStageSelect(void)
 	// 地球
 	SetViewPortStageSelect();
 
+
 	XMMATRIX mtxWorld;
 	SRT srt;
 	MATERIAL material;
@@ -1006,7 +1007,33 @@ void DrawStageSelect(void)
 	MulMtxRot(mtxWorld, 0.0f, srt.rot.y, 0.0f);				// 回転を反映
 	MulMtxRot(mtxWorld, srt.rot.x, 0.0f, 0.0f);				// 回転を反映
 	MulMtxPos(mtxWorld, srt.pos.x, srt.pos.y, srt.pos.z);	// 移動を反映
+	//DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &mtxWorld, &material);
+
+
+	// 黒塗り
+	SetDrawFillBlackPlayer();
 	DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &mtxWorld, &material);
+
+
+	// シャドウボリューム
+	//SetStencilWriteDL();
+	//DrawEarthRocket();
+	//DrawDebris();
+
+	SetBlendState(BLEND_MODE_ADD);
+
+	// ディレクショナルライト
+	SetLightNo(1);
+	SetStencilReadDL();
+	DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &mtxWorld, &material);
+
+
+	// アンビエントライト
+	SetStencilNoneAL();
+	DrawModel(&g_Model[MODEL_TITLE_EARTH].model, &mtxWorld, &material);
+
+
+	SetBlendState(BLEND_MODE_ALPHABLEND);
 
 	ResetViewPort();
 }

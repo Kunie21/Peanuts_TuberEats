@@ -18,6 +18,8 @@ void UpdatePlayer(void);
 void DrawPlayer(void);
 void DrawFire(void);
 
+int GetPlayerRocket(void);
+float GetPlayerFireScale(void);
 float GetPlayerSpeed(void);
 float GetPlayerPosition(void);
 float GetPlayerRotation(void);

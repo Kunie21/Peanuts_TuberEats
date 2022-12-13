@@ -18,7 +18,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define ARROW_Y			(180.0f)
+#define ARROW_Y			(-200.0f)
 #define ANIM_ALPHA		(0.1f)		// メニューが色づくスピード
 
 #define ANIM_SLIDE		(70.0f)		// メニューがスライドしてくるスピード
@@ -102,17 +102,16 @@ enum BT_LABEL {
 static BUTTON_DESC* g_bd;
 // ボタン表
 #define BT_NUM_X 2
-#define BT_NUM_Y 5
+#define BT_NUM_Y 4
 static int g_btTbl[BT_NUM_Y][BT_NUM_X] = {
 	{BT_BACK, BT_BACK},
 	{BT_STATUS_PANNEL, BT_STATUS_PANNEL},
-	{BT_SHOP, BT_SHOP},
 	{BT_LEFT, BT_RIGHT},
-	{BT_START, BT_START},
+	{BT_SHOP, BT_START},
 };
 static BUTTON_TABLE g_bt;
 // カーソル位置
-static XMINT2 g_cursor = { 0, 4 };	// BT_STARTから
+static XMINT2 g_cursor = { BT_NUM_X - 1, BT_NUM_Y - 1 };	// BT_STARTから
 // ボタンごとの処理
 static void ButtonPressed(int b)
 {

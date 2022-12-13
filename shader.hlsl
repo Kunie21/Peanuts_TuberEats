@@ -116,6 +116,17 @@ float4 PSOutline(VS_OUTPUT input) : SV_Target{
 //=============================================================================
 // インスタンシング描画用
 //=============================================================================
+VS_OUTPUT VSInstPlayer(VS_INPUT input, uint instID : SV_InstanceID) {
+	VS_OUTPUT output;
+	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);
+	output.Position = mul(input.Position, mul(mtxWorld, VP));
+	output.WorldPos = mul(mul(input.Position, mtxWorld), transpose(AfterRot));
+	output.WorldPos.w = Instance.pos[instID].w;
+	output.Normal = normalize(mul(mul(float4(input.Normal.xyz, 0.0f), mtxWorld), transpose(AfterRot)));
+	output.TexCoord = input.TexCoord;
+	output.Diffuse = input.Diffuse * Instance.col[instID] * Material.Diffuse;
+	return output;
+}
 VS_OUTPUT VSInst(VS_INPUT input, uint instID : SV_InstanceID) {
 	VS_OUTPUT output;
 	matrix mtxWorld = GetMtxWorld(Instance.pos[instID], Instance.rot[instID], Instance.scl[instID]);

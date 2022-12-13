@@ -200,6 +200,7 @@ static ID3D11RasterizerState*	g_RasterStateCullCCW;
 
 // インスタンシング描画用
 static ID3D11VertexShader*		g_VSInst = NULL;
+static ID3D11VertexShader*		g_VSInstPlayer = NULL;
 static ID3D11VertexShader*		g_VSInstTexture = NULL;
 static ID3D11VertexShader*		g_VSInstBillboard = NULL;
 static ID3D11PixelShader*		g_PSInstOnlyTex = NULL;
@@ -311,6 +312,7 @@ void UninitRenderer(void)
 
 	// インスタンシング描画関連
 	if (g_VSInst)			g_VSInst->Release();
+	if (g_VSInstPlayer)		g_VSInstPlayer->Release();
 	if (g_VSInstTexture)	g_VSInstTexture->Release();
 	if (g_VSInstBillboard)	g_VSInstBillboard->Release();
 	if (g_PSInstOnlyTex)	g_PSInstOnlyTex->Release();
@@ -776,7 +778,8 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 		// インスタンシング描画用シェーダコンパイル・生成
 		CreateShader("shader.hlsl", "VSInst", &g_VSInst, shFlag);
-			CreateShader("shader.hlsl", "VSInstTexture", &g_VSInstTexture, shFlag);
+		CreateShader("shader.hlsl", "VSInstPlayer", &g_VSInstPlayer, shFlag);
+		CreateShader("shader.hlsl", "VSInstTexture", &g_VSInstTexture, shFlag);
 		CreateShader("shader.hlsl", "VSInstBillboard", &g_VSInstBillboard, shFlag);
 		CreateShader("shader.hlsl", "PSInstOnlyTex", &g_PSInstOnlyTex, shFlag);
 
@@ -1238,6 +1241,20 @@ void SetStencilReadLLMissile(BOOL read)
 	}
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 }
+void SetStencilReadLLMissileHave(BOOL read)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VSInstPlayer, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSLL, NULL, 0);
+	if (read) {
+		g_ImmediateContext->OMSetDepthStencilState(g_StencilRead, NULL);
+	}
+	else {
+		g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	}
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+}
 
 void SetDrawMonitor(void)
 {
@@ -1429,6 +1446,15 @@ void SetDrawMissileFire(void)
 {
 	SetCullingMode(CULL_MODE_BACK);
 	g_ImmediateContext->VSSetShader(g_VSInst, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+}
+void SetDrawMissileFireHave(void)
+{
+	SetCullingMode(CULL_MODE_BACK);
+	g_ImmediateContext->VSSetShader(g_VSInstPlayer, NULL, 0);
 	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PSOnlyTex, NULL, 0);
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
