@@ -1324,7 +1324,7 @@ void SetDrawOutline(float Scale, XMFLOAT4 Color, BOOL one)
 	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
 	SetCullingMode(CULL_MODE_FRONT);
-	if(one)
+	if (one)
 		g_ImmediateContext->VSSetShader(g_VSOutline, NULL, 0);
 	else
 		g_ImmediateContext->VSSetShader(g_VSOutlineInst, NULL, 0);
@@ -1333,7 +1333,23 @@ void SetDrawOutline(float Scale, XMFLOAT4 Color, BOOL one)
 	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
 	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
 	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
+}
+void SetDrawBarrier(float Scale, XMFLOAT4 Color, BOOL one)
+{
+	OUTLINE outline = { { Scale, 0.0f, 0.0f, 0.0f }, Color };
+	GetDeviceContext()->UpdateSubresource(g_OutlineBuffer, 0, NULL, &outline, 0, 0);
 
+	SetCullingMode(CULL_MODE_BACK);
+	SetBlendState(BLEND_MODE_ADD);
+	if (one)
+		g_ImmediateContext->VSSetShader(g_VSOutline, NULL, 0);
+	else
+		g_ImmediateContext->VSSetShader(g_VSOutlineInst, NULL, 0);
+	g_ImmediateContext->GSSetShader(NULL, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PSOutline, NULL, 0);
+	g_ImmediateContext->OMSetDepthStencilState(g_DepthStateEnable, NULL);
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], g_DepthStencilView);
+	//g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetViewWrite[g_CurrentTarget], NULL);
 }
 void SetDrawFillBlack(SHADER_TYPE shader)
 {

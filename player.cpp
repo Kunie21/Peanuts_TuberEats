@@ -173,7 +173,7 @@ public:
 		m_rotAddSpd *= m_status.rotDecel;
 		//m_addSpd *= RING_DECEL;
 		m_addSpd *= m_status.decel;
-		m_invTime *= 0.0f;
+		m_invTime *= 0.98f;
 		m_fuel -= m_posSpd / MAX_SPEED;	// 燃料消費
 		if (GetFuelRate() < 0.25f) SetAlertRedEffect();
 		else if (GetFuelRate() < 0.5f) SetAlertYellowEffect();
@@ -181,11 +181,13 @@ public:
 	}
 
 	// 燃料ロスト
-	void LostFuel(float lostFuel) { m_fuel -= lostFuel; }
+	void LostFuel(float fuel) { m_fuel -= fuel; }
+	void AddFuel(float fuel) { m_fuel += fuel; }
 
 	// コリジョン
-	void Collision(void) { m_invTime = 1.5f; }
-	bool AbleToCollision(void) const { if (m_invTime < 1.0f) return true; return false; }
+	void Collision(float time) { m_invTime = time; }
+	bool AbleToCollision(void) const { if (m_invTime <= 0.1f) return true; return false; }
+	void InvTime(float time) { m_invTime = time; }
 	
 	// データ取得
 	float GetPos(void) const { return m_pos; }
@@ -197,6 +199,7 @@ public:
 	float GetRotate(void) const { return m_rot; }
 	float GetFuel(void) const { return m_fuel; }
 	float GetFuelRate(void) const { return m_fuel / c_fuelMax; }
+	float GetInvTime(void) const { return m_invTime; }
 
 	// ミサイル発射
 	int GetMissiles(void) { return m_missiles; }
@@ -447,6 +450,9 @@ void DrawFireResult(void) {
 	DrawModel(&g_Model[MODEL_PLAYER_FIRE].model, &srt);	// モデル描画
 }
 
+float GetPlayerInvTime(void) {
+	return g_Rocket.GetInvTime();
+}
 int GetPlayerRocket(void) {
 	return testNo;
 }
@@ -467,21 +473,30 @@ int GetPlayerMissiles(void) {
 }
 void SetPlayerThroughRing(void) {
 	g_Rocket.Boost(30.0f);
-	g_Rocket.Collision();
+	//g_Rocket.Collision();
 }
 void SetPlayerCollisionIce(void) {
 	g_Rocket.LostFuel(500.0f);
 	g_Rocket.Back(g_Rocket.GetSpeed());
 	g_Rocket.Boost(-g_Rocket.GetSpeed() * 0.5f);
 	g_Rocket.BrakeFull();
-	g_Rocket.Collision();
+	//g_Rocket.Collision();
 }
 void SetPlayerCollisionSushi(void) {
 	g_Rocket.SetMissiles();
 }
+void SetPlayerCollisionRamen(void) {
+	g_Rocket.Boost(200.0f);
+}
+void SetPlayerCollisionLollipop(void) {
+	g_Rocket.InvTime(10.0f);
+}
+void SetPlayerCollisionDonut(void) {
+	g_Rocket.AddFuel(300.0f);
+}
 void SetPlayerCollisionBlast(float rotAddSpd) {
 	g_Rocket.Blast(rotAddSpd * 0.1f);
-	g_Rocket.Collision();
+	//g_Rocket.Collision();
 }
 
 void SetRocketStart(void) {

@@ -270,6 +270,7 @@ void SetStencilNoneOnlyDepth(void);
 
 void SetDrawMonitor(void);
 void SetDrawOutline(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f }, BOOL one = FALSE);
+void SetDrawBarrier(float Scale, XMFLOAT4 Color = { 0.0f, 0.0f, 0.0f, 1.0f }, BOOL one = FALSE);
 void SetDrawFillBlack(SHADER_TYPE shader);
 void SetDrawFillBlackPlayer(void);
 void SetDrawNoLighting(void);

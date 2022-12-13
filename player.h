@@ -18,6 +18,7 @@ void UpdatePlayer(void);
 void DrawPlayer(void);
 void DrawFire(void);
 
+float GetPlayerInvTime(void);
 int GetPlayerRocket(void);
 float GetPlayerFireScale(void);
 float GetPlayerSpeed(void);
@@ -26,6 +27,9 @@ float GetPlayerRotation(void);
 int GetPlayerMissiles(void);
 void SetPlayerThroughRing(void);
 void SetPlayerCollisionIce(void);
+void SetPlayerCollisionRamen(void);
+void SetPlayerCollisionLollipop(void);
+void SetPlayerCollisionDonut(void);
 void SetPlayerCollisionSushi(void);
 void SetPlayerCollisionBlast(float rotAddSpd);
 void DrawPlayerResult(void);

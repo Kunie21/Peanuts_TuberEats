@@ -41,7 +41,11 @@ static MODEL_LABEL	g_Model[GIMMICK_MAX] = {
 	MODEL_ICE,
 	MODEL_RING,
 	MODEL_SUSHI01,
-	MODEL_ICE
+	MODEL_ICE,
+	MODEL_SUSHI02,
+	MODEL_LOLLIPOP01,
+	MODEL_DONUT01,
+	MODEL_RAMEN,
 };	// プレイヤーのモデル管理
 
 
@@ -203,6 +207,34 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline, BOOL bAdd)
 			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 70.0f + 20.0f * sinf(g_SushiRot)) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
 			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			break;
+
+		case GIMMICK_RAMEN:
+			b_pInstance->scl[instCount] = { 0.8f, 0.8f, 0.8f, 0.0f };
+			b_pInstance->rot[instCount] = { -0.5f, 0.0f, rot + XM_PIDIV2, 0.0f };
+			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 70.0f + 20.0f * sinf(g_SushiRot)) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
+			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			break;
+
+		case GIMMICK_LOLLIPOP:
+			b_pInstance->scl[instCount] = { 0.8f, 0.8f, 0.8f, 0.0f };
+			b_pInstance->rot[instCount] = { 0.0f, g_SushiRot, rot + XM_PIDIV2 + 0.5f, 0.0f };
+			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 70.0f + 20.0f * sinf(g_SushiRot)) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
+			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			break;
+
+		case GIMMICK_IKURA:
+			b_pInstance->scl[instCount] = { 1.0f, 1.0f, 1.0f, 0.0f };
+			b_pInstance->rot[instCount] = { 0.0f, g_SushiRot, rot + XM_PIDIV2, 0.0f };
+			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 70.0f + 20.0f * sinf(g_SushiRot)) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
+			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			break;
+
+		case GIMMICK_DONUT:
+			b_pInstance->scl[instCount] = { 1.0f, 1.0f, 1.0f, 0.0f };
+			b_pInstance->rot[instCount] = { -XM_PIDIV2, g_SushiRot, rot + XM_PIDIV2, 0.0f };
+			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 70.0f + 20.0f * sinf(g_SushiRot)) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
+			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			break;
 		}
 		// インスタンス数を更新
 		instCount++;
@@ -259,9 +291,40 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						//pStage->arrGmk[i].use = FALSE;
 						break;
 
+					case GIMMICK_RAMEN:
+						SetBoostEffect();
+						SetPlayerCollisionRamen();
+						pStage->arrGmk[i].use = FALSE;
+						pStage->arrGmk[i].exSpd = 0.0f;
+						pStage->arrGmk[i].col.w = 0.0f;
+						break;
+
 					case GIMMICK_SUSHI:
 						//SetSushiEffect();
 						SetPlayerCollisionSushi();
+						pStage->arrGmk[i].use = FALSE;
+						pStage->arrGmk[i].exSpd = 0.0f;
+						pStage->arrGmk[i].col.w = 0.0f;
+						break;
+
+					case GIMMICK_LOLLIPOP:
+						SetPlayerCollisionLollipop();
+						pStage->arrGmk[i].use = FALSE;
+						pStage->arrGmk[i].exSpd = 0.0f;
+						pStage->arrGmk[i].col.w = 0.0f;
+						break;
+
+					case GIMMICK_IKURA:
+						SetPlayerCollisionSushi();
+						SetPlayerCollisionSushi();
+						SetPlayerCollisionSushi();
+						pStage->arrGmk[i].use = FALSE;
+						pStage->arrGmk[i].exSpd = 0.0f;
+						pStage->arrGmk[i].col.w = 0.0f;
+						break;
+
+					case GIMMICK_DONUT:
+						SetPlayerCollisionDonut();
 						pStage->arrGmk[i].use = FALSE;
 						pStage->arrGmk[i].exSpd = 0.0f;
 						pStage->arrGmk[i].col.w = 0.0f;

@@ -156,6 +156,13 @@ void DrawGame(void)
 
 		SetDrawOutline(3.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		DrawGimmickInstancing(GIMMICK_SUSHI, TRUE);
+		DrawGimmickInstancing(GIMMICK_IKURA, TRUE);
+		DrawGimmickInstancing(GIMMICK_DONUT, TRUE);
+		DrawGimmickInstancing(GIMMICK_RAMEN, TRUE);
+		SetDrawOutline(3.0f, { 1.0f, 0.0f, 1.0f, 1.0f });
+		DrawGimmickInstancing(GIMMICK_LOLLIPOP, TRUE);
+
+		SetCullingMode(CULL_MODE_BACK);
 
 		//SetDrawOutline(0.8f, { 1.0f, 1.0f, 0.0f, 1.0f });
 		//DrawMissile(MISSILE_TYPE_01);
@@ -228,6 +235,10 @@ void DrawGame(void)
 			DrawGimmickInstancing(GIMMICK_ICE);
 			DrawGimmickInstancing(GIMMICK_SUSHI_ICE);
 			DrawGimmickInstancing(GIMMICK_SUSHI);
+			DrawGimmickInstancing(GIMMICK_IKURA);
+			DrawGimmickInstancing(GIMMICK_LOLLIPOP);
+			DrawGimmickInstancing(GIMMICK_DONUT);
+			DrawGimmickInstancing(GIMMICK_RAMEN);
 
 			SetStencilReadLLMissile();
 			DrawMissile();
@@ -313,6 +324,12 @@ void DrawGame(void)
 
 	SetStencilReadLL(SHADER_PLAYER);
 	DrawPlayer();
+
+	if (GetPlayerInvTime() > 0.1f) {
+		SetDrawBarrier(10.0f, { 0.0f, 0.0f, GetPlayerInvTime() * 0.1f, 1.0f }, TRUE);
+		DrawPlayer();
+		SetBlendState(BLEND_MODE_ALPHABLEND);
+	}
 
 	SetBlendState(BLEND_MODE_ADD);
 
