@@ -98,17 +98,20 @@ struct INTERPOLATION_COLOR_DATA
 enum MODE_LABEL
 {
 	MODE_OPENING = 0,
+
 	MODE_LOADING,
+
 	MODE_TITLE_START,
 	MODE_HOME,
 	MODE_STAGESELECT,
 	MODE_GAME,
 	MODE_RESULT,
+
 	MODE_END,
 };
 
-#define	START_MODE			(MODE_LOADING)
-#define	POST_LOAD_MODE		(MODE_HOME)
+#define	START_MODE		(MODE_OPENING)
+#define	POST_LOAD_MODE	(MODE_TITLE_START)
 
 //*****************************************************************************
 // プロトタイプ宣言

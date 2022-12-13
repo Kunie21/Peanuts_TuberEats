@@ -28,18 +28,19 @@
 #define DISTANCE_STATUSBAR_Y			(76.0f)	// キャラクターサイズ縦
 #define DISTANCE_STATUSBARPOINT_X		(79.2f)	// キャラクターサイズ縦
 
-#define COL_BLACK		{0.0f,0.0f,0.0f,1.0f}	// 黒い色
-#define COL_ORIGINAL	{1.0f,1.0f,1.0f,1.0f}	// 元の色
+#define COL_BLACK			{0.0f,0.0f,0.0f,1.0f}	// 黒い色
+#define COL_ORIGINAL		{1.0f,1.0f,1.0f,1.0f}	// 元の色
 
-#define SLIDE_X			(1040.0f)
-#define ANIM_SLIDE		(70.0f)		// メニューがスライドしてくるスピード
-#define ANIM_ALPHA		(0.1f)		// メニューが色づくスピード
-#define ANIM_SCALING	(0.1f)		// メニューが大きくなる倍率
-#define SHOP_SLIDE_Y	(-200.0f)
-#define SHOP_SLIDE_SPD	(20.0f)
-#define ROCKET_SLIDE_Y	(10.0f)
-#define ROCKET_SLIDE_SPD	(1.0f)
-#define ROCKET_STAGE_Y	(-80.0f)
+#define SLIDE_X				(1040.0f)
+#define ANIM_SLIDE			(70.0f)		// メニューがスライドしてくるスピード
+#define ANIM_ALPHA			(0.1f)		// メニューが色づくスピード
+#define ANIM_SCALING		(0.1f)		// メニューが大きくなる倍率
+#define SHOP_SLIDE_Y		(-200.0f)
+#define SHOP_SLIDE_SPD		(20.0f)
+#define ROCKET_SLIDE_Y		(40.0f)
+#define ROCKET_SLIDE_SPD	(5.0f)
+#define ROCKET_STAGE_Y		(-95.0f)
+#define ROCKET_DEF_Y		(-15.0f)
 
 #define STATUS_SLIDE_Y	(-500.0f)
 #define STATUS_MAX		(10)
@@ -76,23 +77,6 @@ static BOOL			g_bStartOn = FALSE;
 static BOOL			g_bStartFlg = FALSE;
 static BOOL			g_bStartOffFlg = FALSE;
 
-enum LOCK_STATUS
-{
-	STATUS_LOCK = 0,
-	STATUS_NEW,
-	STATUS_NORMAL,
-	STATUS_EQUIP
-};
-
-enum ROCKET_LABEL
-{
-	ROCKET01 = 0,
-	ROCKET02,
-	ROCKET03,
-	ROCKET04,
-
-	ROCKET_NUM
-};
 // セレクト画面専用のロケット構造体
 struct ROCKET_STATUS
 {
@@ -471,8 +455,8 @@ HRESULT InitRocketSelect(void)
 	g_RocketSRT.rot = { XM_PIDIV2 * 0.3f, 0.0f, 0.0f };
 	g_RocketSRT.scl = { ROCKET_SCL, ROCKET_SCL, ROCKET_SCL };
 
-	g_RocketSRT.pos.y = g_AnimRocketY;
-	g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY;
+	g_RocketSRT.pos.y = ROCKET_DEF_Y;
+	g_ModelStage.srt.pos.y = ROCKET_STAGE_Y;
 	g_RocketSRT.pos.z = g_AnimRocketY;
 	g_ModelStage.srt.pos.z = g_AnimRocketY;
 
@@ -575,20 +559,26 @@ void UpdateRocketSelect(void)
 
 	if (GetHomeMode() == HOME_SHOP)
 	{
-		if (g_AnimRocketY > 0.0f) {
+		if (g_AnimRocketY > 0.0f)
+		{
 			g_AnimRocketY = max(g_AnimRocketY - ROCKET_SLIDE_SPD, 0.0f);
-			g_RocketSRT.pos.y = g_AnimRocketY;
-			g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY;
+
+			//g_RocketSRT.pos.y = g_AnimRocketY + ROCKET_DEF_Y;
+			//g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY + ROCKET_DEF_Y;
+
 			g_RocketSRT.pos.z = g_AnimRocketY;
 			g_ModelStage.srt.pos.z = g_AnimRocketY;
 		}
 	}
 	else
 	{
-		if (g_AnimRocketY < ROCKET_SLIDE_Y) {
+		if (g_AnimRocketY < ROCKET_SLIDE_Y)
+		{
 			g_AnimRocketY = min(g_AnimRocketY + ROCKET_SLIDE_SPD, ROCKET_SLIDE_Y);
-			g_RocketSRT.pos.y = g_AnimRocketY;
-			g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY;
+
+			//g_RocketSRT.pos.y = g_AnimRocketY + ROCKET_DEF_Y;
+			//g_ModelStage.srt.pos.y = ROCKET_STAGE_Y + g_AnimRocketY + ROCKET_DEF_Y;
+
 			g_RocketSRT.pos.z = g_AnimRocketY;
 			g_ModelStage.srt.pos.z = g_AnimRocketY;
 		}

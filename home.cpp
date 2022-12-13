@@ -23,6 +23,7 @@
 
 #define ANIM_SLIDE		(70.0f)		// メニューがスライドしてくるスピード
 #define STATUS_SLIDE_Y	(-453.0f)
+#define STATUS_SLIDE_Y_PLUS	(63.0f)
 
 //*****************************************************************************
 // グローバル変数
@@ -66,7 +67,7 @@ enum UI_LABEL {
 	TEXTURE_LABEL_START_BUTTON_2,\
 	TEXTURE_LABEL_LEFT,\
 	TEXTURE_LABEL_RIGHT,\
-	TEXTURE_LABEL_BACK,\
+	TEXTURE_LABEL_BACK_BAR_LEFT,\
 	TEXTURE_LABEL_ICON,\
 \
 	TEXTURE_LABEL_STATUS_PANNEL_UP,\
@@ -84,7 +85,6 @@ enum BT_LABEL {
 	BT_RIGHT,
 	BT_SHOP,
 	BT_BACK,
-
 	BT_STATUS_PANNEL,
 
 	BT_NUM
@@ -104,8 +104,8 @@ static BUTTON_DESC* g_bd;
 #define BT_NUM_X 2
 #define BT_NUM_Y 5
 static int g_btTbl[BT_NUM_Y][BT_NUM_X] = {
-	{BT_STATUS_PANNEL, BT_STATUS_PANNEL},
 	{BT_BACK, BT_BACK},
+	{BT_STATUS_PANNEL, BT_STATUS_PANNEL},
 	{BT_SHOP, BT_SHOP},
 	{BT_LEFT, BT_RIGHT},
 	{BT_START, BT_START},
@@ -172,7 +172,7 @@ static void InitUI(void)
 	g_td_home[UI_START].pos = { -g_td_home[UI_START].size.x * 0.5f, -30.0f };
 	//g_td_home[UI_START].b_useOutline = TRUE;
 	g_bd[BT_START].col_on = { 1.0f, 1.0f, 0.0f, 1.0f };
-	g_bd[BT_START].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
+	g_bd[BT_START].col_off = { 1.0f, 1.0f, 1.0f, 0.7f };
 
 	g_td_home[UI_ICON].posType = POSITION_LEFTTOP;
 	g_td_home[UI_ICON].ctrType = CENTER_LEFTTOP;
@@ -180,7 +180,7 @@ static void InitUI(void)
 
 	g_td_home[UI_NAME_PANNEL].posType = POSITION_LEFTTOP;
 	g_td_home[UI_NAME_PANNEL].ctrType = CENTER_LEFTTOP;
-	g_td_home[UI_NAME_PANNEL].pos = { 20.0f, 35.0f };
+	g_td_home[UI_NAME_PANNEL].pos = { 20.0f, 55.0f + STATUS_SLIDE_Y_PLUS };
 
 	g_td_home[UI_ROCKET_NAME].posType = POSITION_LEFTTOP;
 	g_td_home[UI_ROCKET_NAME].ctrType = CENTER_LEFT;
@@ -217,17 +217,20 @@ static void InitUI(void)
 	g_td_home[UI_SHOP].size.x *= 2.0f;
 	g_td_home[UI_SHOP].size.y *= 2.0f;
 
-	g_td_home[UI_BACK].posType = POSITION_RIGHTTOP;
-	g_td_home[UI_BACK].ctrType = CENTER_RIGHTTOP;
-	g_td_home[UI_BACK].pos = { -30.0f, 20.0f };
-	g_td_home[UI_BACK].sd_pos = { 2.0f, 2.0f };
-	g_bd[BT_BACK].col_on = { 100.0f, 100.0f, 0.0f, 1.0f };
+	g_td_home[UI_BACK].posType = POSITION_LEFTTOP;
+	g_td_home[UI_BACK].ctrType = CENTER_LEFTTOP;
+	g_bd[BT_BACK].col_on = { 1.0f, 1.0f, 0.0f, 1.0f };
 	g_bd[BT_BACK].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
+	g_bd[BT_BACK].scl_off = g_bd[BT_BACK].scl_on;
+	//g_td_home[UI_BACK].pos = { -30.0f, 15.0f };
+	//g_td_home[UI_BACK].sd_pos = { 2.0f, 2.0f };
+	//g_bd[BT_BACK].col_on = { 100.0f, 100.0f, 0.0f, 1.0f };
+	//g_bd[BT_BACK].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	g_td_home[UI_STATUS_PANNEL].posType = POSITION_LEFTTOP;
 	g_td_home[UI_STATUS_PANNEL].ctrType = CENTER_LEFTTOP;
 	g_td_home[UI_STATUS_PANNEL].pos = { -5.0f, -5.0f };
-	g_td_home[UI_STATUS_PANNEL].pos.y = -5.0f + g_AnimStatusSlide;
+	g_td_home[UI_STATUS_PANNEL].pos.y = STATUS_SLIDE_Y_PLUS + g_AnimStatusSlide;
 	g_bd[BT_STATUS_PANNEL].col_on = { 1.0f, 1.0f, 0.0f, 1.0f };
 	g_bd[BT_STATUS_PANNEL].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
 	g_bd[BT_STATUS_PANNEL].scl_off = g_bd[BT_STATUS_PANNEL].scl_on;
@@ -238,6 +241,8 @@ static void InitUI(void)
 	{
 		SetUIButton(&g_bd[i], &g_td_home[ul[i]]);
 	}
+	g_bd[BT_BACK].size.y = g_bd[BT_BACK].size.y * 0.5f;
+	g_bd[BT_BACK].pos.y -= g_bd[BT_BACK].size.y * 0.5f;
 	//g_bd[BT_START].tex_on = TEXTURE_LABEL_START_BUTTON_3;
 
 	// ボタンテーブルへの登録
@@ -263,14 +268,7 @@ static void DrawUI(void)
 	DrawTexture2DAll();
 
 	DrawTexture2D(&g_td_home[UI_NAME_PANNEL]);
-
 	DrawTexture2D(&g_td_home[UI_ROCKET_NAME], TRUE);
-	if(g_bd[BT_LEFT].b_on || g_bd[BT_RIGHT].b_on) DrawTexture2D(&g_td_home[UI_PLAYER], TRUE, FALSE, TRUE);
-	else DrawTexture2D(&g_td_home[UI_PLAYER], TRUE);
-	DrawTexture2D(&g_td_home[UI_START], TRUE);
-	DrawTexture2D(&g_td_home[UI_LEFT], TRUE);
-	DrawTexture2D(&g_td_home[UI_RIGHT], TRUE);
-
 	if (g_AnimStatusSlide == STATUS_SLIDE_Y) {
 		g_td_home[UI_STATUS_PANNEL].tex = TEXTURE_LABEL_STATUS_PANNEL_DOWN;
 	}
@@ -280,9 +278,16 @@ static void DrawUI(void)
 	}
 	DrawTexture2D(&g_td_home[UI_STATUS_PANNEL]);
 
-	DrawTextureStatus(-1, g_AnimStatusSlide);
+	DrawTextureStatus(-1, STATUS_SLIDE_Y_PLUS + 50.0f + g_AnimStatusSlide);
 
-	DrawTexture2D(&g_td_home[UI_BACK], TRUE);
+	DrawTexture2D(&g_td_home[UI_BACK]);
+
+	if (g_bd[BT_LEFT].b_on || g_bd[BT_RIGHT].b_on) DrawTexture2D(&g_td_home[UI_PLAYER], TRUE, FALSE, TRUE);
+	else DrawTexture2D(&g_td_home[UI_PLAYER], TRUE);
+	DrawTexture2D(&g_td_home[UI_START]);
+	DrawTexture2D(&g_td_home[UI_LEFT]);
+	DrawTexture2D(&g_td_home[UI_RIGHT]);
+
 }
 // 終了
 static void UninitUI(void)
@@ -344,11 +349,11 @@ void UpdateHome(void)
 
 		if (g_bStatus && g_AnimStatusSlide < 0.0f) {
 			g_AnimStatusSlide = min(g_AnimStatusSlide + ANIM_SLIDE, 0.0f);
-			g_td_home[UI_STATUS_PANNEL].pos.y = -5.0f + g_AnimStatusSlide;
+			g_td_home[UI_STATUS_PANNEL].pos.y = STATUS_SLIDE_Y_PLUS + g_AnimStatusSlide;
 		}
 		else if (!g_bStatus && g_AnimStatusSlide > STATUS_SLIDE_Y) {
 			g_AnimStatusSlide = max(g_AnimStatusSlide - ANIM_SLIDE, STATUS_SLIDE_Y);
-			g_td_home[UI_STATUS_PANNEL].pos.y = -5.0f + g_AnimStatusSlide;
+			g_td_home[UI_STATUS_PANNEL].pos.y = STATUS_SLIDE_Y_PLUS + g_AnimStatusSlide;
 		}
 	}
 	else

@@ -5,7 +5,6 @@
 //
 //=============================================================================
 #include "main.h"
-#include "renderer.h"
 #include "texture2d.h"
 #include "debugproc.h"
 #include "model.h"

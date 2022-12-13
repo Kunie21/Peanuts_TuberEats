@@ -51,6 +51,26 @@ static TUBE g_Tube;
 static BOOL		g_Load = FALSE;
 static float	g_worldRot = 0.0f;
 
+static int	g_bg = 0;
+static int	g_lt = 0;
+static int	g_c1 = 0;
+static int	g_c2 = 1;
+#define	BG_NUM	(7)
+#define	BGLIGHT_NUM	(8)
+#define	COLOR_NUM	(10)
+static XMFLOAT4 g_col[COLOR_NUM] = {
+	{ 1.0f, 0.5f, 0.25f, 1.0f },	// オレンジ
+	{ 0.25f, 1.0f, 1.0f, 1.0f },	// スカイブルー
+	{ 0.5f, 1.0f, 0.25f, 1.0f },	// 黄緑
+	{ 0.25f, 1.0f, 0.25f, 1.0f },	// 緑
+	{ 1.00f, 0.25f, 0.25f, 1.0f },	// 赤
+	{ 0.25f, 0.25f, 1.0f, 1.0f },	// 青
+	{ 1.00f, 1.0f, 0.25f, 1.0f },	// 黄色
+	{ 1.0f, 0.25f, 1.0f, 1.0f },	// ピンク
+	{ 1.0f, 1.0f, 1.0f, 1.0f },		// 白
+	{ 0.0f, 0.0f, 0.0f, 1.0f },		// なし
+};
+
 //TUBE_TYPE testTubeArr[8];
 static int testNo = 0;
 
@@ -350,11 +370,10 @@ void UninitTube(void)
 //=============================================================================
 void UpdateTube(void)
 {
-	//if (GetKeyboardPress(DIK_6)) { testNo = 0; }
-	//if (GetKeyboardPress(DIK_7)) { testNo = 1; }
-	//if (GetKeyboardPress(DIK_8)) { testNo = 2; }
-	//if (GetKeyboardPress(DIK_9)) { testNo = 3; }
-	//if (GetKeyboardPress(DIK_0)) { testNo = 4; }
+	if (GetKeyboardRepeat(DIK_Z)) { g_bg = (g_bg + 1) % BG_NUM; }
+	if (GetKeyboardRepeat(DIK_X)) { g_lt = (g_lt + 1) % BGLIGHT_NUM; }
+	if (GetKeyboardRepeat(DIK_C)) { g_c1 = (g_c1 + 1) % COLOR_NUM; }
+	if (GetKeyboardRepeat(DIK_V)) { g_c2 = (g_c2 + 1) % COLOR_NUM; }
 }
 
 //=============================================================================
@@ -378,7 +397,7 @@ void DrawTube(void)
 	SetMaterialBuffer(&g_MeshTube.material);
 
 	// テクスチャ設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_TUBE_WAFER));
+	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture((TEXTURE_LABEL)(TEXTURE_LABEL_TUBE_BG01 + g_bg)));
 
 	// ワールドマトリックスの設定
 	SetWorldBuffer(&XMMatrixIdentity());
@@ -387,11 +406,12 @@ void DrawTube(void)
 	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
 }
 
-void DrawTubeResult(void)
+void DrawTubeResult(float pos_z)
 {
 	SetStageCurvePlayer();
 	MATERIAL g_MeshTubeResult;
 	g_MeshTubeResult.Diffuse.w = 0.6f;
+	g_MeshTubeResult.Specular = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
@@ -408,10 +428,12 @@ void DrawTubeResult(void)
 	SetMaterialBuffer(&g_MeshTubeResult);
 
 	// テクスチャ設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_TUBE_WAFER));
+	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture((TEXTURE_LABEL)(TEXTURE_LABEL_TUBE_BG01 + g_bg)));
 
 	// ワールドマトリックスの設定
-	SetWorldBuffer(&XMMatrixIdentity());
+	XMMATRIX mtxWorld = XMMatrixIdentity();
+	MulMtxPos(mtxWorld, 0.0f, 0.0f, pos_z);	// 移動を反映
+	SetWorldBuffer(&mtxWorld);
 
 	// ポリゴンの描画
 	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
@@ -433,12 +455,13 @@ void DrawTubeLight2(void)
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	// テクスチャ設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture(TEXTURE_LABEL_TUBE_LIGHT));
+	GetDeviceContext()->PSSetShaderResources(0, 1, GetTexture((TEXTURE_LABEL)(TEXTURE_LABEL_TUBE_LIGHT01 + g_lt)));
 
 	// マテリアル設定
 	//SetMaterialBuffer(&g_MeshLight.material);
-	MATERIAL material;
-	material.Diffuse = { 1.0f, 0.5f, 0.25f, 1.0f };
+	MATERIAL material; 
+	material.Diffuse = g_col[g_c1];
+	//material.Diffuse = { 1.0f, 0.5f, 0.25f, 1.0f };
 	//material.Diffuse = { 2.0f, 1.0f, 0.5f, 1.0f };
 	SetMaterialBuffer(&material);
 
@@ -454,7 +477,8 @@ void DrawTubeLight2(void)
 	// ポリゴンの描画
 	GetDeviceContext()->DrawIndexed(g_MeshTube.nVertexIndex, 0, 0);
 
-	material.Diffuse = { 0.25f, 1.0f, 1.0f, 1.0f };
+	material.Diffuse = g_col[g_c2];
+	//aterial.Diffuse = { 0.25f, 1.0f, 1.0f, 1.0f };
 	//material.Diffuse = { 0.5f, 2.0f, 2.0f, 1.0f };
 	SetMaterialBuffer(&material);
 

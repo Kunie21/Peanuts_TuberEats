@@ -47,10 +47,24 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/game_UI/goal_ui3.png",
 	"data/TEXTURE/particle3.jpg",
 
-	"data/TEXTURE/tube12.jpg",
-	//"data/TEXTURE/tube21.jpg",
-	"data/TEXTURE/background.png",
-	//"data/TEXTURE/background2.png",
+	"data/TEXTURE/background/tube10.jpg",
+	"data/TEXTURE/background/tube11.jpg",
+	"data/TEXTURE/background/tube12.jpg",
+	"data/TEXTURE/background/tube21.jpg",
+	"data/TEXTURE/background/r.tif",
+	"data/TEXTURE/background/chocolate.png",
+	"data/TEXTURE/background/metal.jpg",
+	"data/TEXTURE/background/metal.jpg",
+
+	"data/TEXTURE/background/background.png",
+	"data/TEXTURE/background/background2.png",
+	"data/TEXTURE/background/background3.png",
+	"data/TEXTURE/background/background4.png",
+	"data/TEXTURE/background/background5.png",
+	"data/TEXTURE/background/background6.png",
+	"data/TEXTURE/background/background7.png",
+	"data/TEXTURE/background/background8.png",
+	"data/TEXTURE/background/peanuts_logo_white.png",
 
 	"data/TEXTURE/game_UI/fuel_empty.png",
 	"data/TEXTURE/game_UI/fuel_font.png",
@@ -288,6 +302,8 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	//"data/TEXTURE/home_menu_gamen/status_kakusu.png",
 
 	"data/TEXTURE/home_menu_gamen/back_button.png",
+	"data/TEXTURE/home_menu_gamen/back_button_bar_left.png",
+	"data/TEXTURE/home_menu_gamen/back_button_bar_right.png",
 	//"data/TEXTURE/title_menu_gamen/cancel.png",
 
 };

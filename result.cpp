@@ -79,39 +79,6 @@ enum
 	TEXTURE_MAX,
 };
 static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
-//static ID3D11ShaderResourceView*	g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-//static char*	g_TextureName[TEXTURE_MAX] = {
-//	"data/TEXTURE/result_gamen/result_banner.png",
-//	"data/TEXTURE/result_gamen/result_bg.png",
-//	"data/TEXTURE/result_gamen/no_star.png",
-//	"data/TEXTURE/result_gamen/green_star.png",
-//	"data/TEXTURE/result_gamen/expression_1.png",
-//	"data/TEXTURE/result_gamen/expression_2.png",
-//	"data/TEXTURE/result_gamen/expression_3.png",
-//	"data/TEXTURE/result_gamen/scrollbar.png",
-//	"data/TEXTURE/result_gamen/scroll.png",
-//	"data/TEXTURE/result_gamen/delivery_distance.png",
-//	"data/TEXTURE/result_gamen/delivery_time.png",
-//	"data/TEXTURE/result_gamen/delivery_fee.png",
-//	"data/TEXTURE/result_gamen/tip.png",
-//	"data/TEXTURE/result_gamen/damage.png",
-//	"data/TEXTURE/result_gamen/total_amount.png",
-//	"data/TEXTURE/result_gamen/yen.png",
-//	"data/TEXTURE/result_gamen/minus_yen.png",
-//	"data/TEXTURE/result_gamen/total_yen.png",
-//	"data/TEXTURE/result_gamen/result_number.png",
-//	"data/TEXTURE/result_gamen/minus_result_number.png",
-//	"data/TEXTURE/result_gamen/total_result_number.png",
-//	"data/TEXTURE/result_gamen/point.png",
-//	"data/TEXTURE/result_gamen/minus_point.png",
-//	"data/TEXTURE/result_gamen/total_point.png",
-//	"data/TEXTURE/result_gamen/firework1.png",
-//	"data/TEXTURE/result_gamen/firework2.png",
-//	"data/TEXTURE/result_gamen/firework3.png",
-//	"data/TEXTURE/result_gamen/firework4.png",
-//	"data/TEXTURE/result_gamen/firework5.png",
-//
-//};
 
 static float ResultTime = 0.0f;
 static int GreenStarNum = 0;
@@ -123,7 +90,6 @@ static int Damage = 0;
 static int TotalAmount = 0;
 
 static BOOL EventFinish = FALSE;
-
 
 //=============================================================================
 // 初期化処理

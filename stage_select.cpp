@@ -197,7 +197,7 @@ enum UI_LABEL {
 
 	UI_NUM,
 };
-#define ALPHA_START (UI_BACK)
+#define ALPHA_START (UI_BACK + 1)
 #define ALPHA_END (UI_NORTHAMERICA_MEXICO_BG)
 // 参照テクスチャ名（UI名順）
 #define REF_TL {\
@@ -205,7 +205,7 @@ enum UI_LABEL {
 	TEXTURE_LABEL_STAGE_SELECTION_HEAD,\
 	TEXTURE_LABEL_STAGE_SELECTION_LINE,\
 	TEXTURE_LABEL_CIRCLE_SPIN,\
-	TEXTURE_LABEL_BACK,\
+	TEXTURE_LABEL_BACK_BAR_RIGHT,\
 	TEXTURE_LABEL_GOALPIN,\
 \
 	TEXTURE_LABEL_JAPAN_BG_ALL,\
@@ -583,12 +583,17 @@ static void InitUI(void)
 	g_td_ss[UI_CIRCLE].ctrType = CENTER_CENTER;
 	g_td_ss[UI_CIRCLE].pos = { -320.0f, -60.0f };
 
-	g_td_ss[UI_BACK].posType = POSITION_RIGHTTOP;
-	g_td_ss[UI_BACK].ctrType = CENTER_RIGHTTOP;
-	g_td_ss[UI_BACK].pos = { -30.0f, 20.0f };
-	g_td_ss[UI_BACK].sd_pos = { 2.0f, 2.0f };
-	g_bd_main[BT_MAIN_BACK].col_on = { 100.0f, 100.0f, 0.0f, 1.0f };
+	//g_td_ss[UI_BACK].posType = POSITION_RIGHTTOP;
+	//g_td_ss[UI_BACK].ctrType = CENTER_RIGHTTOP;
+	//g_td_ss[UI_BACK].pos = { -30.0f, 15.0f };
+	//g_td_ss[UI_BACK].sd_pos = { 2.0f, 2.0f };
+	//g_bd_main[BT_MAIN_BACK].col_on = { 100.0f, 100.0f, 0.0f, 1.0f };
+	//g_bd_main[BT_MAIN_BACK].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
+	g_td_ss[UI_BACK].posType = POSITION_LEFTTOP;
+	g_td_ss[UI_BACK].ctrType = CENTER_LEFTTOP;
+	g_bd_main[BT_MAIN_BACK].col_on = { 1.0f, 1.0f, 0.0f, 1.0f };
 	g_bd_main[BT_MAIN_BACK].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
+	g_bd_main[BT_MAIN_BACK].scl_off = g_bd_main[BT_MAIN_BACK].scl_on;
 
 	int d = 0;
 	for (int j = 0; j < REGION_NUM; j++)
@@ -694,9 +699,9 @@ static void UpdateUI(void)
 // 描画
 static void DrawUI(void)
 {
+	DrawTexture2D(&g_td_ss[UI_BACK]);
 	DrawTexture2D(&g_td_ss[UI_BG]);
 	DrawTexture2D(&g_td_ss[UI_HEAD]);
-	DrawTexture2D(&g_td_ss[UI_BACK], TRUE);
 
 	DrawTexture2D(&g_td_ss[UI_JAPAN]);
 	DrawTexture2D(&g_td_ss[UI_ASIA]);
@@ -759,9 +764,27 @@ static void UninitUI(void)
 //=============================================================================
 HRESULT InitStageSelect(void)
 {
-	if (g_Load) return S_OK;
+	if (!g_Load)
+	{
+		InitUI(); //return S_OK;
 
-	InitUI();
+		g_gpsRef = new XMFLOAT2[GPS_NUM];
+		XMFLOAT2 gps[GPS_NUM] = GPS;
+		for (int i = 0; i < GPS_NUM; i++) {
+			g_gpsRef[i].x = -(XM_PIDIV2 * gps[i].x / 90.0f) - 0.015f;
+			g_gpsRef[i].y = XM_PI + (XM_PI * gps[i].y / 180.0f) - 0.07f;
+		}
+
+		g_gps = g_gpsRef[0];
+
+		g_Model[MODEL_TITLE_STAR].model = MODEL_EARTH;
+		g_Model[MODEL_TITLE_STAR].srt.scl = { 80.0f, 80.0f, 80.0f };
+
+		g_Model[MODEL_TITLE_EARTH].model = MODEL_EARTH;
+		g_Model[MODEL_TITLE_EARTH].srt.pos.z = (1.3f - g_DDScl * 0.3f) * OBJ_DIST;
+		g_Model[MODEL_TITLE_EARTH].srt.scl = { 20.0f, 20.0f, 20.0f };
+	}
+	
 
 	// アニメーション初期設定
 	g_AnimSlide = SLIDE_X;
@@ -780,22 +803,6 @@ HRESULT InitStageSelect(void)
 
 	g_PinScl = 0.0f;
 	g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
-
-	g_Model[MODEL_TITLE_STAR].model = MODEL_EARTH;
-	g_Model[MODEL_TITLE_STAR].srt.scl = { 80.0f, 80.0f, 80.0f };
-
-	g_Model[MODEL_TITLE_EARTH].model = MODEL_EARTH;
-	g_Model[MODEL_TITLE_EARTH].srt.pos.z = (1.3f - g_DDScl * 0.3f) * OBJ_DIST;
-	g_Model[MODEL_TITLE_EARTH].srt.scl = { 20.0f, 20.0f, 20.0f };
-
-	g_gpsRef = new XMFLOAT2[GPS_NUM];
-	XMFLOAT2 gps[GPS_NUM] = GPS;
-	for (int i = 0; i < GPS_NUM; i++) {
-		g_gpsRef[i].x = -(XM_PIDIV2 * gps[i].x / 90.0f) - 0.015f;
-		g_gpsRef[i].y = XM_PI + (XM_PI * gps[i].y / 180.0f) - 0.07f;
-	}
-	
-	g_gps = g_gpsRef[0];
 
 	g_Load = TRUE;
 

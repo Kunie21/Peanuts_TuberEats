@@ -42,4 +42,4 @@ float GetTubeRotation(void);
 //void PresentTube(void);
 //void SetNextTube(void);
 
-void DrawTubeResult(void);
+void DrawTubeResult(float pos_z);

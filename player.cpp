@@ -431,10 +431,10 @@ void DrawFire(void) {
 
 void DrawFireResult(void) {
 	SRT srt;
-	srt.scl.x = (float)(rand() % 10) * 0.01f + 1.0f;
-	srt.scl.y = (float)(rand() % 10) * 0.01f + 1.0f;
-	srt.scl.z = (float)(rand() % 10) * 0.01f + 1.0f;
-	srt.pos = { 0.0f, 0.0f , -70.0f };
+	srt.scl.x = (float)(rand() % 10) * 0.02f * 0.7f + 0.7f;
+	srt.scl.y = (float)(rand() % 10) * 0.02f * 0.7f + 0.7f;
+	srt.scl.z = (float)(rand() % 10) * 0.02f * 0.7f + 0.7f;
+	srt.pos = { 0.0f, 0.0f , -90.0f };
 	srt.rot = g_Model[testNo].srt.rot;
 	DrawModel(&g_Model[MODEL_PLAYER_FIRE].model, &srt);	// ƒ‚ƒfƒ‹•`‰æ
 }
