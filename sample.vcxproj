@@ -140,6 +140,7 @@
     <ClInclude Include="gate.h" />
     <ClInclude Include="gimmick.h" />
     <ClInclude Include="home.h" />
+    <ClInclude Include="load2.h" />
     <ClInclude Include="missile.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="player.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="gate.cpp" />
     <ClCompile Include="gimmick.cpp" />
     <ClCompile Include="home.cpp" />
+    <ClCompile Include="load2.cpp" />
     <ClCompile Include="missile.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="player.cpp" />
@@ -210,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="frog_game_icon.ico" />
+    <Image Include="tuber_eats.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

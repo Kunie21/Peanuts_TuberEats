@@ -120,6 +120,7 @@ enum UI_LABEL {
 	UI_LINE,
 	UI_CIRCLE,
 	UI_BACK,
+	UI_BACK_PANNEL,
 	UI_PIN,
 
 	UI_JAPAN_BG_ALL,
@@ -205,6 +206,7 @@ enum UI_LABEL {
 	TEXTURE_LABEL_STAGE_SELECTION_HEAD,\
 	TEXTURE_LABEL_STAGE_SELECTION_LINE,\
 	TEXTURE_LABEL_CIRCLE_SPIN,\
+	TEXTURE_LABEL_BACK,\
 	TEXTURE_LABEL_BACK_BAR_RIGHT,\
 	TEXTURE_LABEL_GOALPIN,\
 \
@@ -462,11 +464,13 @@ static void ButtonPressedMain(int b)
 		g_PinScl = 0.0f;
 		g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
 
+		PlaySound(SOUND_LABEL_SE_DECIDE);
 		break;
 
 	case BT_MAIN_BACK:
 	case BT_BACKSPACE:
 		SetFade(FADE_OUT, MODE_HOME);
+		PlaySound(SOUND_LABEL_SE_BACK);
 		break;
 
 	default:
@@ -479,10 +483,11 @@ static void ButtonPressedJapan(int b)
 	switch (b)
 	{
 	case BT_JAPAN_OSAKA:
+		SetFade(FADE_OUT, MODE_GAME, TRUE);
 	case BT_JAPAN_HOKKAIDO:
 	case BT_JAPAN_OKINAWA:
 		//g_SelectedStage = 
-		SetFade(FADE_OUT, MODE_GAME);
+		PlaySound(SOUND_LABEL_SE_START_DELIVER);
 		break;
 
 	default:
@@ -490,6 +495,7 @@ static void ButtonPressedJapan(int b)
 		g_cursor.y = 0;
 		g_AnimScl = 0.0f;
 		PannelAnim();
+		PlaySound(SOUND_LABEL_SE_BACK);
 		break;
 	}
 }
@@ -501,6 +507,7 @@ static void ButtonPressedAsia(int b)
 	case BT_ASIA_CHINA:
 	case BT_ASIA_KOREA:
 	case BT_ASIA_SINGAPORE:
+		PlaySound(SOUND_LABEL_SE_START_DELIVER);
 		break;
 
 	default:
@@ -508,6 +515,7 @@ static void ButtonPressedAsia(int b)
 		g_cursor.y = 1;
 		g_AnimScl = 0.0f;
 		PannelAnim();
+		PlaySound(SOUND_LABEL_SE_BACK);
 		break;
 	}
 }
@@ -519,6 +527,7 @@ static void ButtonPressedEurope(int b)
 	case BT_EUROPE_FRANCE:
 	case BT_EUROPE_ENGLAND:
 	case BT_EUROPE_ITALY:
+		PlaySound(SOUND_LABEL_SE_START_DELIVER);
 		break;
 
 	default:
@@ -526,6 +535,7 @@ static void ButtonPressedEurope(int b)
 		g_cursor.y = 2;
 		g_AnimScl = 0.0f;
 		PannelAnim();
+		PlaySound(SOUND_LABEL_SE_BACK);
 		break;
 	}
 }
@@ -537,6 +547,7 @@ static void ButtonPressedNorthAmerica(int b)
 	case BT_NORTHAMERICA_AMERICA:
 	case BT_NORTHAMERICA_CANADA:
 	case BT_NORTHAMERICA_MEXICO:
+		PlaySound(SOUND_LABEL_SE_START_DELIVER);
 		break;
 
 	default:
@@ -544,6 +555,7 @@ static void ButtonPressedNorthAmerica(int b)
 		g_cursor.y = 3;
 		g_AnimScl = 0.0f;
 		PannelAnim();
+		PlaySound(SOUND_LABEL_SE_BACK);
 		break;
 	}
 }
@@ -587,13 +599,17 @@ static void InitUI(void)
 	//g_td_ss[UI_BACK].ctrType = CENTER_RIGHTTOP;
 	//g_td_ss[UI_BACK].pos = { -30.0f, 15.0f };
 	//g_td_ss[UI_BACK].sd_pos = { 2.0f, 2.0f };
-	//g_bd_main[BT_MAIN_BACK].col_on = { 100.0f, 100.0f, 0.0f, 1.0f };
+	g_td_ss[UI_BACK].pos = { -40.0f, 5.0f };
+	g_td_ss[UI_BACK].posType = POSITION_RIGHTTOP;
+	g_td_ss[UI_BACK].ctrType = CENTER_RIGHTTOP;
+	g_td_ss[UI_BACK].sd_pos = { 2.0f, 2.0f };
+	g_td_ss[UI_BACK_PANNEL].posType = POSITION_LEFTTOP;
+	g_td_ss[UI_BACK_PANNEL].ctrType = CENTER_LEFTTOP;
+	//g_bd_main[BT_MAIN_BACK].col_on = { 1.0f, 1.0f, 0.0f, 1.0f };
 	//g_bd_main[BT_MAIN_BACK].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_td_ss[UI_BACK].posType = POSITION_LEFTTOP;
-	g_td_ss[UI_BACK].ctrType = CENTER_LEFTTOP;
-	g_bd_main[BT_MAIN_BACK].col_on = { 1.0f, 1.0f, 0.0f, 1.0f };
+	g_bd_main[BT_MAIN_BACK].col_on = { 100.0f, 100.0f, 0.0f, 1.0f };
 	g_bd_main[BT_MAIN_BACK].col_off = { 1.0f, 1.0f, 1.0f, 1.0f };
-	g_bd_main[BT_MAIN_BACK].scl_off = g_bd_main[BT_MAIN_BACK].scl_on;
+	//g_bd_main[BT_MAIN_BACK].scl_off = g_bd_main[BT_MAIN_BACK].scl_on;
 
 	int d = 0;
 	for (int j = 0; j < REGION_NUM; j++)
@@ -699,7 +715,8 @@ static void UpdateUI(void)
 // •`‰æ
 static void DrawUI(void)
 {
-	DrawTexture2D(&g_td_ss[UI_BACK]);
+	DrawTexture2D(&g_td_ss[UI_BACK_PANNEL]);
+	DrawTexture2D(&g_td_ss[UI_BACK], TRUE);
 	DrawTexture2D(&g_td_ss[UI_BG]);
 	DrawTexture2D(&g_td_ss[UI_HEAD]);
 
@@ -837,8 +854,10 @@ void UpdateStageSelect(void)
 			PannelAnim();
 			old_cur_y = g_cursor.y;
 
-			g_PinScl =0.0f;
+			g_PinScl = 0.0f;
 			g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
+
+			PlaySound(SOUND_LABEL_SE_SPIN_EARTH);
 		}
 	}
 
@@ -933,9 +952,13 @@ void UpdateStageSelect(void)
 		float dx = g_gpsRef[GetGpsNo()].x - g_Model[MODEL_TITLE_EARTH].srt.rot.x;
 			g_Model[MODEL_TITLE_EARTH].srt.rot.y += dy * 0.08f;
 			g_Model[MODEL_TITLE_EARTH].srt.rot.x += dx * 0.08f;
-		if ((g_PinScl < 1.0f) && (fabs(dy) < 0.005f && fabs(dx) < 0.005f))
+		if (g_menu != MENU_MAIN && (g_PinScl < 1.0f) && (fabs(dy) < 0.005f && fabs(dx) < 0.005f))
 		{
-			g_PinScl = min(g_PinScl + ANIM_SCALING, 1.0f);
+			g_PinScl += ANIM_SCALING;
+			if (g_PinScl >= 1.0f) {
+				g_PinScl = 1.0f;
+				PlaySound(SOUND_LABEL_SE_PIN);
+			}
 			g_td_ss[UI_PIN].scl = { g_PinScl, g_PinScl };
 		}
 

@@ -16,6 +16,7 @@
 #include "gimmick.h"
 #include "stage.h"
 #include "player.h"
+#include "sound.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -204,6 +205,7 @@ void GATE::Update(void)
 		m_TimeRad += CD_SPD;
 
 		// カウントダウンテクスチャ更新
+		static int old = -1;
 		m_ImageNo = (int)((m_TimeRad + XM_PIDIV2) / XM_2PI);
 
 		// カウントダウン終了判定
@@ -212,7 +214,10 @@ void GATE::Update(void)
 		{
 			m_Status = GATE_STATUS_OFF;	// オフにする
 			SetRocketStart();	// ロケットスタート
+			PlaySound(SOUND_LABEL_SE_START_GO);
 		}
+		else if (old != m_ImageNo) PlaySound(SOUND_LABEL_SE_COUNTDOWN);
+		old = m_ImageNo;
 
 		// スケール調整
 		float ds = sinf(m_TimeRad);

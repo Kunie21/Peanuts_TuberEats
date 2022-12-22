@@ -397,7 +397,7 @@ void UpdateResult(void)
 
 
 		if (GetKeyboardPress(DIK_RETURN)) {
-			SetFade(FADE_OUT, MODE_HOME);
+			SetFade(FADE_OUT, MODE_HOME, TRUE);
 		}
 	}
 }

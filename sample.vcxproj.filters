@@ -100,6 +100,9 @@
     <ClCompile Include="file.cpp">
       <Filter>loading</Filter>
     </ClCompile>
+    <ClCompile Include="load2.cpp">
+      <Filter>loading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -202,6 +205,9 @@
     <ClInclude Include="file.h">
       <Filter>loading</Filter>
     </ClInclude>
+    <ClInclude Include="load2.h">
+      <Filter>loading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="system">
@@ -240,5 +246,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="frog_game_icon.ico" />
+    <Image Include="tuber_eats.ico" />
   </ItemGroup>
 </Project>

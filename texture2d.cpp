@@ -11,6 +11,7 @@
 #include "load.h"
 #include "input.h"
 #include "collision.h"
+#include "sound.h"
 
 //*****************************************************************************
 // グローバル変数
@@ -18,10 +19,10 @@
 static ID3D11Buffer*				g_VertexBuffer = NULL;		// 頂点情報
 static BOOL							g_Load = FALSE;
 
-static INSTANCE						g_Instance;
+static INSTANCE*					g_Instance;
 static int							g_InstenceCount = 0;
 //static ID3D11ShaderResourceView**	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
-static TEXTURE_LABEL	g_pTexture[INSTANCE_MAX];	// テクスチャ情報
+static TEXTURE_LABEL				g_pTexture[INSTANCE_GROUP_MAX][INSTANCE_MAX];	// テクスチャ情報
 static ID3D11ShaderResourceView*	g_Texture[TEXTURE_LABEL_MAX];
 //#define NO_INSTANCING	// インスタンシングしないバージョン
 
@@ -35,10 +36,22 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 
 	"data/TEXTURE/load/nowloading.png",
 	"data/TEXTURE/load/nowloading2.png",
-	"data/TEXTURE/load/frog_jump_animation.png",
-	"data/TEXTURE/load/empty_bar.png",
-	"data/TEXTURE/load/full_bar.png",
-	"data/TEXTURE/load/loadbg.png",
+	"data/TEXTURE/load/loadbar_line.png",
+	"data/TEXTURE/load/loadbar_full.png",
+	"data/TEXTURE/load/start_loading_screen_bg.png",
+	"data/TEXTURE/game_UI/rocket_map.png",
+	"data/TEXTURE/load/loading_number0.png",
+	"data/TEXTURE/load/loading_number1.png",
+	"data/TEXTURE/load/loading_number2.png",
+	"data/TEXTURE/load/loading_number3.png",
+	"data/TEXTURE/load/loading_number4.png",
+	"data/TEXTURE/load/loading_number5.png",
+	"data/TEXTURE/load/loading_number6.png",
+	"data/TEXTURE/load/loading_number7.png",
+	"data/TEXTURE/load/loading_number8.png",
+	"data/TEXTURE/load/loading_number9.png",
+	"data/TEXTURE/load/percent.png",
+	"data/TEXTURE/load/transition_object.png",
 
 	"data/TEXTURE/game_UI/countdown_3_3.png",
 	"data/TEXTURE/game_UI/countdown_2_3.png",
@@ -118,6 +131,7 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	"data/TEXTURE/home_menu_gamen/status_list.png",
 
 	"data/TEXTURE/home_menu_gamen/player_wallet.png",
+	"data/TEXTURE/home_menu_gamen/player_wallet_text.png",
 	"data/TEXTURE/home_menu_gamen/player_wallet_total.png",
 	"data/TEXTURE/home_menu_gamen/player_wallet_dot.png",
 	"data/TEXTURE/home_menu_gamen/player_wallet_comma.png",
@@ -296,20 +310,28 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 	//"data/TEXTURE/stage_select_gamen/northamerica_stage_3.png",
 
 	"data/TEXTURE/home_menu_gamen/sentaku_bar_1.png",
-	"data/TEXTURE/home_menu_gamen/rocket_status_ui_up.png",
-	"data/TEXTURE/home_menu_gamen/rocket_status_ui_down.png",
+	"data/TEXTURE/home_menu_gamen/status_menu.png",
+	"data/TEXTURE/home_menu_gamen/status_menu_up.png",
+	"data/TEXTURE/home_menu_gamen/status_menu_down.png",
 	//"data/TEXTURE/home_menu_gamen/status_miseru.png",
 	//"data/TEXTURE/home_menu_gamen/status_kakusu.png",
 
 	"data/TEXTURE/home_menu_gamen/back_button.png",
-	"data/TEXTURE/home_menu_gamen/back_button_bar_left.png",
-	"data/TEXTURE/home_menu_gamen/back_button_bar_right.png",
+	"data/TEXTURE/home_menu_gamen/back_button_bar2.png",
+	"data/TEXTURE/home_menu_gamen/back_button_bar_right2.png",
 	//"data/TEXTURE/title_menu_gamen/cancel.png",
 
 	"data/TEXTURE/home_menu_gamen/shop_detail1.png",
 	"data/TEXTURE/home_menu_gamen/shop_detail2.png",
 	"data/TEXTURE/home_menu_gamen/shop_detail3.png",
+
 	"data/TEXTURE/home_menu_gamen/shop_detail4.png",
+	
+	"data/TEXTURE/load2/loading_gamen_2.png",
+	"data/TEXTURE/load2/load_dot2.png",
+	"data/TEXTURE/load2/loadbar_1_empty.png",
+	"data/TEXTURE/load2/loadbar_1_full.png",
+	"data/TEXTURE/load2/rocket_animation_300x150.png",
 
 };
 
@@ -318,6 +340,8 @@ static char* TextureName[TEXTURE_LABEL_MAX] = {
 //=============================================================================
 HRESULT InitTexture2D(void)
 {
+	g_Instance = new INSTANCE[INSTANCE_GROUP_MAX];
+
 	// 頂点バッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -526,6 +550,8 @@ void UninitTexture2D(void)
 		}
 	}
 
+	delete[] g_Instance;
+
 	g_Load = FALSE;
 }
 
@@ -542,13 +568,12 @@ void UpdateTexture2D(void)
 //=============================================================================
 void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV, BOOL bOutline)
 {
-	if (g_InstenceCount > INSTANCE_MAX - 1) return;
+	if (g_InstenceCount > INSTANCE_MAX * INSTANCE_GROUP_MAX - 1) return;
 
 #ifdef NO_INSTANCING
 	// UV座標の再設定
 	if (bUV) { SetUVTexture2D(&td->uv_pos); };
 #endif
-
 
 	// 位置の計算
 	XMFLOAT2 pos = { td->pos.x + td->posAdd.x, td->pos.y + td->posAdd.y };
@@ -631,15 +656,18 @@ void DrawTexture2D(TEXTURE2D_DESC* td, BOOL bShadow, BOOL bUV, BOOL bOutline)
 	SetDepthEnable(TRUE);
 
 #else
+	int group = g_InstenceCount / INSTANCE_MAX;
+	int instance = g_InstenceCount - group * INSTANCE_MAX;
+
 	// テクスチャ設定
-	g_pTexture[g_InstenceCount] = td->tex;
+	g_pTexture[group][instance] = td->tex;
 
 	// インスタンス情報を登録
-	g_Instance.scl[g_InstenceCount] = { td->size.x * td->scl.x + outline, td->size.y * td->scl.y + outline, 1.0f , 0.0f };
-	g_Instance.rot[g_InstenceCount] = { 0.0f, 0.0f, td->rot, 0.0f };
-	g_Instance.pos[g_InstenceCount] = { pos.x, pos.y, 0.0f, 0.0f };
-	g_Instance.col[g_InstenceCount] = material.Diffuse;
-	g_Instance.txc[g_InstenceCount] = { td->uv_pos.u, td->uv_pos.v, td->uv_pos.uw, td->uv_pos.vh };
+	g_Instance[group].scl[instance] = { td->size.x * td->scl.x + outline, td->size.y * td->scl.y + outline, 1.0f , 0.0f };
+	g_Instance[group].rot[instance] = { 0.0f, 0.0f, td->rot, 0.0f };
+	g_Instance[group].pos[instance] = { pos.x, pos.y, 0.0f, 0.0f };
+	g_Instance[group].col[instance] = material.Diffuse;
+	g_Instance[group].txc[instance] = { td->uv_pos.u, td->uv_pos.v, td->uv_pos.uw, td->uv_pos.vh };
 
 	// インスタンス数を更新
 	g_InstenceCount++;
@@ -664,15 +692,6 @@ void DrawTexture2DAll(BOOL bInterrupt)
 	// デバイス取得
 	ID3D11DeviceContext* device = GetDeviceContext();
 
-	// インスタンス情報を登録
-	D3D11_MAPPED_SUBRESOURCE msr;
-	device->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-	*(INSTANCE*)msr.pData = g_Instance;
-	device->Unmap(GetInstanceBuffer(), 0);
-	
-	// テクスチャ設定
-	for (int i = 0; i < g_InstenceCount; i++) { device->PSSetShaderResources(i + 2, 1, GetTexture(g_pTexture[i])); }
-
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
@@ -686,16 +705,28 @@ void DrawTexture2DAll(BOOL bInterrupt)
 	SetProjectionBuffer(&XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f));
 	SetWorldBuffer(&XMMatrixIdentity());
 
-	//// マテリアル設定
-	//MATERIAL material;
-	//material.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//SetMaterialBuffer(&material);
-
 	// インスタンシング描画設定
 	SetShaderInstanceingOnlyTex(bInterrupt);
-	
-	// インスタンシング描画
-	device->DrawInstanced(4, g_InstenceCount, 0, 0);
+
+	int groups = (g_InstenceCount / INSTANCE_MAX) + 1;
+	for (int g = 0; g < groups; g++)
+	{
+		int instance = min(g_InstenceCount - g * INSTANCE_MAX, INSTANCE_MAX);
+
+		// インスタンス情報を登録
+		D3D11_MAPPED_SUBRESOURCE msr;
+		device->Map(GetInstanceBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		*(INSTANCE*)msr.pData = g_Instance[g];
+		device->Unmap(GetInstanceBuffer(), 0);
+
+		// テクスチャ設定
+		for (int i = 0; i < instance; i++) {
+			device->PSSetShaderResources(i + 2, 1, GetTexture(g_pTexture[g][i]));
+		}
+
+		// インスタンシング描画
+		device->DrawInstanced(4, instance, 0, 0);
+	}
 
 	// インスタンス数を更新
 	g_InstenceCount = 0;

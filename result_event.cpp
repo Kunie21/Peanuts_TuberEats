@@ -105,7 +105,8 @@ void UpdateResultEvent(void)
 void DrawResultEvent(void)
 {
 	//後でステージに分けて描画する
-	DrawTexture2D(&g_td[GetStageNo()]);
+	//DrawTexture2D(&g_td[GetStageNo()]);
+	DrawTexture2D(&g_td[TEXTURE_AMERICA]);
 
 	DrawTexture2DAll(TRUE);
 	

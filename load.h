@@ -23,3 +23,4 @@ BOOL LoadingNow(void);
 void DrawLoad(void);
 DWORD WINAPI ThreadFuncLoad(LPVOID pParam);
 void AddLoadSum(void);
+BOOL DrawLoadAfter(void);

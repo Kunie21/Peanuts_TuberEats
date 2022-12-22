@@ -14,6 +14,7 @@
 #include "wallet.h"
 #include "home.h"
 #include "player.h"
+#include "sound.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -250,6 +251,7 @@ static void ButtonPressed(int b)
 		switch (g_RS[b].status)
 		{
 		case STATUS_LOCK:
+			PlaySound(SOUND_LABEL_SE_DECIDE);
 			break;
 
 		case STATUS_NEW:
@@ -262,9 +264,12 @@ static void ButtonPressed(int b)
 			g_RS[g_RSEquip].status = STATUS_EQUIP;
 			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].tex = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].tex;
 			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].size = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].size;
+
+			PlaySound(SOUND_LABEL_SE_EQUIP);
 			break;
 
 		case STATUS_EQUIP:
+			PlaySound(SOUND_LABEL_SE_REFUSE);
 			break;
 		}
 		break;
@@ -272,6 +277,7 @@ static void ButtonPressed(int b)
 	default:
 		SetHomeMode(HOME_HOME);
 		if(g_RSEquip != g_cursor.y) g_AnimRocketScl = 0.0f;
+		PlaySound(SOUND_LABEL_SE_BACK);
 		break;
 	}
 	g_bButton = FALSE;
@@ -602,6 +608,8 @@ void UpdateRocketSelect(void)
 		PannelAnim();
 		g_AnimRocketScl = 0.0f;
 		old_cur_y = g_cursor.y;
+
+		PlaySound(SOUND_LABEL_SE_CHANGE_ROCKET);
 	}
 
 	if (GetHomeMode() == HOME_SHOP)
@@ -641,6 +649,19 @@ void UpdateRocketSelect(void)
 		static float time = 0.0f;
 		if (shop % 8 < 4) g_td[UI_SHOP_S + shop % 8].posAdd.y = g_AnimShopSlide - 20.0f * sinf(time);
 		time += 0.15f; if (time >= XM_PI) { shop++; time = 0.0f; }
+
+		static int old_cursor = 0;
+		int new_cursor = -1;
+		for (int i = 0; i < BT_NUM; i++) {
+			if (g_bd[i].b_on) {
+				new_cursor = i;
+				break;
+			}
+		}
+		if (old_cursor != new_cursor) {
+			old_cursor = new_cursor;
+			if (old_cursor >= 0) PlaySound(SOUND_LABEL_SE_CURSOR);
+		}
 	}
 	else
 	{	// ÇµÇ‹Ç§Ç∆Ç´

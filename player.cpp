@@ -17,6 +17,7 @@
 #include "gimmick.h"
 #include "stage.h"
 #include "missile.h"
+#include "sound.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -28,6 +29,7 @@
 #define BLAST_DECEL	(0.98f)
 #define RING_DECEL	(0.985f)
 #define RING_BOOST	(40.0f)
+#define SPEED_RANGE	(3)
 
 //*****************************************************************************
 // グローバル変数
@@ -77,6 +79,18 @@ static float	g_FirePos[5] = {
 	-45.0f,
 };
 
+static int GetSpeedRange(float rate) {
+	if (rate < 0.4f) {
+		return 0;
+	}
+	else if (rate < 0.8f) {
+		return 1;
+	}
+	else {
+		return 2;
+	}
+}
+
 class ROCKET
 {
 private:
@@ -97,6 +111,8 @@ private:
 	float m_invTime = 0.0f;
 
 	int m_missiles = 0;
+
+	int m_old_spd_range = -1;
 
 	BOOL m_bStart = FALSE;
 
@@ -175,6 +191,15 @@ public:
 		m_addSpd *= m_status.decel;
 		m_invTime *= 0.98f;
 		m_fuel -= m_posSpd / MAX_SPEED;	// 燃料消費
+
+		int new_spd_range = GetSpeedRange(GetSpeedRate());
+		if (new_spd_range != m_old_spd_range) {
+			StopSound(SOUND_LABEL_BGM_ENGINE1 + m_old_spd_range);
+			PlaySound(SOUND_LABEL_BGM_ENGINE1 + new_spd_range);
+			m_old_spd_range = new_spd_range;
+		}
+
+
 		if (GetFuelRate() < 0.25f) SetAlertRedEffect();
 		else if (GetFuelRate() < 0.5f) SetAlertYellowEffect();
 		return -(m_rotSpd + m_rotAddSpd) / m_status.rotSpdMax * XM_PIDIV4 * 0.5f + XM_PI;
@@ -352,6 +377,7 @@ void UpdatePlayer(void)
 	if (CheckGoal(oldRocket.GetPos(), g_Rocket.GetPos())) {
 		OffTimer();
 		SetFade(FADE_OUT, MODE_RESULT);
+		PlaySound(SOUND_LABEL_SE_GOAL);
 	}
 
 	// パイプ曲げ（手動）

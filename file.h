@@ -15,7 +15,7 @@
 *******************************************************************************/
 struct	SAVEDATA	// セーブデータの構造体
 {
-	float			have_pp;								// 所持金
+	ULONG64			have_pp;								// 所持金
 	LOCK_STATUS		status_rocket[ROCKET_NUM];				// 所持ロケット
 	ROCKET_LABEL	select_rocket;							// 選択ロケット
 	int				select_char;							// 選択キャラ
@@ -35,8 +35,11 @@ void DeleteSaveData(void);
 void log(int param);
 
 SAVEDATA* GetSaveData(void);
+ULONG64 GetHavePP(void);
+
 void InitSaveData(void);
-void SaveHavePP(float pp);
+
+void SaveHavePP(ULONG64 pp);
 void SaveSelectCharactor(int charactor);
 void SaveSelectRocket(ROCKET_LABEL rocket);
 void SaveStageClear(int stage);

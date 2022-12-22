@@ -17,6 +17,7 @@
 #include "missile.h"
 #include "gimmick.h"
 #include "stage.h"
+#include "sound.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -309,6 +310,7 @@ BOOL LaunchMissile(MISSILE_TYPE type, float zPos, float zSpd, float zRot, float 
 
 		g_Ms[i].use = TRUE;
 
+		PlaySound(SOUND_LABEL_SE_LAUNCH_SUSHI);
 		return TRUE;
 	}
 	return FALSE;

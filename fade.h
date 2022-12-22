@@ -9,6 +9,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+#define	FADE_COLOR		{0.0f, 0.0f, 0.0f}
 
 // フェードの状態
 typedef enum
@@ -27,7 +28,8 @@ void UninitFade(void);
 void UpdateFade(void);
 void DrawFade(void);
 
-void SetFade(FADE fade, MODE_LABEL modeNext);
+void SetFade(FADE fade, MODE_LABEL modeNext, BOOL load = FALSE);
+void SetFadeColor(XMFLOAT3 color = FADE_COLOR);
 FADE GetFade(void);
 
 BOOL CheckFadeIn(void);

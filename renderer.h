@@ -102,6 +102,7 @@ enum SHADER_TYPE {	// シェーダーの種類
 // 構造体
 //*********************************************************
 #define INSTANCE_MAX 126
+#define INSTANCE_GROUP_MAX 2
 struct INSTANCE {		// インスタンシングバッファ用構造体
 	XMFLOAT4 pos[INSTANCE_MAX];
 	XMFLOAT4 rot[INSTANCE_MAX];

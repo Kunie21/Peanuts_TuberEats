@@ -137,8 +137,12 @@ void log(int param)
 SAVEDATA* GetSaveData(void) {
 	return &g_SaveData;
 }
+ULONG64 GetHavePP(void) {
+	return g_SaveData.have_pp;
+}
+
 void InitSaveData(void) {
-	g_SaveData.have_pp = 0.0f;
+	g_SaveData.have_pp = 0;
 	g_SaveData.select_char = 0;
 	g_SaveData.select_rocket = ROCKET01;
 	for (int i = 0; i < STAGE_MAX; i++) {
@@ -154,7 +158,8 @@ void InitSaveData(void) {
 	g_SaveData.status_rocket[ROCKET03] = STATUS_LOCK;
 	g_SaveData.status_rocket[ROCKET04] = STATUS_LOCK;
 }
-void SaveHavePP(float pp) {
+
+void SaveHavePP(ULONG64 pp) {
 	g_SaveData.have_pp = pp;
 }
 void SaveSelectCharactor(int charactor) {

@@ -161,19 +161,24 @@ static void ButtonPressed(int b)
 	{
 	case BT_START:
 		SetFade(FADE_OUT, MODE_HOME); // game
+		PlaySound(SOUND_LABEL_SE_DECIDE);
 		break;
 
 	case BT_OPTION:
+		PlaySound(SOUND_LABEL_SE_DECIDE);
 		break;
 
 	case BT_GALLERY:
+		PlaySound(SOUND_LABEL_SE_DECIDE);
 		break;
 
 	case BT_CREDIT:
+		PlaySound(SOUND_LABEL_SE_DECIDE);
 		break;
 
 	case BT_QUIT:
 		SetFade(FADE_OUT, MODE_END);
+		PlaySound(SOUND_LABEL_SE_DECIDE);
 		break;
 
 	default:
@@ -346,6 +351,8 @@ void UpdateStart(void)
 		g_AnimScl = 0.0f;
 		PannelAnim();
 		old_cur_y = g_cursor.y;
+
+		PlaySound(SOUND_LABEL_SE_CURSOR);
 	}
 
 	// ひっこみアニメーション
@@ -452,7 +459,8 @@ void DrawStart(void)
 	DrawTexture2D(&g_td[GetTexNo(MENU_TEX_GREEN)], TRUE, TRUE);		// メニュー名
 }
 
-void PressedAnyButton(void) {
+void PressedAnyButton(void)
+{
 	if (g_bStartOn) return;
 
 	g_bStartFlg = TRUE;
@@ -464,6 +472,7 @@ void PressedAnyButton(void) {
 		g_td[i].col.w = g_AnimAlpha;
 	}
 
+	PlaySound(SOUND_LABEL_SE_DECIDE);
 	//StopSound();
 	//PlaySound(SOUND_LABEL_BGM_START);
 }

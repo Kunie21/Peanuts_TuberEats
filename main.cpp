@@ -16,6 +16,7 @@
 #include "sound.h"
 #include "fade.h"
 #include "resource.h"
+#include "load2.h"
 
 // opening
 #include "teamlogo.h"
@@ -302,6 +303,9 @@ void Update(void)
 	case MODE_LOADING:
 		break;
 
+	case MODE_LOADING2:
+		break;
+
 	case MODE_TITLE_START:
 		UpdateStart();
 		UpdateTitle();
@@ -378,6 +382,10 @@ void Draw(void)
 
 	case MODE_LOADING:
 		DrawLoad();
+		break;
+
+	case MODE_LOADING2:
+		DrawLoad2();
 		break;
 
 	case MODE_TITLE_START:
@@ -462,6 +470,9 @@ void SetMode(MODE_LABEL mode)
 		InitLoad();
 		break;
 
+	case MODE_LOADING2:
+		break;
+
 	case MODE_TITLE_START:
 		InitTitle();
 		InitStart();
@@ -498,7 +509,6 @@ void SetMode(MODE_LABEL mode)
 
 	// BGMの管理（再生）
 	SetBGM(g_Mode);		// Load系通るまでコメントアウトしたままで！エラー出ます！
-
 }
 
 // システム情報の取得関数

@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "input.h"
 #include "debugproc.h"
+#include "sound.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`

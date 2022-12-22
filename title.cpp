@@ -12,6 +12,7 @@
 #include "model.h"
 #include "input.h"
 #include "start.h"
+#include "load.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -392,6 +393,8 @@ void DrawTitle(void)
 	DrawTexture2D(&g_td[TEXTURE_BUTTON]);
 	DrawTexture2D(&g_td[TEXTURE_COPYR]);
 	//DrawTexture2D(&g_td[TEXTURE_LINE], FALSE);
+
+	DrawLoadAfter();
 }
 
 void SetTitleAlpha(float rate) {

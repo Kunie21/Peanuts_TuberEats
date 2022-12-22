@@ -9,6 +9,7 @@
 #include "renderer.h"
 #include "texture2d.h"
 #include "fade.h"
+#include "load2.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -26,6 +27,7 @@ static TEXTURE2D_DESC	g_td;
 static TEXTURE2D_DESC	g_td2;
 #endif
 static BOOL				g_Load = FALSE;
+static BOOL				g_Loading = FALSE;
 
 //=============================================================================
 // 初期化処理
@@ -94,10 +96,17 @@ void UpdateFade(void)
 				//StopSound();
 
 				// フェードイン処理に切り替え
-				SetFade(FADE_IN, g_ModeNext);
+				SetFade(FADE_IN, g_ModeNext, g_Loading);
 
 				// モードを設定
-				SetMode(g_ModeNext);
+				if (g_Loading) {
+					SetDrawLoad2(g_ModeNext);
+					g_Loading = FALSE;
+					SetMode(MODE_LOADING2);
+				}
+				else {
+					SetMode(g_ModeNext);
+				}
 			}
 		}
 		else if (g_Fade == FADE_IN)
@@ -119,6 +128,8 @@ void UpdateFade(void)
 #endif
 				// フェード処理終了
 				SetFade(FADE_NONE, g_ModeNext);
+
+				SetFadeColor(FADE_COLOR);
 			}
 		}
 	}
@@ -165,10 +176,18 @@ void DrawFade(void)
 //=============================================================================
 // フェードの状態設定
 //=============================================================================
-void SetFade(FADE fade, MODE_LABEL modeNext)
+void SetFade(FADE fade, MODE_LABEL modeNext, BOOL load)
 {
 	g_Fade = fade;
 	g_ModeNext = modeNext;
+	g_Loading = load;
+}
+
+void SetFadeColor(XMFLOAT3 color)
+{
+	g_td.col.x = color.x;
+	g_td.col.y = color.y;
+	g_td.col.z = color.z;
 }
 
 //=============================================================================

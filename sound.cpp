@@ -92,17 +92,45 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	//{ (char*)"data/BGM/stage_4_3.wav", -1, BGM },		// ステージ4-3
 	{ (char*)"data/SOUND/BGM/result.wav", -1, BGM },			// リザルト
 	{ (char*)"data/SOUND/BGM/ending.wav", -1, BGM },			// エンディング
-	{ (char*)"data/SOUND/SE/select.wav", 0, SE },			// 選択音
-	{ (char*)"data/SOUND/SE/decide.wav", 0, SE },			// 決定音
-	{ (char*)"data/SOUND/SE/decide.wav", 0, SE },			// オープニングSE?
-	{ (char*)"data/SOUND/SE/engine.wav", 0, SE },			// エンジン音
-	{ (char*)"data/SOUND/SE/collision.wav", 0, SE },		// 衝突音
-	//{ (char*)"data/SE/p_voice.wav", 0, SE },		// プレイヤーボイス
-	{ (char*)"data/SOUND/SE/airleak.wav", 0, SE },		// 空気漏れ音
-	{ (char*)"data/SOUND/SE/door_open.wav", 0, SE },		// ドアが開く音
-	{ (char*)"data/SOUND/SE/across_ring.wav", 0, SE },	// リング通過音
-	{ (char*)"data/SOUND/SE/star.wav", 0, SE },			// 星の音
-	{ (char*)"data/SOUND/SE/point_add.wav", 0, SE },		// ポイント加算
+	{ (char*)"data/SOUND/SE/engine_3.wav", -1, BGM },			// エンジン小
+	{ (char*)"data/SOUND/SE/engine_2.wav", -1, BGM },			// エンジン中
+	{ (char*)"data/SOUND/SE/engine_1.wav", -1, BGM },			// エンジン強
+
+
+	{ (char*)"data/SOUND/SE/airleak.wav", 0, SE },			// 空気漏れ音
+	{ (char*)"data/SOUND/SE/back.wav", 0, SE },				// 戻る
+	{ (char*)"data/SOUND/SE/barrier.wav", 0, SE },			// 無敵バリア
+	{ (char*)"data/SOUND/SE/break_ice.wav", 0, SE },		// 氷を破壊
+	{ (char*)"data/SOUND/SE/change_rocket.wav", 0, SE },	// ロケットチェンジ
+	{ (char*)"data/SOUND/SE/collision.wav", 0, SE },		// 氷に衝突
+	{ (char*)"data/SOUND/SE/collision_blast.wav", 0, SE },	// 噴出孔に衝突
+	{ (char*)"data/SOUND/SE/countdown.wav", 0, SE },		// カウントダウン
+	{ (char*)"data/SOUND/SE/cursor.wav", 0, SE },			// メニューカーソル
+	{ (char*)"data/SOUND/SE/decide.wav", 0, SE },			// 決定
+	{ (char*)"data/SOUND/SE/equip.wav", 0, SE },			// ロケット装備
+	{ (char*)"data/SOUND/SE/get_donut.wav", 0, SE },		// ドーナッツ取得
+	{ (char*)"data/SOUND/SE/get_ramen.wav", 0, SE },		// ラーメン取得
+	{ (char*)"data/SOUND/SE/get_sushi.wav", 0, SE },		// 寿司取得
+	{ (char*)"data/SOUND/SE/goal.wav", 0, SE },				// ゴール
+	{ (char*)"data/SOUND/SE/launch_sushi.wav", 0, SE },		// 寿司ミサイル発射
+	{ (char*)"data/SOUND/SE/pin.wav", 0, SE },				// 地球のピン
+	{ (char*)"data/SOUND/SE/refuse.wav", 0, SE },			// クリック拒否
+	{ (char*)"data/SOUND/SE/spin_earth.wav", 0, SE },		// 地球回転
+	{ (char*)"data/SOUND/SE/start_deliver.wav", 0, SE },	// 配達スタート
+	{ (char*)"data/SOUND/SE/start_go.wav", 0, SE },			// 発進
+	{ (char*)"data/SOUND/SE/through_ring.wav", 0, SE },		// リング通過
+
+	//{ (char*)"data/SOUND/SE/select.wav", 0, SE },			// 選択音
+	//{ (char*)"data/SOUND/SE/decide.wav", 0, SE },			// 決定音
+	//{ (char*)"data/SOUND/SE/decide.wav", 0, SE },			// オープニングSE?
+	//{ (char*)"data/SOUND/SE/engine.wav", 0, SE },			// エンジン音
+	//{ (char*)"data/SOUND/SE/collision.wav", 0, SE },		// 衝突音
+	////{ (char*)"data/SE/p_voice.wav", 0, SE },		// プレイヤーボイス
+	//{ (char*)"data/SOUND/SE/airleak.wav", 0, SE },		// 空気漏れ音
+	//{ (char*)"data/SOUND/SE/door_open.wav", 0, SE },		// ドアが開く音
+	//{ (char*)"data/SOUND/SE/across_ring.wav", 0, SE },	// リング通過音
+	//{ (char*)"data/SOUND/SE/star.wav", 0, SE },			// 星の音
+	//{ (char*)"data/SOUND/SE/point_add.wav", 0, SE },		// ポイント加算
 };
 
 //*****************************************************************************
@@ -792,7 +820,7 @@ void ReStartSound(int label)
 //=============================================================================
 void SetBGM(MODE_LABEL mode)
 {
-	return;
+	//return;
 	if (GetMode() > MODE_LOADING)
 	{
 		StopSound(g_NowBGMLabel);
@@ -809,23 +837,23 @@ void SetBGM(MODE_LABEL mode)
 			break;
 
 		case MODE_HOME:
-			PlaySound(SOUND_LABEL_BGM_HOME);
+			//PlaySound(SOUND_LABEL_BGM_HOME);
 			break;
 
 		case MODE_STAGESELECT:
-			PlaySound(SOUND_LABEL_BGM_STAGE_SELECT);
+			//PlaySound(SOUND_LABEL_BGM_STAGE_SELECT);
 			break;
 
 		case MODE_GAME:
-			PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
+			//PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
 			break;
 
 		case MODE_RESULT:
-			PlaySound(SOUND_LABEL_BGM_RESULT);
+			//PlaySound(SOUND_LABEL_BGM_RESULT);
 			break;
 
 		case MODE_END:
-			PlaySound(SOUND_LABEL_BGM_ENDING);
+			//PlaySound(SOUND_LABEL_BGM_ENDING);
 			break;
 
 

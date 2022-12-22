@@ -17,6 +17,7 @@
 #include "ui_game.h"
 #include "stage.h"
 #include "particle.h"
+#include "sound.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -210,7 +211,7 @@ void DrawGimmickInstancing(GIMMICK_TYPE gimmick, BOOL bOutline, BOOL bAdd)
 
 		case GIMMICK_RAMEN:
 			b_pInstance->scl[instCount] = { 0.8f, 0.8f, 0.8f, 0.0f };
-			b_pInstance->rot[instCount] = { -0.5f, 0.0f, rot + XM_PIDIV2, 0.0f };
+			b_pInstance->rot[instCount] = { -0.4f, 0.0f, rot + XM_PIDIV2, 0.0f };
 			b_pInstance->pos[instCount] = { (TUBE_RADIUS - 80.0f) * 0.8f * cosf(rot), (TUBE_RADIUS - 70.0f + 20.0f * sinf(g_SushiRot)) * 0.8f * sinf(rot), zPos, pStage->arrGmk[i].exPos };
 			b_pInstance->col[instCount] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			break;
@@ -283,12 +284,14 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 					case GIMMICK_SUSHI_ICE:
 						SetDamageEffect();
 						SetPlayerCollisionIce();
+						PlaySound(SOUND_LABEL_SE_COLLISION);
 						break;
 
 					case GIMMICK_RING:
 						SetBoostEffect();
 						SetPlayerThroughRing();
 						//pStage->arrGmk[i].use = FALSE;
+						PlaySound(SOUND_LABEL_SE_THROUGH_RING);
 						break;
 
 					case GIMMICK_RAMEN:
@@ -297,6 +300,8 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						pStage->arrGmk[i].use = FALSE;
 						pStage->arrGmk[i].exSpd = 0.0f;
 						pStage->arrGmk[i].col.w = 0.0f;
+						PlaySound(SOUND_LABEL_SE_GET_SUSHI);
+						PlaySound(SOUND_LABEL_SE_GET_RAMEN);
 						break;
 
 					case GIMMICK_SUSHI:
@@ -305,6 +310,7 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						pStage->arrGmk[i].use = FALSE;
 						pStage->arrGmk[i].exSpd = 0.0f;
 						pStage->arrGmk[i].col.w = 0.0f;
+						PlaySound(SOUND_LABEL_SE_GET_SUSHI);
 						break;
 
 					case GIMMICK_LOLLIPOP:
@@ -312,6 +318,8 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						pStage->arrGmk[i].use = FALSE;
 						pStage->arrGmk[i].exSpd = 0.0f;
 						pStage->arrGmk[i].col.w = 0.0f;
+						PlaySound(SOUND_LABEL_SE_GET_SUSHI);
+						PlaySound(SOUND_LABEL_SE_BARRIER);
 						break;
 
 					case GIMMICK_IKURA:
@@ -321,6 +329,7 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						pStage->arrGmk[i].use = FALSE;
 						pStage->arrGmk[i].exSpd = 0.0f;
 						pStage->arrGmk[i].col.w = 0.0f;
+						PlaySound(SOUND_LABEL_SE_GET_SUSHI);
 						break;
 
 					case GIMMICK_DONUT:
@@ -328,6 +337,8 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						pStage->arrGmk[i].use = FALSE;
 						pStage->arrGmk[i].exSpd = 0.0f;
 						pStage->arrGmk[i].col.w = 0.0f;
+						PlaySound(SOUND_LABEL_SE_GET_SUSHI);
+						PlaySound(SOUND_LABEL_SE_GET_DONUT);
 						break;
 
 					case GIMMICK_CRACK:
@@ -338,6 +349,7 @@ bool CollisionGimmick(float oldZ, float newZ, float oldRot, float newRot)
 						else {
 							SetPlayerCollisionBlast(-1.0f - (rot / pStage->arrGmk[i].rotSizeHalf));
 						}
+						PlaySound(SOUND_LABEL_SE_COLLISION_BLAST);
 						break;
 					}
 					return true;
@@ -377,6 +389,7 @@ bool CollisionMissile(float oldZ, float newZ, float oldRot, float newRot)
 					case GIMMICK_ICE:
 						pStage->arrGmk[i].use = FALSE;
 						SetEmitterExp(pStage->arrGmk[i].zPosNo, pStage->arrGmk[i].rotPosNo);
+						PlaySound(SOUND_LABEL_SE_BREAK_ICE);
 						return true;
 						break;
 
@@ -386,6 +399,7 @@ bool CollisionMissile(float oldZ, float newZ, float oldRot, float newRot)
 						pStage->arrGmk[i + 1].col.w = 1.0f;
 						pStage->arrGmk[i].use = FALSE;
 						SetEmitterExp(pStage->arrGmk[i].zPosNo, pStage->arrGmk[i].rotPosNo);
+						PlaySound(SOUND_LABEL_SE_BREAK_ICE);
 						return true;
 						break;
 
