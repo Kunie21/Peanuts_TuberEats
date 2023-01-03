@@ -13,6 +13,8 @@
 #include "sound.h"
 #include "model.h"
 #include "debugproc.h"
+#include "stage.h"
+
 //#include "title.h"
 
 //*****************************************************************************
@@ -484,6 +486,8 @@ static void ButtonPressedJapan(int b)
 	{
 	case BT_JAPAN_OSAKA:
 		SetFade(FADE_OUT, MODE_GAME, TRUE);
+		g_SelectedStage = STAGE_OSAKA;
+
 	case BT_JAPAN_HOKKAIDO:
 	case BT_JAPAN_OKINAWA:
 		//g_SelectedStage = 
@@ -505,6 +509,9 @@ static void ButtonPressedAsia(int b)
 	switch (b)
 	{
 	case BT_ASIA_CHINA:
+		SetFade(FADE_OUT, MODE_GAME, TRUE);
+		g_SelectedStage = STAGE_SHANGHAI;
+
 	case BT_ASIA_KOREA:
 	case BT_ASIA_SINGAPORE:
 		PlaySound(SOUND_LABEL_SE_START_DELIVER);
@@ -525,6 +532,9 @@ static void ButtonPressedEurope(int b)
 	switch (b)
 	{
 	case BT_EUROPE_FRANCE:
+		SetFade(FADE_OUT, MODE_GAME, TRUE);
+		g_SelectedStage = STAGE_PARIS;
+
 	case BT_EUROPE_ENGLAND:
 	case BT_EUROPE_ITALY:
 		PlaySound(SOUND_LABEL_SE_START_DELIVER);
@@ -545,6 +555,9 @@ static void ButtonPressedNorthAmerica(int b)
 	switch (b)
 	{
 	case BT_NORTHAMERICA_AMERICA:
+		SetFade(FADE_OUT, MODE_GAME, TRUE);
+		g_SelectedStage = STAGE_NEWYORK;
+
 	case BT_NORTHAMERICA_CANADA:
 	case BT_NORTHAMERICA_MEXICO:
 		PlaySound(SOUND_LABEL_SE_START_DELIVER);

@@ -25,6 +25,30 @@
 #define DRAW_DIST_NEAR	(-1000.0f)
 #define DRAW_DIST_FAR	(15000.0f)
 
+struct COLOERPATTERN
+{
+	int	bg;		//背景	
+	int	lt;		//ライトの模様
+	int	c1;		//ライト１の色
+	int	c2;		//ライト２の色
+
+};
+
+enum COLOR_LABEL
+{
+	ORANGE = 0,
+	SKYBLUE,
+	YELLOWGREEN,
+	GREEN,
+	RED,
+	BLUE,
+	YELLOW,
+	PINK,
+	WHITE,
+	NONE,
+	COLOR_MAX
+};
+
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -43,3 +67,5 @@ float GetTubeRotation(void);
 //void SetNextTube(void);
 
 void DrawTubeResult(float pos_z);
+
+void SetTubePattern(COLOERPATTERN cp);
