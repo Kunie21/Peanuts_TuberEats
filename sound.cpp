@@ -93,9 +93,9 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	//{ (char*)"data/BGM/stage_4_3.wav", -1, BGM },		// ステージ4-3
 	{ (char*)"data/SOUND/BGM/result.wav", -1, BGM },			// リザルト
 	{ (char*)"data/SOUND/BGM/ending.wav", -1, BGM },			// エンディング
-	{ (char*)"data/SOUND/SE/engine_3.wav", -1, BGM },			// エンジン小
-	{ (char*)"data/SOUND/SE/engine_2.wav", -1, BGM },			// エンジン中
-	{ (char*)"data/SOUND/SE/engine_1.wav", -1, BGM },			// エンジン強
+	{ (char*)"data/SOUND/SE/engine_3.wav", -1, SE },			// エンジン小
+	{ (char*)"data/SOUND/SE/engine_2.wav", -1, SE },			// エンジン中
+	{ (char*)"data/SOUND/SE/engine_1.wav", -1, SE },			// エンジン強
 
 
 	{ (char*)"data/SOUND/SE/airleak.wav", 0, SE },			// 空気漏れ音
@@ -870,6 +870,9 @@ void SetBGM(MODE_LABEL mode)
 			break;
 
 		case MODE_RESULT:
+			StopSound(SOUND_LABEL_BGM_ENGINE1);
+			StopSound(SOUND_LABEL_BGM_ENGINE2);
+			StopSound(SOUND_LABEL_BGM_ENGINE3);
 			PlaySound(SOUND_LABEL_BGM_RESULT);
 			break;
 
