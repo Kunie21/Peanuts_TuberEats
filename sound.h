@@ -38,6 +38,8 @@ enum
 	//SOUND_LABEL_BGM_STAGE_4_3,		// ステージ4-3
 	SOUND_LABEL_BGM_RESULT,			// リザルト
 	SOUND_LABEL_BGM_ENDING,			// エンディング
+
+
 	SOUND_LABEL_BGM_ENGINE1,			// エンジン小
 	SOUND_LABEL_BGM_ENGINE2,			// エンジン中
 	SOUND_LABEL_BGM_ENGINE3,			// エンジン強
