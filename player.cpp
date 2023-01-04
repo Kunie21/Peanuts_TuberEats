@@ -546,3 +546,8 @@ void ResetPlayer(void) {
 	g_Rocket.Reset();
 	ResetTimer();
 }
+
+float GetFuel(void)
+{
+	return g_Rocket.GetFuel();
+}

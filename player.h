@@ -41,3 +41,5 @@ CURVE_BUFFER GetCurveTestStatus(void);
 void SetStageCurvePlayer(void);
 
 void ResetPlayer(void);
+
+float GetFuel(void);

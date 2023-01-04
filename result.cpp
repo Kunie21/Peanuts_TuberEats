@@ -11,6 +11,8 @@
 #include "result.h"
 #include "texture2d.h"
 #include "ui_game.h"
+#include "stage.h"
+#include "player.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -88,6 +90,9 @@ static int DeliveryFee = 0;
 static int Tip = 0;
 static int Damage = 0;
 static int TotalAmount = 0;
+
+static int DeliveryDistanceTbl[STAGE_MAX]
+{ 401 ,1644 ,9844 ,10144 };
 
 static BOOL EventFinish = FALSE;
 
@@ -210,14 +215,14 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_FIREWORK_5].scl = { 0.0f, 0.0f };
 
 
-	//ResultTime = GetTimer();
-	ResultTime = 10.0f;
+	ResultTime = GetTime();
+	//ResultTime = 10.0f;
 
-	DeliveryDistance = 3333;
-	DeliveryTime = 222;
-	DeliveryFee = 11;
-	Tip = 10;
-	Damage = 0;
+	DeliveryDistance = DeliveryDistanceTbl[GetStageNo()];
+	DeliveryTime = 10000 / ResultTime;
+	DeliveryFee = 3000;
+	if (ResultTime <= 30) {Tip = 500;};
+	Damage = 1000 * (5000 / (int)GetFuel());
 
 	TotalAmount = (DeliveryDistance + DeliveryTime + DeliveryFee + Tip - Damage);
 
