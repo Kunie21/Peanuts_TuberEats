@@ -14,6 +14,7 @@
 #include "model.h"
 #include "debugproc.h"
 #include "stage.h"
+#include "player.h"
 
 //#include "title.h"
 
@@ -487,6 +488,7 @@ static void ButtonPressedJapan(int b)
 	case BT_JAPAN_OSAKA:
 		SetFade(FADE_OUT, MODE_GAME, TRUE);
 		g_SelectedStage = STAGE_OSAKA;
+		ResetPlayer();
 
 	case BT_JAPAN_HOKKAIDO:
 	case BT_JAPAN_OKINAWA:
@@ -511,6 +513,7 @@ static void ButtonPressedAsia(int b)
 	case BT_ASIA_CHINA:
 		SetFade(FADE_OUT, MODE_GAME, TRUE);
 		g_SelectedStage = STAGE_SHANGHAI;
+		ResetPlayer();
 
 	case BT_ASIA_KOREA:
 	case BT_ASIA_SINGAPORE:
@@ -534,6 +537,7 @@ static void ButtonPressedEurope(int b)
 	case BT_EUROPE_FRANCE:
 		SetFade(FADE_OUT, MODE_GAME, TRUE);
 		g_SelectedStage = STAGE_PARIS;
+		ResetPlayer();
 
 	case BT_EUROPE_ENGLAND:
 	case BT_EUROPE_ITALY:
@@ -557,6 +561,7 @@ static void ButtonPressedNorthAmerica(int b)
 	case BT_NORTHAMERICA_AMERICA:
 		SetFade(FADE_OUT, MODE_GAME, TRUE);
 		g_SelectedStage = STAGE_NEWYORK;
+		ResetPlayer();
 
 	case BT_NORTHAMERICA_CANADA:
 	case BT_NORTHAMERICA_MEXICO:

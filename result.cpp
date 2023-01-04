@@ -222,7 +222,11 @@ HRESULT InitResult(void)
 	DeliveryTime = 10000 / ResultTime;
 	DeliveryFee = 3000;
 	if (ResultTime <= 30) {Tip = 500;};
-	Damage = 1000 * (5000 / (int)GetFuel());
+	Damage = (5000 - (int)GetFuel());
+	if (Damage > 3000)
+	{
+		Damage = 3000;
+	}
 
 	TotalAmount = (DeliveryDistance + DeliveryTime + DeliveryFee + Tip - Damage);
 
@@ -566,4 +570,18 @@ int Len(int num)
 		ans = 1;
 	}
 	return ans;
+}
+
+void ResetResult(void)
+{
+	ResultTime = 0.0f;
+	GreenStarNum = 0;
+	DeliveryDistance = 0;
+	DeliveryTime = 0;
+	DeliveryFee = 0;
+	Tip = 0;
+	Damage = 0;
+	TotalAmount = 0;
+	EventFinish = FALSE;
+	g_Time = 0;
 }

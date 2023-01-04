@@ -24,4 +24,5 @@ void DrawResult(void);
 
 void SetEventFinish(void);
 int Len(int num);
+void ResetResult(void);
 
