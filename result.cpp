@@ -215,12 +215,12 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_FIREWORK_5].scl = { 0.0f, 0.0f };
 
 
-	ResultTime = GetTime();
-	//ResultTime = 10.0f;
+	//ResultTime = GetTime();
+	ResultTime = 25.0f;
 
 	DeliveryDistance = DeliveryDistanceTbl[GetStageNo()];
 	DeliveryTime = 10000 / ResultTime;
-	DeliveryFee = 3000;
+	DeliveryFee = 3000;	
 	if (ResultTime <= 30) {Tip = 500;};
 	Damage = (5000 - (int)GetFuel());
 	if (Damage > 3000)
