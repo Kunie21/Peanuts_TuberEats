@@ -216,7 +216,7 @@ HRESULT InitResult(void)
 
 
 	//ResultTime = GetTime();
-	ResultTime = 25.0f;
+	ResultTime = 15.0f;
 
 	DeliveryDistance = DeliveryDistanceTbl[GetStageNo()];
 	DeliveryTime = 10000 / ResultTime;
