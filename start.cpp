@@ -12,6 +12,7 @@
 #include "input.h"
 #include "sound.h"
 #include "title.h"
+#include "load.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -461,6 +462,7 @@ void DrawStart(void)
 
 void PressedAnyButton(void)
 {
+	if (!GetLoadAfter()) return;
 	if (g_bStartOn) return;
 
 	g_bStartFlg = TRUE;

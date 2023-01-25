@@ -38,9 +38,21 @@ struct STAGE2
 enum STAGE_LABEL
 {
 	STAGE_OSAKA =0,
-	STAGE_SHANGHAI,
-	STAGE_PARIS,
-	STAGE_NEWYORK,
+	STAGE_HOKKAIDO,
+	STAGE_OKINAWA,
+
+	STAGE_CHINA,
+	STAGE_KOREA,
+	STAGE_SINGAPORE,
+
+	STAGE_FRANCE,
+	STAGE_ENGLAND,
+	STAGE_ITALY,
+
+	STAGE_AMERICA,
+	STAGE_CANADA,
+	STAGE_MEXICO,
+
 	STAGE_MAX
 };
 
@@ -72,4 +84,5 @@ float GetRotPos(int rotPosNo);
 
 void SetStage(int stage);
 int GetStageNo(void);
+float GetBaseDeliveryTime(void);
 BOOL CheckGoal(float oldZ, float newZ);

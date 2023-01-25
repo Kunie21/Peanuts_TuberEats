@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "texture2d.h"
 #include "ui_game.h"
+#include "result.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -299,6 +300,7 @@ void OnTimer(void)
 void OffTimer(void)
 {
 	g_bTimer = FALSE;
+	SetDeliveryTime(g_Timer);
 }
 
 float GetTime(void)

@@ -13,6 +13,11 @@
 #include "sound.h"
 #include "model.h"
 #include "debugproc.h"
+#include "stage.h"
+#include "player.h"
+#include "result.h"
+#include "anim_start.h"
+
 //#include "title.h"
 
 //*****************************************************************************
@@ -477,17 +482,24 @@ static void ButtonPressedMain(int b)
 		break;
 	}
 }
+static void GoToStage(int stage) {
+	SetFade(FADE_OUT, MODE_GAME, TRUE);
+	ResetResult();
+	g_SelectedStage = stage;
+	ResetPlayer();
+	SetStage(stage);
+	SetCameraAnimStart();
+	PlaySound(SOUND_LABEL_SE_START_DELIVER);
+}
 static void ButtonPressedJapan(int b)
 {
 	if (g_DDAlpha < 1.0f) return;
 	switch (b)
 	{
 	case BT_JAPAN_OSAKA:
-		SetFade(FADE_OUT, MODE_GAME, TRUE);
 	case BT_JAPAN_HOKKAIDO:
 	case BT_JAPAN_OKINAWA:
-		//g_SelectedStage = 
-		PlaySound(SOUND_LABEL_SE_START_DELIVER);
+		GoToStage(STAGE_OSAKA + b);
 		break;
 
 	default:
@@ -507,7 +519,7 @@ static void ButtonPressedAsia(int b)
 	case BT_ASIA_CHINA:
 	case BT_ASIA_KOREA:
 	case BT_ASIA_SINGAPORE:
-		PlaySound(SOUND_LABEL_SE_START_DELIVER);
+		GoToStage(STAGE_CHINA + b);
 		break;
 
 	default:
@@ -527,7 +539,7 @@ static void ButtonPressedEurope(int b)
 	case BT_EUROPE_FRANCE:
 	case BT_EUROPE_ENGLAND:
 	case BT_EUROPE_ITALY:
-		PlaySound(SOUND_LABEL_SE_START_DELIVER);
+		GoToStage(STAGE_FRANCE + b);
 		break;
 
 	default:
@@ -547,7 +559,7 @@ static void ButtonPressedNorthAmerica(int b)
 	case BT_NORTHAMERICA_AMERICA:
 	case BT_NORTHAMERICA_CANADA:
 	case BT_NORTHAMERICA_MEXICO:
-		PlaySound(SOUND_LABEL_SE_START_DELIVER);
+		GoToStage(STAGE_AMERICA + b);
 		break;
 
 	default:

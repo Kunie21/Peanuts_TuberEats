@@ -25,6 +25,9 @@
 #include "gate.h"
 #include "anim_start.h"
 #include "particle.h"
+#include "result.h"
+#include "result_event.h"
+#include "home.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -53,7 +56,10 @@ HRESULT InitGame(void)
 	InitMissile();
 	InitAnimStart();
 
-	SetCameraAnimStart();
+	InitResult();
+	InitResultEvent();
+
+	InitHome();
 
 	g_Load = TRUE;
 	return S_OK;
@@ -75,6 +81,11 @@ void UninitGame(void)
 	UninitGimmick();
 	UninitParticle();
 	UninitTube();
+
+	UninitResult();
+	UninitResultEvent();
+
+	UninitHome();
 
 	g_Load = FALSE;
 }
@@ -114,8 +125,8 @@ void UpdateGame(void)
 	UpdateMissile();
 	UpdateAnimStart();
 
-	if (GetKeyboardPress(DIK_K)) { SetStartGate(); }
 #ifdef _DEBUG
+	if (GetKeyboardPress(DIK_K)) { SetStartGate(); }
 	if (nowTime - oldTime >= 20) { QueryPerformanceCounter(&Shadow_E); }
 	if (nowTime - oldTime >= 20) oldTime = nowTime;
 	PrintDebugProc("UpdateTimeB:%d\n", Shadow_E.QuadPart - Shadow_S.QuadPart);

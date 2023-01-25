@@ -23,3 +23,4 @@ void UpdateResultEvent(void);
 void DrawResultEvent(void);
 
 
+void ResetResultEvent(void);

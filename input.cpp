@@ -10,6 +10,7 @@
 #include "debugproc.h"
 #include "sound.h"
 
+static BOOL g_bSkip = FALSE;
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
@@ -252,6 +253,8 @@ void UpdateInput(void)
 
 		UpdateXinputAllButtonStatus(padNo);
 	}
+
+	g_bSkip = FALSE;
 }
 
 //=============================================================================
@@ -1239,4 +1242,14 @@ void MoveCursor(XMINT2& cursor, const int num_x, const int num_y)
 	else if (GetKeyboardRepeat(DIK_RIGHT) || GetKeyboardRepeat(DIK_D)) {
 		cursor.x = (cursor.x - 1 + num_x) % num_x;
 	}
+}
+
+BOOL CheckButtonSkip(void)
+{
+	if (!g_bSkip && (IsMouseLeftTriggered() || GetKeyboardTrigger(DIK_RETURN)))
+	{
+		g_bSkip = TRUE;
+		return TRUE;
+	}
+	return FALSE;
 }

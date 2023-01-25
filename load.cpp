@@ -13,6 +13,7 @@
 #include "load.h"
 #include "debugproc.h"
 #include "load2.h"
+#include "game.h"
 
 // ロードするモノの数
 #define LOAD_SUM (SOUND_LABEL_MAX + MODEL_MAX + TEXTURE_LABEL_MAX - TEXTURE_LABEL_COUNTDOWN3)
@@ -132,6 +133,8 @@ void UpdateLoad(void)
 			CloseHandle(g_hThread);	// スレッドを閉じる
 
 			InitLoad2();
+
+			InitGame();
 
 			// ロード完了
 			//SetFade(FADE_OUT, MODE_TITLE_START);
@@ -253,9 +256,15 @@ void DrawLoad(void)
 	//#endif
 }
 
-BOOL DrawLoadAfter(void)
+static BOOL	g_bLoadAfter = FALSE;
+BOOL GetLoadAfter(void) { return g_bLoadAfter; }
+void DrawLoadAfter(void)
 {
-	if (g_td[TEXTURE_TRANSITION_DOWN].posAdd.y >= g_td[TEXTURE_BG].size.y) return TRUE;
+	if (g_td[TEXTURE_TRANSITION_DOWN].posAdd.y >= g_td[TEXTURE_BG].size.y)
+	{
+		g_bLoadAfter = TRUE;
+		return;
+	}
 
 	static float slide = 0.0f;
 	static float spd = 0.0f;
@@ -319,5 +328,5 @@ BOOL DrawLoadAfter(void)
 	slide += spd;
 	spd += 0.2f;
 
-	return FALSE;
+	g_bLoadAfter = FALSE;
 }

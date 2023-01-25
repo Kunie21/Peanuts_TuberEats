@@ -18,6 +18,8 @@
 #include "stage.h"
 #include "missile.h"
 #include "sound.h"
+#include "rocket_select.h"
+#include "result.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -41,7 +43,7 @@ enum {
 	MODEL_PLAYER_ROCKET2,
 	MODEL_PLAYER_ROCKET3,
 	MODEL_PLAYER_ROCKET4,
-	MODEL_PLAYER_ROCKET5,
+	//MODEL_PLAYER_ROCKET5,
 	MODEL_PLAYER_FIRE,
 	MODEL_PLAYER_MAX,
 };
@@ -69,8 +71,8 @@ struct ROCKET_STATUS
 };
 ROCKET_STATUS g_RS[MODEL_PLAYER_MAX];
 
-static float		g_Rotation = 0.0f;
-static float		g_TestAddSpeed = 0.0f;
+static float	g_Rotation = 0.0f;
+static float	g_TestAddSpeed = 0.0f;
 static float	g_FirePos[5] = {
 	-30.0f,
 	-30.0f,
@@ -114,6 +116,8 @@ private:
 
 	int m_old_spd_range = -1;
 
+	int	m_damages = 0;
+
 	BOOL m_bStart = FALSE;
 
 public:
@@ -151,6 +155,10 @@ public:
 	void Blast(float rotAddSpd) {
 		m_rotAddSpd += rotAddSpd;
 	}
+
+	// ダメージ
+	void Damaged(void) { m_damages++; }
+	int GetDamages(void) { return m_damages; }
 
 	// 加速
 	void Accel(float posSpd) { m_posSpd += posSpd; }
@@ -246,6 +254,7 @@ public:
 		m_fuel = 5000.0f;
 		m_invTime = 0.0f;
 		m_missiles = 0;
+		m_damages = 0;
 		m_bStart = FALSE;
 	}
 
@@ -269,7 +278,7 @@ HRESULT InitPlayer(void)
 	g_Model[MODEL_PLAYER_ROCKET2].model = MODEL_ROCKET2;
 	g_Model[MODEL_PLAYER_ROCKET3].model = MODEL_ROCKET3;
 	g_Model[MODEL_PLAYER_ROCKET4].model = MODEL_ROCKET4;
-	g_Model[MODEL_PLAYER_ROCKET5].model = MODEL_ROCKET5;
+	//g_Model[MODEL_PLAYER_ROCKET5].model = MODEL_ROCKET5;
 	g_Model[MODEL_PLAYER_FIRE].model = MODEL_FIRE;
 	for (int i = 0; i < MODEL_PLAYER_MAX; i++) {
 		g_Model[i].srt.pos = { 0.0f, ROCKET_Y, 0.0f };
@@ -279,41 +288,41 @@ HRESULT InitPlayer(void)
 	g_Model[MODEL_PLAYER_FIRE].srt.pos.z = -30.0f;
 
 
-	g_RS[MODEL_PLAYER_ROCKET2].posSpdMax = 80.0f;
-	g_RS[MODEL_PLAYER_ROCKET2].accel = 0.6f;
-	g_RS[MODEL_PLAYER_ROCKET2].decel = 0.98f;
-	g_RS[MODEL_PLAYER_ROCKET2].rotSpd = 0.003f;
-	g_RS[MODEL_PLAYER_ROCKET2].rotSpdMax = 0.05f;
-	g_RS[MODEL_PLAYER_ROCKET2].rotDecel = 0.98f;
+	//g_RS[MODEL_PLAYER_ROCKET2].posSpdMax = 80.0f;
+	//g_RS[MODEL_PLAYER_ROCKET2].accel = 0.6f;
+	//g_RS[MODEL_PLAYER_ROCKET2].decel = 0.98f;
+	//g_RS[MODEL_PLAYER_ROCKET2].rotSpd = 0.003f;
+	//g_RS[MODEL_PLAYER_ROCKET2].rotSpdMax = 0.05f;
+	//g_RS[MODEL_PLAYER_ROCKET2].rotDecel = 0.98f;
+	//g_RS[MODEL_PLAYER_ROCKET2].fuelMax = 5000.0f;
+	//g_RS[MODEL_PLAYER_ROCKET2].missiles = 0;
+
+	g_RS[MODEL_PLAYER_ROCKET2].posSpdMax = 200.0f;
+	g_RS[MODEL_PLAYER_ROCKET2].accel = 0.2f;
+	g_RS[MODEL_PLAYER_ROCKET2].decel = 0.99f;
+	g_RS[MODEL_PLAYER_ROCKET2].rotSpd = 0.001f;
+	g_RS[MODEL_PLAYER_ROCKET2].rotSpdMax = 0.03f;
+	g_RS[MODEL_PLAYER_ROCKET2].rotDecel = 0.99f;
 	g_RS[MODEL_PLAYER_ROCKET2].fuelMax = 5000.0f;
-	g_RS[MODEL_PLAYER_ROCKET2].missiles = 0;
+	g_RS[MODEL_PLAYER_ROCKET2].missiles = 3;
 
-	g_RS[MODEL_PLAYER_ROCKET3].posSpdMax = 200.0f;
-	g_RS[MODEL_PLAYER_ROCKET3].accel = 0.2f;
-	g_RS[MODEL_PLAYER_ROCKET3].decel = 0.99f;
-	g_RS[MODEL_PLAYER_ROCKET3].rotSpd = 0.001f;
-	g_RS[MODEL_PLAYER_ROCKET3].rotSpdMax = 0.03f;
-	g_RS[MODEL_PLAYER_ROCKET3].rotDecel = 0.99f;
+	g_RS[MODEL_PLAYER_ROCKET3].posSpdMax = 110.0f;
+	g_RS[MODEL_PLAYER_ROCKET3].accel = 0.8f;
+	g_RS[MODEL_PLAYER_ROCKET3].decel = 0.98f;
+	g_RS[MODEL_PLAYER_ROCKET3].rotSpd = 0.004f;
+	g_RS[MODEL_PLAYER_ROCKET3].rotSpdMax = 0.08f;
+	g_RS[MODEL_PLAYER_ROCKET3].rotDecel = 0.98f;
 	g_RS[MODEL_PLAYER_ROCKET3].fuelMax = 5000.0f;
-	g_RS[MODEL_PLAYER_ROCKET3].missiles = 3;
+	g_RS[MODEL_PLAYER_ROCKET3].missiles = 5;
 
-	g_RS[MODEL_PLAYER_ROCKET4].posSpdMax = 110.0f;
-	g_RS[MODEL_PLAYER_ROCKET4].accel = 0.8f;
-	g_RS[MODEL_PLAYER_ROCKET4].decel = 0.98f;
+	g_RS[MODEL_PLAYER_ROCKET4].posSpdMax = 200.0f;
+	g_RS[MODEL_PLAYER_ROCKET4].accel = 5.0f;
+	g_RS[MODEL_PLAYER_ROCKET4].decel = 0.5f;
 	g_RS[MODEL_PLAYER_ROCKET4].rotSpd = 0.004f;
-	g_RS[MODEL_PLAYER_ROCKET4].rotSpdMax = 0.08f;
-	g_RS[MODEL_PLAYER_ROCKET4].rotDecel = 0.98f;
+	g_RS[MODEL_PLAYER_ROCKET4].rotSpdMax = 0.1f;
+	g_RS[MODEL_PLAYER_ROCKET4].rotDecel = 0.5f;
 	g_RS[MODEL_PLAYER_ROCKET4].fuelMax = 5000.0f;
-	g_RS[MODEL_PLAYER_ROCKET4].missiles = 5;
-
-	g_RS[MODEL_PLAYER_ROCKET5].posSpdMax = 200.0f;
-	g_RS[MODEL_PLAYER_ROCKET5].accel = 5.0f;
-	g_RS[MODEL_PLAYER_ROCKET5].decel = 0.5f;
-	g_RS[MODEL_PLAYER_ROCKET5].rotSpd = 0.004f;
-	g_RS[MODEL_PLAYER_ROCKET5].rotSpdMax = 0.1f;
-	g_RS[MODEL_PLAYER_ROCKET5].rotDecel = 0.5f;
-	g_RS[MODEL_PLAYER_ROCKET5].fuelMax = 5000.0f;
-	g_RS[MODEL_PLAYER_ROCKET5].missiles = 10;
+	g_RS[MODEL_PLAYER_ROCKET4].missiles = 10;
 
 	g_Load = TRUE;
 	return S_OK;
@@ -334,12 +343,14 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+#ifdef _DEBUG
 	// ロケットの種類変更
 	if (GetKeyboardPress(DIK_1)) { testNo = 0; g_Rocket.SetStatus(g_RS[testNo]); }
 	if (GetKeyboardPress(DIK_2)) { testNo = 1; g_Rocket.SetStatus(g_RS[testNo]); }
 	if (GetKeyboardPress(DIK_3)) { testNo = 2; g_Rocket.SetStatus(g_RS[testNo]); }
 	if (GetKeyboardPress(DIK_4)) { testNo = 3; g_Rocket.SetStatus(g_RS[testNo]); }
 	if (GetKeyboardPress(DIK_5)) { testNo = 4; g_Rocket.SetStatus(g_RS[testNo]); }
+#endif
 
 	// ロケットの状態を保存
 	static ROCKET oldRocket;
@@ -376,6 +387,9 @@ void UpdatePlayer(void)
 	// ゴール判定
 	if (CheckGoal(oldRocket.GetPos(), g_Rocket.GetPos())) {
 		OffTimer();
+		SetDeliveryTip(g_Rocket.GetMissiles());
+		SetDeliveryDamage(g_Rocket.GetDamages());
+		SetDeliveryResult();
 		SetFade(FADE_OUT, MODE_RESULT);
 		PlaySound(SOUND_LABEL_SE_GOAL);
 	}
@@ -437,7 +451,7 @@ void DrawPlayer(void) {
 	g_Model[testNo].srt.pos.y = (float)(rand() % 20) * 0.0125f + ROCKET_Y;
 	//g_Model[testNo].srt.pos.z = (float)(rand() % 20) * 0.05f - 0.5f;
 
-	if(testNo == 4) DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, TEXTURE_LABEL_MAX);
+	if(testNo == 3) DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt, TEXTURE_LABEL_MAX);
 	else DrawModel(&g_Model[testNo].model, &g_Model[testNo].srt);	// モデル描画
 	SetCullingMode(CULL_MODE_BACK);
 }
@@ -497,12 +511,17 @@ float GetPlayerRotation(void) {
 int GetPlayerMissiles(void) {
 	return g_Rocket.GetMissiles();
 }
+void SetPlayerRocket(int rocket) {
+	testNo = rocket;
+	g_Rocket.SetStatus(g_RS[testNo]);
+}
 void SetPlayerThroughRing(void) {
 	g_Rocket.Boost(30.0f);
 	//g_Rocket.Collision();
 }
 void SetPlayerCollisionIce(void) {
 	g_Rocket.LostFuel(500.0f);
+	g_Rocket.Damaged();
 	g_Rocket.Back(g_Rocket.GetSpeed());
 	g_Rocket.Boost(-g_Rocket.GetSpeed() * 0.5f);
 	g_Rocket.BrakeFull();
@@ -521,7 +540,9 @@ void SetPlayerCollisionDonut(void) {
 	g_Rocket.AddFuel(300.0f);
 }
 void SetPlayerCollisionBlast(float rotAddSpd) {
+	g_Rocket.LostFuel(250.0f);
 	g_Rocket.Blast(rotAddSpd * 0.1f);
+	g_Rocket.Damaged();
 	//g_Rocket.Collision();
 }
 
@@ -545,4 +566,10 @@ void SetStageCurvePlayer(void) {
 void ResetPlayer(void) {
 	g_Rocket.Reset();
 	ResetTimer();
+	SetPlayerRocket(GetRocketSelected());
+}
+
+float GetFuel(void)
+{
+	return g_Rocket.GetFuel();
 }

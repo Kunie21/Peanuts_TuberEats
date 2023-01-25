@@ -25,6 +25,7 @@ float GetPlayerSpeed(void);
 float GetPlayerPosition(void);
 float GetPlayerRotation(void);
 int GetPlayerMissiles(void);
+void SetPlayerRocket(int rocket);
 void SetPlayerThroughRing(void);
 void SetPlayerCollisionIce(void);
 void SetPlayerCollisionRamen(void);
@@ -41,3 +42,5 @@ CURVE_BUFFER GetCurveTestStatus(void);
 void SetStageCurvePlayer(void);
 
 void ResetPlayer(void);
+
+float GetFuel(void);

@@ -63,7 +63,10 @@ void UninitAnimStart(void)
 //=============================================================================
 void UpdateAnimStart(void)
 {
+#ifdef _DEBUG
 	if (GetKeyboardTrigger(DIK_L)) { SetCameraAnimStart(); }
+#endif
+
 	if (!g_Use) return;
 	static float time = 0.0f;
 	static START_ANIM_CUT_LABEL animNo = SAC_DOLLY_OUT;

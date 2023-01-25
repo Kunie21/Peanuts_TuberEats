@@ -81,7 +81,7 @@ static char* g_ModelName[MODEL_MAX] = {
 	"data/MODEL/wall.obj",
 	"data/MODEL/wall.obj",
 	"data/MODEL/wall.obj",
-	"data/MODEL/wall.obj",
+	//"data/MODEL/wall.obj",
 #else
 	"data/MODEL/ice_1.obj",
 	"data/MODEL/ring_1.obj",
@@ -94,7 +94,7 @@ static char* g_ModelName[MODEL_MAX] = {
 	"data/MODEL/fire01.obj",
 
 	"data/MODEL/rocket01.obj",
-	"data/MODEL/rocket02.obj",
+	//"data/MODEL/rocket02.obj",
 	"data/MODEL/rocket03.obj",
 	"data/MODEL/rocket04.obj",
 	"data/MODEL/rocket05.obj",

@@ -11,6 +11,10 @@
 #include "result.h"
 #include "texture2d.h"
 #include "ui_game.h"
+#include "stage.h"
+#include "player.h"
+#include "result_event.h"
+#include "wallet.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -76,9 +80,9 @@ enum
 	TEXTURE_RESULT_FIREWORK_3,
 	TEXTURE_RESULT_FIREWORK_4,
 	TEXTURE_RESULT_FIREWORK_5,
-	TEXTURE_MAX,
+	TEXTURE_RESULT_MAX,
 };
-static TEXTURE2D_DESC	g_td[TEXTURE_MAX];
+static TEXTURE2D_DESC	g_td[TEXTURE_RESULT_MAX];
 
 static float ResultTime = 0.0f;
 static int GreenStarNum = 0;
@@ -89,6 +93,9 @@ static int Tip = 0;
 static int Damage = 0;
 static int TotalAmount = 0;
 
+static int DeliveryDistanceTbl[STAGE_MAX]
+{ 401 ,1644 ,9844 ,10144 };
+
 static BOOL EventFinish = FALSE;
 
 //=============================================================================
@@ -97,7 +104,7 @@ static BOOL EventFinish = FALSE;
 HRESULT InitResult(void)
 {
 	// ÉeÉNÉXÉ`ÉÉê∂ê¨
-	for (int i = 0; i < TEXTURE_MAX; i++) {
+	for (int i = 0; i < TEXTURE_RESULT_MAX; i++) {
 		g_td[i].tex = (TEXTURE_LABEL)(TEXTURE_LABEL_RESULT_BAR + i);
 	}
 
@@ -166,18 +173,24 @@ HRESULT InitResult(void)
 
 	g_td[TEXTURE_RESULT_NUMBER].size = { 389.0f, 52.0f };
 	g_td[TEXTURE_RESULT_NUMBER].pos = { YEN_FINAL_POS, 608.0f };
-	g_td[TEXTURE_RESULT_NUMBER].scl = { 0.1f, 1.0f };
-	g_td[TEXTURE_RESULT_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
+	//g_td[TEXTURE_RESULT_NUMBER].scl = { 0.1f, 1.0f };
+	//g_td[TEXTURE_RESULT_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
+	g_td[TEXTURE_RESULT_NUMBER].size.x *= 0.1f;
+	g_td[TEXTURE_RESULT_NUMBER].uv_pos.uw = 0.1f;
 
 	g_td[TEXTURE_RESULT_MIUS_NUMBER].size = { NUMBER_WIDTH, 52.0f };
 	g_td[TEXTURE_RESULT_MIUS_NUMBER].pos = { YEN_FINAL_POS , 1410.0f };
-	g_td[TEXTURE_RESULT_MIUS_NUMBER].scl = { 0.1f, 1.0f };
-	g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
+	//g_td[TEXTURE_RESULT_MIUS_NUMBER].scl = { 0.1f, 1.0f };
+	//g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
+	g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x *= 0.1f;
+	g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos.uw = 0.1f;
 
 	g_td[TEXTURE_RESULT_TOTAL_NUMBER].size = { TOTAL_NUMBER_WIDTH, 73.0f };
 	g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos = { YEN_FINAL_POS , 1700.0f };
-	g_td[TEXTURE_RESULT_TOTAL_NUMBER].scl = { 0.1f, 1.0f };
-	g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
+	//g_td[TEXTURE_RESULT_TOTAL_NUMBER].scl = { 0.1f, 1.0f };
+	//g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos = { 0.1f, 0.0f, 0.1f, 1.0f };
+	g_td[TEXTURE_RESULT_TOTAL_NUMBER].size.x *= 0.1f;
+	g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos.uw = 0.1f;
 
 	g_td[TEXTURE_RESULT_POINT].size = { 8.0f, 8.0f };
 	g_td[TEXTURE_RESULT_POINT].pos = { (YEN_FINAL_POS + 25.0f) , 608.0f };
@@ -210,14 +223,18 @@ HRESULT InitResult(void)
 	g_td[TEXTURE_RESULT_FIREWORK_5].scl = { 0.0f, 0.0f };
 
 
-	//ResultTime = GetTimer();
-	ResultTime = 10.0f;
+	//ResultTime = GetTime();
+	ResultTime = 15.0f;
 
-	DeliveryDistance = 3333;
-	DeliveryTime = 222;
-	DeliveryFee = 11;
-	Tip = 10;
-	Damage = 0;
+	DeliveryDistance = DeliveryDistanceTbl[GetStageNo()];
+	DeliveryTime = (int)(10000.0f / ResultTime);
+	DeliveryFee = 3000;	
+	if (ResultTime <= 30) {Tip = 500;};
+	Damage = (5000 - (int)GetFuel());
+	if (Damage > 3000)
+	{
+		Damage = 3000;
+	}
 
 	TotalAmount = (DeliveryDistance + DeliveryTime + DeliveryFee + Tip - Damage);
 
@@ -237,11 +254,43 @@ void UninitResult(void)
 	g_Load = FALSE;
 }
 
+void SetPosAddY(float addY)
+{
+	g_td[TEXTURE_RESULT_NO_STARS].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_GREEN_STARS].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_EXPRESSION_1].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_EXPRESSION_2].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_EXPRESSION_3].posAdd.y = addY;
+
+	g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_DELIVERY_TIME].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_DELIVERY_FEE].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_TIP].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_DAMAGE].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_TOTAL_AMOUNT].pos.y = addY;
+
+	g_td[TEXTURE_RESULT_YEN].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_MIUS_YEN].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_TOTAL_YEN].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_NUMBER].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_MIUS_NUMBER].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_TOTAL_NUMBER].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_POINT].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_MIUS_POINT].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_TOTAL_POINT].posAdd.y = addY;
+
+	g_td[TEXTURE_RESULT_FIREWORK_1].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_FIREWORK_2].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_FIREWORK_3].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_FIREWORK_4].posAdd.y = addY;
+	g_td[TEXTURE_RESULT_FIREWORK_5].posAdd.y = addY;
+}
 //=============================================================================
 // çXêVèàóù
 //=============================================================================
 void UpdateResult(void)
 {
+	static float posAddY = 0.0f;
 	if (EventFinish)
 	{//ÉXÉNÉçÅ[ÉãÇ∑ÇÈ
 		if (GetKeyboardPress(DIK_DOWN))
@@ -249,35 +298,9 @@ void UpdateResult(void)
 			if (g_td[TEXTURE_RESULT_BG].uv_pos.v <= 0.45f)
 			{
 				g_td[TEXTURE_RESULT_BG].uv_pos.v += 0.01f;
-				g_td[TEXTURE_RESULT_NO_STARS].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_GREEN_STARS].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_EXPRESSION_1].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_EXPRESSION_2].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_EXPRESSION_3].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_SCROLL].pos.y += 8.4f;
-
-				g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_DELIVERY_TIME].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_DELIVERY_FEE].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_TIP].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_DAMAGE].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_AMOUNT].pos.y -= MOVE;
-
-				g_td[TEXTURE_RESULT_YEN].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_MIUS_YEN].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_YEN].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_NUMBER].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_MIUS_NUMBER].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_POINT].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_MIUS_POINT].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_POINT].pos.y -= MOVE;
-
-				g_td[TEXTURE_RESULT_FIREWORK_1].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_2].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_3].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_4].pos.y -= MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_5].pos.y -= MOVE;
+				g_td[TEXTURE_RESULT_SCROLL].posAdd.y += 8.4f;
+				posAddY -= MOVE;
+				SetPosAddY(posAddY);
 			}
 		}
 		if (GetKeyboardPress(DIK_UP))
@@ -285,36 +308,9 @@ void UpdateResult(void)
 			if (g_td[TEXTURE_RESULT_BG].uv_pos.v > 0.0f)
 			{
 				g_td[TEXTURE_RESULT_BG].uv_pos.v -= 0.01f;
-				g_td[TEXTURE_RESULT_NO_STARS].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_GREEN_STARS].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_EXPRESSION_1].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_EXPRESSION_2].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_EXPRESSION_3].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_SCROLL].pos.y -= 8.4f;
-
-				g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_DELIVERY_TIME].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_DELIVERY_FEE].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_TIP].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_DAMAGE].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_AMOUNT].pos.y += MOVE;
-
-				g_td[TEXTURE_RESULT_YEN].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_MIUS_YEN].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_YEN].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_NUMBER].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_MIUS_NUMBER].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_POINT].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_MIUS_POINT].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_TOTAL_POINT].pos.y += MOVE;
-
-				g_td[TEXTURE_RESULT_FIREWORK_1].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_2].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_3].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_4].pos.y += MOVE;
-				g_td[TEXTURE_RESULT_FIREWORK_5].pos.y += MOVE;
-
+				g_td[TEXTURE_RESULT_SCROLL].posAdd.y -= 8.4f;
+				posAddY += MOVE;
+				SetPosAddY(posAddY);
 			}
 		}
 
@@ -396,7 +392,7 @@ void UpdateResult(void)
 		g_Time++;
 
 
-		if (GetKeyboardPress(DIK_RETURN)) {
+		if (CheckButtonSkip()) {
 			SetFade(FADE_OUT, MODE_HOME, TRUE);
 		}
 	}
@@ -405,16 +401,63 @@ void UpdateResult(void)
 //=============================================================================
 // ï`âÊèàóù
 //=============================================================================
+void DrawNumber(int number, int dotTex, int numberTex, int yenTex)//, int commaTex)
+{
+	// ÉvÉåÉCÉÑÅ[ÇÃÇ®ã‡ÇÃï`âÊèàóù
+	int money = number;
+	int count = 0;
+	int comma = 0;
+	while (money > 0)
+	{
+		if (count == 2)
+		{
+			g_td[dotTex].pos.x = g_td[numberTex].pos.x - (count - comma) * g_td[numberTex].size.x - comma * g_td[numberTex].size.x * 0.5f + g_td[numberTex].size.x * 0.25f;
+			DrawTexture2D(&g_td[dotTex]);
+			count++;
+			comma++;
+		}
+		//else if (count == 6 || count == 10 || count == 14)
+		//{
+		//	g_td[UI_WALLET_COMMA].pos.x = g_td[UI_WALLET_NUMBER].pos.x - (count - comma) * g_td[UI_WALLET_NUMBER].size.x - comma * g_td[UI_WALLET_COMMA].size.x;
+		//	DrawTexture2D(&g_td[UI_WALLET_COMMA]);
+		//	count++;
+		//	comma++;
+		//}
+		g_td[numberTex].uv_pos.u = (float)(money % 10) * 0.1f;
+		g_td[numberTex].posAdd.x = -(count - comma) * g_td[numberTex].size.x - comma * g_td[numberTex].size.x * 0.5f;
+		DrawTexture2D(&g_td[numberTex]);
+		money /= 10;
+		count++;
+	}
+	while (count < 3)
+	{
+		if (count == 2)
+		{
+			g_td[dotTex].pos.x = g_td[numberTex].pos.x - (count - comma) * g_td[numberTex].size.x - comma * g_td[numberTex].size.x * 0.5f + g_td[numberTex].size.x * 0.25f;
+			DrawTexture2D(&g_td[dotTex]);
+			count++;
+			comma++;
+		}
+
+		g_td[numberTex].uv_pos.u = 0.0f;
+		g_td[numberTex].posAdd.x = -(count - comma) * g_td[numberTex].size.x - comma * g_td[numberTex].size.x * 0.5f;
+		DrawTexture2D(&g_td[numberTex]);
+		money /= 10;
+		count++;
+	}
+	g_td[yenTex].pos.x = g_td[numberTex].pos.x - (count - comma - 1) * g_td[numberTex].size.x - comma * g_td[numberTex].size.x * 0.5f - g_td[yenTex].size.x * 0.5f - g_td[numberTex].size.x * 0.5f;
+	DrawTexture2D(&g_td[yenTex]);
+}
 void DrawResult(void)
 {
 	if (EventFinish)
 	{
 		SetDraw2DTexture();
 
-		//îwåiï`âÊ
+		// îwåiï`âÊ
 		DrawTexture2D(&g_td[TEXTURE_RESULT_BG], FALSE, TRUE);
 
-		//ç≈ëÂêØêîï`âÊ
+		// ç≈ëÂêØêîï`âÊ
 		for (int i = 0; i < STAR_MAX; i++)
 		{
 			DrawTexture2D(&g_td[TEXTURE_RESULT_NO_STARS]);
@@ -422,7 +465,7 @@ void DrawResult(void)
 			//																				Å™êØÇÃä‘äuí≤êÆ
 		}
 
-		//älìæÇµÇΩêØï`âÊ
+		// älìæÇµÇΩêØï`âÊ
 		for (int i = 0; i < GreenStarNum; i++)
 		{
 			if (g_Time >= (i + 1) * 40)
@@ -460,73 +503,92 @@ void DrawResult(void)
 		DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_AMOUNT]);
 
 		//â~É}Å[ÉNï`âÊ
-		for (int i = 0; i < YEN_MAX; i++)
-		{
-			g_td[TEXTURE_RESULT_YEN].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y);
-			DrawTexture2D(&g_td[TEXTURE_RESULT_YEN]);
-		}
-		DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_YEN]);
-		DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_YEN]);
+		//for (int i = 0; i < YEN_MAX; i++)
+		//{
+		//	g_td[TEXTURE_RESULT_YEN].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y);
+		//	DrawTexture2D(&g_td[TEXTURE_RESULT_YEN]);
+		//}
+		//DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_YEN]);
+		//DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_YEN]);
 
 		//ílíiï`âÊ
 		for (int i = 0; i < YEN_MAX; i++)
 		{
-			int number[YEN_MAX] = { DeliveryDistance ,DeliveryTime ,DeliveryFee ,Tip };
-			int numberlen[YEN_MAX] = { Len(DeliveryDistance) ,Len(DeliveryTime) ,Len(DeliveryFee) ,Len(Tip) };
+			int number[YEN_MAX] = { DeliveryDistance, DeliveryTime, DeliveryFee, Tip };
+			int numberlen[YEN_MAX] = { Len(DeliveryDistance), Len(DeliveryTime), Len(DeliveryFee), Len(Tip) };
 
 			g_td[TEXTURE_RESULT_NUMBER].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y);
 
-			for (int j = 0; j < numberlen[i]; j++)
-			{
-				g_td[TEXTURE_RESULT_NUMBER].uv_pos.u = (number[i] % 10 * 0.1f);
-				g_td[TEXTURE_RESULT_NUMBER].pos.x = (YEN_FINAL_POS - ((g_td[TEXTURE_RESULT_NUMBER].size.x / 10) * j));
-				DrawTexture2D(&g_td[TEXTURE_RESULT_NUMBER], FALSE, TRUE);
-				number[i] /= 10;
-			}
-		}
-		int DamageNumber = Damage;
-		for (int i = 0; i < Len(Damage); i++)
-		{
-			g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos.u = (DamageNumber % 10 * 0.1f);
-			g_td[TEXTURE_RESULT_MIUS_NUMBER].pos.x = (YEN_FINAL_POS - ((g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x / 10) * i));
-			DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_NUMBER], FALSE, TRUE);
-			DamageNumber /= 10;
-		}
-		int TotalNumber = TotalAmount;
-		for (int i = 0; i < Len(TotalAmount); i++)
-		{
-			g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos.u = (TotalNumber % 10 * 0.1f);
-			g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos.x = (YEN_FINAL_POS - ((g_td[TEXTURE_RESULT_TOTAL_NUMBER].size.x / 10) * i) - 5.0f);
-			DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_NUMBER], FALSE, TRUE);
-			TotalNumber /= 10;
-		}
-		for (int i = 0; i < YEN_MAX; i++)
-		{
+			g_td[TEXTURE_RESULT_YEN].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y);
 			g_td[TEXTURE_RESULT_POINT].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y + 18.0f);
 
-			DrawTexture2D(&g_td[TEXTURE_RESULT_POINT]);
+			DrawNumber(number[i], TEXTURE_RESULT_POINT, TEXTURE_RESULT_NUMBER, TEXTURE_RESULT_YEN);
+			//for (int j = 0; j < numberlen[i]; j++)
+			//{
+			//	g_td[TEXTURE_RESULT_NUMBER].uv_pos.u = (number[i] % 10 * 0.1f);
+			//	g_td[TEXTURE_RESULT_NUMBER].pos.x = (YEN_FINAL_POS - (g_td[TEXTURE_RESULT_NUMBER].size.x * j));
+			//	DrawTexture2D(&g_td[TEXTURE_RESULT_NUMBER], FALSE, TRUE);
+			//	number[i] /= 10;
+			//}
+
+			//g_td[TEXTURE_RESULT_YEN].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y);
+			//g_td[TEXTURE_RESULT_YEN].pos.x = (YEN_FINAL_POS - (g_td[TEXTURE_RESULT_NUMBER].size.x * numberlen[i]));
+			//DrawTexture2D(&g_td[TEXTURE_RESULT_YEN]);
 		}
-		DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_POINT]);
-		DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_POINT]);
 
-		for (int i = 0; i < ZERO_DIGIT; i++)
-		{
-			for (int j = 0; j < YEN_MAX; j++)
-			{
-				g_td[TEXTURE_RESULT_NUMBER].pos.x = (YEN_FINAL_POS + g_td[TEXTURE_RESULT_POINT].size.x + ((g_td[TEXTURE_RESULT_NUMBER].size.x / 10) * (i + 1)));
-				g_td[TEXTURE_RESULT_NUMBER].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + j].pos.y);
-				g_td[TEXTURE_RESULT_NUMBER].uv_pos.u = 0.0f;
-				DrawTexture2D(&g_td[TEXTURE_RESULT_NUMBER], FALSE, TRUE);
-			}
-			g_td[TEXTURE_RESULT_MIUS_NUMBER].pos.x = (YEN_FINAL_POS + g_td[TEXTURE_RESULT_MIUS_POINT].size.x + ((g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x / 10) * (i + 1)));
-			g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos.u = 0.0f;
-			DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_NUMBER], FALSE, TRUE);
+		// É_ÉÅÅ[ÉWÉyÉiÉãÉeÉB
+		DrawNumber(Damage, TEXTURE_RESULT_MIUS_POINT, TEXTURE_RESULT_MIUS_NUMBER, TEXTURE_RESULT_MIUS_YEN);
+		//int DamageNumber = Damage;
+		//for (int i = 0; i < Len(Damage); i++)
+		//{
+		//	g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos.u = (DamageNumber % 10 * 0.1f);
+		//	g_td[TEXTURE_RESULT_MIUS_NUMBER].pos.x = (YEN_FINAL_POS - (g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x * i));
+		//	DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_NUMBER], FALSE, TRUE);
+		//	DamageNumber /= 10;
+		//}
+		//g_td[TEXTURE_RESULT_MIUS_YEN].pos.x = (YEN_FINAL_POS - (g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x * Len(Damage)));
+		//DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_YEN]);
 
-			g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos.x = (YEN_FINAL_POS + g_td[TEXTURE_RESULT_TOTAL_POINT].size.x + ((g_td[TEXTURE_RESULT_TOTAL_NUMBER].size.x / 10) * (i + 1)));
-			g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos.u = 0.0f;
-			DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_NUMBER], FALSE, TRUE);
+		// ëçé˚ì¸
+		DrawNumber(TotalAmount, TEXTURE_RESULT_TOTAL_POINT, TEXTURE_RESULT_TOTAL_NUMBER, TEXTURE_RESULT_TOTAL_YEN);
+		//int TotalNumber = TotalAmount;
+		//for (int i = 0; i < Len(TotalAmount); i++)
+		//{
+		//	g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos.u = (TotalNumber % 10 * 0.1f);
+		//	g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos.x = (YEN_FINAL_POS - (g_td[TEXTURE_RESULT_TOTAL_NUMBER].size.x * i) - 5.0f);
+		//	DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_NUMBER], FALSE, TRUE);
+		//	TotalNumber /= 10;
+		//}
+		//g_td[TEXTURE_RESULT_TOTAL_YEN].pos.x = -g_td[TEXTURE_RESULT_TOTAL_YEN].size.x * 0.5f - g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x * 0.05f + (YEN_FINAL_POS - ((g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x * 0.1f) * (Len(TotalAmount) - 1)));
+		//DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_YEN]);
 
-		}
+		// è¨êîì_
+		//for (int i = 0; i < YEN_MAX; i++)
+		//{
+		//	g_td[TEXTURE_RESULT_POINT].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + i].pos.y + 18.0f);
+
+		//	DrawTexture2D(&g_td[TEXTURE_RESULT_POINT]);
+		//}
+		//DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_POINT]);
+		//DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_POINT]);
+
+		//for (int i = 0; i < ZERO_DIGIT; i++)
+		//{
+		//	for (int j = 0; j < YEN_MAX; j++)
+		//	{
+		//		g_td[TEXTURE_RESULT_NUMBER].pos.x = (YEN_FINAL_POS + g_td[TEXTURE_RESULT_POINT].size.x + (g_td[TEXTURE_RESULT_NUMBER].size.x * (i + 1)));
+		//		g_td[TEXTURE_RESULT_NUMBER].pos.y = (g_td[TEXTURE_RESULT_DELIVERY_DISTAMCE + j].pos.y);
+		//		g_td[TEXTURE_RESULT_NUMBER].uv_pos.u = 0.0f;
+		//		DrawTexture2D(&g_td[TEXTURE_RESULT_NUMBER], FALSE, TRUE);
+		//	}
+		//	g_td[TEXTURE_RESULT_MIUS_NUMBER].pos.x = (YEN_FINAL_POS + g_td[TEXTURE_RESULT_MIUS_POINT].size.x + (g_td[TEXTURE_RESULT_MIUS_NUMBER].size.x * (i + 1)));
+		//	g_td[TEXTURE_RESULT_MIUS_NUMBER].uv_pos.u = 0.0f;
+		//	DrawTexture2D(&g_td[TEXTURE_RESULT_MIUS_NUMBER], FALSE, TRUE);
+
+		//	g_td[TEXTURE_RESULT_TOTAL_NUMBER].pos.x = (YEN_FINAL_POS + g_td[TEXTURE_RESULT_TOTAL_POINT].size.x + (g_td[TEXTURE_RESULT_TOTAL_NUMBER].size.x * (i + 1)));
+		//	g_td[TEXTURE_RESULT_TOTAL_NUMBER].uv_pos.u = 0.0f;
+		//	DrawTexture2D(&g_td[TEXTURE_RESULT_TOTAL_NUMBER], FALSE, TRUE);
+		//}
 
 		//â‘âŒï`âÊ
 		DrawTexture2D(&g_td[TEXTURE_RESULT_FIREWORK_1]);
@@ -547,6 +609,7 @@ void SetEventFinish(void)
 	EventFinish = true;
 }
 
+
 //åÖêîÉ`ÉFÉbÉN
 int Len(int num)
 {
@@ -561,4 +624,51 @@ int Len(int num)
 		ans = 1;
 	}
 	return ans;
+}
+
+void ResetResult(void)
+{
+	ResultTime = 0.0f;
+	GreenStarNum = 0;
+	DeliveryDistance = 0;
+	DeliveryTime = 0;
+	DeliveryFee = 0;
+	Tip = 0;
+	Damage = 0;
+	TotalAmount = 0;
+	EventFinish = FALSE;
+	g_Time = 0;
+
+	g_td[TEXTURE_RESULT_BG].uv_pos.v = 0.0f;
+	g_td[TEXTURE_RESULT_SCROLL].posAdd.y = 0.0f;
+	SetPosAddY(0.0f);
+
+	ResetResultEvent();
+}
+
+void SetDeliveryTime(float time)
+{
+	DeliveryTime = (int)((1.0f - (time / GetBaseDeliveryTime())) * DeliveryFee);
+	if (DeliveryTime < 0) DeliveryTime = 0;
+}
+void SetResultDistance(int distance)
+{
+	DeliveryDistance = distance * 100;
+}
+void SetDeliveryFee(int fee)
+{
+	DeliveryFee = fee;
+}
+void SetDeliveryTip(int tip)
+{
+	Tip = tip * DeliveryFee / 5;
+}
+void SetDeliveryDamage(int damage)
+{
+	Damage = damage * DeliveryFee / 5;
+}
+void SetDeliveryResult(void)
+{
+	TotalAmount = (DeliveryDistance + DeliveryTime + DeliveryFee + Tip - Damage);
+	GainMoney((ULONG)TotalAmount);
 }

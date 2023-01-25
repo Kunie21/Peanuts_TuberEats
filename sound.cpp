@@ -8,6 +8,7 @@
 #include "sound.h"
 #include "debugproc.h"
 #include "load.h"
+#include "stage.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -78,21 +79,20 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	//{ (char*)"data/SOUND/BGM/STAGESELECT.wav", -1, BGM },		// スタート
 	{ (char*)"data/SOUND/BGM/home.wav", -1, BGM },				// ホーム
 	{ (char*)"data/SOUND/BGM/stage_select.wav", -1, BGM },		// ステージセレクト
-	{ (char*)"data/SOUND/BGM/stage_1_2.wav", -1, BGM },		// ステージ1-1
+	{ (char*)"data/SOUND/BGM/stage_1_1.wav", -1, BGM },		// ステージ1-1
 	//{ (char*)"data/BGM/stage_1_3.wav", -1, BGM },		// ステージ1-3
-	//{ (char*)"data/BGM/stage_2_1.wav", -1, BGM },		// ステージ2-1
+	{ (char*)"data/SOUND/BGM/stage_2_1.wav", -1, BGM },		// ステージ2-1
 	//{ (char*)"data/BGM/stage_2_2.wav", -1, BGM },		// ステージ2-2
 	//{ (char*)"data/BGM/stage_2_3.wav", -1, BGM },		// ステージ2-3
 	//{ (char*)"data/BGM/stage_1_2.wav", -1, BGM },		// ステージ1-2
-	//{ (char*)"data/BGM/stage_3_1.wav", -1, BGM },		// ステージ3-1
+	{ (char*)"data/SOUND/BGM/stage_3_1.wav", -1, BGM },		// ステージ3-1
 	//{ (char*)"data/BGM/stage_3_2.wav", -1, BGM },		// ステージ3-2
 	//{ (char*)"data/BGM/stage_3_3.wav", -1, BGM },		// ステージ3-3
-	//{ (char*)"data/BGM/stage_4_1.wav", -1, BGM },		// ステージ4-1
+	{ (char*)"data/SOUND/BGM/stage_4_1.wav", -1, BGM },		// ステージ4-1
 	//{ (char*)"data/BGM/stage_4_2.wav", -1, BGM },		// ステージ4-2
 	//{ (char*)"data/BGM/stage_4_3.wav", -1, BGM },		// ステージ4-3
 	{ (char*)"data/SOUND/BGM/result.wav", -1, BGM },			// リザルト
 	{ (char*)"data/SOUND/BGM/ending.wav", -1, BGM },			// エンディング
-
 
 	{ (char*)"data/SOUND/SE/engine_3.wav", -1, SE },			// エンジン小
 	{ (char*)"data/SOUND/SE/engine_2.wav", -1, SE },			// エンジン中
@@ -834,6 +834,7 @@ void SetBGM(MODE_LABEL mode)
 			break;
 
 		case MODE_TITLE_START:
+			//SOUND_LABEL_BGM_TITLE,			// タイトル
 			PlaySound(SOUND_LABEL_BGM_TITLE);
 			break;
 
@@ -846,14 +847,36 @@ void SetBGM(MODE_LABEL mode)
 			break;
 
 		case MODE_GAME:
-			PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
+//<<<<<<< HEAD
+//			PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
+//=======
+			switch (GetStageNo())
+			{
+			case STAGE_OSAKA:
+				PlaySound(SOUND_LABEL_BGM_STAGE_1_1);
+				break;
+
+			//case STAGE_SHANGHAI:
+				PlaySound(SOUND_LABEL_BGM_STAGE_2_1);
+				break;
+
+			//case STAGE_PARIS:
+				PlaySound(SOUND_LABEL_BGM_STAGE_3_1);
+				break;
+
+			//case STAGE_NEWYORK:
+				PlaySound(SOUND_LABEL_BGM_STAGE_4_1);
+				break;
+
+			default:
+				break;
+			}
 			break;
 
 		case MODE_RESULT:
 			StopSound(SOUND_LABEL_BGM_ENGINE1);
 			StopSound(SOUND_LABEL_BGM_ENGINE2);
 			StopSound(SOUND_LABEL_BGM_ENGINE3);
-
 			PlaySound(SOUND_LABEL_BGM_RESULT);
 			break;
 

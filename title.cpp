@@ -253,7 +253,8 @@ void UpdateTitle(void)
 	time += 0.05f; if(time > XM_2PI) time -= XM_2PI;
 	g_td[TEXTURE_BUTTON].col.w = 1.0f + sinf(time);
 
-	if (IsMouseLeftTriggered() || IsMouseRightTriggered()) {
+	if (IsMouseLeftTriggered() || IsMouseRightTriggered())
+	{
 		PressedAnyButton();
 	}
 }

@@ -14,6 +14,7 @@
 #include "tube.h"
 #include "result.h"
 #include "stage.h"
+#include "input.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -93,10 +94,16 @@ void UpdateResultEvent(void)
 	g_CameraPos.z -= ROCKET_SPEED;
 	g_CameraAt.z -= ROCKET_SPEED;
 
-	if (g_CameraPos.z < -2500.0f)
+	if (g_CameraPos.z < -2500.0f || CheckButtonSkip())
 	{
 		SetEventFinish();
 	}
+}
+
+void ResetResultEvent(void)
+{
+	g_CameraPos.z = 2000.0f;
+	g_CameraAt.z = 2000.0f;
 }
 
 //=============================================================================
@@ -105,8 +112,8 @@ void UpdateResultEvent(void)
 void DrawResultEvent(void)
 {
 	//後でステージに分けて描画する
-	//DrawTexture2D(&g_td[GetStageNo()]);
-	DrawTexture2D(&g_td[TEXTURE_AMERICA]);
+	DrawTexture2D(&g_td[(GetStageNo())]);
+	//DrawTexture2D(&g_td[TEXTURE_AMERICA]);
 
 	DrawTexture2DAll(TRUE);
 	

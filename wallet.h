@@ -28,5 +28,5 @@ BOOL InTransaction(void);
 BOOL SuccessfulTransaction(void);
 
 ULONG64& GetMoney(void);
-void GainMoney(ULONG64& gain);
+void GainMoney(int gain);
 

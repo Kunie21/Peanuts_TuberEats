@@ -11,6 +11,8 @@
 #include "texture2d.h"
 #include "wallet.h"
 #include "rocket_select.h"
+#include "home.h"
+#include "sound.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -83,6 +85,7 @@ enum UI_LABEL {
 	UI_MINUS_DOT,
 	UI_MINUS_COMMA,
 	UI_MINUS,
+
 	UI_SHOP_MENU_OPACITY,
 	UI_BUY_MENU,
 	UI_BUY_MENU_SELECTION,
@@ -101,10 +104,11 @@ enum UI_LABEL {
 	TEXTURE_LABEL_WALLET_DOT,\
 	TEXTURE_LABEL_WALLET_COMMA,\
 	TEXTURE_LABEL_YEN,\
-	TEXTURE_LABEL_MINUS_TOTAL,\
+	TEXTURE_LABEL_WALLET_TOTAL,\
 	TEXTURE_LABEL_MINUS_DOT,\
 	TEXTURE_LABEL_MINUS_COMMA,\
 	TEXTURE_LABEL_MINUS,\
+\
 	TEXTURE_LABEL_SHOP_MENU_OPACITY,\
 	TEXTURE_LABEL_BUY_MENU,\
 	TEXTURE_LABEL_BUY_MENU_SELECTION,\
@@ -146,9 +150,23 @@ static void ButtonPressed(int b)
 	switch (b)
 	{
 	case BT_CANCEL:
+		PlaySound(SOUND_LABEL_SE_BACK);
+		g_InTransaction = FALSE;
 		break;
 
 	case BT_BUY:
+
+		if (g_Money > g_Price)
+		{// çwì¸ê¨óß
+			g_Money -= g_Price;
+			BuyRocket();
+			g_InTransaction = FALSE;
+		}
+		else
+		{// çwì¸é∏îs
+			PlaySound(SOUND_LABEL_SE_REFUSE);
+		}
+
 		break;
 
 	default:
@@ -193,7 +211,7 @@ static void InitUI(void)
 	g_td[UI_WALLET_NUMBER].size.x *= 0.1f;
 	g_td[UI_WALLET_NUMBER].uv_pos.uw = 0.1f;
 	g_td[UI_WALLET_NUMBER].pos = {
-		g_td[UI_WALLET_BG].pos.x + g_td[UI_WALLET_BG].size.x - 10.0f,
+		g_td[UI_WALLET_BG].pos.x + g_td[UI_WALLET_BG].size.x - 15.0f,
 		g_td[UI_WALLET_BG].pos.y - g_td[UI_WALLET_BG].size.y * 0.4f,
 	};
 	g_td[UI_WALLET_DOT].posType = POSITION_LEFTBOTTOM;
@@ -206,13 +224,19 @@ static void InitUI(void)
 	g_td[UI_YEN].ctrType = CENTER_RIGHTBOTTOM;
 	g_td[UI_YEN].pos.y = g_td[UI_WALLET_NUMBER].pos.y;
 
+	g_td[UI_MINUS_NUMBER].size = g_td[UI_WALLET_NUMBER].size;
+	g_td[UI_MINUS_DOT].size = g_td[UI_WALLET_DOT].size;
+	g_td[UI_MINUS_COMMA].size = g_td[UI_WALLET_COMMA].size;
+	g_td[UI_MINUS].size = g_td[UI_YEN].size;
+
 	g_td[UI_MINUS_NUMBER].posType = POSITION_LEFTBOTTOM;
 	g_td[UI_MINUS_NUMBER].ctrType = CENTER_RIGHTBOTTOM;
-	g_td[UI_MINUS_NUMBER].size.x *= 0.1f;
+	g_td[UI_MINUS_NUMBER].col = { 0.0f, 0.76f, 0.36f, 1.0f };
+	//g_td[UI_MINUS_NUMBER].size.x *= 0.1f;
 	g_td[UI_MINUS_NUMBER].uv_pos.uw = 0.1f;
 	g_td[UI_MINUS_NUMBER].pos = {
 		g_td[UI_WALLET_BG].pos.x + g_td[UI_WALLET_BG].size.x - 15.0f,
-		g_td[UI_WALLET_BG].pos.y - 10.0f,
+		g_td[UI_WALLET_BG].pos.y - 5.0f,
 	};
 	g_td[UI_MINUS_DOT].posType = POSITION_LEFTBOTTOM;
 	g_td[UI_MINUS_DOT].ctrType = CENTER_RIGHTBOTTOM;
@@ -224,13 +248,29 @@ static void InitUI(void)
 	g_td[UI_MINUS].ctrType = CENTER_RIGHTBOTTOM;
 	g_td[UI_MINUS].pos.y = g_td[UI_MINUS_NUMBER].pos.y;
 
+	// îíîºìßñæÉJÉoÅ[
+	g_td[UI_SHOP_MENU_OPACITY].posType = POSITION_RIGHTTOP;
+	g_td[UI_SHOP_MENU_OPACITY].ctrType = CENTER_RIGHTTOP;
+
+	g_td[UI_BUY_MENU].pos.x = SCREEN_CENTER_X * 0.5f;
+	g_td[UI_BUY_MENU].pos.y = SCREEN_CENTER_Y * 0.5f;
+
+	g_td[UI_NO].pos.x = g_td[UI_BUY_MENU].pos.x - 150.0f;
+	g_td[UI_NO].pos.y = g_td[UI_BUY_MENU].pos.y + 50.0f;
+
+	g_td[UI_BUY].pos.x = g_td[UI_BUY_MENU].pos.x + 150.0f;
+	g_td[UI_BUY].pos.y = g_td[UI_NO].pos.y;
+
 	// É{É^Éìè⁄ç◊ê›íË
 	UI_LABEL ul[BT_NUM] = REF_UL;
 	for (int i = 0; i < BT_NUM; i++)
 	{
-		g_bd[i].col_off = g_bd[i].col_on;
+		g_bd[i].col_off = COL_BLACK;
+		g_bd[i].col_on = COL_ORIGINAL;
+		//g_bd[i].col_off = g_bd[i].col_on;
 		g_bd[i].scl_off = g_bd[i].scl_on;
 		SetUIButton(&g_bd[i], &g_td[ul[i]]);
+		g_bd[i].size = g_td[UI_BUY_MENU_SELECTION].size;
 	}
 
 	// É{É^ÉìÉeÅ[ÉuÉãÇ÷ÇÃìoò^
@@ -245,7 +285,6 @@ static void UpdateUI(void)
 // ï`âÊ
 static void DrawUI(void)
 {
-
 }
 // èIóπ
 static void UninitUI(void)
@@ -311,8 +350,8 @@ HRESULT InitWallet(void)
 	g_InTransaction = FALSE;
 	g_SuccessfulTransaction = FALSE;
 
-	g_Money = MONEY_MAX; //SaveDataÇ©ÇÁì«Ç›çûÇﬁó\íË
-	g_Price = MONEY_MAX; //SaveDataÇ©ÇÁì«Ç›çûÇﬁó\íË
+	g_Money = 1000000;// MONEY_MAX; //SaveDataÇ©ÇÁì«Ç›çûÇﬁó\íË
+	//g_Price = MONEY_MAX; //SaveDataÇ©ÇÁì«Ç›çûÇﬁó\íË
 
 	g_Load = TRUE;
 	return S_OK;
@@ -338,7 +377,9 @@ void UninitWallet(void)
 //=============================================================================
 void UpdateWallet(void)
 {
-	//UpdateUI();
+	if (!g_InTransaction) return;
+
+	UpdateUI();
 	
 	//if (!g_InTransaction)return;
 
@@ -426,42 +467,48 @@ void DrawWallet(void)
 
 
 	// è¡îÔÇÃÇ®ã‡ÇÃï`âÊèàóù
-	money = g_Price;
-	if (money == 0) return;
-
-	count = 0;
-	comma = 0;
-	while (money > 0)
+	//if (GetHomeMode() == HOME_SHOP)
+	//{
+	if (g_InTransaction)
 	{
-		if (count == 2)
+		money = g_Price;
+		//money = GetRocketPrice();
+		if (money == 0) return;
+
+		count = 0;
+		comma = 0;
+		while (money > 0)
 		{
-			g_td[UI_MINUS_DOT].pos.x = g_td[UI_MINUS_NUMBER].pos.x - (count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
-			DrawTexture2D(&g_td[UI_MINUS_DOT]);
-			count++; comma++;
+			if (count == 2)
+			{
+				g_td[UI_MINUS_DOT].pos.x = g_td[UI_MINUS_NUMBER].pos.x - (count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
+				DrawTexture2D(&g_td[UI_MINUS_DOT]);
+				count++; comma++;
+			}
+			else if (count == 6 || count == 10 || count == 14)
+			{
+				g_td[UI_MINUS_COMMA].pos.x = g_td[UI_MINUS_NUMBER].pos.x - (count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
+				DrawTexture2D(&g_td[UI_MINUS_COMMA]);
+				count++; comma++;
+			}
+			g_td[UI_MINUS_NUMBER].uv_pos.u = (float)(money % 10) * 0.1f;
+			g_td[UI_MINUS_NUMBER].posAdd.x = -(count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
+			DrawTexture2D(&g_td[UI_MINUS_NUMBER]);
+			money /= 10;
+			count++;
 		}
-		else if (count == 6 || count == 10 || count == 14)
-		{
-			g_td[UI_MINUS_COMMA].pos.x = g_td[UI_MINUS_NUMBER].pos.x - (count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
-			DrawTexture2D(&g_td[UI_MINUS_COMMA]);
-			count++; comma++;
+		g_td[UI_MINUS].pos.x = g_td[UI_MINUS_NUMBER].pos.x - (count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
+		DrawTexture2D(&g_td[UI_MINUS]);
+
+		DrawTexture2D(&g_td[UI_SHOP_MENU_OPACITY]);
+		DrawTexture2D(&g_td[UI_BUY_MENU], TRUE);
+		if (g_bd[BT_CANCEL].b_on || g_bd[BT_BUY].b_on) {
+			g_td[UI_BUY_MENU_SELECTION].pos = g_td[UI_NO + g_cursor.x].pos;
+			DrawTexture2D(&g_td[UI_BUY_MENU_SELECTION], TRUE);
 		}
-		g_td[UI_MINUS_NUMBER].uv_pos.u = (float)(money % 10) * 0.1f;
-		g_td[UI_MINUS_NUMBER].posAdd.x = -(count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
-		DrawTexture2D(&g_td[UI_MINUS_NUMBER]);
-		money /= 10;
-		count++;
+		DrawTexture2D(&g_td[UI_NO]);
+		DrawTexture2D(&g_td[UI_BUY]);
 	}
-	g_td[UI_MINUS].pos.x = g_td[UI_MINUS_NUMBER].pos.x - (count - comma) * g_td[UI_MINUS_NUMBER].size.x - comma * g_td[UI_MINUS_COMMA].size.x;
-	DrawTexture2D(&g_td[UI_MINUS]);
-
-
-	if (!g_InTransaction)return;
-
-	//DrawTexture2D(&g_td[TEXTURE_SHOP_MENU_OPACITY]);
-	//DrawTexture2D(&g_td[TEXTURE_BUY_MENU]);
-	//DrawTexture2D(&g_td[TEXTURE_BUY_MENU_SELECTION]);
-	//DrawTexture2D(&g_td[TEXTURE_NO]);
-	//DrawTexture2D(&g_td[TEXTURE_BUY]);
 }
 
 void SetPriceRocket(const ULONG64& price)
@@ -472,11 +519,12 @@ void SetPriceRocket(const ULONG64& price)
 
 void StartTransaction(void)
 {
-	//g_InTransaction = TRUE;
+	g_InTransaction = TRUE;
 	//g_SuccessfulTransaction = FALSE;
-	//g_td[TEXTURE_BUY_MENU_SELECTION].pos.x = POS_X_SELECTION_NO;
-	//g_td[TEXTURE_NO].col = COL_ORIGINAL;
-	//g_td[TEXTURE_BUY].col = COL_BLACK;
+	//g_td[UI_BUY_MENU_SELECTION].pos.x = POS_X_SELECTION_NO;
+	//g_td[UI_BUY_MENU_SELECTION].pos = g_td[UI_NO].pos;
+	//g_td[UI_NO].col = COL_BLACK;
+	//g_td[UI_BUY].col = COL_ORIGINAL;
 }
 void ResetTransaction(void)
 {
@@ -498,12 +546,16 @@ BOOL SuccessfulTransaction(void)
 	return FALSE;
 }
 
-void GainMoney(ULONG64& gain)
+void GainMoney(int gain)
 {
-	g_Money += gain;
+	g_Money += (ULONG64)gain;
 	if (g_Money > MONEY_MAX)
 	{
 		g_Money = MONEY_MAX;
+	}
+	else if (g_Money < 0)
+	{
+		g_Money = 0;
 	}
 }
 

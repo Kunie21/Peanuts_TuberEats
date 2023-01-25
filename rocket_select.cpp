@@ -252,10 +252,15 @@ static void ButtonPressed(int b)
 		{
 		case STATUS_LOCK:
 			PlaySound(SOUND_LABEL_SE_DECIDE);
+
+			SetPriceRocket(g_RS[b].price);
+			StartTransaction();
 			break;
 
 		case STATUS_NEW:
 		case STATUS_NORMAL:
+			PlaySound(SOUND_LABEL_SE_EQUIP);
+
 			g_RS[g_RSEquip].status = STATUS_NORMAL;
 			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].tex = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].tex;
 			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].size = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].size;
@@ -265,7 +270,6 @@ static void ButtonPressed(int b)
 			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].tex = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].tex;
 			g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_RSEquip].size = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_RSEquip].status].size;
 
-			PlaySound(SOUND_LABEL_SE_EQUIP);
 			break;
 
 		case STATUS_EQUIP:
@@ -280,6 +284,7 @@ static void ButtonPressed(int b)
 		PlaySound(SOUND_LABEL_SE_BACK);
 		break;
 	}
+
 	g_bButton = FALSE;
 }
 // 初期化
@@ -363,8 +368,8 @@ static void InitUI(void)
 	g_td[UI_ROCKET_NAME2_4].sd_pos = { 3.5f, 3.5f };
 
 	g_td[UI_ROCKET_LOCK_1] = g_td[UI_ROCKET_ICON_EQUIP];
-	g_td[UI_ROCKET_LOCK_2] = g_td[UI_ROCKET_ICON];
-	g_td[UI_ROCKET_LOCK_3] = g_td[UI_ROCKET_ICON_NEW];
+	g_td[UI_ROCKET_LOCK_2] = g_td[UI_ROCKET_ICON_LOCK];
+	g_td[UI_ROCKET_LOCK_3] = g_td[UI_ROCKET_ICON_LOCK];
 	g_td[UI_ROCKET_LOCK_4] = g_td[UI_ROCKET_ICON_LOCK];
 
 	XMFLOAT2 pos = { 0.0f, 0.0f };
@@ -409,7 +414,8 @@ static void InitUI(void)
 // 更新
 static void UpdateUI(void)
 {
-	if(g_bButton) UpdateButton(g_bt, ButtonPressed);
+	if (InTransaction()) return;
+	if (g_bButton) UpdateButton(g_bt, ButtonPressed);
 	else g_bButton = TRUE;
 }
 // 描画
@@ -481,31 +487,31 @@ HRESULT InitRocketSelect(void)
 	g_RS[ROCKET01].accelerate = 4;
 	g_RS[ROCKET01].control = 6;
 	g_RS[ROCKET01].fuel = 5;
-	g_RS[ROCKET01].price = 100000;
+	g_RS[ROCKET01].price = 0;
 	g_RS[ROCKET01].status = STATUS_EQUIP;// SavaDataで設定する予定
 
-	g_RS[ROCKET02].model = MODEL_ROCKET3;
+	g_RS[ROCKET02].model = MODEL_ROCKET2;
 	g_RS[ROCKET02].speed = 9;
 	g_RS[ROCKET02].accelerate = 2;
 	g_RS[ROCKET02].control = 1;
 	g_RS[ROCKET02].fuel = 8;
-	g_RS[ROCKET02].price = 50;
-	g_RS[ROCKET02].status = STATUS_NORMAL;
+	g_RS[ROCKET02].price = 100000000;
+	g_RS[ROCKET02].status = STATUS_LOCK;// STATUS_NORMAL;
 
-	g_RS[ROCKET03].model = MODEL_ROCKET4;
+	g_RS[ROCKET03].model = MODEL_ROCKET3;
 	g_RS[ROCKET03].speed = 7;
 	g_RS[ROCKET03].accelerate = 8;
 	g_RS[ROCKET03].control = 9;
 	g_RS[ROCKET03].fuel = 7;
-	g_RS[ROCKET03].price = 99999;
-	g_RS[ROCKET03].status = STATUS_NEW;
+	g_RS[ROCKET03].price = 2500000000;
+	g_RS[ROCKET03].status = STATUS_LOCK;// STATUS_NEW;
 
-	g_RS[ROCKET04].model = MODEL_ROCKET5;
+	g_RS[ROCKET04].model = MODEL_ROCKET4;
 	g_RS[ROCKET04].speed = 10;
 	g_RS[ROCKET04].accelerate = 10;
 	g_RS[ROCKET04].control = 10;
 	g_RS[ROCKET04].fuel = 10;
-	g_RS[ROCKET04].price = 20221119;
+	g_RS[ROCKET04].price = 80000000000;
 	g_RS[ROCKET04].status = STATUS_LOCK;
 
 	// アニメーション初期設定
@@ -804,7 +810,15 @@ void DrawHomeRocket(void)
 		g_RocketSRT.scl.z -= ON_RATE;
 		g_RocketOutline = FALSE;
 	}
+}
 
+ULONG64 GetRocketPrice(void) {
+	return g_RS[g_cursor.y].price;
+}
+void BuyRocket(void) {
+	g_RS[g_cursor.y].status = STATUS_NEW;
+	g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_cursor.y].tex = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_cursor.y].status].tex;
+	g_td[UI_ROCKET_LOCK_1 + TEXT_NUM * g_cursor.y].size = g_td[UI_ROCKET_ICON_LOCK + g_RS[g_cursor.y].status].size;
 }
 
 BOOL IsRocketSelectFinished(void)
@@ -814,7 +828,7 @@ BOOL IsRocketSelectFinished(void)
 
 int GetRocketSelected(void)
 {
-	return g_cursor.y;
+	return g_RSEquip;
 }
 
 void SetRocketOutline(void)

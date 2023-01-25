@@ -263,3 +263,6 @@ void	UpdateXinputButtonStatus(int padNo, XINPUT_BUTTON button, BOOL press);
 BOOL	IsXinputButtonStatus(int padNo, XINPUT_BUTTON button, XINPUT_BUTTON_STATUS status);
 
 void MoveCursor(XMINT2& cursor, const int num_x, const int num_y);
+
+
+BOOL CheckButtonSkip(void);

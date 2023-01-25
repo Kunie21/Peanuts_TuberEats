@@ -41,6 +41,9 @@ void ResetTransaction(void);
 
 void DrawHomeRocket(void);
 
+ULONG64 GetRocketPrice(void);
+void BuyRocket(void);
+
 void SetRocketOutline(void);
 
 void DrawTextureStatus(int rocket, float slide);

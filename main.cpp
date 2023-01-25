@@ -281,8 +281,10 @@ void Uninit(void)
 
 	UninitTitle();
 	UninitStart();
-	UninitHome();
+	//UninitHome();
 	UninitStageSelect();
+	
+	UninitGame();
 }
 
 //=============================================================================
@@ -450,13 +452,10 @@ void SetMode(MODE_LABEL mode)
 {
 	// モードを変える前に全部メモリを解放しちゃう
 	UninitTeamLogo();
-	UninitResult();
-	UninitResultEvent();
-	UninitTube();
-	UninitPlayer();
-	UninitGame();
-
-
+	//UninitResult();
+	//UninitResultEvent();
+	//UninitTube();
+	//UninitPlayer();
 
 	g_Mode = mode;	// 次のモードをセット
 
@@ -479,7 +478,7 @@ void SetMode(MODE_LABEL mode)
 		break;
 
 	case MODE_HOME:
-		InitHome();
+		//InitHome();
 		break;
 
 	case MODE_STAGESELECT:
@@ -487,16 +486,16 @@ void SetMode(MODE_LABEL mode)
 		break;
 
 	case MODE_GAME:
-		InitGame();
+		//InitGame();
 
 		break;
 
 	case MODE_RESULT:
 		InitLight();
-		InitTube();
-		InitPlayer();
-		InitResult();
-		InitResultEvent();
+		//InitTube();
+		//InitPlayer();
+		//InitResult();
+		//InitResultEvent();
 		break;
 
 	case MODE_END:

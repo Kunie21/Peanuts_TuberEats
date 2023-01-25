@@ -14,4 +14,4 @@ void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
 
-void SetStartGate(void);
+//void SetStartGate(void);

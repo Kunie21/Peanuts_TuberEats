@@ -15,7 +15,11 @@
 //#define ANIM_FPS		(24)
 #define ANIM_FPS		(2.5f)
 #define RIGHT_BOTTOM	(-50.0f)
+#ifdef _DEBUG
+#define BAR_MAX			(0.0f)
+#else
 #define BAR_MAX			(200.0f)
+#endif
 
 /*******************************************************************************
 * ƒOƒ[ƒoƒ‹•Ï”

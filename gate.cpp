@@ -17,6 +17,7 @@
 #include "stage.h"
 #include "player.h"
 #include "sound.h"
+#include "result.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -89,7 +90,7 @@ HRESULT InitGate(void)
 	g_StartGate->SetOn();
 
 	g_GoalGate = new GATE;
-	g_GoalGate->SetGoal(50000.0f);
+	//g_GoalGate->SetGoal(50000.0f);
 
 	g_Load = TRUE;
 	return S_OK;
@@ -243,7 +244,6 @@ void GATE::Draw(void)
 	DrawModel(&m_Model.model, &m_Model.srt, &m_MaterialMonitor);
 }
 
-// ゴール設定
 void GATE::SetOn(void)
 {
 	m_Status = GATE_STATUS_ON;
@@ -268,6 +268,8 @@ void GATE::SetGoal(float goal_pos)
 	m_Status = GATE_STATUS_GOAL;
 	m_ImageNo = GATE_TEX_GOAL;
 	Update();	// Drawに支障がないよう確実にアップデート
+	SetResultDistance((int)m_Pos);
+	g_StartGate->SetOn();
 }
 void SetGoalGate(float goal_pos) {
 	g_GoalGate->SetGoal(goal_pos);
